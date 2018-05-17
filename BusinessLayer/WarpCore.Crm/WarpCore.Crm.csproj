@@ -1,12 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataAccessLayer\WarpCore.DataAccess.Azure\WarpCore.DbEngine.Azure.csproj" />
     <ProjectReference Include="..\..\DataAccessLayer\WarpCore.DataAccess.Schema\WarpCore.Data.Schema.csproj" />
+    <ProjectReference Include="..\..\DataAccessLayer\WarpCore.DbEngine\WarpCore.DbEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

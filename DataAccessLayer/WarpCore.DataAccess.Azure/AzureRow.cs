@@ -4,7 +4,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace WarpCore.DbEngine.Azure
 {
-    public class AzureRow : IRow
+    public class AzureRow 
     {
         public AzureRow(DbTableSchema dbTableSchema,DynamicTableEntity result)
         {

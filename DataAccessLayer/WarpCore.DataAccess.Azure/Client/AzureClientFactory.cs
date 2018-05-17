@@ -10,6 +10,8 @@ namespace WarpCore.DbEngine.Azure
 {
     public class AzureClientFactory
     {
+        public const string Emulate = "UseDevelopmentStorage";
+
         private readonly CloudStorageAccount _storageAccount;
 
         public AzureClientFactory(WarpCoreDataAccessConfig dataAccessConfig) : this(dataAccessConfig.StorageConnectionString)
@@ -22,6 +24,7 @@ namespace WarpCore.DbEngine.Azure
             _storageAccount = CloudStorageAccount.Parse(connectionString);
 
         }
+
 
         public CloudTableClient CreateCloudTableClient()
         {
