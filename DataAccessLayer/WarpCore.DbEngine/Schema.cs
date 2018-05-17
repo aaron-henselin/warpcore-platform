@@ -17,14 +17,14 @@ namespace WarpCore.DbEngine
             return entityName.ToLower();
         }
 
-        public DbTableSchema CreateTableSchemaFromEntity(EntityMetadata entityMetadata)
+        public DbTableSchema CreateTableSchemaFromEntity(OrmMetadata ormMetadata)
         {
-            var tableSchema = new DbTableSchema {TableName = MakeTableName(entityMetadata.TableName)};
-            foreach (var property in entityMetadata.Properties)
+            var tableSchema = new DbTableSchema {TableName = MakeTableName(ormMetadata.TableName)};
+            foreach (var property in ormMetadata.Properties)
             {
                 var schema = new ColumnSchema
                 {
-                    ColumnName = MakeColumnName(property.PropertyName),
+                    ColumnName = property.ColumnName,
                     OriginatingPropertyName = property.PropertyName,
                 };
 

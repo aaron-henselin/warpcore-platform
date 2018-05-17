@@ -1,9 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WarpCore.Data.Schema
 {
     public class Entity
     {
-        public Guid Id { get; set; }
+        [Column]
+        public Guid? Id { get; set; }
+
+        public bool IsNew { get; set; } = true;
     }
+
+
+
 }

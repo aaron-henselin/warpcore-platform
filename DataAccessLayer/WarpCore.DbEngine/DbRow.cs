@@ -5,9 +5,14 @@ namespace WarpCore.DbEngine
 {
     public class DbRow : IRow
     {
+        public DbTableSchema Schema { get; set; }
+
+        public bool IsNew { get; set; }
+
         public static DbRow Create(DbTableSchema dbTableSchema, IDictionary<string,object> propertyValues)
         {
-            var vs = new DbRow();
+            
+            var vs = new DbRow{Schema = dbTableSchema};
             foreach (var prop in dbTableSchema.Columns)
             {
                 vs._values.Add(prop.ColumnName,propertyValues[prop.OriginatingPropertyName]);

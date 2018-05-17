@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace WarpCore.Data.Schema
 {
-    public class EntityMetadata
+    public class OrmMetadata
     {
         public string TableName { get; set; }
         public string FriendlyName { get; set; }
-        public EntityMetadata BaseMetadata { get; set; }
+        public OrmMetadata BaseMetadata { get; set; }
 
         public List<PropertyMetadata> Properties = new List<PropertyMetadata>();
     }
@@ -23,6 +24,7 @@ namespace WarpCore.Data.Schema
         public bool PrimaryKey { get; set; }
         public string ColumnName { get; set; }
         public int? ColumnOrder { get; set; }
+        public PropertyInfo PropertyInfo { get; set; }
     }
 
 }

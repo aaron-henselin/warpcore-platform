@@ -5,7 +5,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace WarpCore.DbEngine.Azure
 {
-    public class AzureTableDataAccessLayer
+    public class AzureTableDataAccessLayer :IDbAdapter
     {
         private readonly AzureClientFactory _clientFactory;
 
@@ -76,7 +76,7 @@ namespace WarpCore.DbEngine.Azure
             foreach (var column in dbTableSchema.Columns)
             {
                 var columnValue = entityValueSet[column.ColumnName];
-                dynamicRow.Properties.Add(column.ColumnName,EntityProperty.CreateEntityPropertyFromObject(columnValue));
+                dynamicRow.Properties.Add(column.ColumnName, EntityProperty.CreateEntityPropertyFromObject(columnValue));
             }
             dynamicRow.RowKey = entityValueSet[dbTableSchema.PrimaryKeyColumnName]?.ToString();
             var insertTask = TableOperation.InsertOrReplace(dynamicRow);
@@ -84,6 +84,18 @@ namespace WarpCore.DbEngine.Azure
             if (insertResult.Result == null)
                 throw new AzureDataAccessException("Table " + dbTableSchema.TableName + " could not be inserted to. ");
         }
+
+
+        public async void Insert(DbTableSchema dbTableSchema, IRow entityValueSet)
+        {
+            InsertOrUpdate(dbTableSchema,entityValueSet);
+        }
+
+        public async void Update(DbTableSchema dbTableSchema, IRow entityValueSet)
+        {
+            InsertOrUpdate(dbTableSchema, entityValueSet);
+        }
+
 
         private static async Task CreateTableIfNotExistsAsync(DbTableSchema dbTableSchema, CloudTable table)
         {

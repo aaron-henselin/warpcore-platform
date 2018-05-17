@@ -6,6 +6,7 @@ namespace WarpCore.DbEngine
 {
     public interface IRow
     {
+        DbTableSchema Schema { get; set; }
         object this[string columnName] { get; }
     }
 

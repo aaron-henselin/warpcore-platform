@@ -6,18 +6,29 @@ using System.Text;
 
 namespace WarpCore.Data.Schema
 {
-    public class EntityMetadataReader
+    public class OrmMetadataReader
     {
-        public EntityMetadata ReadMetadata(Type type)
+        public OrmMetadata ReadMetadata(Type type)
         {
-            var metadata = new EntityMetadata();
+            var metadata = new OrmMetadata();
 
             if (type.BaseType != typeof(object))
                 metadata.BaseMetadata = ReadMetadata(type.BaseType);
 
             var tableAttribute = type.GetCustomAttribute<TableAttribute>();
             metadata.TableName = tableAttribute?.Name;
-            
+
+            var idProperty = type.GetProperty(nameof(Entity.Id));
+            metadata.Properties.Add(new PropertyMetadata
+            {
+                PropertyInfo = idProperty,
+                PropertyName = idProperty.Name,
+                PropertyType = idProperty.PropertyType,
+                ColumnName = idProperty.Name,
+                PrimaryKey = true
+            });
+
+
             var allProperties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (var propertyInfo in allProperties)
             {
@@ -27,6 +38,7 @@ namespace WarpCore.Data.Schema
 
                 metadata.Properties.Add(new PropertyMetadata
                 {
+                    PropertyInfo = propertyInfo,
                     PropertyName = propertyInfo.Name,
                     PropertyType = propertyInfo.PropertyType,
                     ColumnName = columnInfo.Name ?? propertyInfo.Name,
