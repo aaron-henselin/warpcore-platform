@@ -9,13 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLayer", "BusinessLa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UILayer", "UILayer", "{220D69A7-1E9A-492A-B30A-C5A3664DEE9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Framework", "WarpCore.Framework\WarpCore.Framework.csproj", "{58021052-3810-46FE-BC67-2C397C99449D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarpCore.Framework", "WarpCore.Framework\WarpCore.Framework.csproj", "{58021052-3810-46FE-BC67-2C397C99449D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.DbEngines.AzureStorage", "WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj", "{31ADE8AF-8B3C-4F41-891D-AD5FD56139FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarpCore.DbEngines.AzureStorage", "WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj", "{31ADE8AF-8B3C-4F41-891D-AD5FD56139FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Crm", "WarpCore.Crm\WarpCore.Crm.csproj", "{E8FF7E84-988D-4E8C-80C2-423C2164B293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarpCore.Crm", "WarpCore.Crm\WarpCore.Crm.csproj", "{E8FF7E84-988D-4E8C-80C2-423C2164B293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Cms", "WarpCore.Cms\WarpCore.Cms.csproj", "{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Web", "WarpCore.Web\WarpCore.Web.csproj", "{2206A30A-F468-48BD-BD98-59711A827298}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2206A30A-F468-48BD-BD98-59711A827298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2206A30A-F468-48BD-BD98-59711A827298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2206A30A-F468-48BD-BD98-59711A827298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2206A30A-F468-48BD-BD98-59711A827298}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +58,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{31ADE8AF-8B3C-4F41-891D-AD5FD56139FA} = {2DD1F258-70CE-4F6B-8475-512CFF19E7A4}
 		{E8FF7E84-988D-4E8C-80C2-423C2164B293} = {66EAAB83-655E-4C1C-B902-33687724A2B8}
+		{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD} = {66EAAB83-655E-4C1C-B902-33687724A2B8}
+		{2206A30A-F468-48BD-BD98-59711A827298} = {220D69A7-1E9A-492A-B30A-C5A3664DEE9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF7B26DB-ECC6-49E0-B2C9-CB53A94E08E9}
