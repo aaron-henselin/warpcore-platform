@@ -1,65 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using WarpCore.Data.Schema;
 
 namespace WarpCore.Cms.Routing
 {
-    public enum RoutePriority
-    {
-        Primary = 0,
-        Former = 10,
-    }
 
-    [Table("cms_route")]
-    public class Route
-    {
-        [Column]
-        public string SitemapPath { get; set; }
 
-        [Column]
-        public int Priority { get; set; }
 
-        [Column]
-        public Guid PageId { get; set; }
+    //public class RouteRepository
+    //{
+    //    public IEnumerable<Route> GetAllRoutes()
+    //    {
+    //        return new List<Route>();
+    //    }
 
-        [Column]
-        public Guid? ContentId { get; set; }
+    //    public void RegisterRoute(Page page)
+    //    {
+    //        page.Name
+    //       var existingRoutes = new DbEngineAdapter().GetAll<Route>(x => x.PageId == page.Id && x.Slug);
+    //       // existingRoutes.
 
-        [Column]
-        public string ContentTypeCode{ get; set; }
-    }
-
-    [Table("cms_site")]
-    public class Site
-    {
-        [Column]
-        public string Name { get; set; }
-
-        [Column]
-        public string RoutePrefix { get; set; }
-
-        [Column]
-        public string UriAuthority { get; set; }
-
-        [Column]
-        public int Priority { get; set; }
-
-        
-    }
-
-    public class SiteRepository
-    {
-        public IEnumerable<Site> GetAllSites()
-        {
-            return new List<Site>();
-        }
-    }
-
-    public class RouteRepository
-    {
-        public IEnumerable<Route> GetAllRoutes()
-        {
-            return new List<Route>();
-        }
-    }
+    //    }
+    //}
 }

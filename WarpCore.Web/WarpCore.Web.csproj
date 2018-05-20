@@ -45,11 +45,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -72,6 +72,10 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Routing\CmsRouteTable.cs" />
+    <Compile Include="Routing\CmsSiteRouteTable.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -80,7 +84,8 @@
       <DependentUpon>DynamicPage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RouteTableBuilder.cs" />
+    <Compile Include="RouteContextResolver.cs" />
+    <Compile Include="Routing\CmsRouteRegistrar.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -96,7 +101,12 @@
       <Project>{bf4bc43a-8225-48dd-8b36-3e6b657fb6dd}</Project>
       <Name>WarpCore.Cms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WarpCore.Framework\WarpCore.Framework.csproj">
+      <Project>{58021052-3810-46FE-BC67-2C397C99449D}</Project>
+      <Name>WarpCore.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

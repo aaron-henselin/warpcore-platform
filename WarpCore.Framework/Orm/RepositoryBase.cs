@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using WarpCore.DbEngine;
@@ -59,6 +60,15 @@ namespace WarpCore.Data.Schema
                 foreach (var row in rows)
                     _dataAccessLayer.Update(row.Schema, row);
             }
+        }
+
+        public void GetAll<TEntity>(Expression<Func<TEntity,bool>> expession) where TEntity : Entity
+        {
+            throw new Exception();
+            //var entityType = typeof(TEntity);
+            //var metadata = new OrmMetadataReader().ReadMetadata(entityType);
+            //List<IRow> dataDependencies = GetDataDependencies(id, metadata);
+            //new EntityFactory().BuildEntity<TEntity>(dataDependencies);
         }
 
         public void Get<TEntity>(Guid id) where TEntity:Entity
