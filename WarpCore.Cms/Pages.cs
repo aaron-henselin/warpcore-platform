@@ -108,7 +108,7 @@ namespace WarpCore.Cms
             if (cmsPage.ParentPageId != null)
                 return CreateSlugRecursive(cmsPage) + "/" + generated;
 
-            return generated;
+            return "/"+generated;
         }
 
         public void Save(CmsPage cmsPage)
