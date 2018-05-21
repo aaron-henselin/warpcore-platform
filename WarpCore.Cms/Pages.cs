@@ -42,26 +42,16 @@ namespace WarpCore.Cms
     [Table("cms_page_route")]
     public class PageRoute : Entity
     {
-        [Column]
         public string Slug { get; set; }
-
-        [Column]
         public int Priority { get; set; }
-
-        [Column]
         public int Order { get; set; }
     }
 
     [Table("cms_page_content")]
-    public class CmsPageContent
+    public class CmsPageContent : Entity
     {
-        [Column]
         public string ContentPlaceHolderId { get; set; }
-
-        [Column]
         public string WidgetTypeCode { get; set; }
-
-        [Column]
         public Dictionary<string,string> Parameters { get; set; }
     }
 
@@ -73,7 +63,6 @@ namespace WarpCore.Cms
         {
            // _dbAdapter = new DbEngineAdapter();
         }
-
 
 
         public IQueryable<CmsPage> Query(Site site = null)

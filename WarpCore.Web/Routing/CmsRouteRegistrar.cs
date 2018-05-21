@@ -127,7 +127,7 @@ namespace WarpCore.Cms
             {
                
                 var siteRoute = (SiteRoute)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
-                var page = _pageRepository.GetPage(siteRoute.PageId.Value);
+                var page = _pageRepository.Query().Single(x => x.Id == siteRoute.PageId.Value);
 
                 ProcessRequestForPage(context,page);
                 

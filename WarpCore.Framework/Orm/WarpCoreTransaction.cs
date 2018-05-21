@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
-using Dapper;
-using WarpCore.Kernel;
+﻿
 
 namespace WarpCore.Framework.Orm
 {
