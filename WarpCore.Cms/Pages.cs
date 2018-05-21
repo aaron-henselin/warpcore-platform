@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WarpCore.Cms.Routing;
 using WarpCore.Data.Schema;
 
@@ -18,32 +19,18 @@ namespace WarpCore.Cms
     [Table("cms_page")]
     public class CmsPage
     {
-
-        [Column]
         public Guid Id { get; set; }
-
-        [Column]
         public string Name { get; set; }
-
-        [Column]
         public Guid? ParentPageId { get; set; }
-
-        [Column]
         public Guid SiteId { get; set; }
-
-        [Column]
         public string PageType { get; set; }
-
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
-
         public List<PageRoute> Routes { get; set; } = new List<PageRoute>();
+        public PageRoute CanonicalRoute => Routes.OrderBy(x => x.Priority).First();
         public string PhysicalFile { get; set; }
         public string RedirectExternalUrl { get; set; }
-
         public Guid? RedirectPageId { get; set; }
-
-        [Column]
-        public int Order { get; set; }
+        public int SitemapPosition { get; set; }
     }
 
     public enum RoutePriority
@@ -87,34 +74,40 @@ namespace WarpCore.Cms
            // _dbAdapter = new DbEngineAdapter();
         }
 
-        public CmsPage GetPage(Guid pageId)
+
+
+        public IQueryable<CmsPage> Query(Site site = null)
         {
-            return new CmsPage();
+            using (var pagesDbContext = new PagesDbContext())
+            {
+                var baseQueryable =
+                pagesDbContext.Pages
+                    .Include(x => x.PageContent)
+                    .Include(x => x.Routes);
+
+                if (site != null)
+                    return baseQueryable.AsQueryable().Where(x => x.SiteId == site.Id);
+                else
+                    return baseQueryable;
+            }
         }
 
-        public IEnumerable<CmsPage> GetAllPages()
-        {
-            return new List<CmsPage>();
-        }
-
-        public IEnumerable<CmsPage> GetAllPages(Site site)
-        {
-            return new List<CmsPage>();
-        }
-
-        public string CreateSlugRecursive(CmsPage cmsPage)
+        public string CreateSlugRecursive(CmsPage cmsPage,CmsPage parentPage)
         {
             var generated = SlugGenerator.Generate(cmsPage.Name);
             if (cmsPage.ParentPageId != null)
-                return CreateSlugRecursive(cmsPage) + "/" + generated;
+                return parentPage.CanonicalRoute.Slug + "/" + generated;
 
             return "/"+generated;
         }
 
-        public void Save(CmsPage cmsPage)
+        private void UpdateRoutesRecursive(CmsPage cmsPage, PagesDbContext pagesDbContext)
         {
-            var newDefaultSlug = CreateSlugRecursive(cmsPage);
+            CmsPage parentPage = null;
+            if (cmsPage.ParentPageId != null)
+                parentPage = pagesDbContext.Pages.Find(cmsPage.ParentPageId);
 
+            var newDefaultSlug = CreateSlugRecursive(cmsPage, parentPage);
             if (!cmsPage.Routes.Any(x => x.Slug == newDefaultSlug))
                 cmsPage.Routes.Add(new PageRoute
                 {
@@ -124,20 +117,32 @@ namespace WarpCore.Cms
             foreach (var route in cmsPage.Routes)
             {
                 if (route.Slug != newDefaultSlug)
-                    route.Priority = (int) RoutePriority.Former;
+                    route.Priority = (int)RoutePriority.Former;
                 else
-                    route.Priority = (int) RoutePriority.Primary;
+                    route.Priority = (int)RoutePriority.Primary;
             }
 
-            //todo: save this stuff.
-            //page.Routes.Where(x => x.Slug == newDefaultSlug)
-
-            //_dbAdapter.Save();
-            //SlugGenerator.Generate(page.Name)
-            //new RouteRepository().GetAllRoutes().
-            //new Page().Name
-            //page.Name
+            var childPages = pagesDbContext.Pages.Include(x => x.Routes).Where(x => x.Id == cmsPage.Id).ToList();
+            foreach (var childPage in childPages)
+                UpdateRoutesRecursive(childPage,pagesDbContext);
         }
+
+        
+        public void Save(CmsPage cmsPage)
+        {
+            using (var pagesDbContext = new PagesDbContext())
+            {
+                pagesDbContext.Pages.Update(cmsPage);
+                UpdateRoutesRecursive(cmsPage,pagesDbContext);
+                pagesDbContext.SaveChanges();
+            }
+        }
+    }
+
+    public class PagesDbContext : DbContext
+    {
+        public DbSet<CmsPage> Pages { get; set; }
+
     }
 
 }

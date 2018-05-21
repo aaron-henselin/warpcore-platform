@@ -76,7 +76,7 @@ namespace WarpCore.Cms
             {
                 if (cmsPage.RedirectPageId != null)
                 {
-                    var firstPage = _pageRepository.GetPage(cmsPage.RedirectPageId.Value);
+                    var firstPage = _pageRepository.Query().Single(x => x.Id == cmsPage.RedirectPageId.Value);
                     ProcessRequestForPage(context, firstPage);
                     return;
                 }
@@ -92,7 +92,7 @@ namespace WarpCore.Cms
 
             private void ProcessRequestForGroupingPage(HttpContext context, CmsPage cmsPage)
             {
-                var firstPage = _pageRepository.GetAllPages().Where(x => x.ParentPageId == cmsPage.Id).OrderBy(x => x.Order)
+                var firstPage = _pageRepository.Query().Where(x => x.ParentPageId == cmsPage.Id).OrderBy(x => x.SitemapPosition)
                     .SingleOrDefault();
                 if (firstPage == null)
                     throw new HttpException(404, String.Empty);

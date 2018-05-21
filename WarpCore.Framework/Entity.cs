@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WarpCore.Data.Schema
 {
     public class Entity
     {
-        [Column]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? Id { get; internal set; }
-
-        internal bool IsNew { get; set; } = true;
+        
     }
 
 
