@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WarpCore.Data.Schema;
-using WarpCore.DbEngine.Azure;
+
 using WarpCore.DbEngines.AzureStorage;
+
 
 namespace WarpCore.Crm
 {
-    public class IndividualRepository
+    public class IndividualRepository : CosmosRepository<Individual>
     {
-        public void Save(Individual individual)
-        {
-            new DbEngineAdapter(new AzureTableDataAccessLayer(new AzureClientFactory(AzureClientFactory.Emulate))).Save(individual);
-        }
+       
     }
 }

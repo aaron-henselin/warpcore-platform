@@ -10,10 +10,10 @@ namespace WarpCore.Web.Extensions
 {
     public static class ControlExtensions
     {
-        public static void Add(this ControlCollection controlCollection, IFrontendComponent frontendComponent)
-        {
-            controlCollection.Add((Control)frontendComponent);
-        }
+        //public static void Add(this ControlCollection controlCollection, IFrontendComponent frontendComponent)
+        //{
+        //    controlCollection.Add((Control)frontendComponent);
+        //}
 
         public static bool ContainsValue(this ListItemCollection collection, string value)
         {
@@ -90,33 +90,33 @@ namespace WarpCore.Web.Extensions
         }
 
 
-        public static List<ListItem> ToListItems<T, TValueProperty, TTextProperty>(this IEnumerable<T> items, Func<T, TValueProperty> valueProperty, Func<T, TTextProperty> textProperty, Func<T, bool> enabledProperty, DataSourceConfiguration config)
-        {
-            //var valueMethod = valueProperty.Compile();
-            //var textMethod = textProperty.Compile();
+        //public static List<ListItem> ToListItems<T, TValueProperty, TTextProperty>(this IEnumerable<T> items, Func<T, TValueProperty> valueProperty, Func<T, TTextProperty> textProperty, Func<T, bool> enabledProperty, DataSourceConfiguration config)
+        //{
+        //    //var valueMethod = valueProperty.Compile();
+        //    //var textMethod = textProperty.Compile();
 
-            var selectListItems = new List<ListItem> { };
+        //    var selectListItems = new List<ListItem> { };
 
-            foreach (var item in items)
-            {
-                var value = valueProperty.Invoke(item)?.ToString();
-                var text = textProperty.Invoke(item)?.ToString();
+        //    foreach (var item in items)
+        //    {
+        //        var value = valueProperty.Invoke(item)?.ToString();
+        //        var text = textProperty.Invoke(item)?.ToString();
 
-                bool enabled = true;
-                if (enabledProperty != null)
-                    enabled = enabledProperty(item);
+        //        bool enabled = true;
+        //        if (enabledProperty != null)
+        //            enabled = enabledProperty(item);
 
-                selectListItems.Add(new ListItem(text, value, enabled));
-            }
-            if (config == null || !config.PreserveItemOrder)
-                selectListItems = selectListItems.OrderBy(x => x.Text, StringComparer.OrdinalIgnoreCase).ToList();
+        //        selectListItems.Add(new ListItem(text, value, enabled));
+        //    }
+        //    if (config == null || !config.PreserveItemOrder)
+        //        selectListItems = selectListItems.OrderBy(x => x.Text, StringComparer.OrdinalIgnoreCase).ToList();
 
-            if (config == null || !config.ExcludeOptionLabel)
-                selectListItems.Insert(0, new ListItem(config?.OptionLabelText, ""));
+        //    if (config == null || !config.ExcludeOptionLabel)
+        //        selectListItems.Insert(0, new ListItem(config?.OptionLabelText, ""));
 
 
-            return selectListItems;
-        }
+        //    return selectListItems;
+        //}
         
     }
 

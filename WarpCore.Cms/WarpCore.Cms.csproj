@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj" />
     <ProjectReference Include="..\WarpCore.Framework\WarpCore.Framework.csproj" />
   </ItemGroup>
 

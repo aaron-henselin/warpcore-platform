@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using WarpCore.Data.Schema;
 
 namespace WarpCore.Cms.Routing
 {

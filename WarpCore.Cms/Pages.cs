@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Common;
 using System.Linq;
 using WarpCore.Cms.Routing;
-using WarpCore.Data.Schema;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
@@ -37,6 +36,7 @@ namespace WarpCore.Cms
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
         public List<PageRoute> Routes { get; set; } = new List<PageRoute>();
+
         public string PhysicalFile { get; set; }
         public string RedirectExternalUrl { get; set; }
 
@@ -53,8 +53,9 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page_route")]
-    public class PageRoute : Entity
+    public class PageRoute : CosmosEntity
     {
+
         [Column]
         public string Slug { get; set; }
 
@@ -111,11 +112,24 @@ namespace WarpCore.Cms
             return "/"+generated;
         }
 
+        private void AssertSlugIsNotTaken(CmsPage cmsPage)
+        {
+            var dupSlugs = GetAllPages()
+                .Where(x => x.ParentPageId == cmsPage.ParentPageId && x.Id != cmsPage.Id)
+                .SelectMany(x => x.Routes)
+                .Where(x => x.Priority == (int) RoutePriority.Primary);
+
+            if (dupSlugs.Any())
+                throw new Exception("Duplicate name");
+        }
+
         public void Save(CmsPage cmsPage)
         {
+            AssertSlugIsNotTaken(cmsPage);
+
             var newDefaultSlug = CreateSlugRecursive(cmsPage);
 
-            if (!cmsPage.Routes.Any(x => x.Slug == newDefaultSlug))
+            if (cmsPage.Routes.All(x => x.Slug != newDefaultSlug))
                 cmsPage.Routes.Add(new PageRoute
                 {
                     Slug = newDefaultSlug
