@@ -33,6 +33,8 @@ namespace WarpCore.Cms
                     requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,route);
                 else
                 {
+                    
+
                     throw new HttpException(404,"Page cannot be found.");
                 }
 

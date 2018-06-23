@@ -14,8 +14,10 @@ namespace WarpCore.Cms
         public Uri VirtualPath { get; set; }
         public int Priority { get; set; }
         public Guid SiteId { get; set; }
-        public Guid? ContentId { get; set; }
+        //public Guid? ContentId { get; set; }
         public Guid? PageId { get; set; }
+
+        public string ContentTypeCode { get; set; }
     }
 
     public class RouteDiscoveryContext
@@ -29,39 +31,39 @@ namespace WarpCore.Cms
 
     public static class RouteDiscoveryUtility
     {
-        private static IEnumerable<SiteRoute> DiscoverRoutesForPageContent(RouteDiscoveryContext context)
-        {
+        //private static IEnumerable<SiteRoute> DiscoverRoutesForPageContent(RouteDiscoveryContext context)
+        //{
 
-            List<SiteRoute> pageContentRoutes = new List<SiteRoute>();
-            var contentTypeCode = context.ContentTypeCode;
-            var dynamicContentManager = new CmsContentManager();
-            var allContent = dynamicContentManager.GetAll(contentTypeCode);
+        //    List<SiteRoute> pageContentRoutes = new List<SiteRoute>();
+        //    var contentTypeCode = context.ContentTypeCode;
+        //    var dynamicContentManager = new CmsContentManager();
+        //    var allContent = dynamicContentManager.GetAll(contentTypeCode);
 
-            //todo: better route templates;
-            var routeTemplate = context.ContentRouteTemplate;
-            if (string.IsNullOrWhiteSpace(routeTemplate))
-                routeTemplate = "{Title}";
+        //    //todo: better route templates;
+        //    var routeTemplate = context.ContentRouteTemplate;
+        //    if (string.IsNullOrWhiteSpace(routeTemplate))
+        //        routeTemplate = "{Title}";
 
-            foreach (var item in allContent)
-            {
-                var contentAddendum =
-                    routeTemplate.Replace("{Title}", SlugGenerator.Generate(item.Name));
+        //    foreach (var item in allContent)
+        //    {
+        //        var contentAddendum =
+        //            routeTemplate.Replace("{Title}", SlugGenerator.Generate(item.Name));
 
-                var pageContentRoute = new SiteRoute
-                {
-                    Authority = context.Site.UriAuthority,
-                    Priority = (int)RoutePriority.Primary,
-                    SiteId = context.Site.Id,
-                    ContentId = item.Id,
-                    PageId = context.CmsPage.Id,
-                    VirtualPath = MakeAbsoluteUri(context.Site, context.AssociatedPageRoute.VirtualPath.ToString(), contentAddendum)
-                };
+        //        var pageContentRoute = new SiteRoute
+        //        {
+        //            Authority = context.Site.UriAuthority,
+        //            Priority = (int)RoutePriority.Primary,
+        //            SiteId = context.Site.Id,
+        //            ContentId = item.Id,
+        //            PageId = context.CmsPage.Id,
+        //            VirtualPath = MakeAbsoluteUri(context.Site, context.AssociatedPageRoute.VirtualPath.ToString(), contentAddendum)
+        //        };
 
-                pageContentRoutes.Add(pageContentRoute);
-            }
+        //        pageContentRoutes.Add(pageContentRoute);
+        //    }
 
-            return pageContentRoutes;
-        }
+        //    return pageContentRoutes;
+        //}
 
         private static IEnumerable<SiteRoute> DiscoverRoutesForPage(RouteDiscoveryContext context)
         {
@@ -73,7 +75,7 @@ namespace WarpCore.Cms
                     Authority = context.Site.UriAuthority,
                     Priority = route.Priority,
                     SiteId = context.Site.Id,
-                    ContentId = null,
+                    ContentTypeCode = null,
                     PageId = context.CmsPage.Id,
                     VirtualPath = MakeAbsoluteUri(context.Site, route.Slug)
                 };
@@ -87,24 +89,35 @@ namespace WarpCore.Cms
                     var toolboxManager = new ToolboxManager();
                     var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
                     var toolboxItemType = Type.GetType(toolboxItem.FullyQualifiedTypeName);
-                    var contentRoutes = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
+                    var contentRouteBuilders = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
 
 
-                    foreach (var contentRoute in contentRoutes)
+                    foreach (var contentRouteBuilder in contentRouteBuilders)
                     {
-                        var discoveryContext =
-                        new RouteDiscoveryContext
+                        var contentRoute = new SiteRoute
                         {
-                            CmsPage = context.CmsPage,
-                            Site = context.Site,
-                            AssociatedPageRoute = pageRoute,
-                            ContentRouteTemplate = contentRoute.RouteTemplate,
-                            ContentTypeCode = contentRoute.ContentTypeCode,
+                            Authority = pageRoute.Authority,
+                            ContentTypeCode = contentRouteBuilder.ContentTypeCode,
+                            PageId = pageRoute.PageId,
+                            Priority = pageRoute.Priority,
+                            SiteId = pageRoute.SiteId,
+                            VirtualPath = MakeAbsoluteUri(context.Site, pageRoute.VirtualPath.ToString(),"{Title}") 
                         };
-                        
-                        var pageContentRoutes = DiscoverRoutesForPageContent(discoveryContext);
-                        siteRoutes.AddRange(pageContentRoutes);
-                        
+                        siteRoutes.Add(contentRoute);
+
+                        //var discoveryContext =
+                        //new RouteDiscoveryContext
+                        //{
+                        //    CmsPage = context.CmsPage,
+                        //    Site = context.Site,
+                        //    AssociatedPageRoute = pageRoute,
+                        //    ContentRouteTemplate = contentRoute.RouteTemplate,
+                        //    ContentTypeCode = contentRoute.ContentTypeCode,
+                        //};
+
+                        //var pageContentRoutes = DiscoverRoutesForPageContent(discoveryContext);
+                        //siteRoutes.AddRange(pageContentRoutes);
+
                     }
 
                 }
@@ -128,7 +141,6 @@ namespace WarpCore.Cms
                 Authority = site.UriAuthority,
                 Priority = 0,
                 SiteId = site.Id,
-                ContentId = null,
                 PageId = site.HomepagePageId,
                 VirtualPath = MakeAbsoluteUri(site, string.Empty)
             };
