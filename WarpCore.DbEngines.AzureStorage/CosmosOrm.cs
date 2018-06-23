@@ -32,7 +32,9 @@ namespace WarpCore.DbEngines.AzureStorage
     public interface ICosmosOrm
     {
         void Save<T>(T item) where T : CosmosEntity;
-        Task<IReadOnlyCollection<T>> FindContentVersions<T>(Guid contentId, ContentEnvironment version = ContentEnvironment.Live) where T : CosmosEntity, new();
+        Task<IReadOnlyCollection<T>> FindContentVersions<T>(Guid contentId, ContentEnvironment? version = ContentEnvironment.Live) where T : CosmosEntity, new();
+        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment? version = ContentEnvironment.Live) where T : CosmosEntity, new();
+
         void Delete<T>(T copy) where T : CosmosEntity;
     }
 
@@ -119,82 +121,6 @@ namespace WarpCore.DbEngines.AzureStorage
         }
     }
 
-    public sealed class UnversionedAttribute : Attribute
-    {
-
-    }
-
-    public static class Publishing
-    {
-
-
-        public static void Publish<T>(Guid id) where T : CosmosEntity, new()
-        {
-            var _orm = TinyIoCContainer.Current.Resolve<ICosmosOrm>();
-            var allCopies = _orm.FindContentVersions<T>(id,null).Result.ToList();
-
-            var archiveVersion = 0m;
-            var previousArchivedVersioned = allCopies.Where(x => ContentEnvironment.Archive == x.ContentEnvironment).ToList();
-            if (previousArchivedVersioned.Any())
-                archiveVersion = previousArchivedVersioned.Max(x => x.ContentVersion);
-
-            foreach (var copy in allCopies)
-            {
-                switch (copy.ContentEnvironment)
-                {
-                    case ContentEnvironment.Live:
-                        _orm.Delete(copy);
-                        break;
-
-                    case ContentEnvironment.Draft:
-                        copy.InternalId = null;
-                        copy.ContentVersion = Math.Floor(archiveVersion)+1;
-                        copy.ContentEnvironment = ContentEnvironment.Live;
-                        _orm.Save(copy);
-
-                        copy.InternalId = null;
-                        copy.ContentEnvironment = ContentEnvironment.Archive;
-                        _orm.Save(copy);
-                        break;
-
-                    case ContentEnvironment.Archive:
-                        bool isWholeVersion = copy.ContentVersion % 1 == 0;
-                        if (!isWholeVersion)
-                            _orm.Delete(copy);
-                        break;
-                }
-            }
-
-        }
-    }
-
-    public abstract class CosmosRepository<T> where T : CosmosEntity, new()
-    {
-        private readonly ICosmosOrm _orm;
-
-        protected CosmosRepository():this(TinyIoCContainer.Current.Resolve<ICosmosOrm>())
-        {
-        }
-
-        protected CosmosRepository(ICosmosOrm orm)
-        {
-            _orm = orm;
-        }
-
-        public void Save(T item) 
-        {
-            _orm.Save(item);
-        }
-
-
-
-        //public Task<IReadOnlyCollection<T>> Find(string condition = null) 
-        //{
-        //    return _orm.FindContentVersions<T>(condition);
-        //}
-    }
-
-
 
     public class CosmosOrm : ICosmosOrm
     {
@@ -241,17 +167,37 @@ namespace WarpCore.DbEngines.AzureStorage
             await table.ExecuteAsync(TableOperation.InsertOrReplace(item));
         }
 
+        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment? environment) where T : CosmosEntity, new()
+        {
+
+            var isUnversioned = typeof(T).GetCustomAttributes<UnversionedAttribute>().Any();
+            if (isUnversioned || environment == null)
+            {
+                return await FindContentVersionsImpl<T>(filter);
+            }
+            else
+            {
+                var search = $"PartitionKey eq '{environment}'";
+                if (!string.IsNullOrWhiteSpace(filter))
+                    search += filter;
+
+                return await FindContentVersionsImpl<T>(search);
+            }
+
+
+        }
+
         public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(Guid contentId, ContentEnvironment? environment) where T : CosmosEntity, new()
         {
             //todo now: sql injection.
             var isUnversioned = typeof(T).GetCustomAttributes<UnversionedAttribute>().Any();
             if (isUnversioned || environment == null)
             {
-                return await Find<T>($"ContentId eq '{contentId}'");
+                return await FindContentVersionsImpl<T>($"ContentId eq '{contentId}'");
             }
             else
             {
-                return await Find<T>($"ContentId eq '{contentId}' and PartitionKey eq '{environment}'");
+                return await FindContentVersionsImpl<T>($"ContentId eq '{contentId}' and PartitionKey eq '{environment}'");
             }
 
             
@@ -259,7 +205,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         
 
-        private async Task<IReadOnlyCollection<T>> Find<T>(string condition = null) where T : CosmosEntity, new()
+        private async Task<IReadOnlyCollection<T>> FindContentVersionsImpl<T>(string condition = null) where T : CosmosEntity, new()
         {
             AssertIsOnline();
 

@@ -19,8 +19,7 @@ namespace WarpCore.Cms
     public class CmsPage:CosmosEntity
     {
 
-        [Column]
-        public Guid Id { get; set; }
+
 
         [Column]
         public string Name { get; set; }
@@ -28,8 +27,6 @@ namespace WarpCore.Cms
         [Column]
         public string Slug { get; set; }
 
-        [Column]
-        public Guid? ParentPageId { get; set; }
 
         [Column]
         public Guid SiteId { get; set; }
@@ -72,6 +69,9 @@ namespace WarpCore.Cms
         public int Order { get; set; }
     }
 
+
+
+
     [Table("cms_page_content")]
     public class CmsPageContent :CosmosEntity
     {
@@ -100,7 +100,7 @@ namespace WarpCore.Cms
 
         public CmsPage GetPage(Guid pageId)
         {
-            return new CmsPage();
+            base.Save();
         }
 
         public IEnumerable<CmsPage> GetAllPages()
