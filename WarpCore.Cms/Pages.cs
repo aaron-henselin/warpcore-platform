@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Common;
+using System.Diagnostics.Tracing;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using WarpCore.Cms.Routing;
-using WarpCore.Data.Schema;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
@@ -17,20 +16,40 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page")]
-    public class CmsPage
+    public class CmsPage:CosmosEntity
     {
+
+        [Column]
         public Guid Id { get; set; }
+
+        [Column]
         public string Name { get; set; }
+
+        [Column]
+        public string Slug { get; set; }
+
+        [Column]
         public Guid? ParentPageId { get; set; }
+
+        [Column]
         public Guid SiteId { get; set; }
+
+        [Column]
         public string PageType { get; set; }
+
+        [ComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
+
+        [ComplexData]
         public List<PageRoute> Routes { get; set; } = new List<PageRoute>();
-        public PageRoute CanonicalRoute => Routes.OrderBy(x => x.Priority).First();
+
         public string PhysicalFile { get; set; }
         public string RedirectExternalUrl { get; set; }
+
         public Guid? RedirectPageId { get; set; }
-        public int SitemapPosition { get; set; }
+
+        [Column]
+        public int Order { get; set; }
     }
 
     public enum RoutePriority
@@ -40,22 +59,37 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page_route")]
-    public class PageRoute : Entity
+    public class PageRoute : CosmosEntity
     {
-        public string Slug { get; set; }
+
+        [Column]
+        public string VirtualPath { get; set; }
+
+        [Column]
         public int Priority { get; set; }
+
+        [Column]
         public int Order { get; set; }
     }
 
     [Table("cms_page_content")]
-    public class CmsPageContent : Entity
+    public class CmsPageContent :CosmosEntity
     {
+        [Column]
         public string ContentPlaceHolderId { get; set; }
+
+        [Column]
         public string WidgetTypeCode { get; set; }
+
+        [Column]
         public Dictionary<string,string> Parameters { get; set; }
     }
 
-    public class PageRepository
+    public class DuplicateSlugException:Exception
+    {
+    }
+
+    public class PageRepository : CosmosRepository<CmsPage>
     {
         //private DbEngineAdapter _dbAdapter;
 
@@ -64,74 +98,97 @@ namespace WarpCore.Cms
            // _dbAdapter = new DbEngineAdapter();
         }
 
-
-        public IQueryable<CmsPage> Query(Site site = null)
+        public CmsPage GetPage(Guid pageId)
         {
-            using (var pagesDbContext = new PagesDbContext())
-            {
-                var baseQueryable =
-                pagesDbContext.Pages
-                    .Include(x => x.PageContent)
-                    .Include(x => x.Routes);
-
-                if (site != null)
-                    return baseQueryable.AsQueryable().Where(x => x.SiteId == site.Id);
-                else
-                    return baseQueryable;
-            }
+            return new CmsPage();
         }
 
-        public string CreateSlugRecursive(CmsPage cmsPage,CmsPage parentPage)
+        public IEnumerable<CmsPage> GetAllPages()
+        {
+            return new List<CmsPage>();
+        }
+
+        public IEnumerable<CmsPage> GetAllPages(Site site)
+        {
+            return new List<CmsPage>();
+        }
+
+        public string CreateVirtualPath(CmsPage cmsPage)
         {
             var generated = SlugGenerator.Generate(cmsPage.Name);
             if (cmsPage.ParentPageId != null)
-                return parentPage.CanonicalRoute.Slug + "/" + generated;
+                return CreateVirtualPath(cmsPage) + "/" + generated;
 
             return "/"+generated;
         }
 
-        private void UpdateRoutesRecursive(CmsPage cmsPage, PagesDbContext pagesDbContext)
+        private void AssertSlugIsNotTaken(CmsPage cmsPage)
         {
-            CmsPage parentPage = null;
-            if (cmsPage.ParentPageId != null)
-                parentPage = pagesDbContext.Pages.Find(cmsPage.ParentPageId);
+            var dupSlugs = GetAllPages()
+                .Where(x => x.ParentPageId == cmsPage.ParentPageId && x.Id != cmsPage.Id)
+                .SelectMany(x => x.Routes)
+                .Where(x => x.Priority == (int) RoutePriority.Primary);
 
-            var newDefaultSlug = CreateSlugRecursive(cmsPage, parentPage);
-            if (!cmsPage.Routes.Any(x => x.Slug == newDefaultSlug))
+            if (dupSlugs.Any())
+                throw new DuplicateSlugException();
+        }
+
+        public void Save(CmsPage cmsPage)
+        {
+            if (string.IsNullOrWhiteSpace(cmsPage.Slug))
+            {
+                GenerateUniqueSlugForPage(cmsPage);
+            }
+            else
+                AssertSlugIsNotTaken(cmsPage);
+           
+
+            var newVirtualPath = CreateVirtualPath(cmsPage);
+            if (cmsPage.Routes.All(x => x.VirtualPath != newVirtualPath))
                 cmsPage.Routes.Add(new PageRoute
                 {
-                    Slug = newDefaultSlug
+                    VirtualPath = newVirtualPath
                 });
 
             foreach (var route in cmsPage.Routes)
             {
-                if (route.Slug != newDefaultSlug)
-                    route.Priority = (int)RoutePriority.Former;
+                if (route.VirtualPath != newVirtualPath)
+                    route.Priority = (int) RoutePriority.Former;
                 else
-                    route.Priority = (int)RoutePriority.Primary;
+                    route.Priority = (int) RoutePriority.Primary;
             }
 
-            var childPages = pagesDbContext.Pages.Include(x => x.Routes).Where(x => x.Id == cmsPage.Id).ToList();
-            foreach (var childPage in childPages)
-                UpdateRoutesRecursive(childPage,pagesDbContext);
+            //todo: save this stuff.
+            //page.Routes.Where(x => x.Slug == newDefaultSlug)
+
+            //_dbAdapter.Save();
+            //SlugGenerator.Generate(page.Name)
+            //new RouteRepository().GetAllRoutes().
+            //new Page().Name
+            //page.Name
         }
 
-        
-        public void Save(CmsPage cmsPage)
+        private void GenerateUniqueSlugForPage(CmsPage cmsPage)
         {
-            using (var pagesDbContext = new PagesDbContext())
+            bool foundUniqueSlug = false;
+            cmsPage.Slug = SlugGenerator.Generate(cmsPage.Name);
+
+            int counter = 2;
+            while (!foundUniqueSlug)
             {
-                pagesDbContext.Pages.Update(cmsPage);
-                UpdateRoutesRecursive(cmsPage,pagesDbContext);
-                pagesDbContext.SaveChanges();
+                var rawSlug = cmsPage.Name;
+                try
+                {
+                    AssertSlugIsNotTaken(cmsPage);
+                    foundUniqueSlug = true;
+                }
+                catch (DuplicateSlugException e)
+                {
+                    cmsPage.Name = rawSlug + counter;
+                    counter++;
+                }
             }
         }
-    }
-
-    public class PagesDbContext : DbContext
-    {
-        public DbSet<CmsPage> Pages { get; set; }
-
     }
 
 }

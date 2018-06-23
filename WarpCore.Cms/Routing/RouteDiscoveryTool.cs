@@ -77,7 +77,7 @@ namespace WarpCore.Cms
                     SiteId = context.Site.Id,
                     ContentTypeCode = null,
                     PageId = context.CmsPage.Id,
-                    VirtualPath = MakeAbsoluteUri(context.Site, route.Slug)
+                    VirtualPath = MakeAbsoluteUri(context.Site, route.VirtualPath)
                 };
 
                 siteRoutes.Add(pageRoute);

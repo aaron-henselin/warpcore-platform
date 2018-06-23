@@ -1,6 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using WarpCore.Data.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Crm
 {
@@ -23,7 +22,7 @@ namespace WarpCore.Crm
 
 
     [Table("crm_contact")]
-    public class Contact : Entity
+    public class Contact : CosmosEntity
     {
 
     }
