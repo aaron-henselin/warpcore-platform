@@ -55,9 +55,11 @@ namespace WarpCore.Cms
         Former = 10,
     }
 
-    [Table("cms_page_route")]
+    [Table("cms_site_route")]
     public class PageRoute : CosmosEntity
     {
+        [Column]
+        public Guid PageId { get; set; }
 
         [Column]
         public string VirtualPath { get; set; }
@@ -91,49 +93,41 @@ namespace WarpCore.Cms
 
     public class PageRepository : CosmosRepository<CmsPage>
     {
-        //private DbEngineAdapter _dbAdapter;
 
-        public PageRepository()
-        {
-           // _dbAdapter = new DbEngineAdapter();
-        }
-
-        public CmsPage GetPage(Guid pageId)
-        {
-            base.Save();
-        }
-
-        public IEnumerable<CmsPage> GetAllPages()
-        {
-            return new List<CmsPage>();
-        }
-
-        public IEnumerable<CmsPage> GetAllPages(Site site)
-        {
-            return new List<CmsPage>();
-        }
 
         public string CreateVirtualPath(CmsPage cmsPage)
         {
-            var generated = SlugGenerator.Generate(cmsPage.Name);
-            if (cmsPage.ParentPageId != null)
-                return CreateVirtualPath(cmsPage) + "/" + generated;
 
-            return "/"+generated;
+            throw new NotImplementedException();
+
+            //var generated = SlugGenerator.Generate(cmsPage.Name);
+            //if (cmsPage.ParentPageId != null)
+            //    return CreateVirtualPath(cmsPage) + "/" + generated;
+
+            //return "/"+generated;
         }
 
         private void AssertSlugIsNotTaken(CmsPage cmsPage)
         {
-            var dupSlugs = GetAllPages()
-                .Where(x => x.ParentPageId == cmsPage.ParentPageId && x.Id != cmsPage.Id)
-                .SelectMany(x => x.Routes)
-                .Where(x => x.Priority == (int) RoutePriority.Primary);
+            var condition = $@"{nameof(SitemapNode.PageId)} eq '{cmsPage.ContentId}'";
+            var node = _orm.FindContentVersions<SitemapNode>(condition, ContentEnvironment.Unversioned).Result.Single();
 
-            if (dupSlugs.Any())
-                throw new DuplicateSlugException();
+            var siblingsCondition = $@"{nameof(SitemapNode.PageId)} neq '{node.PageId}' and {nameof(SitemapNode.ParentNodeId)} eq '{node.ParentNodeId}'";
+            var siblings = _orm.FindContentVersions<SitemapNode>(condition, ContentEnvironment.Unversioned).Result.Single();
+
+
+
+
+            //var dupSlugs = GetAllPages()
+            //    .Where(x => x.ParentPageId == cmsPage.ParentPageId && x.Id != cmsPage.Id)
+            //    .SelectMany(x => x.Routes)
+            //    .Where(x => x.Priority == (int) RoutePriority.Primary);
+
+            //if (dupSlugs.Any())
+            //    throw new DuplicateSlugException();
         }
 
-        public void Save(CmsPage cmsPage)
+        public override void Save(CmsPage cmsPage)
         {
             if (string.IsNullOrWhiteSpace(cmsPage.Slug))
             {

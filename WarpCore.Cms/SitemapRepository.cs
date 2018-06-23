@@ -19,7 +19,8 @@ namespace WarpCore.Cms
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
     }
 
-    [Table("cms_site_structure_node")]
+    [Unversioned]
+    [Table("cms_site_tree")]
     public class SitemapNode : CosmosEntity, ISitemapNode
     {
         [Column]
@@ -38,41 +39,5 @@ namespace WarpCore.Cms
     }
 
 
-    public class SitemapRepository
-    {
-        private ICosmosOrm _orm;
 
-        public SitemapRepository()
-        {
-            _orm = Dependency.Resolve<ICosmosOrm>();
-        }
-
-        public void MovePage(CmsPage page, Guid toPositionId)
-        {
-            var condition = $@"{nameof(SitemapNode.PageId)} eq '{page.ContentId}'";
-            var pageToUpdate = _orm.FindContentVersions<SitemapNode>(condition,null).Result.Single();
-            pageToUpdate.ParentNodeId = toPositionId;
-            _orm.Save(pageToUpdate);
-        }
-
-
-        public void GetSitemap(Site site)
-        {
-            var sitemapLookup = $"{nameof(SitemapNode.SiteId)} eq '{site.Id}'";
-            var allpages = _orm.FindContentVersions<SitemapNode>(sitemapLookup, ContentEnvironment.Unversioned).Result.ToList();
-
-            var sitemap = new Sitemap();
-            var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
-            PopulateChildNodes(sitemap, parentNodeLookup);
-        }
-
-        private static void PopulateChildNodes(ISitemapNode sitemap, ILookup<Guid, SitemapNode> parentNodeLookup)
-        {
-            sitemap.ChildNodes = parentNodeLookup[sitemap.NodeId].ToList();
-
-            foreach (var childNode in sitemap.ChildNodes)
-                PopulateChildNodes(childNode,parentNodeLookup);
-            
-        }
-    }
 }

@@ -1,4 +1,8 @@
-﻿namespace WarpCore.DbEngines.AzureStorage
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace WarpCore.DbEngines.AzureStorage
 {
     public abstract class CosmosRepository<T> where T : CosmosEntity, new()
     {
@@ -13,9 +17,21 @@
             _orm = orm;
         }
 
-        public void Save(T item) 
+        public virtual void Save(T item) 
         {
             _orm.Save(item);
+        }
+
+        public Task<IReadOnlyCollection<T>> FindContentVersions(Guid contentId,
+            ContentEnvironment? version = ContentEnvironment.Live)
+        {
+            return _orm.FindContentVersions<T>(contentId, version);
+        }
+
+        public Task<IReadOnlyCollection<T>> FindContentVersions(string condition,
+            ContentEnvironment? version = ContentEnvironment.Live)
+        {
+            return _orm.FindContentVersions<T>(condition, version);
         }
 
 
