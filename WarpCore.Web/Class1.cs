@@ -65,7 +65,7 @@ namespace WarpCore.Web
             if (!success || route.PageId == null)
                 return;
 
-            var cmsPage = new PageRepository().GetPage(route.PageId.Value);
+            var cmsPage = new PageRepository().Query().Single(x => x.Id == route.PageId.Value);
             if (PageType.ContentPage != cmsPage.PageType)
                 return;
 

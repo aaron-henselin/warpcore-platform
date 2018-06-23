@@ -119,7 +119,7 @@ namespace WarpCore.Cms
             List<SiteRoute> siteRoutes = new List<SiteRoute>();
 
             var pageRepo = new PageRepository();
-            var foundPages = pageRepo.GetAllPages(site);
+            var foundPages = pageRepo.Query(site);
             
             var sitePages = foundPages;
 

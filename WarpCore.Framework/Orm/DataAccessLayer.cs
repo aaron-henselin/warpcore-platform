@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using WarpCore.DbEngine;
+using WarpCore.Kernel;
 
 namespace WarpCore.Framework.Orm
 {
@@ -11,4 +12,8 @@ namespace WarpCore.Framework.Orm
 
         Task<ITable> Retrieve(DbTableSchema dbTableSchema, Guid id);
     }
+
+
+
+
 }
