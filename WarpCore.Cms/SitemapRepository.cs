@@ -13,24 +13,17 @@ namespace WarpCore.Cms
         List<SitemapNode> ChildNodes { get; set; }
     }
 
-    [Table("cms_sitemap")]
-    public class Sitemap : CosmosEntity, ISitemapNode
+    public class Sitemap: ISitemapNode
     {
-        public string Name { get; set; }
-
-        public Guid HomepageId { get; set; }
-
-        [JsonIgnore]
+        public Guid NodeId { get; set; }
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
-        public Guid NodeId { get => this.ContentId.Value; }
     }
 
-
-    [Table("cms_sitemap_node")]
+    [Table("cms_site_structure_node")]
     public class SitemapNode : CosmosEntity, ISitemapNode
     {
         [Column]
-        public Guid SitemapId { get; set; }
+        public Guid SiteId { get; set; }
 
         [Column]
         public Guid PageId { get; set; }
@@ -38,10 +31,10 @@ namespace WarpCore.Cms
         [Column]
         public Guid ParentNodeId { get; set; }
 
-        [JsonIgnore]
-        public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
 
         public Guid NodeId { get => this.ContentId.Value; }
+        [JsonIgnore]
+        public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
     }
 
 
@@ -63,14 +56,12 @@ namespace WarpCore.Cms
         }
 
 
-        public void GetSitemap(string sitemapName)
+        public void GetSitemap(Site site)
         {
-            var sitemapLookup = $"{nameof(Sitemap.Name)} eq '{sitemapName}'";
-            var sitemap = _orm.FindContentVersions<Sitemap>(sitemapLookup, ContentEnvironment.Unversioned).Result.Single();
+            var sitemapLookup = $"{nameof(SitemapNode.SiteId)} eq '{site.Id}'";
+            var allpages = _orm.FindContentVersions<SitemapNode>(sitemapLookup, ContentEnvironment.Unversioned).Result.ToList();
 
-            var pageLookup = $"{nameof(SitemapNode.SitemapId)} eq '{sitemap.ContentId.Value}'";
-            var allpages = _orm.FindContentVersions<SitemapNode>(pageLookup, ContentEnvironment.Unversioned).Result.ToList();
-
+            var sitemap = new Sitemap();
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
             PopulateChildNodes(sitemap, parentNodeLookup);
         }
