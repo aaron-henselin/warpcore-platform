@@ -17,7 +17,7 @@ namespace WarpCore.Cms.Routing
     //    public void RegisterRoute(Page page)
     //    {
     //        page.Name
-    //       var existingRoutes = new DbEngineAdapter().GetAll<Route>(x => x.PageId == page.Id && x.Slug);
+    //       var existingRoutes = new DbEngineAdapter().GetAll<Route>(x => x.PageId == page.InternalId && x.Slug);
     //       // existingRoutes.
 
     //    }

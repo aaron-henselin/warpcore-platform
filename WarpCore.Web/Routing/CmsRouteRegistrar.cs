@@ -104,9 +104,9 @@ namespace WarpCore.Cms
             {
                 var route = cmsPage.Routes.First(x => x.Priority == (int) RoutePriority.Primary);
 
-                if (route.Slug != context.Request.Url.AbsolutePath)
+                if (route.VirtualPath != context.Request.Url.AbsolutePath)
                 {
-                    context.Response.Redirect(route.Slug);
+                    context.Response.Redirect(route.VirtualPath);
                     return;
                 }
                 else

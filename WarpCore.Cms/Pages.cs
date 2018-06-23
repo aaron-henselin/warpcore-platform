@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using WarpCore.Cms.Routing;
 using WarpCore.DbEngines.AzureStorage;
@@ -15,7 +16,7 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page")]
-    public class CmsPage
+    public class CmsPage:CosmosEntity
     {
 
         [Column]
@@ -23,6 +24,9 @@ namespace WarpCore.Cms
 
         [Column]
         public string Name { get; set; }
+
+        [Column]
+        public string Slug { get; set; }
 
         [Column]
         public Guid? ParentPageId { get; set; }
@@ -33,8 +37,10 @@ namespace WarpCore.Cms
         [Column]
         public string PageType { get; set; }
 
+        [ComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
+        [ComplexData]
         public List<PageRoute> Routes { get; set; } = new List<PageRoute>();
 
         public string PhysicalFile { get; set; }
@@ -57,7 +63,7 @@ namespace WarpCore.Cms
     {
 
         [Column]
-        public string Slug { get; set; }
+        public string VirtualPath { get; set; }
 
         [Column]
         public int Priority { get; set; }
@@ -67,7 +73,7 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page_content")]
-    public class CmsPageContent
+    public class CmsPageContent :CosmosEntity
     {
         [Column]
         public string ContentPlaceHolderId { get; set; }
@@ -79,7 +85,11 @@ namespace WarpCore.Cms
         public Dictionary<string,string> Parameters { get; set; }
     }
 
-    public class PageRepository
+    public class DuplicateSlugException:Exception
+    {
+    }
+
+    public class PageRepository : CosmosRepository<CmsPage>
     {
         //private DbEngineAdapter _dbAdapter;
 
@@ -103,11 +113,11 @@ namespace WarpCore.Cms
             return new List<CmsPage>();
         }
 
-        public string CreateSlugRecursive(CmsPage cmsPage)
+        public string CreateVirtualPath(CmsPage cmsPage)
         {
             var generated = SlugGenerator.Generate(cmsPage.Name);
             if (cmsPage.ParentPageId != null)
-                return CreateSlugRecursive(cmsPage) + "/" + generated;
+                return CreateVirtualPath(cmsPage) + "/" + generated;
 
             return "/"+generated;
         }
@@ -120,24 +130,29 @@ namespace WarpCore.Cms
                 .Where(x => x.Priority == (int) RoutePriority.Primary);
 
             if (dupSlugs.Any())
-                throw new Exception("Duplicate name");
+                throw new DuplicateSlugException();
         }
 
         public void Save(CmsPage cmsPage)
         {
-            AssertSlugIsNotTaken(cmsPage);
+            if (string.IsNullOrWhiteSpace(cmsPage.Slug))
+            {
+                GenerateUniqueSlugForPage(cmsPage);
+            }
+            else
+                AssertSlugIsNotTaken(cmsPage);
+           
 
-            var newDefaultSlug = CreateSlugRecursive(cmsPage);
-
-            if (cmsPage.Routes.All(x => x.Slug != newDefaultSlug))
+            var newVirtualPath = CreateVirtualPath(cmsPage);
+            if (cmsPage.Routes.All(x => x.VirtualPath != newVirtualPath))
                 cmsPage.Routes.Add(new PageRoute
                 {
-                    Slug = newDefaultSlug
+                    VirtualPath = newVirtualPath
                 });
 
             foreach (var route in cmsPage.Routes)
             {
-                if (route.Slug != newDefaultSlug)
+                if (route.VirtualPath != newVirtualPath)
                     route.Priority = (int) RoutePriority.Former;
                 else
                     route.Priority = (int) RoutePriority.Primary;
@@ -151,6 +166,28 @@ namespace WarpCore.Cms
             //new RouteRepository().GetAllRoutes().
             //new Page().Name
             //page.Name
+        }
+
+        private void GenerateUniqueSlugForPage(CmsPage cmsPage)
+        {
+            bool foundUniqueSlug = false;
+            cmsPage.Slug = SlugGenerator.Generate(cmsPage.Name);
+
+            int counter = 2;
+            while (!foundUniqueSlug)
+            {
+                var rawSlug = cmsPage.Name;
+                try
+                {
+                    AssertSlugIsNotTaken(cmsPage);
+                    foundUniqueSlug = true;
+                }
+                catch (DuplicateSlugException e)
+                {
+                    cmsPage.Name = rawSlug + counter;
+                    counter++;
+                }
+            }
         }
     }
 
