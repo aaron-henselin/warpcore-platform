@@ -109,11 +109,11 @@ namespace WarpCore.Cms
 
         private void AssertSlugIsNotTaken(CmsPage cmsPage)
         {
-            var condition = $@"{nameof(SitemapNode.PageId)} eq '{cmsPage.ContentId}'";
-            var node = _orm.FindContentVersions<SitemapNode>(condition, ContentEnvironment.Unversioned).Result.Single();
+            var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{cmsPage.ContentId}'";
+            var node = _orm.FindContentVersions<SiteStructureNode>(condition, ContentEnvironment.Unversioned).Result.Single();
 
-            var siblingsCondition = $@"{nameof(SitemapNode.PageId)} neq '{node.PageId}' and {nameof(SitemapNode.ParentNodeId)} eq '{node.ParentNodeId}'";
-            var siblings = _orm.FindContentVersions<SitemapNode>(condition, ContentEnvironment.Unversioned).Result.Single();
+            var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{node.PageId}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{node.ParentNodeId}'";
+            var siblings = _orm.FindContentVersions<SiteStructureNode>(condition, ContentEnvironment.Unversioned).Result.Single();
 
 
 

@@ -74,9 +74,9 @@ namespace WarpCore.Cms
                 {
                     Authority = context.Site.UriAuthority,
                     Priority = route.Priority,
-                    SiteId = context.Site.Id,
+                    SiteId = context.Site.ContentId.Value,
                     ContentTypeCode = null,
-                    PageId = context.CmsPage.Id,
+                    PageId = context.CmsPage.ContentId.Value,
                     VirtualPath = MakeAbsoluteUri(context.Site, route.VirtualPath)
                 };
 

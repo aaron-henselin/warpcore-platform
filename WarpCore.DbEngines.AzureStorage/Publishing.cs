@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
+
+
     public static class Publishing
     {
 
