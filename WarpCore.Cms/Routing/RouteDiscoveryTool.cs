@@ -5,6 +5,7 @@ using System.Reflection;
 using WarpCore.Cms.Content;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
@@ -20,16 +21,17 @@ namespace WarpCore.Cms
         public string ContentTypeCode { get; set; }
     }
 
-    public class RouteDiscoveryContext
+    public class RouteBuilderContext
     {
-        public Site Site { get; set; }
-        public CmsPage CmsPage { get; set; }
+        public Site CurrentSite { get; set; }
+        public ISiteStructureNode StructureNode { get; set; }
+        public CmsPage CurrentPage { get; set; }
         public string ContentRouteTemplate { get; set; }
         public string ContentTypeCode { get; set; }
         public SiteRoute AssociatedPageRoute { get; set; }
     }
 
-    public static class RouteDiscoveryUtility
+    public class RouteBuilder
     {
         //private static IEnumerable<SiteRoute> DiscoverRoutesForPageContent(RouteDiscoveryContext context)
         //{
@@ -65,114 +67,129 @@ namespace WarpCore.Cms
         //    return pageContentRoutes;
         //}
 
-        private static IEnumerable<SiteRoute> DiscoverRoutesForPage(RouteDiscoveryContext context)
+        private static IEnumerable<SiteRoute> DiscoverContentRoutes(CmsPage page, IEnumerable<SiteRoute> pageRoutes)
         {
-            var siteRoutes = new List<SiteRoute>();
-            foreach (var route in context.CmsPage.Routes)
+            var contentRoutes = new List<SiteRoute>();
+
+            foreach (var content in page.PageContent)
             {
-                var pageRoute = new SiteRoute
+                var toolboxManager = new ToolboxManager();
+                var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
+                var toolboxItemType = Type.GetType(toolboxItem.FullyQualifiedTypeName);
+                var contentRouteAttributes = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
+
+                foreach (var contentRouteAttribute in contentRouteAttributes)
                 {
-                    Authority = context.Site.UriAuthority,
-                    Priority = route.Priority,
-                    SiteId = context.Site.ContentId.Value,
-                    ContentTypeCode = null,
-                    PageId = context.CmsPage.ContentId.Value,
-                    VirtualPath = MakeAbsoluteUri(context.Site, route.VirtualPath)
-                };
-
-                siteRoutes.Add(pageRoute);
-
-                //////////////////////////
-
-                foreach (var content in context.CmsPage.PageContent)
-                {
-                    var toolboxManager = new ToolboxManager();
-                    var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
-                    var toolboxItemType = Type.GetType(toolboxItem.FullyQualifiedTypeName);
-                    var contentRouteBuilders = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
-
-
-                    foreach (var contentRouteBuilder in contentRouteBuilders)
+                    var pageRoutesToCopy = pageRoutes.ToList();
+                    foreach (var pageRoute in pageRoutesToCopy)
                     {
                         var contentRoute = new SiteRoute
                         {
                             Authority = pageRoute.Authority,
-                            ContentTypeCode = contentRouteBuilder.ContentTypeCode,
+                            ContentTypeCode = contentRouteAttribute.ContentTypeCode,
                             PageId = pageRoute.PageId,
                             Priority = pageRoute.Priority,
                             SiteId = pageRoute.SiteId,
-                            VirtualPath = MakeAbsoluteUri(context.Site, pageRoute.VirtualPath.ToString(),"{Title}") 
+                            VirtualPath = new Uri(pageRoute.VirtualPath + "/"+contentRouteAttribute.RouteTemplate)
                         };
-                        siteRoutes.Add(contentRoute);
-
-                        //var discoveryContext =
-                        //new RouteDiscoveryContext
-                        //{
-                        //    CmsPage = context.CmsPage,
-                        //    Site = context.Site,
-                        //    AssociatedPageRoute = pageRoute,
-                        //    ContentRouteTemplate = contentRoute.RouteTemplate,
-                        //    ContentTypeCode = contentRoute.ContentTypeCode,
-                        //};
-
-                        //var pageContentRoutes = DiscoverRoutesForPageContent(discoveryContext);
-                        //siteRoutes.AddRange(pageContentRoutes);
-
+                        contentRoutes.Add(contentRoute);
                     }
 
                 }
-            }
 
-            return siteRoutes;
+               
+            }
+            return contentRoutes;
         }
 
-        private static IEnumerable<SiteRoute> DiscoverRoutesForSite(RouteDiscoveryContext context)
+        private static IEnumerable<SiteRoute> DiscoverPageRoutesRecursive(SitemapNode node,Site site)
         {
-            var site = context.Site;
-            List<SiteRoute> siteRoutes = new List<SiteRoute>();
+            var pageRoutes = new List<SiteRoute>();
 
-            var pageRepo = new PageRepository();
-            var foundPages = pageRepo.Query(site);
-            
-            var sitePages = foundPages;
-
-            var homePageRoute = new SiteRoute
+            var primaryRoute = new SiteRoute
             {
                 Authority = site.UriAuthority,
-                Priority = 0,
-                SiteId = site.Id,
-                PageId = site.HomepagePageId,
-                VirtualPath = MakeAbsoluteUri(site, string.Empty)
+                Priority = (int)RoutePriority.Primary,
+                SiteId = site.ContentId.Value,
+                ContentTypeCode = null,
+                PageId = node.Page.ContentId.Value,
+                VirtualPath = MakeAbsoluteUri(site, node.VirtualPath)
             };
+            pageRoutes.Add(primaryRoute);
 
-            siteRoutes.Add(homePageRoute);
-
-            foreach (var page in sitePages)
+            foreach (var route in node.Page.AlternateRoutes)
             {
-                var pageRoutes = DiscoverRoutesForPage(new RouteDiscoveryContext { Site=site,CmsPage=page});
-                siteRoutes.AddRange(pageRoutes);
-
+                var alternatePageRoute = new SiteRoute
+                {
+                    Authority = site.UriAuthority,
+                    Priority = route.Priority,
+                    SiteId = site.ContentId.Value,
+                    ContentTypeCode = null,
+                    PageId = node.Page.ContentId.Value,
+                    VirtualPath = MakeAbsoluteUri(site, route.VirtualPath)
+                };
+                pageRoutes.Add(alternatePageRoute);
             }
 
-            return siteRoutes;
+            var contentRoutes = DiscoverContentRoutes(node.Page, pageRoutes);
+
+            var localRoutes = new List<SiteRoute>();
+            localRoutes.AddRange(contentRoutes);
+            localRoutes.AddRange(pageRoutes);
+
+            var allChildRoutes = new List<SiteRoute>();
+            foreach (var child in node.ChildNodes)
+            {
+                var childRoutes = DiscoverPageRoutesRecursive(child, site);
+                allChildRoutes.AddRange(childRoutes);
+            }
+
+            var allRoutes = new List<SiteRoute>();
+            allRoutes.AddRange(localRoutes);
+            allRoutes.AddRange(allChildRoutes);
+
+            return allRoutes;
         }
 
-        public static IEnumerable<SiteRoute> DiscoverRoutes()
+        private static IEnumerable<SiteRoute> DiscoverRoutesForSite(Site site)
         {
-            List<SiteRoute> allRoutes = new List<SiteRoute>();
+            var associatedSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
 
-            var sites = new SiteRepository()
-                .GetAllSites();
 
-            foreach (var site in sites)
+            var allRoutes = new List<SiteRoute>();
+
+            if (associatedSitemap.HomePage != null)
             {
-                var siteRoutes = DiscoverRoutesForSite(new RouteDiscoveryContext {Site=site});
-                allRoutes.AddRange(siteRoutes);
+                var homePageRoute = new SiteRoute
+                {
+                    Authority = site.UriAuthority,
+                    Priority = 0,
+                    SiteId = site.ContentId.Value,
+                    PageId = site.HomepageId,
+                    VirtualPath = MakeAbsoluteUri(site, string.Empty)
+                };
+
+                var homepageContentRoutes = DiscoverContentRoutes(associatedSitemap.HomePage, new[] {homePageRoute});
+                allRoutes.Add(homePageRoute);
+                allRoutes.AddRange(homepageContentRoutes);
+            }
+
+            foreach (var childNode in associatedSitemap.ChildNodes)
+            {
+                allRoutes.AddRange(DiscoverPageRoutesRecursive(childNode,site));
             }
 
             return allRoutes;
         }
-        
+
+        //public static IEnumerable<SiteRoute> DiscoverRoutes(Site site)
+        //{
+        //    List<SiteRoute> allRoutes = new List<SiteRoute>();
+        //    var siteRoutes = DiscoverRoutesForSite(new RouteBuilderContext {CurrentSite = site});
+        //    allRoutes.AddRange(siteRoutes);
+        //    return allRoutes;
+        //}
+
         private static Uri MakeAbsoluteUri(Site site, string path, string contentRoute = null)
         {
             var rawUri = "/" + site.RoutePrefix + "/" + path+"/"+contentRoute;

@@ -104,7 +104,7 @@ namespace WarpCore.Cms
 
             private static void ProcessRequestForContentPage(HttpContext context, CmsPage cmsPage)
             {
-                var route = cmsPage.Routes.First(x => x.Priority == (int) RoutePriority.Primary);
+                var route = cmsPage.AlternateRoutes.First(x => x.Priority == (int) RoutePriority.Primary);
 
                 if (route.VirtualPath != context.Request.Url.AbsolutePath)
                 {

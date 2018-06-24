@@ -10,12 +10,15 @@ namespace WarpCore.Cms
 
     public interface ISitemapNode
     {
+        string VirtualPath { get;  }
         List<SitemapNode> ChildNodes { get; set; }
     }
 
     public class Sitemap: ISitemapNode
     {
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
+        public CmsPage HomePage { get; set; }
+        public string VirtualPath => "/";
     }
 
     public class SitemapNode: ISitemapNode
@@ -23,11 +26,12 @@ namespace WarpCore.Cms
         public CmsPage Page { get; set; }
 
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
+        public string VirtualPath { get; set; }
     }
 
     public static class SitemapBuilder
     {
-        public static void BuildSitemap(Site site, ContentEnvironment? environment)
+        public static Sitemap BuildSitemap(Site site, ContentEnvironment? environment)
         {
             var siteRepository= new SiteRepository();
             var siteStructure = siteRepository.GetSiteStructure(site);
@@ -36,20 +40,26 @@ namespace WarpCore.Cms
             var allPages = pageRepostiory.FindContentVersions(null, environment).Result.ToDictionary(x => x.ContentId);
 
             var sitemap = new Sitemap();
-            ConvertChildNodes(sitemap,siteStructure,allPages);
+            if (site.HomepageId != null)
+                sitemap.HomePage = allPages[site.HomepageId];
+
+            AttachChildNodes(sitemap,siteStructure,"",allPages);
+            return sitemap;
         }
 
-        private static void ConvertChildNodes(ISitemapNode sitemapNode, ISiteStructureNode node, Dictionary<Guid?, CmsPage> allPages)
+        private static void AttachChildNodes(ISitemapNode sitemapNode, ISiteStructureNode node, string path, Dictionary<Guid?, CmsPage> allPages)
         {
 
             foreach (var childStructureNode in node.ChildNodes)
             {
                 var childSitemapNode = new SitemapNode();
                 sitemapNode.ChildNodes.Add(childSitemapNode);
-                if (allPages.ContainsKey(childStructureNode.PageId))
-                    childSitemapNode.Page = allPages[childStructureNode.PageId];
+                if (!allPages.ContainsKey(childStructureNode.PageId))
+                    continue;
 
-                ConvertChildNodes(childSitemapNode,childStructureNode,allPages);
+                childSitemapNode.Page = allPages[childStructureNode.PageId];
+                childSitemapNode.VirtualPath = path + "/" + childSitemapNode.Page.Slug;
+                AttachChildNodes(childSitemapNode, childStructureNode, childSitemapNode.VirtualPath, allPages);
             }
         }
     }

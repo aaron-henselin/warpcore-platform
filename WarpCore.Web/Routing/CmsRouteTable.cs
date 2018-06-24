@@ -10,7 +10,7 @@ namespace WarpCore.Cms
 
         public CmsRouteTable()
         {
-            var allRoutes = RouteDiscoveryUtility.DiscoverRoutes();
+            var allRoutes = RouteBuilder.DiscoverRoutes();
             var bySiteId = allRoutes.ToLookup(x => x.SiteId);
             foreach (var grouping in bySiteId)
             {

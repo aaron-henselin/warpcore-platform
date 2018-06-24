@@ -38,7 +38,7 @@ namespace WarpCore.Cms
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
         [ComplexData]
-        public List<PageRoute> Routes { get; set; } = new List<PageRoute>();
+        public List<PageRoute> AlternateRoutes { get; set; } = new List<PageRoute>();
 
         public string PhysicalFile { get; set; }
         public string RedirectExternalUrl { get; set; }
@@ -138,13 +138,13 @@ namespace WarpCore.Cms
            
 
             var newVirtualPath = CreateVirtualPath(cmsPage);
-            if (cmsPage.Routes.All(x => x.VirtualPath != newVirtualPath))
-                cmsPage.Routes.Add(new PageRoute
+            if (cmsPage.AlternateRoutes.All(x => x.VirtualPath != newVirtualPath))
+                cmsPage.AlternateRoutes.Add(new PageRoute
                 {
                     VirtualPath = newVirtualPath
                 });
 
-            foreach (var route in cmsPage.Routes)
+            foreach (var route in cmsPage.AlternateRoutes)
             {
                 if (route.VirtualPath != newVirtualPath)
                     route.Priority = (int) RoutePriority.Former;

@@ -15,6 +15,8 @@ namespace WarpCore.Cms
         public string RoutePrefix { get; set; }
         public string UriAuthority { get; set; }
         public int Priority { get; set; }
+
+        public Guid? HomepageId { get; set; }
     }
 
     public class SiteRepository : CosmosRepository<Site>
