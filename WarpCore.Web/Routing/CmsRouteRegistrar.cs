@@ -70,17 +70,8 @@ namespace WarpCore.Cms
                     return;
                 }
 
-                if (PageType.GroupingPage == cmsPage.PageType)
-                {
-                    ProcessRequestForGroupingPage(context, cmsPage);
-                    return;
-                }
-
-                if (PageType.RedirectPage == cmsPage.PageType)
-                {
-                    ProcessRequestForRedirectPage(context, cmsPage);
-                    return;
-                }
+                
+                throw new ArgumentException();
             }
 
             private void ProcessRequestForRedirectPage(HttpContext context, CmsPage cmsPage)
@@ -152,6 +143,23 @@ namespace WarpCore.Cms
                
                 var siteRoute = (SiteRoute)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
                 var contentEnvironment = (ContentEnvironment)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.ContentEnvironmentToken];
+
+                if (siteRoute.InternalRedirectPageId != null)
+                {
+                    SiteRoute transferRoute;
+                    CmsRouteTable.Current.TryGetRoute(siteRoute.InternalRedirectPageId.Value, out transferRoute);
+
+                    //todo:ssl.
+                    var authority = transferRoute.Authority ?? context.Request.Url.Authority;
+                    context.Response.Redirect("http://"+authority+"/"+transferRoute.VirtualPath);
+                    return;
+                }
+
+                if (!string.IsNullOrWhiteSpace(siteRoute.RedirectExternalUrl))
+                {
+                    context.Response.Redirect(siteRoute.RedirectExternalUrl);
+                    return;
+                }
 
                 var page = _pageRepository.FindContentVersions(siteRoute.PageId.Value,contentEnvironment).Result.Single();
                 ProcessRequestForPage(context,page);

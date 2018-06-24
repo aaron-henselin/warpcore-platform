@@ -17,6 +17,10 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
         public Guid? PageId { get; set; }
         public string ContentTypeCode { get; set; }
+        public string RedirectExternalUrl { get; set; }
+        public Guid? InternalRedirectPageId { get; set; }
+        public bool RequireSsl { get; set; }
+        
     }
 
     //public class RouteBuilderContext
@@ -79,8 +83,12 @@ namespace WarpCore.Cms
                 SiteId = site.ContentId.Value,
                 ContentTypeCode = null,
                 PageId = node.Page.ContentId.Value,
-                VirtualPath = MakeRelativeUri(site, node.VirtualPath)
+                VirtualPath = MakeRelativeUri(site, node.VirtualPath),
+                RedirectExternalUrl = node.Page.RedirectExternalUrl,
+                InternalRedirectPageId = node.Page.RedirectPageId
             };
+
+
             pageRoutes.Add(primaryRoute);
 
             foreach (var route in node.Page.AlternateRoutes)
@@ -106,7 +114,10 @@ namespace WarpCore.Cms
             var allChildRoutes = new List<SiteRoute>();
             foreach (var child in node.ChildNodes)
             {
-                var childRoutes = DiscoverPageRoutesRecursive(child, site);
+                var childRoutes = DiscoverPageRoutesRecursive(child, site).ToList();
+                if (node.Page.PageType == PageType.GroupingPage && childRoutes.Any())
+                    primaryRoute.InternalRedirectPageId = childRoutes.First().PageId;
+                
                 allChildRoutes.AddRange(childRoutes);
             }
 
