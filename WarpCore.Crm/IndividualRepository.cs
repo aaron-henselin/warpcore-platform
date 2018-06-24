@@ -7,7 +7,7 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Crm
 {
-    public class IndividualRepository : CosmosRepository<Individual>
+    public class IndividualRepository : UnversionedCosmosRepository<Individual>
     {
        
     }

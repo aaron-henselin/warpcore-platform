@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
@@ -65,7 +66,7 @@ namespace WarpCore.Web
             if (!success || route.PageId == null)
                 return;
 
-            var cmsPage = new PageRepository().Query().Single(x => x.Id == route.PageId.Value);
+            var cmsPage = new PageRepository().FindContentVersions(route.PageId.Value,ContentEnvironment.Live).Result.Single();
             if (PageType.ContentPage != cmsPage.PageType)
                 return;
 

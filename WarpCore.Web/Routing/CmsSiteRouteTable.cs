@@ -6,21 +6,35 @@ namespace WarpCore.Cms
 {
     public class CmsSiteRouteTable
     {
-        private ILookup<Uri, SiteRoute> _toLookup;
+        private ILookup<Uri, SiteRoute> _routesByPath;
+        private ILookup<Guid, SiteRoute> _routesByPageId;
 
         public CmsSiteRouteTable(List<SiteRoute> siteRoutes)
         {
-            _toLookup = siteRoutes.ToLookup(x => x.VirtualPath);
+            _routesByPath = siteRoutes.ToLookup(x => x.VirtualPath);
+            _routesByPageId = siteRoutes.ToLookup(x => x.PageId.Value);
+        }
+
+        public bool TryGetRoute(Guid pageId, out SiteRoute route)
+        {
+            route = null;
+
+            if (!_routesByPageId.Contains(pageId))
+                return false;
+
+
+            route = _routesByPageId[pageId].OrderBy(x => x.Priority).First();
+            return true;
         }
 
         public bool TryGetRoute(Uri virtualPath, out SiteRoute route)
         {
             route = null;
 
-            if (!_toLookup.Contains(virtualPath))
+            if (!_routesByPath.Contains(virtualPath))
                 return false;
 
-            route = _toLookup[virtualPath].OrderBy(x => x.Priority).First();
+            route = _routesByPath[virtualPath].OrderBy(x => x.Priority).First();
             return true;
         }
     }

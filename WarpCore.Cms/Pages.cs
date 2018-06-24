@@ -91,7 +91,7 @@ namespace WarpCore.Cms
     {
     }
 
-    public class PageRepository : CosmosRepository<CmsPage>
+    public class PageRepository : VersionedCosmosRepository<CmsPage>
     {
 
 

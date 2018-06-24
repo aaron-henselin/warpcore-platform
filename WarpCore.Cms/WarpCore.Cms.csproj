@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj" />
     <ProjectReference Include="..\WarpCore.Framework\WarpCore.Framework.csproj" />
   </ItemGroup>

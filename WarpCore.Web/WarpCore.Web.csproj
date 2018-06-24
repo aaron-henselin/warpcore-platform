@@ -101,6 +101,10 @@
       <Project>{bf4bc43a-8225-48dd-8b36-3e6b657fb6dd}</Project>
       <Name>WarpCore.Cms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj">
+      <Project>{31ade8af-8b3c-4f41-891d-ad5fd56139fa}</Project>
+      <Name>WarpCore.DbEngines.AzureStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WarpCore.Framework\WarpCore.Framework.csproj">
       <Project>{58021052-3810-46FE-BC67-2C397C99449D}</Project>
       <Name>WarpCore.Framework</Name>

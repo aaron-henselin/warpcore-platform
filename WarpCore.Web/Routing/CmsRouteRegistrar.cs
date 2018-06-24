@@ -4,12 +4,14 @@ using System.Text;
 using System.Web;
 using System.Web.DynamicData;
 using System.Web.Routing;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
     public struct CmsRouteDataTokens
     {
         public const string RouteDataToken = "WC_ROUTE";
+        public const string ContentEnvironmentToken = "WC_CONTENTENV";
     }
 
     public class CmsRouteRegistrar
@@ -30,11 +32,16 @@ namespace WarpCore.Cms
 
                 var success = CmsRouteTable.Current.TryGetRoute(requestUri, out var route);
                 if (success)
-                    requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,route);
+                {
+                    requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken, route);
+
+                    if ("1" == requestContext.HttpContext.Request["wc_preview"])
+                        requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.ContentEnvironmentToken, ContentEnvironment.Draft);
+                    else
+                        requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.ContentEnvironmentToken, ContentEnvironment.Live);
+                }
                 else
                 {
-                    
-
                     throw new HttpException(404,"Page cannot be found.");
                 }
 
@@ -45,11 +52,13 @@ namespace WarpCore.Cms
         private class WarpCorePageHttpHandler : IHttpHandler
         {
             private PageRepository _pageRepository;
+            private SiteRepository _siteRepo;
             public bool IsReusable => true;
 
             public WarpCorePageHttpHandler()
             {
                 _pageRepository = new PageRepository();
+                _siteRepo = new SiteRepository();
             }
 
             private void ProcessRequestForPage(HttpContext context, CmsPage cmsPage)
@@ -78,8 +87,14 @@ namespace WarpCore.Cms
             {
                 if (cmsPage.RedirectPageId != null)
                 {
-                    var firstPage = _pageRepository.Query().Single(x => x.Id == cmsPage.RedirectPageId.Value);
-                    ProcessRequestForPage(context, firstPage);
+                    context.Response.Redirect(cmsPage.RedirectExternalUrl);
+
+                    SiteRoute route;
+                    CmsRouteTable.Current.TryGetRoute(cmsPage.RedirectPageId.Value, out route);
+
+                    //todo now: preemptively check ssl.
+                    context.Response.Redirect("http://"+ route.Authority + "/" + route.VirtualPath);
+
                     return;
                 }
 
@@ -94,8 +109,15 @@ namespace WarpCore.Cms
 
             private void ProcessRequestForGroupingPage(HttpContext context, CmsPage cmsPage)
             {
-                var firstPage = _pageRepository.Query().Where(x => x.ParentPageId == cmsPage.Id).OrderBy(x => x.SitemapPosition)
-                    .SingleOrDefault();
+               //todo: redirect manager?
+
+                //var site = _siteRepo.GetById(cmsPage.SiteId);
+                //var live = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
+
+                //structure.
+                //var firstPage = _pageRepository.Query().Where(x => x.ParentPageId == cmsPage.Id).OrderBy(x => x.SitemapPosition)
+                //    .SingleOrDefault();
+                CmsPage firstPage=null;
                 if (firstPage == null)
                     throw new HttpException(404, String.Empty);
 
@@ -129,8 +151,9 @@ namespace WarpCore.Cms
             {
                
                 var siteRoute = (SiteRoute)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
-                var page = _pageRepository.Query().Single(x => x.Id == siteRoute.PageId.Value);
+                var contentEnvironment = (ContentEnvironment)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.ContentEnvironmentToken];
 
+                var page = _pageRepository.FindContentVersions(siteRoute.PageId.Value,contentEnvironment).Result.Single();
                 ProcessRequestForPage(context,page);
                 
             }

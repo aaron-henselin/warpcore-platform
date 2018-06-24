@@ -15,57 +15,23 @@ namespace WarpCore.Cms
         public Uri VirtualPath { get; set; }
         public int Priority { get; set; }
         public Guid SiteId { get; set; }
-        //public Guid? ContentId { get; set; }
         public Guid? PageId { get; set; }
-
         public string ContentTypeCode { get; set; }
     }
 
-    public class RouteBuilderContext
-    {
-        public Site CurrentSite { get; set; }
-        public ISiteStructureNode StructureNode { get; set; }
-        public CmsPage CurrentPage { get; set; }
-        public string ContentRouteTemplate { get; set; }
-        public string ContentTypeCode { get; set; }
-        public SiteRoute AssociatedPageRoute { get; set; }
-    }
+    //public class RouteBuilderContext
+    //{
+    //    public Site CurrentSite { get; set; }
+    //    public ISiteStructureNode StructureNode { get; set; }
+    //    public CmsPage CurrentPage { get; set; }
+    //    public string ContentRouteTemplate { get; set; }
+    //    public string ContentTypeCode { get; set; }
+    //    public SiteRoute AssociatedPageRoute { get; set; }
+    //}
 
     public class RouteBuilder
     {
-        //private static IEnumerable<SiteRoute> DiscoverRoutesForPageContent(RouteDiscoveryContext context)
-        //{
-
-        //    List<SiteRoute> pageContentRoutes = new List<SiteRoute>();
-        //    var contentTypeCode = context.ContentTypeCode;
-        //    var dynamicContentManager = new CmsContentManager();
-        //    var allContent = dynamicContentManager.GetAll(contentTypeCode);
-
-        //    //todo: better route templates;
-        //    var routeTemplate = context.ContentRouteTemplate;
-        //    if (string.IsNullOrWhiteSpace(routeTemplate))
-        //        routeTemplate = "{Title}";
-
-        //    foreach (var item in allContent)
-        //    {
-        //        var contentAddendum =
-        //            routeTemplate.Replace("{Title}", SlugGenerator.Generate(item.Name));
-
-        //        var pageContentRoute = new SiteRoute
-        //        {
-        //            Authority = context.Site.UriAuthority,
-        //            Priority = (int)RoutePriority.Primary,
-        //            SiteId = context.Site.Id,
-        //            ContentId = item.Id,
-        //            PageId = context.CmsPage.Id,
-        //            VirtualPath = MakeAbsoluteUri(context.Site, context.AssociatedPageRoute.VirtualPath.ToString(), contentAddendum)
-        //        };
-
-        //        pageContentRoutes.Add(pageContentRoute);
-        //    }
-
-        //    return pageContentRoutes;
-        //}
+        
 
         private static IEnumerable<SiteRoute> DiscoverContentRoutes(CmsPage page, IEnumerable<SiteRoute> pageRoutes)
         {
@@ -113,7 +79,7 @@ namespace WarpCore.Cms
                 SiteId = site.ContentId.Value,
                 ContentTypeCode = null,
                 PageId = node.Page.ContentId.Value,
-                VirtualPath = MakeAbsoluteUri(site, node.VirtualPath)
+                VirtualPath = MakeRelativeUri(site, node.VirtualPath)
             };
             pageRoutes.Add(primaryRoute);
 
@@ -126,7 +92,7 @@ namespace WarpCore.Cms
                     SiteId = site.ContentId.Value,
                     ContentTypeCode = null,
                     PageId = node.Page.ContentId.Value,
-                    VirtualPath = MakeAbsoluteUri(site, route.VirtualPath)
+                    VirtualPath = MakeRelativeUri(site, route.VirtualPath)
                 };
                 pageRoutes.Add(alternatePageRoute);
             }
@@ -151,7 +117,7 @@ namespace WarpCore.Cms
             return allRoutes;
         }
 
-        private static IEnumerable<SiteRoute> DiscoverRoutesForSite(Site site)
+        public static IEnumerable<SiteRoute> DiscoverRoutesForSite(Site site)
         {
             var associatedSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
 
@@ -166,7 +132,7 @@ namespace WarpCore.Cms
                     Priority = 0,
                     SiteId = site.ContentId.Value,
                     PageId = site.HomepageId,
-                    VirtualPath = MakeAbsoluteUri(site, string.Empty)
+                    VirtualPath = MakeRelativeUri(site, string.Empty)
                 };
 
                 var homepageContentRoutes = DiscoverContentRoutes(associatedSitemap.HomePage, new[] {homePageRoute});
@@ -190,7 +156,7 @@ namespace WarpCore.Cms
         //    return allRoutes;
         //}
 
-        private static Uri MakeAbsoluteUri(Site site, string path, string contentRoute = null)
+        private static Uri MakeRelativeUri(Site site, string path, string contentRoute = null)
         {
             var rawUri = "/" + site.RoutePrefix + "/" + path+"/"+contentRoute;
             var nonEmptyParts = rawUri.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);

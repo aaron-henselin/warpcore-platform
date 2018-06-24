@@ -53,12 +53,14 @@ namespace WarpCore.Cms
             foreach (var childStructureNode in node.ChildNodes)
             {
                 var childSitemapNode = new SitemapNode();
-                sitemapNode.ChildNodes.Add(childSitemapNode);
+               
                 if (!allPages.ContainsKey(childStructureNode.PageId))
                     continue;
-
+                
                 childSitemapNode.Page = allPages[childStructureNode.PageId];
                 childSitemapNode.VirtualPath = path + "/" + childSitemapNode.Page.Slug;
+                sitemapNode.ChildNodes.Add(childSitemapNode);
+
                 AttachChildNodes(childSitemapNode, childStructureNode, childSitemapNode.VirtualPath, allPages);
             }
         }

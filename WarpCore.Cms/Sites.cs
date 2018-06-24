@@ -19,7 +19,7 @@ namespace WarpCore.Cms
         public Guid? HomepageId { get; set; }
     }
 
-    public class SiteRepository : CosmosRepository<Site>
+    public class SiteRepository : UnversionedCosmosRepository<Site>
     {
         public void MovePage(CmsPage page, Guid toPositionId)
         {
