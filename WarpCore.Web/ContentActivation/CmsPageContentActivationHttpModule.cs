@@ -1,45 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using WarpCore.Cms;
-using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
 {
-    public class ControlActivator
-    {
-        public static Control ActivateControl(CmsPageContent pageContent)
-        {
-            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var toolboxItemType = Type.GetType(toolboxItem.FullyQualifiedTypeName);
-            var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
-            PropertySet(activatedWidget,pageContent.Parameters);
-
-            return activatedWidget;
-        }
-
-        public static void PropertySet(Control activatedWidget, Dictionary<string,string> parameterValues)
-        {
-            foreach (var kvp in parameterValues)
-            {
-                var propertyInfo = activatedWidget.GetType().GetProperty(kvp.Key);
-                if (propertyInfo == null || !propertyInfo.CanWrite)
-                    continue;
-
-                var newType = Convert.ChangeType(kvp.Value, propertyInfo.PropertyType);
-                if (propertyInfo.CanWrite)
-                    propertyInfo.SetValue(activatedWidget, newType);
-            }
-            
-        }
-    }
-
-    public sealed class MyHttpModule : IHttpModule
+    public sealed class CmsPageContentActivationHttpModule : IHttpModule
     {
         void IHttpModule.Init(HttpApplication application)
         {
@@ -78,7 +48,7 @@ namespace WarpCore.Web
                     ph = page.GetDescendantControls<ContentPlaceHolder>().First();
 
 
-                var activatedWidget = ControlActivator.ActivateControl(content);
+                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
                 ph.Controls.Add(activatedWidget);
             }
         }

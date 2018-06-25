@@ -9,18 +9,32 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
-    public class SiteRoute
+    public class GroupingPageRoute : SiteRoute
+    {
+        public Guid? InternalRedirectPageId { get; set; }
+    }
+
+    public class RedirectPageRoute : SiteRoute
+    {
+        public string RedirectExternalUrl { get; set; }
+        public Guid? InternalRedirectPageId { get; set; }
+    }
+
+    public class ContentPageRoute : SiteRoute
+    {
+        public string ContentTypeCode { get; set; }
+
+        public bool RequireSsl { get; set; }
+    }
+
+    public abstract class SiteRoute
     {
         public string Authority { get; set; }
         public Uri VirtualPath { get; set; }
         public int Priority { get; set; }
         public Guid SiteId { get; set; }
         public Guid? PageId { get; set; }
-        public string ContentTypeCode { get; set; }
-        public string RedirectExternalUrl { get; set; }
-        public Guid? InternalRedirectPageId { get; set; }
-        public bool RequireSsl { get; set; }
-        
+       
     }
 
     //public class RouteBuilderContext
@@ -37,7 +51,7 @@ namespace WarpCore.Cms
     {
         
 
-        private static IEnumerable<SiteRoute> DiscoverContentRoutes(CmsPage page, IEnumerable<SiteRoute> pageRoutes)
+        private static IEnumerable<SiteRoute> DiscoverContentRoutes(CmsPage page, IEnumerable<ContentPageRoute> pageRoutes)
         {
             var contentRoutes = new List<SiteRoute>();
 
@@ -53,14 +67,15 @@ namespace WarpCore.Cms
                     var pageRoutesToCopy = pageRoutes.ToList();
                     foreach (var pageRoute in pageRoutesToCopy)
                     {
-                        var contentRoute = new SiteRoute
+                        var contentRoute = new ContentPageRoute
                         {
                             Authority = pageRoute.Authority,
                             ContentTypeCode = contentRouteAttribute.ContentTypeCode,
                             PageId = pageRoute.PageId,
                             Priority = pageRoute.Priority,
                             SiteId = pageRoute.SiteId,
-                            VirtualPath = new Uri(pageRoute.VirtualPath + "/"+contentRouteAttribute.RouteTemplate)
+                            VirtualPath = new Uri(pageRoute.VirtualPath + "/"+contentRouteAttribute.RouteTemplate),
+                            RequireSsl = pageRoute.RequireSsl
                         };
                         contentRoutes.Add(contentRoute);
                     }
@@ -76,48 +91,70 @@ namespace WarpCore.Cms
         {
             var pageRoutes = new List<SiteRoute>();
 
-            var primaryRoute = new SiteRoute
-            {
-                Authority = site.UriAuthority,
-                Priority = (int)RoutePriority.Primary,
-                SiteId = site.ContentId.Value,
-                ContentTypeCode = null,
-                PageId = node.Page.ContentId.Value,
-                VirtualPath = MakeRelativeUri(site, node.VirtualPath),
-                RedirectExternalUrl = node.Page.RedirectExternalUrl,
-                InternalRedirectPageId = node.Page.RedirectPageId
-            };
+            SiteRoute primaryRoute = null;
 
-
-            pageRoutes.Add(primaryRoute);
-
-            foreach (var route in node.Page.AlternateRoutes)
-            {
-                var alternatePageRoute = new SiteRoute
+            if (PageType.RedirectPage == node.Page.PageType)
+                primaryRoute = new RedirectPageRoute
                 {
-                    Authority = site.UriAuthority,
-                    Priority = route.Priority,
-                    SiteId = site.ContentId.Value,
-                    ContentTypeCode = null,
-                    PageId = node.Page.ContentId.Value,
-                    VirtualPath = MakeRelativeUri(site, route.VirtualPath)
+                    RedirectExternalUrl = node.Page.RedirectExternalUrl,
+                    InternalRedirectPageId = node.Page.RedirectPageId
                 };
-                pageRoutes.Add(alternatePageRoute);
+
+            if (PageType.GroupingPage == node.Page.PageType)
+            {
+                var first = node.ChildNodes.FirstOrDefault();
+                primaryRoute = new GroupingPageRoute
+                {
+                    InternalRedirectPageId = first?.Page?.ContentId
+                };
             }
 
-            var contentRoutes = DiscoverContentRoutes(node.Page, pageRoutes);
+            if (PageType.ContentPage == node.Page.PageType)
+            {
+                primaryRoute = new ContentPageRoute
+                {
+                    RequireSsl = node.Page.RequireSsl
+                };
+
+                foreach (var route in node.Page.AlternateRoutes)
+                {
+                    var alternatePageRoute = new ContentPageRoute
+                    {
+                        Authority = site.UriAuthority,
+                        Priority = route.Priority,
+                        SiteId = site.ContentId.Value,
+                        PageId = node.Page.ContentId.Value,
+                        VirtualPath = MakeRelativeUri(site, route.VirtualPath),
+                        RequireSsl = node.Page.RequireSsl
+                    };
+                    pageRoutes.Add(alternatePageRoute);
+                }
+
+            }
+
+            if (primaryRoute == null)
+                throw new Exception("bad route type.");
+
+            primaryRoute.Authority = site.UriAuthority;
+            primaryRoute.Priority = (int) RoutePriority.Primary;
+            primaryRoute.SiteId = site.ContentId.Value;
+            primaryRoute.PageId = node.Page.ContentId.Value;
+            primaryRoute.VirtualPath = MakeRelativeUri(site, node.VirtualPath);
+            
+            pageRoutes.Add(primaryRoute);
 
             var localRoutes = new List<SiteRoute>();
-            localRoutes.AddRange(contentRoutes);
+            if (PageType.ContentPage == node.Page.PageType)
+            {
+                var contentRoutes = DiscoverContentRoutes(node.Page, pageRoutes.Cast<ContentPageRoute>());
+                localRoutes.AddRange(contentRoutes);
+            }
             localRoutes.AddRange(pageRoutes);
 
             var allChildRoutes = new List<SiteRoute>();
             foreach (var child in node.ChildNodes)
             {
-                var childRoutes = DiscoverPageRoutesRecursive(child, site).ToList();
-                if (node.Page.PageType == PageType.GroupingPage && childRoutes.Any())
-                    primaryRoute.InternalRedirectPageId = childRoutes.First().PageId;
-                
+                var childRoutes = DiscoverPageRoutesRecursive(child, site).ToList();               
                 allChildRoutes.AddRange(childRoutes);
             }
 
@@ -137,13 +174,14 @@ namespace WarpCore.Cms
 
             if (associatedSitemap.HomePage != null)
             {
-                var homePageRoute = new SiteRoute
+                var homePageRoute = new ContentPageRoute
                 {
                     Authority = site.UriAuthority,
                     Priority = 0,
                     SiteId = site.ContentId.Value,
                     PageId = site.HomepageId,
-                    VirtualPath = MakeRelativeUri(site, string.Empty)
+                    VirtualPath = MakeRelativeUri(site, string.Empty),
+                    RequireSsl = associatedSitemap.HomePage.RequireSsl
                 };
 
                 var homepageContentRoutes = DiscoverContentRoutes(associatedSitemap.HomePage, new[] {homePageRoute});

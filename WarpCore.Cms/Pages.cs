@@ -27,6 +27,9 @@ namespace WarpCore.Cms
         [Column]
         public string Slug { get; set; }
 
+        [Column]
+        public Guid LayoutId { get; set; }
+
 
         [Column]
         public Guid SiteId { get; set; }
@@ -47,6 +50,9 @@ namespace WarpCore.Cms
 
         [Column]
         public int Order { get; set; }
+
+        [Column]
+        public bool RequireSsl { get; set; }
     }
 
     public enum RoutePriority
