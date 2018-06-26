@@ -16,7 +16,7 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page")]
-    public class CmsPage:CosmosEntity
+    public class CmsPage:VersionedContentEntity
     {
 
 
@@ -97,7 +97,7 @@ namespace WarpCore.Cms
     {
     }
 
-    public class PageRepository : VersionedCosmosRepository<CmsPage>
+    public class PageRepository : VersionedContentRepository<CmsPage>
     {
 
 
@@ -116,10 +116,10 @@ namespace WarpCore.Cms
         private void AssertSlugIsNotTaken(CmsPage cmsPage)
         {
             var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{cmsPage.ContentId}'";
-            var node = _orm.FindContentVersions<SiteStructureNode>(condition, ContentEnvironment.Unversioned).Result.Single();
+            var node = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
 
             var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{node.PageId}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{node.ParentNodeId}'";
-            var siblings = _orm.FindContentVersions<SiteStructureNode>(condition, ContentEnvironment.Unversioned).Result.Single();
+            var siblings = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
 
 
 

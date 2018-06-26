@@ -19,12 +19,12 @@ namespace WarpCore.Cms
         public Guid? HomepageId { get; set; }
     }
 
-    public class SiteRepository : UnversionedCosmosRepository<Site>
+    public class SiteRepository : UnversionedContentRepository<Site>
     {
         public void MovePage(CmsPage page, Guid toPositionId)
         {
             var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{page.ContentId}'";
-            var sitemapNode = _orm.FindContentVersions<SiteStructureNode>(condition, null).Result.SingleOrDefault();
+            var sitemapNode = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.SingleOrDefault();
             if (sitemapNode == null)
                 sitemapNode = new SiteStructureNode();
 
@@ -32,13 +32,13 @@ namespace WarpCore.Cms
             sitemapNode.SiteId = page.SiteId;
             sitemapNode.ParentNodeId = toPositionId;
 
-            _orm.Save(sitemapNode);
+            Orm.Save(sitemapNode);
         }
 
         public SiteStructure GetSiteStructure(Site site)
         {
             var sitemapLookup = $"{nameof(SiteStructureNode.SiteId)} eq '{site.ContentId}'";
-            var allpages = _orm.FindContentVersions<SiteStructureNode>(sitemapLookup, ContentEnvironment.Unversioned).Result.ToList();
+            var allpages = Orm.FindUnversionedContent<SiteStructureNode>(sitemapLookup).Result.ToList();
 
             var sitemap = new SiteStructure();
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);

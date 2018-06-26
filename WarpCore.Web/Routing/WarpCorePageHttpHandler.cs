@@ -134,7 +134,7 @@ namespace WarpCore.Cms
                 return;
             }
 
-            var page = _pageRepository.FindContentVersions(siteRoute.PageId.Value, contentEnvironment).Result.Single();
+            var page = _pageRepository.FindContentVersions(By.ContentId(siteRoute.PageId.Value), contentEnvironment).Result.Single();
             ProcessRequestForContentPage(context, page);
 
         }

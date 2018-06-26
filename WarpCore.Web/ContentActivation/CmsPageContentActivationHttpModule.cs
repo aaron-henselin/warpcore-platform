@@ -36,7 +36,7 @@ namespace WarpCore.Web
             if (!success || route.PageId == null)
                 return;
 
-            var cmsPage = new PageRepository().FindContentVersions(route.PageId.Value,ContentEnvironment.Live).Result.Single();
+            var cmsPage = new PageRepository().FindContentVersions(By.ContentId(route.PageId.Value),ContentEnvironment.Live).Result.Single();
             if (PageType.ContentPage != cmsPage.PageType)
                 return;
 

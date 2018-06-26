@@ -9,10 +9,10 @@ namespace WarpCore.DbEngines.AzureStorage
     {
 
 
-        public static void Publish<T>(Guid id) where T : CosmosEntity, new()
+        public static void Publish<T>(Guid id) where T : VersionedContentEntity, new()
         {
             var _orm =Dependency.Resolve<ICosmosOrm>();
-            var allCopies = _orm.FindContentVersions<T>(id,null).Result.ToList();
+            var allCopies = _orm.FindContentVersions<T>(By.ContentId(id),null).Result.ToList();
 
             var archiveVersion = 0m;
             var previousArchivedVersioned = allCopies.Where(x => ContentEnvironment.Archive == x.ContentEnvironment).ToList();
