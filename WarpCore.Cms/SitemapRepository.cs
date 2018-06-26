@@ -33,7 +33,7 @@ namespace WarpCore.Cms
     {
         public static Sitemap BuildSitemap(Site site, ContentEnvironment? environment)
         {
-            var siteStructure = new SiteStructureMapBuilder().BuildStructureMap(site);
+            var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
 
             var pageRepostiory = new PageRepository();
             var allPages = pageRepostiory.FindContentVersions(null, environment).Result.ToDictionary(x => x.ContentId);
@@ -76,6 +76,10 @@ namespace WarpCore.Cms
     {
         public Guid NodeId => Guid.Empty; 
         public List<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
+
+
+
+
     }
 
     [Unversioned]

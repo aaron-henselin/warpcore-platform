@@ -49,7 +49,8 @@ namespace IntegrationTests
 
             PublishingShortcuts.PublishSite(newSite);
 
-            var structure = new SiteStructureMapBuilder().BuildStructureMap(newSite);
+
+            var structure = SiteStructureMapBuilder.BuildStructureMap(newSite);
             Assert.AreEqual(3,structure.ChildNodes.Count);
 
             var liveSitemap = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);

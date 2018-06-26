@@ -19,9 +19,10 @@ namespace WarpCore.Cms
         public Guid? HomepageId { get; set; }
     }
 
+
     public class SiteStructureMapBuilder
     {
-        public SiteStructure BuildStructureMap(Site site)
+        public static SiteStructure BuildStructureMap(Site site)
         {
             var sitemapLookup = $"{nameof(SiteStructureNode.SiteId)} eq '{site.ContentId}'";
             var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<SiteStructureNode>(sitemapLookup).Result.ToList();

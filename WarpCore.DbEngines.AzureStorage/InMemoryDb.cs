@@ -31,8 +31,11 @@ namespace WarpCore.DbEngines.AzureStorage
             {
                 dr = tableRef.NewRow();
                 item.RowKey = Guid.NewGuid().ToString();
-                item.ContentId = Guid.NewGuid();
+
+                if (item.ContentId == null)
+                    item.ContentId = Guid.NewGuid();
             }
+
 
             dr["RowKey"] = new Guid(item.RowKey);
             dr["PartitionKey"] = item.PartitionKey;
@@ -51,11 +54,14 @@ namespace WarpCore.DbEngines.AzureStorage
 
         public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment? version) where T : VersionedContentEntity, new()
         {
-            var search = $"PartitionKey eq '{version}'";
-            if (!string.IsNullOrWhiteSpace(condition))
-                search += " and " + condition;
+            string partitionCondition=null;
+            if (version != null)
+                partitionCondition= $"PartitionKey eq '{version}'";
 
-            return await Task.FromResult(FindContentImpl<T>(search));
+            var allConditions = new[] {condition, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
+            var joinedCondition = string.Join(" and ", allConditions);
+
+            return await Task.FromResult(FindContentImpl<T>(joinedCondition));
         }
 
         private IReadOnlyCollection<T> FindContentImpl<T>( string condition) where T : CosmosEntity, new()
