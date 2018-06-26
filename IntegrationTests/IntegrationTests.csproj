@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WarpCore.Cms\WarpCore.Cms.csproj" />
     <ProjectReference Include="..\WarpCore.Crm\WarpCore.Crm.csproj" />
   </ItemGroup>
 

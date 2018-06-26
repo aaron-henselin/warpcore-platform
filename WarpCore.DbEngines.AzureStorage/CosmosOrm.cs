@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -12,6 +11,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TinyIoC;
 
 namespace WarpCore.DbEngines.AzureStorage
@@ -37,7 +37,8 @@ namespace WarpCore.DbEngines.AzureStorage
         Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment? version = ContentEnvironment.Live) 
             where T : VersionedContentEntity, new();
 
-        Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T :CosmosEntity, new();
+        Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
+            where T :UnversionedContentEntity, new();
 
         void Delete<T>(T copy) where T : CosmosEntity;
     }
@@ -58,9 +59,23 @@ namespace WarpCore.DbEngines.AzureStorage
             this.ContentEnvironment = ContentEnvironment.Draft;
         }
 
+        public string GetPublishingChecksum()
+        {
+            var obj = JsonConvert.SerializeObject(this);
+            var dict = JObject.Parse(obj);
+            dict.Remove("RowKey");
+            dict.Remove("ETag");
+            dict.Remove("PartitionKey");
+            dict.Remove("Timestamp");
 
+            return dict.ToString();
+        }
+        
+
+        [JsonIgnore]
         public decimal ContentVersion { get; set; }
 
+        [JsonIgnore]
         public ContentEnvironment ContentEnvironment
         {
             get => (ContentEnvironment)Enum.Parse(typeof(ContentEnvironment), PartitionKey);
@@ -69,12 +84,21 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public abstract class CosmosEntity : TableEntity
+    public abstract class UnversionedContentEntity : CosmosEntity
     {
-        public CosmosEntity() : base(null, null)
+        public UnversionedContentEntity()
         {
             this.PartitionKey = ContentEnvironment.Unversioned.ToString();
         }
+    }
+
+
+
+    public abstract class CosmosEntity : TableEntity
+    {
+        [JsonIgnore]
+        public bool IsNew => RowKey == null;
+        
 
         /// <summary>
         /// An id unique to each environment, not shared between master and published copies
@@ -96,7 +120,6 @@ namespace WarpCore.DbEngines.AzureStorage
         /// An id unique to this content, but shared between master and published copies.
         /// </summary>
         public Guid? ContentId { get; set; }
-
 
         private string ChangeTracking { get; set; }
 
@@ -192,40 +215,26 @@ namespace WarpCore.DbEngines.AzureStorage
         public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment? environment) where T : VersionedContentEntity, new()
         {
 
-            //var isUnversioned = typeof(T).GetCustomAttributes<UnversionedAttribute>().Any();
-            //if (isUnversioned || environment == null)
-            //{
-            //    return await FindContentImpl<T>(filter);
-            //}
-            //else
-            //{
                 var search = $"PartitionKey eq '{environment}'";
                 if (!string.IsNullOrWhiteSpace(filter))
                     search += filter;
 
                 return await FindContentImpl<T>(search);
-            //}
+       
 
 
         }
 
-        //public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(Guid contentId, ContentEnvironment? environment) where T : VersionedContentEntity, new()
-        //{
-        //    //todo now: sql injection.
-        //    var isUnversioned = typeof(T).GetCustomAttributes<UnversionedAttribute>().Any();
-        //    if (isUnversioned || environment == null)
-        //    {
-        //        return await FindContentImpl<T>($"ContentId eq '{contentId}'");
-        //    }
-        //    else
-        //    {
-        //        return await FindContentImpl<T>($"ContentId eq '{contentId}' and PartitionKey eq '{environment}'");
-        //    }
+        public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
+        {
+            var search = $"PartitionKey eq '{ContentEnvironment.Unversioned}'";
+            if (!string.IsNullOrWhiteSpace(condition))
+                search += condition;
 
-            
-        //}
+            return await FindContentImpl<T>(search);
+        }
 
-        
+
 
         private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : CosmosEntity, new()
         {
@@ -234,14 +243,6 @@ namespace WarpCore.DbEngines.AzureStorage
             var cloudTable = GetOrCreateTable<T>().Result;
             var query = new TableQuery<T> { FilterString = condition };
             var items = await cloudTable.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
-
-            //TableOperation.Retrieve<>()
-            //cloudTable.ExecuteAsync()
-
-            //string pkSearch = $@"SELECT * FROM {table.Name}";
-            //if (!string.IsNullOrEmpty(condition))
-            //    pkSearch += " WHERE " + condition;
-            //var items =  _client..CreateDocumentQuery<T>(_collectionUris[typeof(T)],pkSearch).ToList();
 
             var result = items.ToList();
             foreach (var item in result)
@@ -264,10 +265,7 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
 
-        public Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : CosmosEntity, new()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 
 }

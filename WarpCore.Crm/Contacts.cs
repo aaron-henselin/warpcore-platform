@@ -22,7 +22,7 @@ namespace WarpCore.Crm
 
 
     [Table("crm_contact")]
-    public class Contact : CosmosEntity
+    public class Contact : UnversionedContentEntity
     {
 
     }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
-    public abstract class UnversionedContentRepository<T> where T : CosmosEntity, new()
+    public abstract class UnversionedContentRepository<T> where T : UnversionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 

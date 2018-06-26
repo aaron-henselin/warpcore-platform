@@ -33,14 +33,13 @@ namespace WarpCore.Cms
     {
         public static Sitemap BuildSitemap(Site site, ContentEnvironment? environment)
         {
-            var siteRepository= new SiteRepository();
-            var siteStructure = siteRepository.GetSiteStructure(site);
+            var siteStructure = new SiteStructureMapBuilder().BuildStructureMap(site);
 
             var pageRepostiory = new PageRepository();
             var allPages = pageRepostiory.FindContentVersions(null, environment).Result.ToDictionary(x => x.ContentId);
 
             var sitemap = new Sitemap();
-            if (site.HomepageId != null)
+            if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId))
                 sitemap.HomePage = allPages[site.HomepageId];
 
             AttachChildNodes(sitemap,siteStructure,"",allPages);
@@ -75,13 +74,13 @@ namespace WarpCore.Cms
 
     public class SiteStructure: ISiteStructureNode
     {
-        public Guid NodeId { get; set; }
+        public Guid NodeId => Guid.Empty; 
         public List<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
     }
 
     [Unversioned]
     [Table("cms_site_structure")]
-    public class SiteStructureNode : CosmosEntity, ISiteStructureNode
+    public class SiteStructureNode : UnversionedContentEntity, ISiteStructureNode
     {
         [Column]
         public Guid SiteId { get; set; }
@@ -92,8 +91,11 @@ namespace WarpCore.Cms
         [Column]
         public Guid ParentNodeId { get; set; }
 
+        [Column]
+        public Guid? BeforeNodeId { get; set; }
 
         public Guid NodeId { get => this.ContentId.Value; }
+
         [JsonIgnore]
         public List<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
     }

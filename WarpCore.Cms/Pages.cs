@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using WarpCore.Cms.Routing;
@@ -97,6 +98,20 @@ namespace WarpCore.Cms
     {
     }
 
+    public class SitemapRelativePosition
+    {
+        public Guid? ParentSitemapNodeId { get; set; }
+        public Guid? BeforeSitemapNodeId { get; set; }
+
+        public static SitemapRelativePosition Root => new SitemapRelativePosition{ParentSitemapNodeId = Guid.Empty};
+    }
+
+    public class PageRelativePosition
+    {
+        public Guid? ParentPageId { get; set; }
+        public Guid? BeforePageId { get; set; }
+    }
+
     public class PageRepository : VersionedContentRepository<CmsPage>
     {
 
@@ -113,14 +128,25 @@ namespace WarpCore.Cms
             //return "/"+generated;
         }
 
-        private void AssertSlugIsNotTaken(CmsPage cmsPage)
+        private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
-            var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{cmsPage.ContentId}'";
-            var node = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
+            ISiteStructureNode parentNode;
+            if (Guid.Empty == newSitemapRelativePosition.ParentSitemapNodeId)
+                parentNode = new SiteStructure();
+            else
+            {
+                var findParentCondition = $@"{nameof(SiteStructureNode.PageId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
+                parentNode = Orm.FindUnversionedContent<SiteStructureNode>(findParentCondition).Result.Single();
+            }
 
-            var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{node.PageId}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{node.ParentNodeId}'";
-            var siblings = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
+            var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{cmsPage.ContentEnvironment}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{parentNode.NodeId}'";
+            var siblings = Orm.FindUnversionedContent<SiteStructureNode>(siblingsCondition).Result.ToList();
 
+
+            //foreach (var sibling in siblings)
+            //{
+            //    this.FindContentVersions()
+            //}
 
 
 
@@ -133,30 +159,88 @@ namespace WarpCore.Cms
             //    throw new DuplicateSlugException();
         }
 
-        public override void Save(CmsPage cmsPage)
+        public void Move(CmsPage page, SitemapRelativePosition newSitemapRelativePosition)
         {
+            var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{page.ContentId}'";
+            var sitemapNode = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.SingleOrDefault();
+            if (sitemapNode == null)
+                sitemapNode = new SiteStructureNode();
+
+            sitemapNode.PageId = page.ContentId.Value;
+            sitemapNode.SiteId = page.SiteId;
+            sitemapNode.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
+            sitemapNode.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
+
+            Orm.Save(sitemapNode);
+        }
+
+        public void Save(CmsPage cmsPage, PageRelativePosition pageRelativePosition)
+        {
+            var position = new SitemapRelativePosition
+            {
+                
+            };
+
+            if (pageRelativePosition.ParentPageId != null)
+            {
+                var parentNodeSearch = $@"{nameof(SiteStructureNode.PageId)} eq '{pageRelativePosition.ParentPageId}'";
+                var parentNode = Orm.FindUnversionedContent<SiteStructureNode>(parentNodeSearch).Result
+                    .SingleOrDefault();
+
+                position.ParentSitemapNodeId = parentNode?.NodeId;
+            }
+
+
+            if (pageRelativePosition.BeforePageId != null)
+            {
+                var beforeNodeSearch = $@"{nameof(SiteStructureNode.PageId)} eq '{pageRelativePosition.BeforePageId}'";
+                var beforeNode = Orm.FindUnversionedContent<SiteStructureNode>(beforeNodeSearch).Result
+                    .SingleOrDefault();
+
+                position.BeforeSitemapNodeId = beforeNode?.NodeId;
+            }
+
+
+            Save(cmsPage, position);
+
+        }
+
+        public void Save(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
+        {
+            if (cmsPage.SiteId == default(Guid))
+                throw new Exception("Must specify site.");
+
             if (string.IsNullOrWhiteSpace(cmsPage.Slug))
             {
-                GenerateUniqueSlugForPage(cmsPage);
+                GenerateUniqueSlugForPage(cmsPage, newSitemapRelativePosition);
             }
             else
-                AssertSlugIsNotTaken(cmsPage);
-           
+                AssertSlugIsNotTaken(cmsPage, newSitemapRelativePosition);
 
-            var newVirtualPath = CreateVirtualPath(cmsPage);
-            if (cmsPage.AlternateRoutes.All(x => x.VirtualPath != newVirtualPath))
-                cmsPage.AlternateRoutes.Add(new PageRoute
-                {
-                    VirtualPath = newVirtualPath
-                });
+            base.Save(cmsPage);
 
-            foreach (var route in cmsPage.AlternateRoutes)
+            Move(cmsPage,newSitemapRelativePosition);
+        }
+
+        public override void Save(CmsPage cmsPage)
+        {
+            SitemapRelativePosition sitemapRelativePosition;
+            if (cmsPage.IsNew)
+                sitemapRelativePosition = SitemapRelativePosition.Root;
+            else
             {
-                if (route.VirtualPath != newVirtualPath)
-                    route.Priority = (int) RoutePriority.Former;
-                else
-                    route.Priority = (int) RoutePriority.Primary;
+                var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{cmsPage.ContentId}'";
+                var node = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
+                sitemapRelativePosition = new SitemapRelativePosition
+                {
+                    ParentSitemapNodeId = node.ParentNodeId,
+                    BeforeSitemapNodeId = node.BeforeNodeId,
+                };
             }
+
+
+            Save(cmsPage, sitemapRelativePosition);
+
 
             //todo: save this stuff.
             //page.Routes.Where(x => x.Slug == newDefaultSlug)
@@ -168,8 +252,11 @@ namespace WarpCore.Cms
             //page.Name
         }
 
-        private void GenerateUniqueSlugForPage(CmsPage cmsPage)
+        private void GenerateUniqueSlugForPage(CmsPage cmsPage, SitemapRelativePosition sitemapRelativePosition)
         {
+            if (string.IsNullOrWhiteSpace(cmsPage.Name))
+                throw new Exception("Page name is required.");
+
             bool foundUniqueSlug = false;
             cmsPage.Slug = SlugGenerator.Generate(cmsPage.Name);
 
@@ -179,7 +266,7 @@ namespace WarpCore.Cms
                 var rawSlug = cmsPage.Name;
                 try
                 {
-                    AssertSlugIsNotTaken(cmsPage);
+                    AssertSlugIsNotTaken(cmsPage, sitemapRelativePosition);
                     foundUniqueSlug = true;
                 }
                 catch (DuplicateSlugException e)

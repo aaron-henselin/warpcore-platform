@@ -9,7 +9,7 @@ namespace WarpCore.Cms
 {
     [Unversioned]
     [Table("cms_site")]
-    public class Site : CosmosEntity
+    public class Site : UnversionedContentEntity
     {
         public string Name { get; set; }
         public string RoutePrefix { get; set; }
@@ -19,26 +19,12 @@ namespace WarpCore.Cms
         public Guid? HomepageId { get; set; }
     }
 
-    public class SiteRepository : UnversionedContentRepository<Site>
+    public class SiteStructureMapBuilder
     {
-        public void MovePage(CmsPage page, Guid toPositionId)
-        {
-            var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{page.ContentId}'";
-            var sitemapNode = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.SingleOrDefault();
-            if (sitemapNode == null)
-                sitemapNode = new SiteStructureNode();
-
-            sitemapNode.PageId = page.ContentId.Value;
-            sitemapNode.SiteId = page.SiteId;
-            sitemapNode.ParentNodeId = toPositionId;
-
-            Orm.Save(sitemapNode);
-        }
-
-        public SiteStructure GetSiteStructure(Site site)
+        public SiteStructure BuildStructureMap(Site site)
         {
             var sitemapLookup = $"{nameof(SiteStructureNode.SiteId)} eq '{site.ContentId}'";
-            var allpages = Orm.FindUnversionedContent<SiteStructureNode>(sitemapLookup).Result.ToList();
+            var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<SiteStructureNode>(sitemapLookup).Result.ToList();
 
             var sitemap = new SiteStructure();
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
@@ -55,6 +41,13 @@ namespace WarpCore.Cms
                 PopulateChildNodes(childNode, parentNodeLookup);
 
         }
+    }
+
+    public class SiteRepository : UnversionedContentRepository<Site>
+    {
+
+
+
     }
 
 
