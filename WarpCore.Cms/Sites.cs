@@ -34,11 +34,29 @@ namespace WarpCore.Cms
             return sitemap;
         }
 
-        private static void PopulateChildNodes(ISiteStructureNode sitemap, ILookup<Guid, SiteStructureNode> parentNodeLookup)
+        private static void PopulateChildNodes(ISiteStructureNode node, ILookup<Guid, SiteStructureNode> parentNodeLookup)
         {
-            sitemap.ChildNodes = parentNodeLookup[sitemap.NodeId].ToList();
+            var ll = new List<SiteStructureNode>();
 
-            foreach (var childNode in sitemap.ChildNodes)
+            var pendingToInsert = parentNodeLookup[node.NodeId].ToList();
+
+            if (pendingToInsert.Any())
+            {
+                var remainingRoot = pendingToInsert.Single(x => x.BeforeNodeId == null);
+                pendingToInsert.Remove(remainingRoot);
+                ll.Insert(0,remainingRoot);
+            }
+
+            while (pendingToInsert.Any())
+            {
+                var nextBefore = pendingToInsert.SingleOrDefault(x => x.BeforeNodeId == ll.First().NodeId);
+                pendingToInsert.Remove(nextBefore);
+                ll.Insert(0, nextBefore);
+            }
+
+            node.ChildNodes = ll;
+
+            foreach (var childNode in node.ChildNodes)
                 PopulateChildNodes(childNode, parentNodeLookup);
 
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
 using WarpCore.Crm;
@@ -44,6 +45,21 @@ namespace IntegrationTests
             newSite.HomepageId = homePage.ContentId;
             siteRepo.Save(newSite);
 
+            var subPage1 = new CmsPage
+            {
+                Name = "Subpage 1",
+                SiteId = newSite.ContentId.Value
+            };
+            pageRepository.Save(subPage1, new PageRelativePosition{ParentPageId = homePage.ContentId});
+
+            var subPage0 = new CmsPage
+            {
+                Name = "Subpage 0",
+                SiteId = newSite.ContentId.Value
+            };
+            pageRepository.Save(subPage0, new PageRelativePosition { ParentPageId = homePage.ContentId,BeforePageId = subPage1.ContentId});
+
+
             var liveSitemap_before = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
             Assert.AreEqual(0, liveSitemap_before.ChildNodes.Count);
 
@@ -52,6 +68,10 @@ namespace IntegrationTests
 
             var structure = SiteStructureMapBuilder.BuildStructureMap(newSite);
             Assert.AreEqual(3,structure.ChildNodes.Count);
+
+            Assert.AreEqual(subPage0.ContentId, structure.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).PageId);
+            Assert.AreEqual(subPage1.ContentId, structure.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).PageId);
+
 
             var liveSitemap = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
             Assert.AreEqual(3, liveSitemap.ChildNodes.Count);

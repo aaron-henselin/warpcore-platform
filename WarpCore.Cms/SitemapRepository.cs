@@ -69,13 +69,13 @@ namespace WarpCore.Cms
     public interface ISiteStructureNode
     {
         Guid NodeId { get;  }
-        List<SiteStructureNode> ChildNodes { get; set; }
+        IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; }
     }
 
     public class SiteStructure: ISiteStructureNode
     {
         public Guid NodeId => Guid.Empty; 
-        public List<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
+        public IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
 
 
 
@@ -101,7 +101,7 @@ namespace WarpCore.Cms
         public Guid NodeId { get => this.ContentId.Value; }
 
         [JsonIgnore]
-        public List<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
+        public IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
     }
 
 

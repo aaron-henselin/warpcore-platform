@@ -135,8 +135,12 @@ namespace WarpCore.Cms
                 parentNode = new SiteStructure();
             else
             {
-                var findParentCondition = $@"{nameof(SiteStructureNode.PageId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
-                parentNode = Orm.FindUnversionedContent<SiteStructureNode>(findParentCondition).Result.Single();
+                var findParentCondition = $@"{nameof(SiteStructureNode.ContentId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
+                var parentNodes = Orm.FindUnversionedContent<SiteStructureNode>(findParentCondition).Result;
+                if (!parentNodes.Any())
+                    throw new Exception("Could not find a structual node for: '" + findParentCondition + "'");
+
+                parentNode = parentNodes.Single();
             }
 
             var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{cmsPage.ContentEnvironment}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{parentNode.NodeId}'";
@@ -166,12 +170,22 @@ namespace WarpCore.Cms
             if (sitemapNode == null)
                 sitemapNode = new SiteStructureNode();
 
+            sitemapNode.ContentId = Guid.NewGuid();
             sitemapNode.PageId = page.ContentId.Value;
             sitemapNode.SiteId = page.SiteId;
             sitemapNode.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
             sitemapNode.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
+            var sitemapNodesToUpdate = Orm.FindUnversionedContent<SiteStructureNode>($"ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
+            var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
+
             Orm.Save(sitemapNode);
+            if (previousBefore != null)
+            {
+                previousBefore.BeforeNodeId = sitemapNode.ContentId;
+                Orm.Save(previousBefore);
+            }
+           
         }
 
         public void Save(CmsPage cmsPage, PageRelativePosition pageRelativePosition)
