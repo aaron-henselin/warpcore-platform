@@ -24,8 +24,8 @@ namespace WarpCore.Cms
     {
         public static SiteStructure BuildStructureMap(Site site)
         {
-            var sitemapLookup = $"{nameof(SiteStructureNode.SiteId)} eq '{site.ContentId}'";
-            var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<SiteStructureNode>(sitemapLookup).Result.ToList();
+            var sitemapLookup = $"{nameof(CmsPageLocationNode.SiteId)} eq '{site.ContentId}'";
+            var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<CmsPageLocationNode>(sitemapLookup).Result.ToList();
 
             var sitemap = new SiteStructure();
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
@@ -34,9 +34,9 @@ namespace WarpCore.Cms
             return sitemap;
         }
 
-        private static void PopulateChildNodes(ISiteStructureNode node, ILookup<Guid, SiteStructureNode> parentNodeLookup)
+        private static void PopulateChildNodes(ISiteStructureNode node, ILookup<Guid, CmsPageLocationNode> parentNodeLookup)
         {
-            var ll = new List<SiteStructureNode>();
+            var ll = new List<CmsPageLocationNode>();
 
             var pendingToInsert = parentNodeLookup[node.NodeId].ToList();
 

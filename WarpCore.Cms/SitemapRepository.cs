@@ -69,13 +69,13 @@ namespace WarpCore.Cms
     public interface ISiteStructureNode
     {
         Guid NodeId { get;  }
-        IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; }
+        IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; }
     }
 
     public class SiteStructure: ISiteStructureNode
     {
         public Guid NodeId => Guid.Empty; 
-        public IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
+        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
 
 
 
@@ -84,7 +84,7 @@ namespace WarpCore.Cms
 
     [Unversioned]
     [Table("cms_site_structure")]
-    public class SiteStructureNode : UnversionedContentEntity, ISiteStructureNode
+    public class CmsPageLocationNode : UnversionedContentEntity, ISiteStructureNode
     {
         [Column]
         public Guid SiteId { get; set; }
@@ -101,7 +101,7 @@ namespace WarpCore.Cms
         public Guid NodeId { get => this.ContentId.Value; }
 
         [JsonIgnore]
-        public IReadOnlyCollection<SiteStructureNode> ChildNodes { get; set; } = new List<SiteStructureNode>();
+        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
     }
 
 

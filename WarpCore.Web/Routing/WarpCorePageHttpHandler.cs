@@ -73,15 +73,15 @@ namespace WarpCore.Cms
 
         private static void ProcessRequestForContentPage(HttpContext context, CmsPage cmsPage)
         {
-            var route = cmsPage.AlternateRoutes.First(x => x.Priority == (int)RoutePriority.Primary);
+            //var route = cmsPage.AlternateRoutes.First(x => x.Priority == (int)RoutePriority.Primary);
 
-            if (route.VirtualPath != context.Request.Url.AbsolutePath)
-            {
-                context.Response.Redirect(route.VirtualPath);
-                return;
-            }
-            else
-            {
+            //if (route.VirtualPath != context.Request.Url.AbsolutePath)
+            //{
+            //    context.Response.Redirect(route.VirtualPath);
+            //    return;
+            //}
+            //else
+            //{
                 string transferUrl;
 
                 if (string.IsNullOrWhiteSpace(cmsPage.PhysicalFile))
@@ -91,7 +91,7 @@ namespace WarpCore.Cms
 
                 context.Server.Transfer(transferUrl, true);
                 return;
-            }
+            //}
         }
 
         private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext)

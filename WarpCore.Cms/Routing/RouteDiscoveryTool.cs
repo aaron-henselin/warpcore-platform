@@ -116,19 +116,19 @@ namespace WarpCore.Cms
                     RequireSsl = node.Page.RequireSsl
                 };
 
-                foreach (var route in node.Page.AlternateRoutes)
-                {
-                    var alternatePageRoute = new ContentPageRoute
-                    {
-                        Authority = site.UriAuthority,
-                        Priority = route.Priority,
-                        SiteId = site.ContentId.Value,
-                        PageId = node.Page.ContentId.Value,
-                        VirtualPath = MakeRelativeUri(site, route.VirtualPath),
-                        RequireSsl = node.Page.RequireSsl
-                    };
-                    pageRoutes.Add(alternatePageRoute);
-                }
+                //foreach (var route in node.Page.AlternateRoutes)
+                //{
+                //    var alternatePageRoute = new ContentPageRoute
+                //    {
+                //        Authority = site.UriAuthority,
+                //        Priority = route.Priority,
+                //        SiteId = site.ContentId.Value,
+                //        PageId = node.Page.ContentId.Value,
+                //        VirtualPath = MakeRelativeUri(site, route.VirtualPath),
+                //        RequireSsl = node.Page.RequireSsl
+                //    };
+                //    pageRoutes.Add(alternatePageRoute);
+                //}
 
             }
 
@@ -193,6 +193,8 @@ namespace WarpCore.Cms
             {
                 allRoutes.AddRange(DiscoverPageRoutesRecursive(childNode,site));
             }
+
+            
 
             return allRoutes;
         }

@@ -41,8 +41,8 @@ namespace WarpCore.Cms
         [ComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
-        [ComplexData]
-        public List<PageRoute> AlternateRoutes { get; set; } = new List<PageRoute>();
+        //[ComplexData]
+        //public List<HistoricalRoute> AlternateRoutes { get; set; } = new List<HistoricalRoute>();
 
         public string PhysicalFile { get; set; }
         public string RedirectExternalUrl { get; set; }
@@ -62,27 +62,11 @@ namespace WarpCore.Cms
         Former = 10,
     }
 
-    [Table("cms_site_route")]
-    public class PageRoute : CosmosEntity
-    {
-        [Column]
-        public Guid PageId { get; set; }
-
-        [Column]
-        public string VirtualPath { get; set; }
-
-        [Column]
-        public int Priority { get; set; }
-
-        [Column]
-        public int Order { get; set; }
-    }
 
 
 
-
-    [Table("cms_page_content")]
-    public class CmsPageContent :CosmosEntity
+    
+    public class CmsPageContent 
     {
         [Column]
         public string ContentPlaceHolderId { get; set; }
@@ -112,21 +96,27 @@ namespace WarpCore.Cms
         public Guid? BeforePageId { get; set; }
     }
 
+    [Table("cms_site_route")]
+    public class HistoricalRoute : UnversionedContentEntity
+    {
+        [Column]
+        public Guid PageId { get; set; }
+
+        [Column]
+        public string VirtualPath { get; set; }
+
+        [Column]
+        public int Priority { get; set; }
+
+        [Column]
+        public int Order { get; set; }
+    }
+
+
+
     public class PageRepository : VersionedContentRepository<CmsPage>
     {
 
-
-        public string CreateVirtualPath(CmsPage cmsPage)
-        {
-
-            throw new NotImplementedException();
-
-            //var generated = SlugGenerator.Generate(cmsPage.Name);
-            //if (cmsPage.ParentPageId != null)
-            //    return CreateVirtualPath(cmsPage) + "/" + generated;
-
-            //return "/"+generated;
-        }
 
         private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
@@ -135,16 +125,16 @@ namespace WarpCore.Cms
                 parentNode = new SiteStructure();
             else
             {
-                var findParentCondition = $@"{nameof(SiteStructureNode.ContentId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
-                var parentNodes = Orm.FindUnversionedContent<SiteStructureNode>(findParentCondition).Result;
+                var findParentCondition = $@"{nameof(CmsPageLocationNode.ContentId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
+                var parentNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(findParentCondition).Result;
                 if (!parentNodes.Any())
                     throw new Exception("Could not find a structual node for: '" + findParentCondition + "'");
 
                 parentNode = parentNodes.Single();
             }
 
-            var siblingsCondition = $@"{nameof(SiteStructureNode.PageId)} neq '{cmsPage.ContentEnvironment}' and {nameof(SiteStructureNode.ParentNodeId)} eq '{parentNode.NodeId}'";
-            var siblings = Orm.FindUnversionedContent<SiteStructureNode>(siblingsCondition).Result.ToList();
+            var siblingsCondition = $@"{nameof(CmsPageLocationNode.PageId)} neq '{cmsPage.ContentEnvironment}' and {nameof(CmsPageLocationNode.ParentNodeId)} eq '{parentNode.NodeId}'";
+            var siblings = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingsCondition).Result.ToList();
 
 
             //foreach (var sibling in siblings)
@@ -165,10 +155,10 @@ namespace WarpCore.Cms
 
         public void Move(CmsPage page, SitemapRelativePosition newSitemapRelativePosition)
         {
-            var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{page.ContentId}'";
-            var sitemapNode = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.SingleOrDefault();
+            var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'";
+            var sitemapNode = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.SingleOrDefault();
             if (sitemapNode == null)
-                sitemapNode = new SiteStructureNode();
+                sitemapNode = new CmsPageLocationNode();
 
             sitemapNode.ContentId = Guid.NewGuid();
             sitemapNode.PageId = page.ContentId.Value;
@@ -176,7 +166,7 @@ namespace WarpCore.Cms
             sitemapNode.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
             sitemapNode.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
-            var sitemapNodesToUpdate = Orm.FindUnversionedContent<SiteStructureNode>($"ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
+            var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
             var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
 
             Orm.Save(sitemapNode);
@@ -185,7 +175,13 @@ namespace WarpCore.Cms
                 previousBefore.BeforeNodeId = sitemapNode.ContentId;
                 Orm.Save(previousBefore);
             }
-           
+
+            if (!sitemapNode.IsNew)
+            {
+                var manualRoute = new HistoricalRoute();
+                manualRoute.Priority = (int)RoutePriority.Former;
+                Orm.Save(manualRoute);
+            }
         }
 
         public void Save(CmsPage cmsPage, PageRelativePosition pageRelativePosition)
@@ -197,8 +193,8 @@ namespace WarpCore.Cms
 
             if (pageRelativePosition.ParentPageId != null)
             {
-                var parentNodeSearch = $@"{nameof(SiteStructureNode.PageId)} eq '{pageRelativePosition.ParentPageId}'";
-                var parentNode = Orm.FindUnversionedContent<SiteStructureNode>(parentNodeSearch).Result
+                var parentNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{pageRelativePosition.ParentPageId}'";
+                var parentNode = Orm.FindUnversionedContent<CmsPageLocationNode>(parentNodeSearch).Result
                     .SingleOrDefault();
 
                 position.ParentSitemapNodeId = parentNode?.NodeId;
@@ -207,8 +203,8 @@ namespace WarpCore.Cms
 
             if (pageRelativePosition.BeforePageId != null)
             {
-                var beforeNodeSearch = $@"{nameof(SiteStructureNode.PageId)} eq '{pageRelativePosition.BeforePageId}'";
-                var beforeNode = Orm.FindUnversionedContent<SiteStructureNode>(beforeNodeSearch).Result
+                var beforeNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{pageRelativePosition.BeforePageId}'";
+                var beforeNode = Orm.FindUnversionedContent<CmsPageLocationNode>(beforeNodeSearch).Result
                     .SingleOrDefault();
 
                 position.BeforeSitemapNodeId = beforeNode?.NodeId;
@@ -243,8 +239,8 @@ namespace WarpCore.Cms
                 sitemapRelativePosition = SitemapRelativePosition.Root;
             else
             {
-                var condition = $@"{nameof(SiteStructureNode.PageId)} eq '{cmsPage.ContentId}'";
-                var node = Orm.FindUnversionedContent<SiteStructureNode>(condition).Result.Single();
+                var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{cmsPage.ContentId}'";
+                var node = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.Single();
                 sitemapRelativePosition = new SitemapRelativePosition
                 {
                     ParentSitemapNodeId = node.ParentNodeId,
