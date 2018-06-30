@@ -91,6 +91,7 @@
     <Compile Include="DynamicPage.aspx.designer.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\HttpContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteContextResolver.cs" />
     <Compile Include="Routing\CmsRouteRegistrar.cs" />

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Crm;
 using WarpCore.DbEngines.AzureStorage;
@@ -75,7 +76,7 @@ namespace IntegrationTests
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
 
             var newSite = SetupTestSite();
-            
+
 
             var liveSitemapBefore = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
             Assert.AreEqual(0, liveSitemapBefore.ChildNodes.Count);
@@ -84,7 +85,7 @@ namespace IntegrationTests
 
 
             var structure = SiteStructureMapBuilder.BuildStructureMap(newSite);
-            Assert.AreEqual(3,structure.ChildNodes.Count);
+            Assert.AreEqual(3, structure.ChildNodes.Count);
 
 
             //Assert.AreEqual(subPage0.ContentId, structure.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).PageId);
@@ -102,6 +103,20 @@ namespace IntegrationTests
                 "http://www.google.com/",
                 "http://www.google.com/homepage/subpage-0",
                 "http://www.google.com/homepage/subpage-0/");
+
+            var lastPage = liveSitemap.ChildNodes.Last().Page;
+
+
+            var uriBuilder = new CmsUriBuilder(
+                    new UriBuilderContext
+                    {
+                        AbsolutePath = "/",
+                        Authority = "www.google.com",
+                        IsSsl = false
+                    }
+                );
+
+            uriBuilder.CreateUri(lastPage,UriSettings.Default);
 
         }
     }

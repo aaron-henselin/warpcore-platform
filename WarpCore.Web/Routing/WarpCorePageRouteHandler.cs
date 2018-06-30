@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Routing;
+using WarpCore.Cms.Routing;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms

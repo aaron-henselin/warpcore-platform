@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WarpCore.Cms.Sites;
 
-namespace WarpCore.Cms
+namespace WarpCore.Cms.Routing
 {
     public static class CmsRoutes
     {

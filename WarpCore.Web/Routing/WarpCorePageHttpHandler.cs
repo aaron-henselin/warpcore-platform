@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Web.Extensions;
 
 namespace WarpCore.Cms
 {
@@ -97,21 +99,24 @@ namespace WarpCore.Cms
 
         private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext)
         {
-            bool ssl = httpContext.Request.Url.Scheme == "https";
-            if (transferRoute is ContentPageRoute route)
-            {
-                ssl = route.RequireSsl;
-            }
+            var uriBuilderContext = httpContext.ToUriBuilderContext();
+            var uriBuilder = new CmsUriBuilder(uriBuilderContext);
+            return uriBuilder.CreateUriForRoute(transferRoute, UriSettings.Default).ToString();
+            //bool ssl = httpContext.Request.Url.Scheme == "https";
+            //if (transferRoute is ContentPageRoute route)
+            //{
+            //    ssl = route.RequireSsl;
+            //}
 
-            var protocol = "http://";
-            if (ssl)
-                protocol = "https://";
+            //var protocol = "http://";
+            //if (ssl)
+            //    protocol = "https://";
 
-            var authority = transferRoute.Authority;
-            if (string.IsNullOrWhiteSpace(authority))
-                authority = httpContext.Request.Url.Authority;
+            //var authority = transferRoute.Authority;
+            //if (transferRoute.Authority == UriAuthorityFilter.Any)
+            //    authority = httpContext.Request.Url.Authority;
 
-            return protocol + authority + "/" + transferRoute.VirtualPath;
+            //return protocol + authority + "/" + transferRoute.VirtualPath;
         }
 
         public void ProcessRequest(HttpContext context)
