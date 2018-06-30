@@ -229,6 +229,8 @@ foreach (var location in historicalPageLocations)
             var rawUri = "/" + site.RoutePrefix + "/" + path+"/"+contentRoute;
             var nonEmptyParts = rawUri.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
             var cleanedUri = string.Join("/", nonEmptyParts);
+            if (string.IsNullOrWhiteSpace(cleanedUri))
+                return new Uri("/",UriKind.Relative);
             return new Uri(cleanedUri, UriKind.Relative);
         }
 

@@ -34,15 +34,25 @@ namespace WarpCore.Cms
         }
     }
 
+    public struct RouteConstraint
+    {
+        public string RoutePrefix { get; set; }
+        public string UriAuthority { get; set; }
+    }
+
     public class CmsRouteTable
     {
 
-        private readonly Dictionary<string,CmsSiteRouteTable> _siteRouteTables = new Dictionary<string, CmsSiteRouteTable>();
+        private readonly Dictionary<RouteConstraint, CmsSiteRouteTable> _siteRouteTables = new Dictionary<RouteConstraint, CmsSiteRouteTable>();
        
 
         public void AddSubTable(Site site, CmsSiteRouteTable subRouteTable)
         {
-            _siteRouteTables.Add(site.UriAuthority, subRouteTable);
+            //var key = site.UriAuthority;
+            //if (!string.IsNullOrWhiteSpace(site.RoutePrefix))
+            //    key = key + site.RoutePrefix;
+
+            _siteRouteTables.Add(new RouteConstraint{ RoutePrefix = site.RoutePrefix, UriAuthority = site.UriAuthority}, subRouteTable);
 
         }
 
@@ -62,24 +72,46 @@ namespace WarpCore.Cms
 
         public bool TryResolveRoute(Uri absoluteUri, out SiteRoute route)
         {
+            if (!absoluteUri.IsAbsoluteUri)
+                throw new Exception("Uris should be absolute.");
+
             route = null;
 
-            var site = GetCurrentSite(absoluteUri);
-
-            if (site == null)
+            RouteConstraint constraint;
+            try
+            {
+                constraint = GetBestRouteConstraint(absoluteUri);
+            }
+            catch (Exception e)
+            {
                 return false;
+            }
 
             var absPath = new Uri(absoluteUri.AbsolutePath, UriKind.Relative);
-            return _siteRouteTables[site].TryGetRoute(absPath, out route);
+            if (constraint.RoutePrefix != null)
+                absPath = new Uri(absPath.AbsolutePath.Remove(0, constraint.RoutePrefix.Length),UriKind.Relative);
+
+            return _siteRouteTables[constraint].TryGetRoute(absPath, out route);
         }
 
-        private string GetCurrentSite(Uri absoluteUri)
+        private RouteConstraint GetBestRouteConstraint(Uri absoluteUri)
         {
             var allSites = _siteRouteTables.Keys;
-            var site = allSites.SingleOrDefault(x => x == absoluteUri.Authority);
-            if (site == null)
-                site = allSites.SingleOrDefault(string.IsNullOrWhiteSpace);
-            return site;
+
+            var matchingSites = allSites.Where(x => x.UriAuthority == absoluteUri.Authority 
+                                                || x.UriAuthority == UriAuthorityFilter.Any)
+
+                                        .Where(x => string.IsNullOrWhiteSpace(x.RoutePrefix)
+                                                || absoluteUri.AbsolutePath.StartsWith(x.RoutePrefix,StringComparison.InvariantCultureIgnoreCase))
+
+                                        .OrderByDescending(x => x.UriAuthority != UriAuthorityFilter.Any) //prefer most specific site
+                                        .ThenByDescending(x => (x.RoutePrefix ?? "").Length) //prefer longest routeprefix
+                                        .ToList();
+
+            if (!matchingSites.Any())
+                throw new Exception("Could not match absolute uri to a constraint.");
+
+            return matchingSites.First();
         }
 
     }

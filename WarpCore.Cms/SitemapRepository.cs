@@ -62,7 +62,7 @@ namespace WarpCore.Cms
             if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId))
                 sitemap.HomePage = allPages[site.HomepageId];
 
-            AttachChildNodes(sitemap,siteStructure,"",allPages);
+            AttachChildNodes(sitemap,siteStructure,"/",allPages);
             return sitemap;
         }
 
@@ -77,7 +77,7 @@ namespace WarpCore.Cms
                     continue;
                 
                 childSitemapNode.Page = allPages[childStructureNode.PageId];
-                childSitemapNode.VirtualPath = path + "/" + childSitemapNode.Page.Slug;
+                childSitemapNode.VirtualPath = path + childSitemapNode.Page.Slug+"/";
                 sitemapNode.ChildNodes.Add(childSitemapNode);
 
                 AttachChildNodes(childSitemapNode, childStructureNode, childSitemapNode.VirtualPath, allPages);

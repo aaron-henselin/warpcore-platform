@@ -79,8 +79,8 @@ namespace IntegrationTests
 
             pageRepository.Move(subPage0,SitemapRelativePosition.Root);
 
-            SiteRoute sr;
-            var success = CmsRoutes.Current.TryResolveRoute(new Uri("/",UriKind.Relative),out sr);
+            SiteRoute homepageSr;
+            var success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com",UriKind.Absolute),out homepageSr);
             Assert.IsTrue(success);
 
             //var allRoutes = RouteBuilder.DiscoverRoutesForSite(newSite);

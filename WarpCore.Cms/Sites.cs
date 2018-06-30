@@ -13,12 +13,16 @@ namespace WarpCore.Cms
     {
         public string Name { get; set; }
         public string RoutePrefix { get; set; }
-        public string UriAuthority { get; set; }
+        public string UriAuthority { get; set; } = UriAuthorityFilter.Any;
         public int Priority { get; set; }
 
         public Guid? HomepageId { get; set; }
     }
 
+    public struct UriAuthorityFilter
+    {
+        public static string Any => "*";
+    }
 
     public class SiteStructureMapBuilder
     {
