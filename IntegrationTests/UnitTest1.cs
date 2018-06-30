@@ -59,6 +59,16 @@ namespace IntegrationTests
             return newSite;
         }
 
+        private static void AssertUrlIsRoutable(params string[] uris)
+        {
+            foreach (var uri in uris)
+            {
+                SiteRoute sr;
+                var success = CmsRoutes.Current.TryResolveRoute(new Uri(uri, UriKind.Absolute), out sr);
+                Assert.IsTrue(success);
+            }
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
@@ -87,26 +97,11 @@ namespace IntegrationTests
 
             //pageRepository.Move(subPage0,SitemapRelativePosition.Root);
 
-            SiteRoute homepageSr;
-            var success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com?qa=1",UriKind.Absolute),out homepageSr);
-            Assert.IsTrue(success);
-
-            success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com/", UriKind.Absolute), out homepageSr);
-            Assert.IsTrue(success);
-
-            SiteRoute subpageSr;
-            success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com/homepage/subpage-0?a=s", UriKind.Absolute), out subpageSr);
-            Assert.IsTrue(success);
-
-            success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com/homepage/subpage-0/?a=s", UriKind.Absolute), out subpageSr);
-            Assert.IsTrue(success);
-
-            success = CmsRoutes.Current.TryResolveRoute(new Uri("http://www.google.com/homepage/subpage-2/?a=s", UriKind.Absolute), out subpageSr);
-            Assert.IsFalse(success);
-
-
-            //var allRoutes = RouteBuilder.DiscoverRoutesForSite(newSite);
-            //new CmsRouteTable();
+            AssertUrlIsRoutable(
+                "http://www.google.com",
+                "http://www.google.com/",
+                "http://www.google.com/homepage/subpage-0",
+                "http://www.google.com/homepage/subpage-0/");
 
         }
     }
