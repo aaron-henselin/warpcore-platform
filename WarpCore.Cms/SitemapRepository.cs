@@ -98,7 +98,25 @@ namespace WarpCore.Cms
         public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
 
 
+        public ISiteStructureNode GetStructureNode(CmsPage cmsPage)
+        {
+            return GetStructureNode(cmsPage, this);
+        }
 
+        private static ISiteStructureNode GetStructureNode(CmsPage cmsPage, ISiteStructureNode root)
+        {
+            foreach (var childNode in root.ChildNodes)
+            {
+                if (childNode.PageId == cmsPage.ContentId)
+                    return childNode;
+
+                var found = GetStructureNode(cmsPage, childNode);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
 
     }
 
