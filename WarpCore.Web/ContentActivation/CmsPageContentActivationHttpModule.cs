@@ -32,7 +32,7 @@ namespace WarpCore.Web
 
         private void PageOnPreInit(object sender, EventArgs eventArgs)
         {
-            var success = CmsRouteTable.Current.TryGetRoute(HttpContext.Current.Request.Url, out var route);
+            var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out var route);
             if (!success || route.PageId == null)
                 return;
 

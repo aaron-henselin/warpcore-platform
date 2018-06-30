@@ -10,7 +10,7 @@ namespace WarpCore.Cms
         {
             var requestUri = requestContext.HttpContext.Request.Url;
 
-            var success = CmsRouteTable.Current.TryGetRoute(requestUri, out var route);
+            var success = CmsRoutes.Current.TryResolveRoute(requestUri, out var route);
             if (success)
             {
                 requestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken, route);

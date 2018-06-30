@@ -19,6 +19,26 @@ namespace WarpCore.Cms
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
         public CmsPage HomePage { get; set; }
         public string VirtualPath => "/";
+
+        public ISitemapNode GetSitemapNode(CmsPage cmsPage)
+        {
+            return GetSitemapNode(cmsPage, this);
+        }
+
+        private static ISitemapNode GetSitemapNode(CmsPage cmsPage, ISitemapNode root)
+        {
+            foreach (var childNode in root.ChildNodes)
+            {
+                if (childNode.Page.ContentId == cmsPage.ContentId)
+                    return childNode;
+
+                var found = GetSitemapNode(cmsPage, childNode);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
     }
 
     public class SitemapNode: ISitemapNode

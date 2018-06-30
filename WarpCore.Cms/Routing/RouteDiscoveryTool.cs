@@ -89,6 +89,9 @@ namespace WarpCore.Cms
 
         private static IEnumerable<SiteRoute> DiscoverPageRoutesRecursive(SitemapNode node,Site site)
         {
+            if (node.Page.PageType == null)
+                throw new Exception("Undefined page type.");
+
             var pageRoutes = new List<SiteRoute>();
 
             SiteRoute primaryRoute = null;
@@ -133,7 +136,7 @@ namespace WarpCore.Cms
             }
 
             if (primaryRoute == null)
-                throw new Exception("bad route type.");
+                throw new Exception("Unsupported page type: "+node.Page.PageType);
 
             primaryRoute.Authority = site.UriAuthority;
             primaryRoute.Priority = (int) RoutePriority.Primary;
@@ -167,10 +170,24 @@ namespace WarpCore.Cms
 
         public static IEnumerable<SiteRoute> DiscoverRoutesForSite(Site site)
         {
+            var allRoutes = new List<SiteRoute>();
+
+
+            var pageRepository = new PageRepository();
+            var historicalPageLocations = pageRepository.GetHistoricalPageLocations(site);
+foreach (var location in historicalPageLocations)
+                    allRoutes.Add(new RedirectPageRoute
+                    {
+                        InternalRedirectPageId = location.PageId,
+                        Authority = site.UriAuthority,
+                        Priority = location.Priority,
+                        SiteId = location.SiteId,
+                        VirtualPath = new Uri(location.VirtualPath,UriKind.Relative)
+                    });
+
             var associatedSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
 
 
-            var allRoutes = new List<SiteRoute>();
 
             if (associatedSitemap.HomePage != null)
             {

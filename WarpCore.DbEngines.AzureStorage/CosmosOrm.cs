@@ -52,6 +52,15 @@ namespace WarpCore.DbEngines.AzureStorage
         Archive = 2
     }
 
+
+    [Table("cms_content_checksum")]
+    public class ContentChecksum : UnversionedContentEntity
+    {
+        public string ContentType { get; set; }
+        public string Draft { get; set; }
+        public string Live { get; set; }
+    }
+
     public abstract class VersionedContentEntity : CosmosEntity
     {
         public VersionedContentEntity()
@@ -59,7 +68,7 @@ namespace WarpCore.DbEngines.AzureStorage
             this.ContentEnvironment = ContentEnvironment.Draft;
         }
 
-        public string GetPublishingChecksum()
+        public string GetContentChecksum()
         {
             var obj = JsonConvert.SerializeObject(this);
             var dict = JObject.Parse(obj);

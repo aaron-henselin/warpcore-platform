@@ -145,7 +145,7 @@ namespace WarpCore.Cms
                 throw new HttpException(404, "No page id.");
 
             SiteRoute redirectToRoute;
-            CmsRouteTable.Current.TryGetRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
+            CmsRoutes.Current.TryResolveRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
 
             var redirectUrl = CreateUrl(redirectToRoute, context);
             context.Response.Redirect(redirectUrl);
@@ -163,7 +163,7 @@ namespace WarpCore.Cms
                 throw new HttpException(404,"No page id.");
 
             SiteRoute redirectToRoute;
-            CmsRouteTable.Current.TryGetRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
+            CmsRoutes.Current.TryResolveRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
 
             var redirectUrl = CreateUrl(redirectToRoute, context);
             context.Response.Redirect(redirectUrl);

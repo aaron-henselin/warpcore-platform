@@ -4,23 +4,49 @@ using System.Linq;
 
 namespace WarpCore.Cms
 {
-    public class CmsRouteTable
+    public static class CmsRoutes
     {
-        private readonly Dictionary<string,CmsSiteRouteTable> _siteRouteTables = new Dictionary<string, CmsSiteRouteTable>();
+        private static CmsRouteTable _current;
 
-        public CmsRouteTable()
+        public static CmsRouteTable Current
         {
+            get
+            {
+                if (_current == null)
+                    _current = CreateRouteTable();
+
+                return _current;
+            }
+        }
+
+        private static CmsRouteTable CreateRouteTable()
+        {
+            var rt = new CmsRouteTable();
             var allSites = new SiteRepository().Find().ToList();
             foreach (var site in allSites)
             {
                 var allRoutes = RouteBuilder.DiscoverRoutesForSite(site).ToList();
                 var subRouteTable = new CmsSiteRouteTable(allRoutes);
-                _siteRouteTables.Add(site.UriAuthority, subRouteTable);
+                rt.AddSubTable(site,subRouteTable);
             }
+
+            return rt;
+        }
+    }
+
+    public class CmsRouteTable
+    {
+
+        private readonly Dictionary<string,CmsSiteRouteTable> _siteRouteTables = new Dictionary<string, CmsSiteRouteTable>();
+       
+
+        public void AddSubTable(Site site, CmsSiteRouteTable subRouteTable)
+        {
+            _siteRouteTables.Add(site.UriAuthority, subRouteTable);
 
         }
 
-        public bool TryGetRoute(Guid pageId, out SiteRoute route)
+        public bool TryResolveRoute(Guid pageId, out SiteRoute route)
         {
             route = null;
 
@@ -34,7 +60,7 @@ namespace WarpCore.Cms
             return false;
         }
 
-        public bool TryGetRoute(Uri absoluteUri, out SiteRoute route)
+        public bool TryResolveRoute(Uri absoluteUri, out SiteRoute route)
         {
             route = null;
 
@@ -56,6 +82,5 @@ namespace WarpCore.Cms
             return site;
         }
 
-        public static CmsRouteTable Current { get; set; } = new CmsRouteTable();
     }
 }

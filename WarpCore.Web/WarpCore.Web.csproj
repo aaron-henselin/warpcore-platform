@@ -84,8 +84,6 @@
     <Compile Include="ContentActivation\CmsPageContentActivationHttpModule.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="ContentActivation\CmsPageContentActivator.cs" />
-    <Compile Include="Routing\CmsRouteTable.cs" />
-    <Compile Include="Routing\CmsSiteRouteTable.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

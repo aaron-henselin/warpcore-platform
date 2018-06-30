@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace WarpCore.DbEngines.AzureStorage
@@ -18,9 +20,29 @@ namespace WarpCore.DbEngines.AzureStorage
             Orm = orm;
         }
 
-        public virtual void Save(T item) 
+        public virtual void Save(T item)
         {
             Orm.Save(item);
+
+            SaveDraftChecksum(item);
+        }
+
+        private void SaveDraftChecksum(T item)
+        {
+            var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
+
+            var currentPublishingData = Orm.FindUnversionedContent<ContentChecksum>("ContentId eq '" + item.ContentId + "'")
+                .Result.SingleOrDefault();
+            if (currentPublishingData == null)
+            {
+                currentPublishingData = new ContentChecksum
+                {
+                    ContentId = item.ContentId,
+                    Draft = item.GetContentChecksum(),
+                    ContentType = contentType
+                };
+                Orm.Save(currentPublishingData);
+            }
         }
 
 
@@ -34,6 +56,11 @@ namespace WarpCore.DbEngines.AzureStorage
 
         public void Publish(string condition)
         {
+            var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
+
+            var currentPublishingData =
+                Orm.FindUnversionedContent<ContentChecksum>("ContentType eq '" + contentType + "'").Result;
+
             var allContentToPublish = FindContentVersions(condition, null).Result.ToList().ToLookup(x => x.ContentId);
             foreach (var lookupGroup in allContentToPublish)
             {
@@ -47,7 +74,7 @@ namespace WarpCore.DbEngines.AzureStorage
             var currentLive = contentVersions.SingleOrDefault(x => ContentEnvironment.Live == x.ContentEnvironment);
             var currentDraft = contentVersions.SingleOrDefault(x => ContentEnvironment.Draft == x.ContentEnvironment);
 
-            var areInSync = string.Equals(currentLive?.GetPublishingChecksum(),currentDraft?.GetPublishingChecksum());
+            var areInSync = string.Equals(currentLive?.GetContentChecksum(),currentDraft?.GetContentChecksum());
             if (areInSync)
                 return;
 

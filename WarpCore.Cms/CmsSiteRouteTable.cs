@@ -9,10 +9,10 @@ namespace WarpCore.Cms
         private ILookup<Uri, SiteRoute> _routesByPath;
         private ILookup<Guid, SiteRoute> _routesByPageId;
 
-        public CmsSiteRouteTable(List<SiteRoute> siteRoutes)
+        public CmsSiteRouteTable(IReadOnlyCollection<SiteRoute> siteRoutes)
         {
             _routesByPath = siteRoutes.ToLookup(x => x.VirtualPath);
-            _routesByPageId = siteRoutes.ToLookup(x => x.PageId.Value);
+            _routesByPageId = siteRoutes.Where(x => x.PageId != null).ToLookup(x => x.PageId.Value);
         }
 
         public bool TryGetRoute(Guid pageId, out SiteRoute route)

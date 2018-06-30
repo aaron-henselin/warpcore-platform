@@ -35,8 +35,7 @@ namespace WarpCore.Cms
         [Column]
         public Guid SiteId { get; set; }
 
-        [Column]
-        public string PageType { get; set; }
+        [Column] public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
         [ComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
@@ -110,6 +109,8 @@ namespace WarpCore.Cms
 
         [Column]
         public int Order { get; set; }
+
+        public Guid SiteId { get; set; }
     }
 
 
@@ -155,33 +156,57 @@ namespace WarpCore.Cms
 
         public void Move(CmsPage page, SitemapRelativePosition newSitemapRelativePosition)
         {
-            var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'";
-            var sitemapNode = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.SingleOrDefault();
-            if (sitemapNode == null)
-                sitemapNode = new CmsPageLocationNode();
 
-            sitemapNode.ContentId = Guid.NewGuid();
-            sitemapNode.PageId = page.ContentId.Value;
-            sitemapNode.SiteId = page.SiteId;
-            sitemapNode.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
-            sitemapNode.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
+            var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'";
+            var newPageLocation = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.SingleOrDefault();
+            if (newPageLocation == null)
+                newPageLocation = new CmsPageLocationNode();
+            else
+            {
+                CreateRouteHistory(page);
+            }
+
+            newPageLocation.ContentId = Guid.NewGuid();
+            newPageLocation.PageId = page.ContentId.Value;
+            newPageLocation.SiteId = page.SiteId;
+            newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
+            newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
             var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
             var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
 
-            Orm.Save(sitemapNode);
+            Orm.Save(newPageLocation);
             if (previousBefore != null)
             {
-                previousBefore.BeforeNodeId = sitemapNode.ContentId;
+                previousBefore.BeforeNodeId = newPageLocation.ContentId;
                 Orm.Save(previousBefore);
             }
 
-            if (!sitemapNode.IsNew)
+            //this addresses only half of the linked list move.
+            //need to relink 
+
+        }
+
+        public IEnumerable<HistoricalRoute> GetHistoricalPageLocations(Site site)
+        {
+            return Orm.FindUnversionedContent<HistoricalRoute>("SiteId eq '" + site.ContentId + "'").Result;
+        }
+
+
+        private void CreateRouteHistory(CmsPage page)
+        {
+            var site = new SiteRepository().GetById(page.SiteId);
+            var sitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
+            var previousLivePosition = sitemap.GetSitemapNode(page);
+            
+            var historicalRoute = new HistoricalRoute
             {
-                var manualRoute = new HistoricalRoute();
-                manualRoute.Priority = (int)RoutePriority.Former;
-                Orm.Save(manualRoute);
-            }
+                Priority = (int) RoutePriority.Former,
+                VirtualPath = previousLivePosition.VirtualPath,
+                PageId = page.ContentId.Value,
+                SiteId = page.SiteId,
+            };
+            Orm.Save(historicalRoute);
         }
 
         public void Save(CmsPage cmsPage, PageRelativePosition pageRelativePosition)

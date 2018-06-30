@@ -77,8 +77,14 @@ namespace IntegrationTests
             Assert.AreEqual(3, liveSitemap.ChildNodes.Count);
 
 
-            
+            pageRepository.Move(subPage0,SitemapRelativePosition.Root);
 
+            SiteRoute sr;
+            var success = CmsRoutes.Current.TryResolveRoute(new Uri("/",UriKind.Relative),out sr);
+            Assert.IsTrue(success);
+
+            //var allRoutes = RouteBuilder.DiscoverRoutesForSite(newSite);
+            //new CmsRouteTable();
 
         }
     }
