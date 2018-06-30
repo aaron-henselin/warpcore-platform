@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
+using WarpCore.Cms.Sites;
 using WarpCore.Crm;
 using WarpCore.DbEngines.AzureStorage;
 
@@ -63,8 +64,7 @@ namespace IntegrationTests
         {
             foreach (var uri in uris)
             {
-                SiteRoute sr;
-                var success = CmsRoutes.Current.TryResolveRoute(new Uri(uri, UriKind.Absolute), out sr);
+                var success = CmsRoutes.Current.TryResolveRoute(new Uri(uri, UriKind.Absolute), out _);
                 Assert.IsTrue(success);
             }
         }
@@ -77,8 +77,8 @@ namespace IntegrationTests
             var newSite = SetupTestSite();
             
 
-            var liveSitemap_before = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
-            Assert.AreEqual(0, liveSitemap_before.ChildNodes.Count);
+            var liveSitemapBefore = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
+            Assert.AreEqual(0, liveSitemapBefore.ChildNodes.Count);
 
             PublishingShortcuts.PublishSite(newSite);
 

@@ -3,25 +3,65 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using WarpCore.DbEngines.AzureStorage;
 
-namespace WarpCore.Cms
+namespace WarpCore.Cms.Sites
 {
-    [Unversioned]
-    [Table("cms_site")]
-    public class Site : UnversionedContentEntity
+    public interface ISiteStructureNode
     {
-        public string Name { get; set; }
-        public string RoutePrefix { get; set; }
-        public string UriAuthority { get; set; } = UriAuthorityFilter.Any;
-        public int Priority { get; set; }
-
-        public Guid? HomepageId { get; set; }
+        Guid NodeId { get; }
+        IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; }
     }
 
-    public struct UriAuthorityFilter
+    public class SiteStructure : ISiteStructureNode
     {
-        public static string Any => "*";
+        public Guid NodeId => Guid.Empty;
+        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
+
+
+        public ISiteStructureNode GetStructureNode(CmsPage cmsPage)
+        {
+            return GetStructureNode(cmsPage, this);
+        }
+
+        private static ISiteStructureNode GetStructureNode(CmsPage cmsPage, ISiteStructureNode root)
+        {
+            foreach (var childNode in root.ChildNodes)
+            {
+                if (childNode.PageId == cmsPage.ContentId)
+                    return childNode;
+
+                var found = GetStructureNode(cmsPage, childNode);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
+
+    }
+
+    [Unversioned]
+    [Table("cms_site_structure")]
+    public class CmsPageLocationNode : UnversionedContentEntity, ISiteStructureNode
+    {
+        [Column]
+        public Guid SiteId { get; set; }
+
+        [Column]
+        public Guid PageId { get; set; }
+
+        [Column]
+        public Guid ParentNodeId { get; set; }
+
+        [Column]
+        public Guid? BeforeNodeId { get; set; }
+
+        public Guid NodeId { get => this.ContentId.Value; }
+
+        [JsonIgnore]
+        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
     }
 
     public class SiteStructureMapBuilder
@@ -48,7 +88,7 @@ namespace WarpCore.Cms
             {
                 var remainingRoot = pendingToInsert.Single(x => x.BeforeNodeId == null);
                 pendingToInsert.Remove(remainingRoot);
-                ll.Insert(0,remainingRoot);
+                ll.Insert(0, remainingRoot);
             }
 
             while (pendingToInsert.Any())
@@ -65,13 +105,5 @@ namespace WarpCore.Cms
 
         }
     }
-
-    public class SiteRepository : UnversionedContentRepository<Site>
-    {
-
-
-
-    }
-
 
 }

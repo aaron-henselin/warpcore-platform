@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
+using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
@@ -86,61 +87,6 @@ namespace WarpCore.Cms
     }
 
 
-    public interface ISiteStructureNode
-    {
-        Guid NodeId { get;  }
-        IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; }
-    }
-
-    public class SiteStructure: ISiteStructureNode
-    {
-        public Guid NodeId => Guid.Empty; 
-        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
-
-
-        public ISiteStructureNode GetStructureNode(CmsPage cmsPage)
-        {
-            return GetStructureNode(cmsPage, this);
-        }
-
-        private static ISiteStructureNode GetStructureNode(CmsPage cmsPage, ISiteStructureNode root)
-        {
-            foreach (var childNode in root.ChildNodes)
-            {
-                if (childNode.PageId == cmsPage.ContentId)
-                    return childNode;
-
-                var found = GetStructureNode(cmsPage, childNode);
-                if (found != null)
-                    return found;
-            }
-
-            return null;
-        }
-
-    }
-
-    [Unversioned]
-    [Table("cms_site_structure")]
-    public class CmsPageLocationNode : UnversionedContentEntity, ISiteStructureNode
-    {
-        [Column]
-        public Guid SiteId { get; set; }
-
-        [Column]
-        public Guid PageId { get; set; }
-
-        [Column]
-        public Guid ParentNodeId { get; set; }
-
-        [Column]
-        public Guid? BeforeNodeId { get; set; }
-
-        public Guid NodeId { get => this.ContentId.Value; }
-
-        [JsonIgnore]
-        public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
-    }
 
 
 
