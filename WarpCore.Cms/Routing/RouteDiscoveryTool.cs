@@ -142,7 +142,7 @@ namespace WarpCore.Cms
             primaryRoute.Priority = (int) RoutePriority.Primary;
             primaryRoute.SiteId = site.ContentId.Value;
             primaryRoute.PageId = node.Page.ContentId.Value;
-            primaryRoute.VirtualPath = MakeRelativeUri(site, node.VirtualPath);
+            primaryRoute.VirtualPath = MakeRelativeUri(site, node.VirtualPath.ToString());
             
             pageRoutes.Add(primaryRoute);
 
@@ -228,9 +228,12 @@ foreach (var location in historicalPageLocations)
         {
             var rawUri = "/" + site.RoutePrefix + "/" + path+"/"+contentRoute;
             var nonEmptyParts = rawUri.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
-            var cleanedUri = string.Join("/", nonEmptyParts);
-            if (string.IsNullOrWhiteSpace(cleanedUri))
+
+            if (!nonEmptyParts.Any())
                 return new Uri("/",UriKind.Relative);
+
+            var cleanedUri = "/"+string.Join("/", nonEmptyParts);
+
             return new Uri(cleanedUri, UriKind.Relative);
         }
 

@@ -70,10 +70,19 @@ namespace WarpCore.Cms
             return false;
         }
 
+        private Uri RemoveTrailingSlashes(Uri inUri)
+        {
+            if (inUri.ToString().Length > 1)
+                return new Uri(inUri.ToString().TrimEnd('/'), UriKind.Relative);
+
+            return inUri;
+        }
+
         public bool TryResolveRoute(Uri absoluteUri, out SiteRoute route)
         {
             if (!absoluteUri.IsAbsoluteUri)
                 throw new Exception("Uris should be absolute.");
+
 
             route = null;
 
@@ -90,6 +99,8 @@ namespace WarpCore.Cms
             var absPath = new Uri(absoluteUri.AbsolutePath, UriKind.Relative);
             if (constraint.RoutePrefix != null)
                 absPath = new Uri(absPath.AbsolutePath.Remove(0, constraint.RoutePrefix.Length),UriKind.Relative);
+
+            absPath = RemoveTrailingSlashes(absPath);
 
             return _siteRouteTables[constraint].TryGetRoute(absPath, out route);
         }

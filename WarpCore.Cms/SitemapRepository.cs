@@ -10,7 +10,7 @@ namespace WarpCore.Cms
 
     public interface ISitemapNode
     {
-        string VirtualPath { get;  }
+        Uri VirtualPath { get;  }
         List<SitemapNode> ChildNodes { get; set; }
     }
 
@@ -18,7 +18,7 @@ namespace WarpCore.Cms
     {
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
         public CmsPage HomePage { get; set; }
-        public string VirtualPath => "/";
+        public Uri VirtualPath => new Uri("/",UriKind.Relative);
 
         public ISitemapNode GetSitemapNode(CmsPage cmsPage)
         {
@@ -46,7 +46,7 @@ namespace WarpCore.Cms
         public CmsPage Page { get; set; }
 
         public List<SitemapNode> ChildNodes { get; set; } = new List<SitemapNode>();
-        public string VirtualPath { get; set; }
+        public Uri VirtualPath { get; set; }
     }
 
     public static class SitemapBuilder
@@ -62,7 +62,7 @@ namespace WarpCore.Cms
             if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId))
                 sitemap.HomePage = allPages[site.HomepageId];
 
-            AttachChildNodes(sitemap,siteStructure,"/",allPages);
+            AttachChildNodes(sitemap,siteStructure,string.Empty,allPages);
             return sitemap;
         }
 
@@ -77,10 +77,10 @@ namespace WarpCore.Cms
                     continue;
                 
                 childSitemapNode.Page = allPages[childStructureNode.PageId];
-                childSitemapNode.VirtualPath = path + childSitemapNode.Page.Slug+"/";
+                childSitemapNode.VirtualPath = new Uri(path + "/" +childSitemapNode.Page.Slug,UriKind.Relative);
                 sitemapNode.ChildNodes.Add(childSitemapNode);
 
-                AttachChildNodes(childSitemapNode, childStructureNode, childSitemapNode.VirtualPath, allPages);
+                AttachChildNodes(childSitemapNode, childStructureNode, childSitemapNode.VirtualPath.ToString(), allPages);
             }
         }
     }

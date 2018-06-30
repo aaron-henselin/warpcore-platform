@@ -202,7 +202,7 @@ namespace WarpCore.Cms
             var historicalRoute = new HistoricalRoute
             {
                 Priority = (int) RoutePriority.Former,
-                VirtualPath = previousLivePosition.VirtualPath,
+                VirtualPath = previousLivePosition.VirtualPath.ToString(),
                 PageId = page.ContentId.Value,
                 SiteId = page.SiteId,
             };
