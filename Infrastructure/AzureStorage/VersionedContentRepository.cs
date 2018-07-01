@@ -56,10 +56,10 @@ namespace WarpCore.DbEngines.AzureStorage
 
         public void Publish(string condition)
         {
-            var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
+            //var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
 
-            var currentPublishingData =
-                Orm.FindUnversionedContent<ContentChecksum>("ContentType eq '" + contentType + "'").Result;
+            //var currentPublishingData =
+            //    Orm.FindUnversionedContent<ContentChecksum>("ContentType eq '" + contentType + "'").Result;
 
             var allContentToPublish = FindContentVersions(condition, null).Result.ToList().ToLookup(x => x.ContentId);
             foreach (var lookupGroup in allContentToPublish)

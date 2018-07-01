@@ -9,6 +9,11 @@ namespace WarpCore.Cms.Routing
     {
         private static CmsRouteTable _current;
 
+        public static void RegenerateAllRoutes()
+        {
+            _current = null;
+        }
+
         public static CmsRouteTable Current
         {
             get

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using Cms.Layout;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
@@ -16,11 +18,21 @@ namespace DemoSite
         protected void Application_Start(object sender, EventArgs e)
         {
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
+            
             SetupTestSite();
+
+            PublishingShortcuts.PublishSites();
         }
 
         private Site SetupTestSite()
         {
+            var myLayout = new Layout
+            {
+                MasterPagePath = "/Global.Master"
+            };
+            var layoutRepository = new LayoutRepository();
+            layoutRepository.Save(myLayout);
+
             var siteRepo = new SiteRepository();
             var newSite = new Site
             {
@@ -31,17 +43,20 @@ namespace DemoSite
             var homePage = new CmsPage
             {
                 Name = "Homepage",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId.Value,
+                LayoutId = myLayout.ContentId.Value
             };
             var aboutUs = new CmsPage
             {
                 Name = "About Us",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId.Value,
+                LayoutId = myLayout.ContentId.Value
             };
             var contactUs = new CmsPage
             {
                 Name = "Contact Us",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId.Value,
+                LayoutId = myLayout.ContentId.Value
             };
 
             var pageRepository = new PageRepository();

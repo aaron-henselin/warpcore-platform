@@ -87,12 +87,17 @@ namespace WarpCore.Cms
             //{
                 string transferUrl;
 
-                if (string.IsNullOrWhiteSpace(cmsPage.PhysicalFile))
+                if (!string.IsNullOrWhiteSpace(cmsPage.PhysicalFile))
                     transferUrl = cmsPage.PhysicalFile;
                 else
-                    transferUrl = "DynamicPage.aspx";
+                    transferUrl = "/App_Data/DynamicPage.aspx";
 
+            
                 context.Server.Transfer(transferUrl, true);
+            var newHandler1 = context.Handler;
+
+            var newHandler2 = HttpContext.Current.Handler;
+
                 return;
             //}
         }

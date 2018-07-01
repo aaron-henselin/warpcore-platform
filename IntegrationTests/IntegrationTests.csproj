@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WarpCore.Cms\WarpCore.Cms.csproj" />
-    <ProjectReference Include="..\WarpCore.Crm\WarpCore.Crm.csproj" />
+    <ProjectReference Include="..\BusinessLayer\Cms\Cms.csproj" />
+    <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj" />
+    <ProjectReference Include="..\Infrastructure\Framework\Framework.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.DbEngines.AzureStorage;
@@ -49,6 +50,12 @@ namespace WarpCore.Web
                 ph.Controls.Add(activatedWidget);
             }
         }
+
+        public void SetupLayout(Page localPage)
+        {
+            var layoutToApply = new LayoutRepository().GetById(_context.Page.LayoutId);
+            localPage.MasterPageFile = layoutToApply.MasterPagePath;
+        }
     }
 
     public class LayoutHandle : PlaceHolder
@@ -67,11 +74,36 @@ namespace WarpCore.Web
         }
     }
 
-    public sealed class CmsPageContentActivationHttpModule : IHttpModule
+
+
+    public sealed class CmsPageBuilderHttpModule : IHttpModule
     {
         void IHttpModule.Init(HttpApplication application)
         {
             application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
+
+            application.PostAuthorizeRequest += (sender, args) =>
+            {
+                sender.GetHashCode();
+            };
+            application.AcquireRequestState += (sender, args) =>
+            {
+                sender.GetHashCode();
+            };
+            application.EndRequest += (sender, args) =>
+            {
+                sender.GetHashCode();
+            };
+
+            application.BeginRequest += (sender, args) =>
+            {
+                sender.GetHashCode();
+            };
+
+            application.PostRequestHandlerExecute += (sender, args) =>
+            {
+                sender.GetHashCode();
+            };
         }
 
         void application_PreRequestHandlerExecute(object sender, EventArgs e)
@@ -88,6 +120,7 @@ namespace WarpCore.Web
                 {
                     var localPage = (Page) sender;
                     var pageBuilder = Dependency.Resolve<CmsPageBuilder>();
+                    pageBuilder.SetupLayout(localPage);
                     pageBuilder.PopulateContentPlaceholders(localPage);
                 };
             }

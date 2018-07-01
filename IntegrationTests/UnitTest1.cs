@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
-using WarpCore.Crm;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace IntegrationTests

@@ -53,13 +53,12 @@
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.9.2.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.9.3.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -81,16 +80,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\DynamicPage.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Master\Global.Master.cs">
+      <DependentUpon>Global.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Master\Global.Master.designer.cs">
+      <DependentUpon>Global.Master</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Master\Global.Master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -100,25 +108,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WarpCore.Cms\WarpCore.Cms.csproj">
-      <Project>{bf4bc43a-8225-48dd-8b36-3e6b657fb6dd}</Project>
-      <Name>WarpCore.Cms</Name>
+    <ProjectReference Include="..\BusinessLayer\Cms\Cms.csproj">
+      <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
+      <Name>Cms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WarpCore.Crm\WarpCore.Crm.csproj">
-      <Project>{e8ff7e84-988d-4e8c-80c2-423c2164b293}</Project>
-      <Name>WarpCore.Crm</Name>
+    <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj">
+      <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
+      <Name>AzureStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WarpCore.DbEngines.AzureStorage\WarpCore.DbEngines.AzureStorage.csproj">
-      <Project>{31ade8af-8b3c-4f41-891d-ad5fd56139fa}</Project>
-      <Name>WarpCore.DbEngines.AzureStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WarpCore.Framework\WarpCore.Framework.csproj">
-      <Project>{58021052-3810-46fe-bc67-2c397c99449d}</Project>
-      <Name>WarpCore.Framework</Name>
+    <ProjectReference Include="..\Infrastructure\Framework\Framework.csproj">
+      <Project>{edffb1e1-cd8a-4634-ab34-ab857963534f}</Project>
+      <Name>Framework</Name>
     </ProjectReference>
     <ProjectReference Include="..\WarpCore.Web\WarpCore.Web.csproj">
       <Project>{2206a30a-f468-48bd-bd98-59711a827298}</Project>
