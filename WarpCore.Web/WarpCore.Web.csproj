@@ -98,7 +98,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteContextResolver.cs" />
     <Compile Include="Routing\CmsRouteRegistrar.cs" />
-    <Compile Include="Routing\WarpCorePageHttpHandler.cs" />
+    <Compile Include="Routing\WarpCoreRequestProcessor.cs" />
     <Compile Include="Routing\WarpCorePageRouteHandler.cs" />
     <Compile Include="WebBootrstrapper.cs" />
   </ItemGroup>

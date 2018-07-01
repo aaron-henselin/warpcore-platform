@@ -18,8 +18,8 @@ namespace WarpCore.Web
         {
             DynamicModuleUtility.RegisterModule(typeof(CmsPageBuilderHttpModule));
 
-            Dependency.Register(() => HttpContext.Current.ToCmsPageBuilderContext());
-            Dependency.Register(() => HttpContext.Current.ToUriBuilderContext());
+            Dependency.Register<CmsPageRequestContext>(() => HttpContext.Current.ToCmsRouteContext());
+            Dependency.Register<UriBuilderContext>(() => HttpContext.Current.ToUriBuilderContext());
 
             CmsRouteRegistrar.RegisterDynamicRoutes();
         }

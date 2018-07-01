@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Web.UI.WebControls;
 using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 
@@ -26,9 +28,16 @@ namespace DemoSite
 
         private Site SetupTestSite()
         {
+            var tbx = new ToolboxManager();
+            tbx.Save(new ToolboxItem
+            {
+                FullyQualifiedTypeName = typeof(Literal).AssemblyQualifiedName,
+                Name="Literal"
+            });
+
             var myLayout = new Layout
             {
-                MasterPagePath = "/Global.Master"
+                MasterPagePath = "/Demo.Master"
             };
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(myLayout);
@@ -46,6 +55,14 @@ namespace DemoSite
                 SiteId = newSite.ContentId.Value,
                 LayoutId = myLayout.ContentId.Value
             };
+            homePage.PageContent.Add(new CmsPageContent
+            {
+                Id = Guid.NewGuid(),
+                ContentPlaceHolderId = "Body",
+                WidgetTypeCode = "Literal",
+                Parameters = new Dictionary<string, string> {["Text"]="Hello World"}
+            });
+
             var aboutUs = new CmsPage
             {
                 Name = "About Us",

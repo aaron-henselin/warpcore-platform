@@ -17,7 +17,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         public static void Register<T>(Func<T> factory) where T : class
         {
-            TinyIoCContainer.Current.Register(typeof(T), factory);
+            TinyIoCContainer.Current.Register<T>((x,y)=>factory());
         }
     }
 }

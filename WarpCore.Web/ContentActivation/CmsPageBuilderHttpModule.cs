@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using System.Web.Routing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Layout;
@@ -11,11 +12,11 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
 {
-    public class CmsPageBuilderContext
+    public class CmsPageRequestContext
     {
-        public CmsPage Page { get; set; }
+        public SiteRoute Route { get; set; }
+        public CmsPage CmsPage { get; set; }
         public ViewMode ViewMode { get; set; }
-
     }
 
     public enum ViewMode
@@ -25,20 +26,23 @@ namespace WarpCore.Web
 
     public class CmsPageBuilder
     {
-        private readonly CmsPageBuilderContext _context;
+        private readonly CmsPageRequestContext _context;
 
-        public CmsPageBuilder(CmsPageBuilderContext context)
+        public CmsPageBuilder(CmsPageRequestContext context)
         {
             _context = context;
         }
 
         public void PopulateContentPlaceholders(Page page)
         {
-            foreach (var content in _context.Page.PageContent)
+            if (_context.CmsPage == null)
+                return;
+
+            foreach (var content in _context.CmsPage.PageContent)
             {
-                var ph = page.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.ContentPlaceHolderId);
+                var ph = page.Master.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.ContentPlaceHolderId);
                 if (ph == null)
-                    ph = page.GetDescendantControls<ContentPlaceHolder>().First();
+                    ph = page.Master.GetDescendantControls<ContentPlaceHolder>().First();
 
                 if (_context.ViewMode == ViewMode.Edit)
                 {
@@ -53,7 +57,10 @@ namespace WarpCore.Web
 
         public void SetupLayout(Page localPage)
         {
-            var layoutToApply = new LayoutRepository().GetById(_context.Page.LayoutId);
+            if (_context.CmsPage == null)
+                return;
+
+            var layoutToApply = new LayoutRepository().GetById(_context.CmsPage.LayoutId);
             localPage.MasterPageFile = layoutToApply.MasterPagePath;
         }
     }
@@ -82,28 +89,19 @@ namespace WarpCore.Web
         {
             application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
 
-            application.PostAuthorizeRequest += (sender, args) =>
+            application.BeginRequest += delegate(object sender, EventArgs args)
             {
-                sender.GetHashCode();
-            };
-            application.AcquireRequestState += (sender, args) =>
-            {
-                sender.GetHashCode();
-            };
-            application.EndRequest += (sender, args) =>
-            {
-                sender.GetHashCode();
-            };
+                var routingContext = HttpContext.Current.ToCmsRouteContext();
+                HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
 
-            application.BeginRequest += (sender, args) =>
-            {
-                sender.GetHashCode();
-            };
+                if (routingContext.Route == null)
+                    throw new HttpException(404, "Page cannot be found.");
 
-            application.PostRequestHandlerExecute += (sender, args) =>
-            {
-                sender.GetHashCode();
+                var handler = new WarpCoreRequestProcessor();
+                handler.ProcessRequest(HttpContext.Current, routingContext);
+
             };
+            
         }
 
         void application_PreRequestHandlerExecute(object sender, EventArgs e)
@@ -118,8 +116,10 @@ namespace WarpCore.Web
                 Page handlerPage = (Page)HttpContext.Current.Handler;
                 handlerPage.PreInit += (sender, args) =>
                 {
+                    var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
+                    
                     var localPage = (Page) sender;
-                    var pageBuilder = Dependency.Resolve<CmsPageBuilder>();
+                    var pageBuilder = new CmsPageBuilder(rt);
                     pageBuilder.SetupLayout(localPage);
                     pageBuilder.PopulateContentPlaceholders(localPage);
                 };

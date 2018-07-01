@@ -24,7 +24,7 @@ namespace WarpCore.Web.Extensions
 
         
 
-        public static CmsPageBuilderContext ToCmsPageBuilderContext(this HttpContext context)
+        public static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
         {
             var environmentRaw = context.Request["wc-ce"];
             var contentVersionRaw = context.Request["wc-cv"];
@@ -44,26 +44,31 @@ namespace WarpCore.Web.Extensions
             if (!string.IsNullOrWhiteSpace(viewModeRaw))
                 viewMode = (ViewMode) Enum.Parse(typeof(ViewMode), viewModeRaw, true);
 
+            var routeContext = new CmsPageRequestContext();
+            routeContext.ViewMode = viewMode;
+
             var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out var route);
-            if (!success || route.PageId == null)
-                return new CmsPageBuilderContext();
+            routeContext.Route = route;
+
+            if (route?.PageId == null)
+                return routeContext;
 
             var cmsPageVersions = new PageRepository().FindContentVersions(By.ContentId(route.PageId.Value), env).Result;
 
-            CmsPage cmsPage;
             if (env == ContentEnvironment.Archive)
-                cmsPage = cmsPageVersions.Single(x => x.ContentVersion == contentVersion);
+                routeContext.CmsPage = cmsPageVersions.Single(x => x.ContentVersion == contentVersion);
             else
-                cmsPage = cmsPageVersions.Single();
+                routeContext.CmsPage = cmsPageVersions.Single();
 
-            if (PageType.ContentPage != cmsPage.PageType)
-                return new CmsPageBuilderContext();
+            return routeContext;
+            //if (PageType.ContentPage != cmsPage.PageType)
+            //    return new CmsRouteContext();
 
-            return new CmsPageBuilderContext
-            {
-                Page = cmsPage,
-                ViewMode = viewMode
-            };
+            //return new CmsRouteContext
+            //{
+            //    CmsPage = cmsPage,
+            //    ViewMode = viewMode
+            //};
         }
     }
 }
