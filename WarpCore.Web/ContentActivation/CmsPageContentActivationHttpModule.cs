@@ -10,6 +10,63 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
 {
+    public class CmsPageBuilderContext
+    {
+        public CmsPage Page { get; set; }
+        public ViewMode ViewMode { get; set; }
+
+    }
+
+    public enum ViewMode
+    {
+        Default,Edit
+    }
+
+    public class CmsPageBuilder
+    {
+        private readonly CmsPageBuilderContext _context;
+
+        public CmsPageBuilder(CmsPageBuilderContext context)
+        {
+            _context = context;
+        }
+
+        public void PopulateContentPlaceholders(Page page)
+        {
+            foreach (var content in _context.Page.PageContent)
+            {
+                var ph = page.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.ContentPlaceHolderId);
+                if (ph == null)
+                    ph = page.GetDescendantControls<ContentPlaceHolder>().First();
+
+                if (_context.ViewMode == ViewMode.Edit)
+                {
+                    var handle = new LayoutHandle {PageContentId = content.Id};
+                    ph.Controls.Add(handle);
+                }
+
+                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
+                ph.Controls.Add(activatedWidget);
+            }
+        }
+    }
+
+    public class LayoutHandle : PlaceHolder
+    {
+        public Guid PageContentId { get; set; }
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+
+            var p = new Panel();
+            p.Attributes["data-wc-role"] = "layout-handle";
+            p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
+
+            this.Controls.Add(p);
+        }
+    }
+
     public sealed class CmsPageContentActivationHttpModule : IHttpModule
     {
         void IHttpModule.Init(HttpApplication application)
@@ -26,33 +83,16 @@ namespace WarpCore.Web
         {
             if (HttpContext.Current.Handler.GetType().ToString().EndsWith("_aspx"))
             { // Register PreRender handler only on aspx pages.
-                Page page = (Page)HttpContext.Current.Handler;
-                page.PreInit += PageOnPreInit;
+                Page handlerPage = (Page)HttpContext.Current.Handler;
+                handlerPage.PreInit += (sender, args) =>
+                {
+                    var localPage = (Page) sender;
+                    var pageBuilder = Dependency.Resolve<CmsPageBuilder>();
+                    pageBuilder.PopulateContentPlaceholders(localPage);
+                };
             }
         }
 
-        private void PageOnPreInit(object sender, EventArgs eventArgs)
-        {
-            var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out var route);
-            if (!success || route.PageId == null)
-                return;
-
-            var cmsPage = new PageRepository().FindContentVersions(By.ContentId(route.PageId.Value),ContentEnvironment.Live).Result.Single();
-            if (PageType.ContentPage != cmsPage.PageType)
-                return;
-
-            var page = (Page) sender;
-            foreach (var content in cmsPage.PageContent)
-            {
-                var ph = page.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.ContentPlaceHolderId);
-                if (ph == null)
-                    ph = page.GetDescendantControls<ContentPlaceHolder>().First();
-
-
-                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
-                ph.Controls.Add(activatedWidget);
-            }
-        }
 
         void IHttpModule.Dispose()
         {

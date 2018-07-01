@@ -69,6 +69,9 @@ namespace WarpCore.Cms
     public class CmsPageContent 
     {
         [Column]
+        public Guid Id { get; set; }
+
+        [Column]
         public string ContentPlaceHolderId { get; set; }
 
         [Column]

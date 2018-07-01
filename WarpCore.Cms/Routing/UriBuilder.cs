@@ -9,12 +9,17 @@ namespace WarpCore.Cms.Routing
     {
         public bool IsSsl { get; set; }
         public string Authority { get; set; }
-        public string AbsolutePath { get; set; }
+        public Uri AbsolutePath { get; set; }
+    }
+
+    public enum UriKinds
+    {
+        AbsoluteUri, RelativeFromSiteRoot,RelativeFromCurrent
     }
 
     public class UriSettings
     {
-        public bool PreferAbsoluteUri { get; set; }
+        public UriKinds PreferUriKind { get; set; }
 
         public static UriSettings Default => new UriSettings();
     }
@@ -34,11 +39,18 @@ namespace WarpCore.Cms.Routing
             if (sr is ContentPageRoute cpr)
                 requireSsl = cpr.RequireSsl;
 
-            var needsAuthorityChange = (sr.Authority != UriAuthorityFilter.Any && _context.AbsolutePath != sr.Authority);
+            var needsAuthorityChange = (sr.Authority != UriAuthorityFilter.Any && _context.Authority != sr.Authority);
             var needsSslChange = !_context.IsSsl && requireSsl;
 
-            if (!settings.PreferAbsoluteUri && !needsSslChange && !needsAuthorityChange)
-                return sr.VirtualPath;
+            if (settings.PreferUriKind != UriKinds.AbsoluteUri && !needsSslChange && !needsAuthorityChange)
+            {
+                if (settings.PreferUriKind == UriKinds.RelativeFromSiteRoot)
+                    return sr.VirtualPath;
+
+                if (settings.PreferUriKind == UriKinds.RelativeFromCurrent)
+                    return _context.AbsolutePath.MakeRelativeUri(sr.VirtualPath);
+            }
+
 
             var protocol = "http://";
             if (requireSsl)
@@ -50,6 +62,7 @@ namespace WarpCore.Cms.Routing
 
             return new Uri(protocol + authority + sr.VirtualPath, UriKind.Absolute);
         }
+
 
         public Uri CreateUri(CmsPage destinationPage, UriSettings settings)
         {

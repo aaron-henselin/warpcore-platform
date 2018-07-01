@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarpCore.Crm", "WarpCore.Cr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{05B8F5CD-A839-4D39-9EF4-CF9CC87648E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Cms", "WarpCore.Cms\WarpCore.Cms.csproj", "{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarpCore.Cms", "WarpCore.Cms\WarpCore.Cms.csproj", "{BF4BC43A-8225-48DD-8B36-3E6B657FB6DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Web", "WarpCore.Web\WarpCore.Web.csproj", "{2206A30A-F468-48BD-BD98-59711A827298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSite", "DemoSite\DemoSite.csproj", "{178D9121-361F-43B6-9341-C4A435174022}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{2206A30A-F468-48BD-BD98-59711A827298}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2206A30A-F468-48BD-BD98-59711A827298}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2206A30A-F468-48BD-BD98-59711A827298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{178D9121-361F-43B6-9341-C4A435174022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178D9121-361F-43B6-9341-C4A435174022}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178D9121-361F-43B6-9341-C4A435174022}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178D9121-361F-43B6-9341-C4A435174022}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

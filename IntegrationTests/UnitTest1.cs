@@ -110,7 +110,7 @@ namespace IntegrationTests
             var uriBuilder = new CmsUriBuilder(
                     new UriBuilderContext
                     {
-                        AbsolutePath = "/",
+                        AbsolutePath = new Uri("/",UriKind.Relative),
                         Authority = "www.google.com",
                         IsSsl = false
                     }

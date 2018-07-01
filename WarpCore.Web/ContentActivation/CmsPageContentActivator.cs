@@ -6,8 +6,12 @@ using WarpCore.Cms.Toolbox;
 
 namespace WarpCore.Web
 {
+
+
     public class CmsPageContentActivator
     {
+
+
         public static Control ActivateControl(CmsPageContent pageContent)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
