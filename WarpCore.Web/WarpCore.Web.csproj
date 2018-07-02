@@ -100,8 +100,10 @@
     <Compile Include="Routing\CmsRouteRegistrar.cs" />
     <Compile Include="Routing\WarpCoreRequestProcessor.cs" />
     <Compile Include="Routing\WarpCorePageRouteHandler.cs" />
+    <Compile Include="Scripting\ScriptManagerExtensions.cs" />
     <Compile Include="WebBootrstrapper.cs" />
     <Compile Include="Widgets\ContentBlock.cs" />
+    <Compile Include="Scripting\ProxiedScriptManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -126,7 +128,9 @@
       <Name>Framework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="_EmbeddedResources\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

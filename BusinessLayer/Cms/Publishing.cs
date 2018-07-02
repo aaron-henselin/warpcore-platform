@@ -15,6 +15,7 @@ namespace WarpCore.Cms
             new PageRepository().Publish("SiteId eq '"+site.ContentId+"'");
             //todo: move to domain event.
             CmsRoutes.RegenerateAllRoutes();
+
         }
 
         public static void PublishSites()

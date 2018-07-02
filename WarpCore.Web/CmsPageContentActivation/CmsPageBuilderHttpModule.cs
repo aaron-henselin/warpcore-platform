@@ -9,6 +9,8 @@ using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
+using WarpCore.Web.Scripting;
+using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web
 {
@@ -37,6 +39,12 @@ namespace WarpCore.Web
         {
             if (_context.CmsPage == null)
                 return;
+
+            if (_context.ViewMode == ViewMode.Edit)
+            {
+                page.Form.Controls.Add(new ProxiedScriptManager());
+                ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
+            }
 
             foreach (var content in _context.CmsPage.PageContent)
             {
