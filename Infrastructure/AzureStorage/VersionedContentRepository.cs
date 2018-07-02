@@ -55,7 +55,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
 
         public Task<IReadOnlyCollection<T>> FindContentVersions(string condition,
-            ContentEnvironment? version = ContentEnvironment.Live)
+            ContentEnvironment version = ContentEnvironment.Live)
         {
             return Orm.FindContentVersions<T>(condition, version);
         }
@@ -65,7 +65,7 @@ namespace WarpCore.DbEngines.AzureStorage
         public IReadOnlyCollection<PublishResult> Publish(string condition)
         {
             var results = new List<PublishResult>();
-            var allContentToPublish = FindContentVersions(condition, null).Result.ToList().ToLookup(x => x.ContentId);
+            var allContentToPublish = FindContentVersions(condition, ContentEnvironment.Any).Result.ToList().ToLookup(x => x.ContentId);
             foreach (var lookupGroup in allContentToPublish)
             {
                 var publishResult = Publish(lookupGroup.ToList());

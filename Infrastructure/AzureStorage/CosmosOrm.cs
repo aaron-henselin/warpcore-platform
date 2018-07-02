@@ -34,7 +34,7 @@ namespace WarpCore.DbEngines.AzureStorage
     public interface ICosmosOrm
     {
         void Save<T>(T item) where T : CosmosEntity;
-        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment? version = ContentEnvironment.Live) 
+        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment version = ContentEnvironment.Live) 
             where T : VersionedContentEntity, new();
 
         Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
@@ -46,7 +46,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public enum ContentEnvironment
     {
-        Unversioned = -1,
+        Any = -1,
         Draft = 0,
         Live = 1,
         Archive = 2
@@ -97,7 +97,7 @@ namespace WarpCore.DbEngines.AzureStorage
     {
         public UnversionedContentEntity()
         {
-            this.PartitionKey = ContentEnvironment.Unversioned.ToString();
+            this.PartitionKey = ContentEnvironment.Any.ToString();
         }
     }
 
@@ -232,26 +232,27 @@ namespace WarpCore.DbEngines.AzureStorage
             await table.ExecuteAsync(TableOperation.InsertOrReplace(item));
         }
 
-        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment? environment) where T : VersionedContentEntity, new()
+        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment version)
+            where T : VersionedContentEntity, new()
         {
 
-                var search = $"PartitionKey eq '{environment}'";
-                if (!string.IsNullOrWhiteSpace(filter))
-                    search += filter;
+            string partitionCondition = null;
+            if (version != ContentEnvironment.Any)
+                partitionCondition = $"PartitionKey eq '{version}'";
 
-                return await FindContentImpl<T>(search);
-       
+            var allConditions = new[] {filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
+            var joinedCondition = string.Join(" and ", allConditions);
 
-
+            return await FindContentImpl<T>(joinedCondition);
         }
 
         public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
         {
-            var search = $"PartitionKey eq '{ContentEnvironment.Unversioned}'";
-            if (!string.IsNullOrWhiteSpace(condition))
-                search += condition;
+            //var search = $"PartitionKey eq '{ContentEnvironment.Any}'";
+            //if (!string.IsNullOrWhiteSpace(condition))
+            //    search += condition;
 
-            return await FindContentImpl<T>(search);
+            return await FindContentImpl<T>(condition);
         }
 
 

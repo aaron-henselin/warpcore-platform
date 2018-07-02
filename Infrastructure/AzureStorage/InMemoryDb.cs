@@ -52,10 +52,10 @@ namespace WarpCore.DbEngines.AzureStorage
                 tableRef.Rows.Add(dr);
         }
 
-        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment? version) where T : VersionedContentEntity, new()
+        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment version) where T : VersionedContentEntity, new()
         {
             string partitionCondition=null;
-            if (version != null)
+            if (version != ContentEnvironment.Any)
                 partitionCondition= $"PartitionKey eq '{version}'";
 
             var allConditions = new[] {condition, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));

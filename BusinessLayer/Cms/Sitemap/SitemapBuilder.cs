@@ -52,7 +52,7 @@ namespace WarpCore.Cms
 
     public static class SitemapBuilder
     {
-        public static Sitemap BuildSitemap(Site site, ContentEnvironment? environment)
+        public static Sitemap BuildSitemap(Site site, ContentEnvironment environment)
         {
             var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
 
