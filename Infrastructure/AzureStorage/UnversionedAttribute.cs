@@ -2,8 +2,8 @@
 
 namespace WarpCore.DbEngines.AzureStorage
 {
-    public sealed class UnversionedAttribute : Attribute
-    {
+    //public sealed class UnversionedAttribute : Attribute
+    //{
 
-    }
+    //}
 }

@@ -94,11 +94,12 @@ namespace WarpCore.Web
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
 
-                if (routingContext.Route == null)
-                    throw new HttpException(404, "Page cannot be found.");
+                if (routingContext.Route != null)
+                {
+                    var handler = new WarpCoreRequestProcessor();
+                    handler.ProcessRequest(HttpContext.Current, routingContext);
+                }
 
-                var handler = new WarpCoreRequestProcessor();
-                handler.ProcessRequest(HttpContext.Current, routingContext);
 
             };
             

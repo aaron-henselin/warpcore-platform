@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
+    public class PublishResult
+    {
+        public decimal? NewVersion { get; set; }
+        public bool AlreadyInSync { get; set; }
+        public Guid ContentId { get; set; }
+
+    }
+
     public abstract class VersionedContentRepository<T> where T : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
@@ -54,29 +62,34 @@ namespace WarpCore.DbEngines.AzureStorage
 
 
 
-        public void Publish(string condition)
+        public IReadOnlyCollection<PublishResult> Publish(string condition)
         {
-            //var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
-
-            //var currentPublishingData =
-            //    Orm.FindUnversionedContent<ContentChecksum>("ContentType eq '" + contentType + "'").Result;
-
+            var results = new List<PublishResult>();
             var allContentToPublish = FindContentVersions(condition, null).Result.ToList().ToLookup(x => x.ContentId);
             foreach (var lookupGroup in allContentToPublish)
             {
-                Publish(lookupGroup.ToList());
+                var publishResult = Publish(lookupGroup.ToList());
+                results.Add(publishResult);
             }
 
+            return results;
         }
 
-        private void Publish(IReadOnlyCollection<T> contentVersions)
+        private PublishResult Publish(IReadOnlyCollection<T> contentVersions)
         {
+            PublishResult publishResult = new PublishResult();
+
             var currentLive = contentVersions.SingleOrDefault(x => ContentEnvironment.Live == x.ContentEnvironment);
             var currentDraft = contentVersions.SingleOrDefault(x => ContentEnvironment.Draft == x.ContentEnvironment);
 
+            publishResult.ContentId = currentDraft.ContentId.Value;
+
             var areInSync = string.Equals(currentLive?.GetContentChecksum(),currentDraft?.GetContentChecksum());
             if (areInSync)
-                return;
+            {
+                publishResult.AlreadyInSync = true;
+                return publishResult;
+            }
 
             var archiveVersion = 0m;
             var previousArchivedVersioned = contentVersions.Where(x => ContentEnvironment.Archive == x.ContentEnvironment).ToList();
@@ -97,6 +110,8 @@ namespace WarpCore.DbEngines.AzureStorage
                         copy.ContentEnvironment = ContentEnvironment.Live;
                         Orm.Save(copy);
 
+                        publishResult.NewVersion = copy.ContentVersion;
+
                         copy.InternalId = null;
                         copy.ContentEnvironment = ContentEnvironment.Archive;
                         Orm.Save(copy);
@@ -109,6 +124,8 @@ namespace WarpCore.DbEngines.AzureStorage
                         break;
                 }
             }
+
+            return publishResult;
 
         }
     }

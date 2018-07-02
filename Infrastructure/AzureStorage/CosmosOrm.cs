@@ -27,7 +27,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public class ComplexDataAttribute : Attribute
+    public class StoreAsComplexDataAttribute : Attribute
     {
     }
 
@@ -143,7 +143,13 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             get
             {
-                var propsToSerialize = this.GetType().GetProperties().Where(x => x.GetCustomAttribute<ComplexDataAttribute>() != null);
+                var propsToSerialize = this.GetType()
+                    .GetProperties()
+                    .Where(x => x.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
+                             || x.PropertyType.GetCustomAttribute<StoreAsComplexDataAttribute>() != null  
+                           );
+                  
+
                 var dataDict = new Dictionary<string, object>();
                 foreach (var prop in propsToSerialize)
                 {
@@ -155,7 +161,12 @@ namespace WarpCore.DbEngines.AzureStorage
             set
             {
                 var dataDict = JsonConvert.DeserializeObject(value, this.GetType());
-                var propsToSerialize = this.GetType().GetProperties().Where(x => x.GetCustomAttribute<ComplexDataAttribute>() != null);
+                var propsToSerialize = this.GetType()
+                    .GetProperties()
+                    .Where(x => x.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
+                             || x.PropertyType.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
+                                );
+
                 foreach (var prop in propsToSerialize)
                 {
                     prop.SetValue(this, prop.GetValue(dataDict));

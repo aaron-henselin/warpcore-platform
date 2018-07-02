@@ -42,7 +42,8 @@ namespace WarpCore.Cms.Sites
 
     }
 
-    [Unversioned]
+
+
     [Table("cms_site_structure")]
     public class CmsPageLocationNode : UnversionedContentEntity, ISiteStructureNode
     {

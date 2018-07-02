@@ -38,7 +38,7 @@ namespace WarpCore.Cms
 
         [Column] public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
-        [ComplexData]
+        [StoreAsComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
         //[ComplexData]

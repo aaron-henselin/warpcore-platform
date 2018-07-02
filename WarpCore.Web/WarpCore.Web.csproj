@@ -84,9 +84,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentActivation\CmsPageBuilderHttpModule.cs" />
+    <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="ContentActivation\CmsPageContentActivator.cs" />
+    <Compile Include="CmsPageContentActivation\CmsPageContentActivator.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -101,6 +101,7 @@
     <Compile Include="Routing\WarpCoreRequestProcessor.cs" />
     <Compile Include="Routing\WarpCorePageRouteHandler.cs" />
     <Compile Include="WebBootrstrapper.cs" />
+    <Compile Include="Widgets\ContentBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -125,6 +126,7 @@
       <Name>Framework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

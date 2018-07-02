@@ -41,7 +41,7 @@ namespace WarpCore.DbEngines.AzureStorage
             dr["PartitionKey"] = item.PartitionKey;
 
             var readProperties = typeof(T).GetProperties().Where(x =>
-                !ShouldSkipProperty(x) && x.GetCustomAttribute<ComplexDataAttribute>() == null);
+                !ShouldSkipProperty(x) && x.GetCustomAttribute<StoreAsComplexDataAttribute>() == null);
 
             foreach (var prop in readProperties)
                 dr[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
@@ -76,7 +76,7 @@ namespace WarpCore.DbEngines.AzureStorage
                 var activated = new T();
 
                 var writeProperties = typeof(T).GetProperties().Where(x =>
-                    !ShouldSkipProperty(x) && x.GetCustomAttribute<ComplexDataAttribute>() == null);
+                    !ShouldSkipProperty(x) && x.GetCustomAttribute<StoreAsComplexDataAttribute>() == null);
 
                 activated.RowKey = row["RowKey"]?.ToString();
                 activated.PartitionKey = row["PartitionKey"]?.ToString();
@@ -145,7 +145,7 @@ namespace WarpCore.DbEngines.AzureStorage
                 dataTable.Columns.Add("PartitionKey", typeof(string));
 
                 var publicProperties = typeof(T).GetProperties().Where(x =>
-                    !ShouldSkipProperty(x) && x.GetCustomAttribute<ComplexDataAttribute>() == null);
+                    !ShouldSkipProperty(x) && x.GetCustomAttribute<StoreAsComplexDataAttribute>() == null);
 
                 foreach (var prop in publicProperties)
                 {
