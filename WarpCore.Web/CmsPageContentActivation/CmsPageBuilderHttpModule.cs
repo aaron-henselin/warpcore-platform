@@ -104,13 +104,14 @@ namespace WarpCore.Web
         {
 
             application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
-
             application.BeginRequest += delegate(object sender, EventArgs args)
             {
                 if (!WebBootstrapper.IsBooted)
                 {
                     WebBootstrapper.EnsureSiteBootHasBeenStarted();
-                   //todo: do a redirect to the boot page.
+                    HttpContext.Current.RewritePath("/App_Data/Booting.aspx", true);
+
+                    return;
                 }
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
@@ -127,21 +128,25 @@ namespace WarpCore.Web
             
         }
 
-        void application_PreRequestHandlerExecute(object sender, EventArgs e)
+        static void application_PreRequestHandlerExecute(object sender, EventArgs e)
         {
-            RegisterPagePreRenderEventHandler();
+       
+                RegisterPagePreRenderEventHandler();
         }
 
-        private void RegisterPagePreRenderEventHandler()
+        private static void RegisterPagePreRenderEventHandler()
         {
             if (HttpContext.Current.Handler.GetType().ToString().EndsWith("_aspx"))
             { // Register PreRender handler only on aspx pages.
                 Page handlerPage = (Page)HttpContext.Current.Handler;
                 handlerPage.PreInit += (sender, args) =>
                 {
-                    var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
                     
-                    var localPage = (Page) sender;
+                    var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
+                    if (rt == null || rt.CmsPage == null)
+                        return;
+
+                    var localPage = (Page)sender;
                     var pageBuilder = new CmsPageBuilder(rt);
                     pageBuilder.SetupLayout(localPage);
                     pageBuilder.PopulateContentPlaceholders(localPage);

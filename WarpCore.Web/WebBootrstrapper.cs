@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -64,14 +65,17 @@ namespace WarpCore.Web
                 _bootingStarted = true;
                 Task.Run(() =>
                 {
+
                     BuildUpToolbox();
+                    Thread.Sleep(2000);
                     IsBooted = true;
+
                 });
             }
-
-
-            
         }
+
+
+
 
         public static void PreInitialize()
         {

@@ -80,11 +80,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Booting.aspx" />
     <Content Include="App_Data\DynamicPage.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\Booting.aspx.cs">
+      <DependentUpon>Booting.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\Booting.aspx.designer.cs">
+      <DependentUpon>Booting.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Master\Global.Master.cs">
       <DependentUpon>Global.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
