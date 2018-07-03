@@ -18,3 +18,13 @@
     </form>
 </body>
 </html>
+
+<style>
+    .wc-layout-handle {
+        display: block;
+        width: 100%;
+        height: 30px;
+        background: white;
+        border: #d4e4f2 1px solid;
+    }
+</style>

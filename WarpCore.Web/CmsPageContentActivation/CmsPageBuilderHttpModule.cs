@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
+using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Scripting;
@@ -42,8 +43,11 @@ namespace WarpCore.Web
 
             if (_context.ViewMode == ViewMode.Edit)
             {
-                page.Form.Controls.Add(new ProxiedScriptManager());
-                ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
+                if (page.Form != null)
+                {
+                    page.Form.Controls.Add(new ProxiedScriptManager());
+                    ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
+                }
             }
 
             foreach (var content in _context.CmsPage.PageContent)
@@ -54,7 +58,8 @@ namespace WarpCore.Web
 
                 if (_context.ViewMode == ViewMode.Edit)
                 {
-                    var handle = new LayoutHandle {PageContentId = content.Id};
+                    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
+                    var handle = new LayoutHandle {PageContentId = content.Id, HandleName = toolboxItem.Name};
                     ph.Controls.Add(handle);
                 }
 
@@ -76,6 +81,7 @@ namespace WarpCore.Web
     public class LayoutHandle : PlaceHolder
     {
         public Guid PageContentId { get; set; }
+        public string HandleName { get; set; }
 
         protected override void OnInit(EventArgs e)
         {
@@ -84,7 +90,8 @@ namespace WarpCore.Web
             var p = new Panel();
             p.Attributes["data-wc-role"] = "layout-handle";
             p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
-
+            p.Attributes["class"] = "wc-layout-handle";
+            p.Controls.Add(new Label{Text=HandleName});
             this.Controls.Add(p);
         }
     }
@@ -95,10 +102,17 @@ namespace WarpCore.Web
     {
         void IHttpModule.Init(HttpApplication application)
         {
+
             application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
 
             application.BeginRequest += delegate(object sender, EventArgs args)
             {
+                if (!WebBootstrapper.IsBooted)
+                {
+                    WebBootstrapper.EnsureSiteBootHasBeenStarted();
+                   //todo: do a redirect to the boot page.
+                }
+
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
 
