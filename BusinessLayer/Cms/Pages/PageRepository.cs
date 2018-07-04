@@ -72,13 +72,22 @@ namespace WarpCore.Cms
         public Guid Id { get; set; }
 
         [Column]
-        public string ContentPlaceHolderId { get; set; }
+        public string PlacementContentPlaceHolderId { get; set; }
+
+        [Column]
+        public Guid? PlacementLayoutBuilderId { get; set; }
+
+        [Column]
+        public int Order { get; set; }
 
         [Column]
         public string WidgetTypeCode { get; set; }
 
         [Column]
         public Dictionary<string,string> Parameters { get; set; }
+
+        [StoreAsComplexData]
+        public List<CmsPageContent> SubContent { get; set; } = new List<CmsPageContent>();
     }
 
     public class DuplicateSlugException:Exception

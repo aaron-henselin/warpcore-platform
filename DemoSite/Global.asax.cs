@@ -58,7 +58,7 @@ namespace DemoSite
             homePage.PageContent.Add(new CmsPageContent
             {
                 Id = Guid.NewGuid(),
-                ContentPlaceHolderId = "Body",
+                PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "Literal",
                 Parameters = new Dictionary<string, string> {["Text"]="Hello World"}
             });

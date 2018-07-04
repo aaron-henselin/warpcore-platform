@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Routing;
@@ -30,16 +31,174 @@ namespace WarpCore.Web
     public class CmsPageBuilder
     {
         private readonly CmsPageRequestContext _context;
-
+        private readonly LayoutRepository layoutRepository = new LayoutRepository();
         public CmsPageBuilder(CmsPageRequestContext context)
         {
             _context = context;
         }
 
-        public void PopulateContentPlaceholders(Page page)
+        private class LayoutPlacement
+        {
+            public LayoutControl ActivatedControl { get; set; }
+
+        }
+
+        //private void DeterminePlacementOrder(IReadOnlyCollection<CmsPageContent> contents)
+        //{
+        //    var waitingToPlace =
+        //        _context.CmsPage.PageContent.Select((x, y) => new
+        //            {
+        //                ActivatedControl = CmsPageContentActivator.ActivateControl(x),
+        //                ContentInfo = x,
+        //                OriginalOrder = x.Order
+        //            }).ToList();
+
+
+        //    var layoutsPending = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl)
+        //        .Select(x => new
+        //        {
+        //            ActivatedLayout = (LayoutControl)x.ActivatedControl,
+        //            ContentInfo = x.ContentInfo,
+        //             x.OriginalOrder
+        //        })
+        //        .ToList();
+
+        //    var layoutBuildersToBeCreated = layoutsPending.ToDictionary(x => x.ActivatedLayout.LayoutBuilderId,x => x);
+
+        //    var layoutsRemainingToBePlaced = layoutsPending.ToList();
+
+        //    List<LayoutPlacement> placements = new List<LayoutPlacement>();
+        //    while (layoutsRemainingToBePlaced.Any())
+        //    {
+        //        int resolvedInThisRound = 0;
+        //        foreach (var layout in layoutsRemainingToBePlaced)
+        //        {
+        //            if (layout.ContentInfo.PlacementLayoutBuilderId == null)
+        //            {
+        //                layoutsRemainingToBePlaced.Remove(layout);
+        //                placements.Add(new LayoutPlacement
+        //                {
+        //                    ActivatedControl = layout.ActivatedLayout
+        //                });
+        //            }
+        //            else
+        //            {
+        //                placements.
+        //            }
+
+                  
+                   
+        //        }
+
+        //        if (resolvedInThisRound == 0)
+        //            break;
+        //    }
+
+
+        //    foreach (var layout in layoutsPending)
+        //        {
+        //            layout.ContentInfo.PlacementLayoutBuilderId
+
+        //        }
+
+            
+
+           
+        //    //var first = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl && x.ContentInfo.LayoutBuilderId == null);
+        //    //var second = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl && x.ContentInfo.LayoutBuilderId != null);
+
+
+        //    //    .OrderByDescending(x => x.ActivatedControl is LayoutControl)
+        //    //    .ThenByDescending(x => x.ContentInfo.LayoutBuilderId == null);
+
+
+        //}
+
+
+        public void PopulateContentPlaceholders(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
+        {            
+            foreach (var content in _context.CmsPage.PageContent)
+            {
+                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
+
+                Control searchContext = page.Master;
+                if (content.PlacementLayoutBuilderId != null)
+                {
+                    var subLayout = searchContext.GetDescendantControls<LayoutControl>()
+                        .SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+
+                    if (subLayout != null)
+                        searchContext = subLayout;
+                }
+
+                var ph = searchContext.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.PlacementContentPlaceHolderId);
+                if (ph == null)
+                    ph = searchContext.GetDescendantControls<ContentPlaceHolder>().First();
+
+                if (vm == ViewMode.Edit)
+                {
+                    ph.Controls.Add(new DropTarget { BeforePageContentId = content.Id, PlaceHolderId = ph.ID});
+                    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
+                    var handle = new LayoutHandle { PageContentId = content.Id, HandleName = toolboxItem.Name };
+                    ph.Controls.Add(handle);
+                }
+
+                ph.Controls.Add(activatedWidget);
+
+                if (content.SubContent.Any())
+                    PopulateContentPlaceholders(page, content.SubContent,vm);
+                
+            }
+        }
+
+        private class DropTarget : PlaceHolder
+        {
+            protected override void OnInit(EventArgs e)
+            {
+                base.OnInit(e);
+
+                var p = new Panel();
+                p.Attributes["data-wc-role"] = "droptarget";
+                p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
+                p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
+                p.Attributes["class"] = "wc-droptarget";
+               
+                this.Controls.Add(p);
+            }
+
+            public string PlaceHolderId { get; set; }
+
+            public Guid? BeforePageContentId { get; set; }
+        }
+
+        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLeaves(Page page)
+        {
+            List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
+            var allPhs = page.Master.GetDescendantControls<ContentPlaceHolder>();
+
+            foreach (var ph in allPhs)
+            {
+                var isLeaf = !ph.GetDescendantControls<ContentPlaceHolder>().Any();
+                if (isLeaf)
+                {
+                   phs.Add(ph);
+                }
+            }
+
+            return phs;
+        }
+
+        public void AddAdHocPageContent(Page page)
         {
             if (_context.CmsPage == null)
                 return;
+
+            var leaves = IdentifyLeaves(page);
+            PopulateContentPlaceholders(page,_context.CmsPage.PageContent,_context.ViewMode);
+            foreach (var leaf in leaves)
+            {
+                leaf.Controls.Add(new DropTarget{PlaceHolderId = leaf.ID});
+            }
 
             if (_context.ViewMode == ViewMode.Edit)
             {
@@ -49,33 +208,44 @@ namespace WarpCore.Web
                     ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
                 }
             }
+        }
 
-            foreach (var content in _context.CmsPage.PageContent)
+
+
+        public void ApplyLayout(Page localPage)
+        {
+            var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);
+            localPage.MasterPageFile = layoutToApply.MasterPagePath;
+            var structure=layoutRepository.GetLayoutStructure(layoutToApply);
+
+            var lns = FlattenLayoutTree(structure);
+            foreach (var ln in lns)
             {
-                var ph = page.Master.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.ContentPlaceHolderId);
-                if (ph == null)
-                    ph = page.Master.GetDescendantControls<ContentPlaceHolder>().First();
-
-                if (_context.ViewMode == ViewMode.Edit)
-                {
-                    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
-                    var handle = new LayoutHandle {PageContentId = content.Id, HandleName = toolboxItem.Name};
-                    ph.Controls.Add(handle);
-                }
-
-                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
-                ph.Controls.Add(activatedWidget);
+                PopulateContentPlaceholders(localPage,ln.Layout.PageContent,ViewMode.Default);
             }
         }
 
-        public void SetupLayout(Page localPage)
+        private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)
         {
-            if (_context.CmsPage == null)
-                return;
+            int depth = 0;
+            List<LayoutNode> lns = new List<LayoutNode>();
 
-            var layoutToApply = new LayoutRepository().GetById(_context.CmsPage.LayoutId);
-            localPage.MasterPageFile = layoutToApply.MasterPagePath;
+            var currentNode = ln;
+            while (currentNode != null)
+            {
+                if (depth > 255)
+                    throw new Exception("Recursive layout.");
+
+                lns.Add(currentNode);
+                currentNode = ln.ParentNode;
+                depth++;
+            }
+
+            lns.Reverse();
+            return lns;
         }
+
+
     }
 
     public class LayoutHandle : PlaceHolder
@@ -143,13 +313,14 @@ namespace WarpCore.Web
                 {
                     
                     var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
-                    if (rt == null || rt.CmsPage == null)
+                    var isUnmanagedAspxPage = rt == null || rt.CmsPage == null;
+                    if (isUnmanagedAspxPage)
                         return;
 
                     var localPage = (Page)sender;
                     var pageBuilder = new CmsPageBuilder(rt);
-                    pageBuilder.SetupLayout(localPage);
-                    pageBuilder.PopulateContentPlaceholders(localPage);
+                    pageBuilder.ApplyLayout(localPage);
+                    pageBuilder.AddAdHocPageContent(localPage);
                 };
             }
         }
