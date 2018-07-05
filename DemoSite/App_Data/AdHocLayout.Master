@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="AdHocLayout.Master.cs" Inherits="DemoSite.Demo" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="AdHocLayout.Master.cs" Inherits="DemoSite.AdHocLayout" %>
 
 <!DOCTYPE html>
 

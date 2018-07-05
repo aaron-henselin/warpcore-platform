@@ -10,7 +10,7 @@
 namespace DemoSite {
     
     
-    public partial class Demo {
+    public partial class AdHocLayout {
         
         /// <summary>
         /// head control.

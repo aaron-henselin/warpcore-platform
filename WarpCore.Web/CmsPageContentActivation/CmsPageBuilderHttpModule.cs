@@ -117,9 +117,12 @@ namespace WarpCore.Web
 
         public void PopulateContentPlaceholders(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
         {            
-            foreach (var content in _context.CmsPage.PageContent)
+            foreach (var content in contents)
             {
                 var activatedWidget = CmsPageContentActivator.ActivateControl(content);
+
+                var layoutWidget = activatedWidget as LayoutControl;
+                layoutWidget?.InitializeLayout();
 
                 Control searchContext = page.Master;
                 if (content.PlacementLayoutBuilderId != null)
@@ -133,7 +136,12 @@ namespace WarpCore.Web
 
                 var ph = searchContext.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.PlacementContentPlaceHolderId);
                 if (ph == null)
-                    ph = searchContext.GetDescendantControls<ContentPlaceHolder>().First();
+                    ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+                if (ph == null)
+                    ph = page.Master.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+                if (ph == null)
+                    return;
+
 
                 if (vm == ViewMode.Edit)
                 {

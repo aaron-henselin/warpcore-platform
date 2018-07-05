@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Web.UI;
+using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 
@@ -22,6 +24,8 @@ namespace WarpCore.Web
             return activatedWidget;
         }
 
+        
+
         public static void PropertySet(Control activatedWidget, Dictionary<string,string> parameterValues)
         {
             foreach (var kvp in parameterValues)
@@ -30,7 +34,7 @@ namespace WarpCore.Web
                 if (propertyInfo == null || !propertyInfo.CanWrite)
                     continue;
 
-                var newType = Convert.ChangeType(kvp.Value, propertyInfo.PropertyType);
+                var newType = DesignerTypeConverter.ChangeType(kvp.Value, propertyInfo.PropertyType);
                 if (propertyInfo.CanWrite)
                     propertyInfo.SetValue(activatedWidget, newType);
             }
