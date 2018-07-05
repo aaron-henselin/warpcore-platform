@@ -93,6 +93,13 @@
     <Compile Include="App_Data\Booting.aspx.designer.cs">
       <DependentUpon>Booting.aspx</DependentUpon>
     </Compile>
+    <Compile Include="App_Data\AdHocLayout.Master.cs">
+      <DependentUpon>AdHocLayout.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\AdHocLayout.Master.designer.cs">
+      <DependentUpon>AdHocLayout.Master</DependentUpon>
+    </Compile>
     <Compile Include="App_Master\Global.Master.cs">
       <DependentUpon>Global.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -115,6 +122,7 @@
   <ItemGroup>
     <Content Include="App_Master\Global.Master" />
     <Content Include="Demo.Master" />
+    <Content Include="App_Data\AdHocLayout.Master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

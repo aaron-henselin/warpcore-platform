@@ -44,7 +44,7 @@ namespace WarpCore.Web
                     widget = new ToolboxItem();
 
                 widget.Name = includeInToolboxAtr.Name;
-                widget.FullyQualifiedTypeName = typeToInclude.FullName;
+                widget.FullyQualifiedTypeName = typeToInclude.AssemblyQualifiedName;
                 mgr.Save(widget);
             }
 

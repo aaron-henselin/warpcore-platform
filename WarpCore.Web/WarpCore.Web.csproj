@@ -102,8 +102,11 @@
     <Compile Include="Routing\WarpCorePageRouteHandler.cs" />
     <Compile Include="Scripting\ScriptManagerExtensions.cs" />
     <Compile Include="WebBootrstrapper.cs" />
+    <Compile Include="Widgets\Layout\Column.cs" />
     <Compile Include="Widgets\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
+    <Compile Include="Widgets\Layout\LayoutControl.cs" />
+    <Compile Include="Widgets\Layout\RowLayout.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

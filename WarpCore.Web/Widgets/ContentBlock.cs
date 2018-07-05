@@ -6,7 +6,7 @@ using Cms;
 
 namespace WarpCore.Web.Widgets
 {
-    [IncludeInToolbox(Name="WC-ContentBlock")]
+    [IncludeInToolbox(Name="WC/ContentBlock")]
     public class ContentBlock : Control
     {
         public MultilingualString AdHocHtml { get; set; }

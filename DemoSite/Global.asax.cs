@@ -12,6 +12,7 @@ using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
+using WarpCore.Web.Widgets;
 
 namespace DemoSite
 {
@@ -55,13 +56,46 @@ namespace DemoSite
                 SiteId = newSite.ContentId.Value,
                 LayoutId = myLayout.ContentId.Value
             };
-            homePage.PageContent.Add(new CmsPageContent
+
+            var lbId = Guid.NewGuid();
+            var row = new CmsPageContent
+            {
+                WidgetTypeCode = "WC/RowLayout",
+                PlacementContentPlaceHolderId = "Body",
+                Parameters = new Dictionary<string, string>
+                {
+                    [nameof(RowLayout.LayoutBuilderId)] = lbId.ToString(),
+                    [nameof(RowLayout.NumColumns)] = 3.ToString()
+                }
+            };
+
+            var helloWorld0 = new CmsPageContent
             {
                 Id = Guid.NewGuid(),
-                ContentPlaceHolderId = "Body",
+                PlacementContentPlaceHolderId = "0",
+                PlacementLayoutBuilderId = lbId,
                 WidgetTypeCode = "Literal",
-                Parameters = new Dictionary<string, string> {["Text"]="Hello World"}
-            });
+                Parameters = new Dictionary<string, string> {["Text"] = "Hello World (0)"}
+            };
+
+            var helloWorld1 = new CmsPageContent
+            {
+                Id = Guid.NewGuid(),
+                PlacementContentPlaceHolderId = "1",
+                PlacementLayoutBuilderId = lbId,
+                WidgetTypeCode = "Literal",
+                Parameters = new Dictionary<string, string> { ["Text"] = "Hello World (1)" }
+            };
+
+            row.SubContent.Add(helloWorld0);
+            row.SubContent.Add(helloWorld1);
+
+            homePage.PageContent.Add(row);
+
+            
+
+
+
 
             var aboutUs = new CmsPage
             {
