@@ -10,12 +10,12 @@ namespace WarpCore.Web.Widgets
         public override void InitializeLayout()
         {
             var width = 12 / NumColumns;
-            var row = new Panel { CssClass = "row" };
+            var row = new Panel { CssClass = "container row" };
             for (var i = 0; i < NumColumns; i++)
             {
                 var p = new Panel
                 {
-                    CssClass = "col_md_" + width
+                    CssClass = "col-md-" + width
                 };
                 p.Controls.Add(new ContentPlaceHolder { ID = i.ToString() });
                 row.Controls.Add(p);
