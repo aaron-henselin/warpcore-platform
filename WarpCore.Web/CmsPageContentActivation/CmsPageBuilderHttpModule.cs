@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Cms.Layout;
 using WarpCore.Cms;
@@ -170,7 +171,11 @@ namespace WarpCore.Web
                 p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
                 p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
                 p.Attributes["class"] = "wc-droptarget";
-               
+
+                var child = new Panel();
+                child.Attributes["class"] = "hint";
+                p.Controls.Add(child);
+
                 this.Controls.Add(p);
             }
 
@@ -210,11 +215,11 @@ namespace WarpCore.Web
 
             if (_context.ViewMode == ViewMode.Edit)
             {
-                if (page.Form != null)
+                page.PreRender += (sender, args) =>
                 {
                     page.Form.Controls.Add(new ProxiedScriptManager());
                     ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
-                }
+                };
             }
         }
 
