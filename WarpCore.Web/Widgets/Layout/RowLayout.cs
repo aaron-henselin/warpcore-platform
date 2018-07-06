@@ -1,4 +1,5 @@
-﻿using System.Web.UI.WebControls;
+﻿using System;
+using System.Web.UI.WebControls;
 
 namespace WarpCore.Web.Widgets
 {
@@ -17,11 +18,16 @@ namespace WarpCore.Web.Widgets
                 {
                     CssClass = "col-md-" + width
                 };
-                p.Controls.Add(new ContentPlaceHolder { ID = i.ToString() });
+                p.Controls.Add(new LayoutBuilderContentPlaceHolder { ID = i.ToString(),LayoutBuilderId = LayoutBuilderId });
                 row.Controls.Add(p);
             }
 
             this.Controls.Add(row);
         }
+    }
+
+    public class LayoutBuilderContentPlaceHolder : ContentPlaceHolder
+    {
+        public Guid LayoutBuilderId { get; set; }
     }
 }

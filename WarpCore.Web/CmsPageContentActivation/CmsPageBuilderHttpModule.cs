@@ -116,8 +116,10 @@ namespace WarpCore.Web
         //}
 
 
-        public void PopulateContentPlaceholders(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
-        {            
+        public IReadOnlyCollection<Control> ActivateAndPlaceContent(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
+        {
+            List<Control> activatedControls = new List<Control>();
+
             foreach (var content in contents)
             {
                 var activatedWidget = CmsPageContentActivator.ActivateControl(content);
@@ -125,43 +127,79 @@ namespace WarpCore.Web
                 var layoutWidget = activatedWidget as LayoutControl;
                 layoutWidget?.InitializeLayout();
 
-                Control searchContext = page.Master;
-                if (content.PlacementLayoutBuilderId != null)
-                {
-                    var subLayout = searchContext.GetDescendantControls<LayoutControl>()
-                        .SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+                var placementPlaceHolder = FindPlacementLocation(page, content);
+                if (placementPlaceHolder == null)
+                    continue;
 
-                    if (subLayout != null)
-                        searchContext = subLayout;
-                }
-
-                var ph = searchContext.GetDescendantControls<ContentPlaceHolder>().SingleOrDefault(x => x.ID == content.PlacementContentPlaceHolderId);
-                if (ph == null)
-                    ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
-                if (ph == null)
-                    ph = page.Master.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
-                if (ph == null)
-                    return;
-
+                placementPlaceHolder.Controls.Add(new DropTarget(placementPlaceHolder){ BeforePageContentId = content.Id });
 
                 if (vm == ViewMode.Edit)
+                    AddLayoutHandle(placementPlaceHolder, content);
+
+                placementPlaceHolder.Controls.Add(activatedWidget);
+                activatedControls.Add(activatedWidget);
+
+                var newlyGeneratedPlaceholders = layoutWidget.GetDescendantControls<ContentPlaceHolder>();
+                if (content.SubContent.Any())
                 {
-                    ph.Controls.Add(new DropTarget { BeforePageContentId = content.Id, PlaceHolderId = ph.ID});
-                    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
-                    var handle = new LayoutHandle { PageContentId = content.Id, HandleName = toolboxItem.Name };
-                    ph.Controls.Add(handle);
+                    var subCollection = ActivateAndPlaceContent(page, content.SubContent, vm);
+                    activatedControls.AddRange(subCollection);
                 }
 
-                ph.Controls.Add(activatedWidget);
+                if (layoutWidget == null)
+                {
+                    foreach (var leaf in newlyGeneratedPlaceholders)
+                        leaf.Controls.Add(new DropTarget(leaf));
+                }
 
-                if (content.SubContent.Any())
-                    PopulateContentPlaceholders(page, content.SubContent,vm);
-                
             }
+
+            return activatedControls;
+        }
+
+        private static void AddLayoutHandle(ContentPlaceHolder ph, CmsPageContent content)
+        {
+            
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
+            var handle = new LayoutHandle {PageContentId = content.Id, HandleName = toolboxItem.Name};
+            ph.Controls.Add(handle);
+        }
+
+        private static ContentPlaceHolder FindPlacementLocation(Page page, CmsPageContent content)
+        {
+            Control searchContext = page.Master;
+            if (content.PlacementLayoutBuilderId != null)
+            {
+                var subLayout = searchContext.GetDescendantControls<LayoutControl>()
+                    .SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+
+                if (subLayout != null)
+                    searchContext = subLayout;
+            }
+
+            var ph = searchContext.GetDescendantControls<ContentPlaceHolder>()
+                .SingleOrDefault(x => x.ID == content.PlacementContentPlaceHolderId);
+            if (ph == null)
+                ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+            if (ph == null)
+                ph = page.Master.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+            return ph;
         }
 
         private class DropTarget : PlaceHolder
         {
+            
+
+            public DropTarget()
+            {
+            }
+
+            public DropTarget(ContentPlaceHolder leaf)
+            {
+                PlaceHolderId = leaf.ID;
+                LayoutBuilderId = (leaf as LayoutBuilderContentPlaceHolder)?.LayoutBuilderId;
+            }
+
             protected override void OnInit(EventArgs e)
             {
                 base.OnInit(e);
@@ -178,6 +216,8 @@ namespace WarpCore.Web
 
                 this.Controls.Add(p);
             }
+
+            public Guid? LayoutBuilderId { get; set; }
 
             public string PlaceHolderId { get; set; }
 
@@ -207,11 +247,11 @@ namespace WarpCore.Web
                 return;
 
             var leaves = IdentifyLeaves(page);
-            PopulateContentPlaceholders(page,_context.CmsPage.PageContent,_context.ViewMode);
+
+            ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
+
             foreach (var leaf in leaves)
-            {
-                leaf.Controls.Add(new DropTarget{PlaceHolderId = leaf.ID});
-            }
+                leaf.Controls.Add(new DropTarget(leaf));
 
             if (_context.ViewMode == ViewMode.Edit)
             {
@@ -234,7 +274,7 @@ namespace WarpCore.Web
             var lns = FlattenLayoutTree(structure);
             foreach (var ln in lns)
             {
-                PopulateContentPlaceholders(localPage,ln.Layout.PageContent,ViewMode.Default);
+                ActivateAndPlaceContent(localPage,ln.Layout.PageContent,ViewMode.Default);
             }
         }
 
