@@ -139,14 +139,14 @@ namespace WarpCore.Web
                 placementPlaceHolder.Controls.Add(activatedWidget);
                 activatedControls.Add(activatedWidget);
 
-                var newlyGeneratedPlaceholders = layoutWidget.GetDescendantControls<ContentPlaceHolder>();
+                var newlyGeneratedPlaceholders = layoutWidget?.GetDescendantControls<ContentPlaceHolder>();
                 if (content.SubContent.Any())
                 {
                     var subCollection = ActivateAndPlaceContent(page, content.SubContent, vm);
                     activatedControls.AddRange(subCollection);
                 }
 
-                if (layoutWidget == null)
+                if (layoutWidget != null)
                 {
                     foreach (var leaf in newlyGeneratedPlaceholders)
                         leaf.Controls.Add(new DropTarget(leaf));
@@ -207,6 +207,7 @@ namespace WarpCore.Web
                 var p = new Panel();
                 p.Attributes["data-wc-role"] = "droptarget";
                 p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
+                p.Attributes["data-wc-layout-builder-id"] = LayoutBuilderId.ToString();
                 p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
                 p.Attributes["class"] = "wc-droptarget";
 

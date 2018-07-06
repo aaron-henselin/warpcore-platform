@@ -70,6 +70,10 @@
         transition-property: height;
         transition-duration: 1s;
     }*/
+
+    div .wc-droptarget-highlight:last-child {
+        margin-top: 10px;
+    }
     .wc-droptarget-highlight {
         height: 32px;
         transition-property: height;
