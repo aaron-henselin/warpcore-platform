@@ -129,7 +129,26 @@
 
             $this.kendoDropTarget({
                 dragenter: dragenter,
-                dragleave: dragleave
+                dragleave: dragleave,
+                drop: function(e) {
+                    e.draggable.destroy(); //detach events
+                    e.draggable.element.css("opacity", 0.3); //change opacity
+                    var moveContentId = e.draggable.element.data("wc-page-content-id");
+
+                    
+                    var moveCommand =
+                    {
+                        "PageContentId": moveContentId,
+                        "ToContentPlaceHolderId": $this.data("wc-placeholder-id"),
+                        "ToLayoutBuilderId": $this.data("wc-layout-builder-id"),
+                        "BeforePageContentId": $this.data("wc-before-page-content-id")
+                    };
+
+                    var moveCommandJson = JSON.stringify(moveCommand);
+                    $("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
+                    $("#WC_EDITING_SUBMIT").click();
+
+                }
             });
         });
 
