@@ -175,7 +175,14 @@ namespace WarpCore.Web
                 if (vm == ViewMode.Edit)
                     AddLayoutHandle(placementPlaceHolder, content);
 
+                if (vm == ViewMode.Edit)
+                    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-widget-render data-wc-page-content-id='{content.Id}'>" });
+
                 placementPlaceHolder.Controls.Add(activatedWidget);
+
+                if (vm == ViewMode.Edit)
+                    placementPlaceHolder.Controls.Add(new Literal { Text = "</wc-widget-render>" });
+
                 activatedControls.Add(activatedWidget);
 
                 var newlyGeneratedPlaceholders = layoutWidget?.GetDescendantControls<ContentPlaceHolder>();
@@ -185,12 +192,16 @@ namespace WarpCore.Web
                     activatedControls.AddRange(subCollection);
                 }
 
-                if (layoutWidget != null)
+                if (vm == ViewMode.Edit)
                 {
-                    foreach (var leaf in newlyGeneratedPlaceholders)
+                    if (layoutWidget != null)
                     {
-                        leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
-                        leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
+
+                        foreach (var leaf in newlyGeneratedPlaceholders)
+                        {
+                            leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
+                            leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
+                        }
                     }
                 }
 
@@ -212,8 +223,9 @@ namespace WarpCore.Web
             Control searchContext = page.Master;
             if (content.PlacementLayoutBuilderId != null)
             {
-                var subLayout = searchContext.GetDescendantControls<LayoutControl>()
-                    .SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+                var layoutControls = searchContext.GetDescendantControls<LayoutControl>().ToList();
+                var subLayout =
+                    layoutControls.SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
 
                 if (subLayout != null)
                     searchContext = subLayout;
@@ -246,20 +258,11 @@ namespace WarpCore.Web
 
             protected override void Render(HtmlTextWriter writer)
             {
-                //p.Attributes["data-wc-directive"] = _directive;
-                //p.Attributes["data-wc-role"] = "droptarget";
-                //p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
-                //p.Attributes["data-wc-layout-builder-id"] = LayoutBuilderId.ToString();
-                //p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
-                //p.Attributes["class"] = "wc-droptarget";
-
-                //base.Render(writer);
                 if (_directive == DropTargetDirective.Begin.ToString())
-                    writer.Write($"<wc-droptarget wc-placeholder-id='{PlaceHolderId}' data-wc-layout-builder-id='{LayoutBuilderId}' data-wc-before-page-content-id='{BeforePageContentId}'>");
+                    writer.Write($"<wc-droptarget data-wc-placeholder-id='{PlaceHolderId}' data-wc-layout-builder-id='{LayoutBuilderId}' data-wc-before-page-content-id='{BeforePageContentId}'>");
 
                 if (_directive == DropTargetDirective.End.ToString())
-                    writer.Write("</wc-droptarget>");
-                
+                    writer.Write("</wc-droptarget>");               
             }
 
             public Guid? LayoutBuilderId { get; set; }
@@ -308,9 +311,9 @@ namespace WarpCore.Web
             ActivateAndPlaceContent(page, allContent, _context.ViewMode);
 
             foreach (var leaf in leaves)
-                leaf.Controls.Add(new DropTarget(leaf,DropTargetDirective.Begin));
+                leaf.Controls.AddAt(0,new DropTarget(leaf,DropTargetDirective.Begin));
 
-            ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
+            //ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
             
             foreach (var leaf in leaves)
                 leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));

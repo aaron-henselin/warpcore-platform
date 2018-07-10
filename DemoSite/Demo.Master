@@ -106,20 +106,56 @@
             animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
             handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
             draggable: ".wc-layout-handle", // Specifies which items inside the element should be sortable
-            onUpdate: function (evt/**Event*/){
-                var item = evt.item; // the current dragged HTMLElement
-            }
+
         });
 
         const containers = document.querySelectorAll('wc-droptarget');
         [].forEach.call(containers, function (el){
             Sortable.create(el, {
                 group: 'photo',
-                animation: 150
+                animation: 150,
+                onChoose: function(evt) {
+                    var matchId = $(evt.item).data("wc-page-content-id");
+                    $("wc-widget-render[data-wc-page-content-id=" + matchId + "]").hide();
+                },
+                onMove: function (evt/**Event*/) {
+
+
+                    //var item = evt.item; // the current dragged HTMLElement
+                    //drop(item);
+                },
+                onUpdate: function (evt/**Event*/){
+                    drop(evt.item,evt.to);
+                },
+                onAdd: function (evt/**Event*/){
+                    drop(evt.item,evt.to);
+                }
             });
         });
 
+        var drop = function(el,to) {
 
+            var moveContentId = $(el).data("wc-page-content-id");
+            var $to = $(to);
+
+            
+
+            var $detached = $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").detach();
+            $(el).after($detached);
+            $detached.show();
+
+            var moveCommand =
+            {
+                "PageContentId": moveContentId,
+                "ToContentPlaceHolderId": $to.data("wc-placeholder-id"),
+                "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
+                "BeforePageContentId": $to.data("wc-before-page-content-id")
+            };
+
+            var moveCommandJson = JSON.stringify(moveCommand);
+            $("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
+            $("#WC_EDITING_SUBMIT").click();
+        }
 
 
     }
