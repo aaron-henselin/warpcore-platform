@@ -7,7 +7,7 @@
     <title></title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
-
+    <script src="Scripts/jquery.slidereveal.min.js"></script>
     <script>
        
         var warpcore = {};
@@ -20,6 +20,9 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
+<div class="tbx"><span>asdfasdfasdf asdf asdfas asdfasdf</span></div>
+<button id='trigger'>Trigger</button>
+
     <form id="form1" runat="server">
         <div>
             <h1>Layout</h1>
@@ -86,22 +89,33 @@
         z-index: 10000;
         position: relative;
     }
-    .wc-droptarget-highlight.wc-droptarget-hover {
-
-    }
 </style>
 
 
 <script>
 
     warpcore.page = {};
-    warpcore.page.edit = function() {
+    
+    warpcore.page.edit = function () {
+
+        if (window.once === true)
+            return;
+
+        window.once = true;
+
         var $ = warpcore.jQuery;
 
+        //$("body > *").wrapAll("<wc-page-preview/>");
+       
 
+        $('.tbx').slideReveal({
+            trigger: $("#trigger")
+        });
        
 
         var container = document.querySelectorAll("body")[0];
+
+
         var sort = Sortable.create(container, {
             animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
             handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
@@ -132,6 +146,8 @@
                 }
             });
         });
+
+
 
         var drop = function(el,to) {
 
