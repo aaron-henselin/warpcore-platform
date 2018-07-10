@@ -120,54 +120,7 @@
         });
 
 
-        var dragenter = function(e) {
-            $(e.dropTarget).addClass("wc-droptarget-hover");
-        };
-        var dragleave = function(e) {
-            $(e.dropTarget).removeClass("wc-droptarget-hover");
-        };
-        $(".wc-droptarget").each(function() {
-            var $this = $(this);
-            if ($this.data("kendoDropTarget"))
-                return;
 
-            $this.kendoDropTarget({
-                dragenter: dragenter,
-                dragleave: dragleave
-            });
-        });
-
-        //$(".wc-layout-handle").each(function() {
-        //    var $this = $(this);
-        //    if ($this.data("kendoDraggable"))
-        //        return;
-
-        //    $this.kendoDraggable({
-        //        hint: function() {
-        //            return $this.clone();
-        //        },
-        //        dragstart: onDragStart,
-        //        dragend: onDragEnd
-        //    });
-        //});
-
-
-        //var dragenter = function(e) {
-        //    $(e.dropTarget).addClass("wc-droptarget-hover");
-        //};
-        //var dragleave = function(e) {
-        //    $(e.dropTarget).removeClass("wc-droptarget-hover");
-        //};
-        //$(".wc-droptarget").each(function() {
-        //    var $this = $(this);
-        //    if ($this.data("kendoDropTarget"))
-        //        return;
-
-        //    $this.kendoDropTarget({
-        //        dragenter: dragenter,
-        //        dragleave: dragleave
-        //    });
-        //});
 
     }
     
