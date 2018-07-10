@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
+    <Compile Include="Design\ControlDesigner.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="CmsPageContentActivation\CmsPageContentActivator.cs" />
     <Compile Include="DynamicPage.aspx.cs">

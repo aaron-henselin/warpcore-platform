@@ -29,6 +29,8 @@ namespace WarpCore.Web
         Default,Edit
     }
 
+    public enum DropTargetDirective { Begin,End}
+
     public class CmsPageBuilder
     {
         private readonly CmsPageRequestContext _context;
@@ -131,8 +133,6 @@ namespace WarpCore.Web
                 if (placementPlaceHolder == null)
                     continue;
 
-                placementPlaceHolder.Controls.Add(new DropTarget(placementPlaceHolder){ BeforePageContentId = content.Id });
-
                 if (vm == ViewMode.Edit)
                     AddLayoutHandle(placementPlaceHolder, content);
 
@@ -149,7 +149,10 @@ namespace WarpCore.Web
                 if (layoutWidget != null)
                 {
                     foreach (var leaf in newlyGeneratedPlaceholders)
-                        leaf.Controls.Add(new DropTarget(leaf));
+                    {
+                        leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
+                        leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
+                    }
                 }
 
             }
@@ -188,35 +191,53 @@ namespace WarpCore.Web
 
         private class DropTarget : PlaceHolder
         {
-            
+            private readonly string _directive;
+
 
             public DropTarget()
             {
             }
 
-            public DropTarget(ContentPlaceHolder leaf)
+            public DropTarget(ContentPlaceHolder leaf, DropTargetDirective directive)
             {
+                _directive = directive.ToString();
                 PlaceHolderId = leaf.ID;
                 LayoutBuilderId = (leaf as LayoutBuilderContentPlaceHolder)?.LayoutBuilderId;
             }
 
-            protected override void OnInit(EventArgs e)
+            protected override void Render(HtmlTextWriter writer)
             {
-                base.OnInit(e);
+                //p.Attributes["data-wc-directive"] = _directive;
+                //p.Attributes["data-wc-role"] = "droptarget";
+                //p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
+                //p.Attributes["data-wc-layout-builder-id"] = LayoutBuilderId.ToString();
+                //p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
+                //p.Attributes["class"] = "wc-droptarget";
 
-                var p = new Panel();
-                p.Attributes["data-wc-role"] = "droptarget";
-                p.Attributes["data-wc-placeholder-id"] = PlaceHolderId.ToString();
-                p.Attributes["data-wc-layout-builder-id"] = LayoutBuilderId.ToString();
-                p.Attributes["data-wc-before-page-content-id"] = BeforePageContentId.ToString();
-                p.Attributes["class"] = "wc-droptarget";
+                //base.Render(writer);
+                if (_directive == DropTargetDirective.Begin.ToString())
+                    writer.Write($"<wc-droptarget wc-placeholder-id='{PlaceHolderId}' data-wc-layout-builder-id='{LayoutBuilderId}' data-wc-before-page-content-id='{BeforePageContentId}'>");
 
-                var child = new Panel();
-                child.Attributes["class"] = "hint";
-                p.Controls.Add(child);
+                if (_directive == DropTargetDirective.End.ToString())
+                    writer.Write("</wc-droptarget>");
 
-                this.Controls.Add(p);
             }
+
+            //protected override void OnInit(EventArgs e)
+            //{
+            //    base.OnInit(e);
+
+            //    var p = new HtmlGenericControl("script");
+
+            //    p.Attributes["type"] = "wc-droptarget";
+
+
+            //    //var child = new Panel();
+            //    //child.Attributes["class"] = "hint";
+            //    //p.Controls.Add(child);
+
+            //    this.Controls.Add(p);
+            //}
 
             public Guid? LayoutBuilderId { get; set; }
 
@@ -249,10 +270,13 @@ namespace WarpCore.Web
 
             var leaves = IdentifyLeaves(page);
 
-            ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
-
             foreach (var leaf in leaves)
-                leaf.Controls.Add(new DropTarget(leaf));
+                leaf.Controls.Add(new DropTarget(leaf,DropTargetDirective.Begin));
+
+            ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
+            
+            foreach (var leaf in leaves)
+                leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
 
             if (_context.ViewMode == ViewMode.Edit)
             {
@@ -311,12 +335,22 @@ namespace WarpCore.Web
         {
             base.OnInit(e);
 
-            var p = new Panel();
-            p.Attributes["data-wc-role"] = "layout-handle";
-            p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
-            p.Attributes["class"] = "wc-layout-handle";
-            p.Controls.Add(new Label{Text=HandleName});
-            this.Controls.Add(p);
+            var literal = new Literal();
+            literal.Text = $@"
+<li class=""StackedListItem StackedListItem--isDraggable wc-layout-handle"" tabindex=""1""  data-wc-page-content-id=""{PageContentId}"" >
+<div class=""StackedListContent"">
+<h4 class=""Heading Heading--size4 text-no-select"">{HandleName}</h4>
+<div class=""DragHandle""></div>
+<div class=""Pattern Pattern--typeHalftone""></div>
+<div class=""Pattern Pattern--typePlaced""></div></div></li>
+            ";
+
+            //var p = new Panel();
+            //p.Attributes["data-wc-role"] = "layout-handle";
+            //p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
+            //p.Attributes["class"] = "wc-layout-handle";
+            //p.Controls.Add(new Label{Text=HandleName});
+            this.Controls.Add(literal);
         }
     }
 
