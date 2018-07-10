@@ -120,12 +120,22 @@
         });
 
 
-        //var onDragStart = function() {
-        //    $(".wc-droptarget").addClass("wc-droptarget-highlight");
-        //};
-        //var onDragEnd = function() {
-        //    $(".wc-droptarget").removeClass("wc-droptarget-highlight");
-        //};
+        var dragenter = function(e) {
+            $(e.dropTarget).addClass("wc-droptarget-hover");
+        };
+        var dragleave = function(e) {
+            $(e.dropTarget).removeClass("wc-droptarget-hover");
+        };
+        $(".wc-droptarget").each(function() {
+            var $this = $(this);
+            if ($this.data("kendoDropTarget"))
+                return;
+
+            $this.kendoDropTarget({
+                dragenter: dragenter,
+                dragleave: dragleave
+            });
+        });
 
         //$(".wc-layout-handle").each(function() {
         //    var $this = $(this);

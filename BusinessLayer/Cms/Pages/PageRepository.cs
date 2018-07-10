@@ -13,13 +13,13 @@ namespace WarpCore.Cms
 {
     public struct PageType
     {
-        public const string ContentPage="ContentPage";
+        public const string ContentPage = "ContentPage";
         public const string GroupingPage = "GroupingPage";
         public const string RedirectPage = "RedirectPage";
     }
 
     [Table("cms_page")]
-    public class CmsPage:VersionedContentEntity
+    public class CmsPage : VersionedContentEntity
     {
 
 
@@ -37,7 +37,8 @@ namespace WarpCore.Cms
         [Column]
         public Guid SiteId { get; set; }
 
-        [Column] public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
+        [Column]
+        public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
         [StoreAsComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
@@ -64,13 +65,52 @@ namespace WarpCore.Cms
     }
 
 
+    public interface IPageContent
+    {
+        List<CmsPageContent> SubContent { get; } 
+    }
 
+    public class FoundSubContent
+    {
+        public CmsPageContent LocatedContent { get; set; }
+        public IPageContent ParentContent { get; set; }
+    }
 
-    
-    public class CmsPageContent 
+    public static class IPageContentExtensions
     {
 
+        public static IReadOnlyCollection<FoundSubContent> FindSubContentReursive(this IPageContent pageContent, Func<CmsPageContent, bool> match)
+        {
+            List<FoundSubContent> foundContents = new List<FoundSubContent>();
+            foreach (var originalItem in pageContent.SubContent)
+            {
+                if (match(originalItem))
+                    foundContents.Add(new FoundSubContent{ParentContent = pageContent,LocatedContent = originalItem});
 
+                var additionalResults = FindSubContentReursive(originalItem,match);
+                foundContents.AddRange(additionalResults);
+            }
+            return foundContents;
+        }
+
+        public static void RemoveSubContentReursive(this IPageContent pageContent, Func<CmsPageContent, bool> match)
+        {
+            var originalItems = pageContent.SubContent.ToList();
+            foreach (var originalItem in originalItems)
+            {
+                if (match(originalItem))
+                    pageContent.SubContent.Remove(originalItem);
+            }
+
+            foreach (var remainingSubContentItem in pageContent.SubContent)
+                RemoveSubContentReursive(remainingSubContentItem,match);
+        }
+    }
+
+
+
+    public class CmsPageContent : IPageContent
+    {
         [Column]
         public Guid Id { get; set; }
 
@@ -91,6 +131,24 @@ namespace WarpCore.Cms
 
         [StoreAsComplexData]
         public List<CmsPageContent> SubContent { get; set; } = new List<CmsPageContent>();
+
+
+
+
+        //public List<CmsPageContent> FindOwningPageContentCollection(Guid id)
+        //{
+        //    foreach (var content in LocatedContent)
+        //    {
+        //        if (content.Id == id)
+        //            return LocatedContent;
+
+        //        var result = content.FindOwningPageContentCollection(id);
+        //        if (result != null)
+        //            return result;
+        //    }
+
+        //    return null;
+        //}
     }
 
     public class DuplicateSlugException:Exception

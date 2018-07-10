@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Routing;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -31,6 +32,115 @@ namespace WarpCore.Web
 
     public enum DropTargetDirective { Begin,End}
 
+    
+    public class EditingContext : IPageContent
+    {
+        public List<CmsPageContent> SubContent { get; set; }
+
+        public bool IsEditing => SubContent != null;
+    }
+
+    public class MoveCommand
+    {
+        public Guid PageContentId { get; set; }
+        public string ToContentPlaceHolderId { get; set; }
+        public Guid? ToLayoutBuilderId { get; set; }
+        public Guid? BeforePageContentId { get; set; }
+    }
+
+    public class EditingContextManager
+    {
+        private JavaScriptSerializer _js;
+
+        public EditingContextManager()
+        {
+            _js = new JavaScriptSerializer();
+        }
+
+        public void EnableEditingCommands(Page page)
+        {
+            page.PreRender += (sender, args) =>
+            {
+                var editingContext = GetEditingContext();
+                var editingContextJson = _js.Serialize(editingContext);
+                var htmlEncoded = page.Server.HtmlEncode(editingContextJson);
+                var lit = new Literal { };
+                lit.Text = $"<input name='WC_EDITING_CONTEXT_JSON' value='{htmlEncoded}'/><input id='WC_EDITING_MOVE_COMMAND' name='WC_EDITING_MOVE_COMMAND' value=''/>";
+                page.Form.Controls.Add(lit);
+                //page.Form.Controls.Add(new HtmlInputHidden { ClientIDMode = ClientIDMode.Static, Name= "", ID = "WC_EDITING_CONTEXT_JSON",Value= editingContextJson });
+                //page.Form.Controls.Add(new HtmlInputHidden { ClientIDMode = ClientIDMode.Static, ID = "WC_EDITING_MOVE_COMMAND",Value=""});
+                page.Form.Controls.Add(new Button { ClientIDMode = ClientIDMode.Static, ID = "WC_EDITING_SUBMIT" });
+            };
+
+        }
+
+        public EditingContext GetOrCreateEditingContext(CmsPage cmsPage)
+        {
+            
+
+            if (HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"] == null)
+            {
+                var raw = _js.Serialize(new EditingContext {SubContent = cmsPage.PageContent});
+                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(raw);
+            }
+            else
+            {
+                var json = HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"];
+                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(json);
+            }
+
+            return GetEditingContext();
+        }
+
+        public void ProcessMoveCommand(EditingContext editingContext, MoveCommand moveCommand)
+        {
+            var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.PageContentId).SingleOrDefault();
+            if (contentToMoveSearch == null)
+                throw new Exception("component not found.");
+
+            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
+
+            if (moveCommand.ToLayoutBuilderId != null)
+            {
+                var newParentSearch =
+                    editingContext.FindSubContentReursive(x =>
+                        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
+                        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
+                        moveCommand.ToLayoutBuilderId.Value).Single();
+
+                //todo: ordering.
+
+                newParentSearch.LocatedContent.SubContent.Add(contentToMoveSearch.LocatedContent);
+            }
+            else
+            {
+                //todo: ordering.
+
+                editingContext.SubContent.Add(contentToMoveSearch.LocatedContent);
+            }
+
+            contentToMoveSearch.LocatedContent.PlacementContentPlaceHolderId = moveCommand.ToContentPlaceHolderId;
+            contentToMoveSearch.LocatedContent.PlacementLayoutBuilderId = moveCommand.ToLayoutBuilderId;
+
+        }
+
+        public EditingContext GetEditingContext()
+        {
+            return (EditingContext)HttpContext.Current.Items["WC_EDITING_CONTEXT"];
+        }
+
+
+        public void ProcessEditingCommands(EditingContext editingContext)
+        {
+            var moveCommandRaw = HttpContext.Current.Request["WC_EDITING_MOVE_COMMAND"];
+            if (!string.IsNullOrWhiteSpace(moveCommandRaw))
+            {
+                var realMoveCommand = _js.Deserialize<MoveCommand>(moveCommandRaw);
+                ProcessMoveCommand(editingContext, realMoveCommand);
+            }
+        }
+    }
+
     public class CmsPageBuilder
     {
         private readonly CmsPageRequestContext _context;
@@ -45,77 +155,6 @@ namespace WarpCore.Web
             public LayoutControl ActivatedControl { get; set; }
 
         }
-
-        //private void DeterminePlacementOrder(IReadOnlyCollection<CmsPageContent> contents)
-        //{
-        //    var waitingToPlace =
-        //        _context.CmsPage.PageContent.Select((x, y) => new
-        //            {
-        //                ActivatedControl = CmsPageContentActivator.ActivateControl(x),
-        //                ContentInfo = x,
-        //                OriginalOrder = x.Order
-        //            }).ToList();
-
-
-        //    var layoutsPending = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl)
-        //        .Select(x => new
-        //        {
-        //            ActivatedLayout = (LayoutControl)x.ActivatedControl,
-        //            ContentInfo = x.ContentInfo,
-        //             x.OriginalOrder
-        //        })
-        //        .ToList();
-
-        //    var layoutBuildersToBeCreated = layoutsPending.ToDictionary(x => x.ActivatedLayout.LayoutBuilderId,x => x);
-
-        //    var layoutsRemainingToBePlaced = layoutsPending.ToList();
-
-        //    List<LayoutPlacement> placements = new List<LayoutPlacement>();
-        //    while (layoutsRemainingToBePlaced.Any())
-        //    {
-        //        int resolvedInThisRound = 0;
-        //        foreach (var layout in layoutsRemainingToBePlaced)
-        //        {
-        //            if (layout.ContentInfo.PlacementLayoutBuilderId == null)
-        //            {
-        //                layoutsRemainingToBePlaced.Remove(layout);
-        //                placements.Add(new LayoutPlacement
-        //                {
-        //                    ActivatedControl = layout.ActivatedLayout
-        //                });
-        //            }
-        //            else
-        //            {
-        //                placements.
-        //            }
-
-                  
-                   
-        //        }
-
-        //        if (resolvedInThisRound == 0)
-        //            break;
-        //    }
-
-
-        //    foreach (var layout in layoutsPending)
-        //        {
-        //            layout.ContentInfo.PlacementLayoutBuilderId
-
-        //        }
-
-            
-
-           
-        //    //var first = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl && x.ContentInfo.LayoutBuilderId == null);
-        //    //var second = waitingToPlace.Where(x => x.ActivatedControl is LayoutControl && x.ContentInfo.LayoutBuilderId != null);
-
-
-        //    //    .OrderByDescending(x => x.ActivatedControl is LayoutControl)
-        //    //    .ThenByDescending(x => x.ContentInfo.LayoutBuilderId == null);
-
-
-        //}
 
 
         public IReadOnlyCollection<Control> ActivateAndPlaceContent(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
@@ -220,24 +259,8 @@ namespace WarpCore.Web
 
                 if (_directive == DropTargetDirective.End.ToString())
                     writer.Write("</wc-droptarget>");
-
+                
             }
-
-            //protected override void OnInit(EventArgs e)
-            //{
-            //    base.OnInit(e);
-
-            //    var p = new HtmlGenericControl("script");
-
-            //    p.Attributes["type"] = "wc-droptarget";
-
-
-            //    //var child = new Panel();
-            //    //child.Attributes["class"] = "hint";
-            //    //p.Controls.Add(child);
-
-            //    this.Controls.Add(p);
-            //}
 
             public Guid? LayoutBuilderId { get; set; }
 
@@ -262,13 +285,27 @@ namespace WarpCore.Web
 
             return phs;
         }
+        
 
-        public void AddAdHocPageContent(Page page)
+        public void ActivateAndPlaceAdHocPageContent(Page page)
         {
             if (_context.CmsPage == null)
                 return;
 
+            var allContent = _context.CmsPage.PageContent;
+
+            if (_context.ViewMode == ViewMode.Edit)
+            {
+                var editing = new EditingContextManager();
+                var context = editing.GetOrCreateEditingContext(_context.CmsPage);
+                editing.EnableEditingCommands(page);
+                editing.ProcessEditingCommands(context);
+                allContent = context.SubContent;
+            }
+
             var leaves = IdentifyLeaves(page);
+
+            ActivateAndPlaceContent(page, allContent, _context.ViewMode);
 
             foreach (var leaf in leaves)
                 leaf.Controls.Add(new DropTarget(leaf,DropTargetDirective.Begin));
@@ -284,23 +321,31 @@ namespace WarpCore.Web
                 {
                     page.Form.Controls.Add(new ProxiedScriptManager());
                     ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
+
+
+
                 };
             }
         }
 
 
 
-        public void ApplyLayout(Page localPage)
+        public void ActivateAndPlaceInheritedContent(Page localPage)
         {
-            var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);
-            localPage.MasterPageFile = layoutToApply.MasterPagePath;
+            var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);          
             var structure=layoutRepository.GetLayoutStructure(layoutToApply);
-
             var lns = FlattenLayoutTree(structure);
-            foreach (var ln in lns)
+
+            if (lns.Any())
             {
-                ActivateAndPlaceContent(localPage,ln.Layout.PageContent,ViewMode.Default);
+                localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
             }
+            else
+                localPage.MasterPageFile = "/App_Data/AdHocLayoutMaster.master";
+
+            foreach (var ln in lns)
+                ActivateAndPlaceContent(localPage,ln.Layout.PageContent,ViewMode.Default);
+            
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)
@@ -374,6 +419,7 @@ namespace WarpCore.Web
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
+                //HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.OriginalUriToken, HttpContext.Current.Request.Url.AbsolutePath);
 
                 if (routingContext.Route != null)
                 {
@@ -389,17 +435,16 @@ namespace WarpCore.Web
         static void application_PreRequestHandlerExecute(object sender, EventArgs e)
         {
        
-                RegisterPagePreRenderEventHandler();
+                WireUpPreInit();
         }
 
-        private static void RegisterPagePreRenderEventHandler()
+        private static void WireUpPreInit()
         {
             if (HttpContext.Current.Handler.GetType().ToString().EndsWith("_aspx"))
             { // Register PreRender handler only on aspx pages.
                 Page handlerPage = (Page)HttpContext.Current.Handler;
                 handlerPage.PreInit += (sender, args) =>
                 {
-                    
                     var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
                     var isUnmanagedAspxPage = rt == null || rt.CmsPage == null;
                     if (isUnmanagedAspxPage)
@@ -407,8 +452,12 @@ namespace WarpCore.Web
 
                     var localPage = (Page)sender;
                     var pageBuilder = new CmsPageBuilder(rt);
-                    pageBuilder.ApplyLayout(localPage);
-                    pageBuilder.AddAdHocPageContent(localPage);
+                    pageBuilder.ActivateAndPlaceInheritedContent(localPage);
+                    pageBuilder.ActivateAndPlaceAdHocPageContent(localPage);
+                };
+                handlerPage.Init += (sender, args) =>
+                {
+                    handlerPage.Form.Action = HttpContext.Current.Request.RawUrl;
                 };
             }
         }

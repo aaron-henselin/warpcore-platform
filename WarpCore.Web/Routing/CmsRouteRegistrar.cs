@@ -7,6 +7,7 @@ namespace WarpCore.Cms
     public struct CmsRouteDataTokens
     {
         public const string RouteDataToken = "WC_RTCONTEXT";
+        public const string OriginalUriToken = "WC_ORIGINALURI";
     }
 
     public class CmsRouteRegistrar
