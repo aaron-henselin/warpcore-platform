@@ -20,8 +20,23 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
-<div class="tbx"><span>asdfasdfasdf asdf asdfas asdfasdf</span></div>
-<button id='trigger'>Trigger</button>
+<div class="tbx">
+    <div class="handle">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </div>
+    
+    <h3>
+        Toolbox<br/>
+        <small>
+            <span class="glyphicon glyphicon-info-sign">
+            </span> Press <kbd>ESC</kbd> to close
+        </small>
+    </h3>
+    <div id="toolboxUl" runat="server" class="toolbox-item-list">
+
+    </div>
+</div>
+
 
     <form id="form1" runat="server">
         <div>
@@ -34,8 +49,31 @@
 </html>
 
 <style>
+    .tbx{ color: #fff;}
+    .tbx .handle{
+        
+        background-color: #2E2E2E;
+        right: -40px;
+        padding: 10px;
+        position: absolute;
+        top: 0px;
+        width: 40px;
+        cursor: pointer;
 
-    
+    }
+
+    /*.tbx {
+        box-shadow: 10px 0px 15px 10px #585858;
+    }*/
+
+    .tbx h3 {
+        background-color: #2E2E2E;
+        font-size: 1.9em;
+        padding: 20px;
+        margin: 0;
+        font-weight: 300;
+    }
+
     .wc-layout-handle {
         display: block;
         width: 100%;
@@ -89,6 +127,9 @@
         z-index: 10000;
         position: relative;
     }
+
+
+
 </style>
 
 
@@ -109,25 +150,63 @@
        
 
         $('.tbx').slideReveal({
-            trigger: $("#trigger")
+            trigger: $(".tbx .handle"),
+            speed: 0,
+            shown: function(obj){
+                obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
+                obj.addClass("right-shadow-overlay");
+            },
+            hidden: function(obj){
+                obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+                obj.removeClass("right-shadow-overlay");
+            },
+            shown: function() {
+                $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
+            }
         });
-       
+
+        var tbxStateRaw = $("#WC_TOOLBOX_STATE").val();
+        if (tbxStateRaw) {
+            var tbxState = JSON.parse(tbxStateRaw);
+            var isOpen = tbxState && tbxState.isOpen;
+            if (isOpen)
+                $('.tbx').slideReveal("show");
+        }
+
 
         var container = document.querySelectorAll("body")[0];
 
 
-        var sort = Sortable.create(container, {
-            animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-            handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
-            draggable: ".wc-layout-handle", // Specifies which items inside the element should be sortable
+        //var sort = Sortable.create(container, {
+        //    animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+        //    handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
+        //    draggable: ".wc-layout-handle", // Specifies which items inside the element should be sortable
 
-        });
+        //});
 
-        const containers = document.querySelectorAll('wc-droptarget');
-        [].forEach.call(containers, function (el){
+        const containers = document.querySelectorAll('wc-droptarget,.toolbox-item-list');
+        [].forEach.call(containers, function (el) {
+
+            var pull = true;
+            var put = true;
+            var sort = true;
+
+            var isToolbox = $(el).hasClass("toolbox-item-list");
+            if (isToolbox) {
+                pull = "clone";
+                put = false;
+                sort = false;
+            }
+
+
             Sortable.create(el, {
+                pull: pull,
+                put: put,
+                sort:sort,
                 group: 'photo',
                 animation: 150,
+                handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
+                draggable: ".wc-layout-handle", // Specifies which items inside the element should be sortable
 
                 onChoose: function(evt) {
                     var matchId = $(evt.item).data("wc-page-content-id");
@@ -151,30 +230,48 @@
         });
 
 
-
         var drop = function(el,to) {
 
+
+            var addContentName = $(el).data("wc-toolbox-item-name");
             var moveContentId = $(el).data("wc-page-content-id");
             var $to = $(to);
 
-            
+
 
             var $detached = $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").detach();
             $(el).after($detached);
             $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").show();
             $("wc-widget-render[data-wc-layout='False']").slideDown();
 
-            var moveCommand =
-            {
-                "PageContentId": moveContentId,
-                "ToContentPlaceHolderId": $to.data("wc-placeholder-id"),
-                "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
-                "BeforePageContentId": $to.data("wc-before-page-content-id")
-            };
+            if (moveContentId) {
+                var moveCommand =
+                {
+                    "PageContentId": moveContentId,
+                    "ToContentPlaceHolderId": $to.data("wc-placeholder-id"),
+                    "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
+                    "BeforePageContentId": $to.data("wc-before-page-content-id")
+                };
 
-            var moveCommandJson = JSON.stringify(moveCommand);
-            $("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
-            $("#WC_EDITING_SUBMIT").click();
+                var moveCommandJson = JSON.stringify(moveCommand);
+                $("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
+                $("#WC_EDITING_SUBMIT").click();
+            } else {
+
+                var addCommand =
+                {
+                    "WidgetType": addContentName,
+                    "ToContentPlaceHolderId": $to.data("wc-placeholder-id"),
+                    "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
+                    "BeforePageContentId": $to.data("wc-before-page-content-id")
+                };
+
+                var addCommandJson = JSON.stringify(addCommand);
+                $("#WC_EDITING_ADD_COMMAND").val(addCommandJson);
+                $("#WC_EDITING_SUBMIT").click();
+
+            }
+
         }
 
 

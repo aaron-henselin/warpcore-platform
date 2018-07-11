@@ -6,11 +6,11 @@ namespace WarpCore.Web.Widgets
     [IncludeInToolbox(Name = "WC/RowLayout")]
     public class RowLayout : LayoutControl
     {
-        public int NumColumns { get; set; }
+        public int? NumColumns { get; set; }
 
         public override void InitializeLayout()
         {
-            var width = 12 / NumColumns;
+            var width = 12 / (NumColumns ?? 1);
             var row = new Panel { CssClass = "container row" };
             for (var i = 0; i < NumColumns; i++)
             {
