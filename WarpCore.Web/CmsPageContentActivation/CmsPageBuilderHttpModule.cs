@@ -172,16 +172,23 @@ namespace WarpCore.Web
                 if (placementPlaceHolder == null)
                     continue;
 
+                //if (vm == ViewMode.Edit)
+                //    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-page-content data-wc-page-content-id='{content.Id}'>" });
+
                 if (vm == ViewMode.Edit)
                     AddLayoutHandle(placementPlaceHolder, content);
 
                 if (vm == ViewMode.Edit)
-                    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-widget-render data-wc-page-content-id='{content.Id}'>" });
+                    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-widget-render data-wc-layout='{layoutWidget != null}' data-wc-page-content-id='{content.Id}'>" });
 
                 placementPlaceHolder.Controls.Add(activatedWidget);
 
                 if (vm == ViewMode.Edit)
                     placementPlaceHolder.Controls.Add(new Literal { Text = "</wc-widget-render>" });
+
+                //if (vm == ViewMode.Edit)
+                //    placementPlaceHolder.Controls.Add(new Literal { Text = $"</wc-page-content>" });
+
 
                 activatedControls.Add(activatedWidget);
 

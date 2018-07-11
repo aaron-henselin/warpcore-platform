@@ -128,9 +128,12 @@
             Sortable.create(el, {
                 group: 'photo',
                 animation: 150,
+
                 onChoose: function(evt) {
                     var matchId = $(evt.item).data("wc-page-content-id");
-                    $("wc-widget-render[data-wc-page-content-id=" + matchId + "]").hide();
+                    $("wc-widget-render[data-wc-page-content-id='" + matchId + "']").hide();
+                    $("wc-widget-render[data-wc-layout='False']").slideUp();
+                    
                 },
                 onMove: function (evt/**Event*/) {
 
@@ -158,7 +161,8 @@
 
             var $detached = $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").detach();
             $(el).after($detached);
-            $detached.show();
+            $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").show();
+            $("wc-widget-render[data-wc-layout='False']").slideDown();
 
             var moveCommand =
             {
