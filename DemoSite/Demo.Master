@@ -20,6 +20,7 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
+<!-- toolbox (move to uc) -->
 <div class="tbx">
     <div class="handle">
         <span class="glyphicon glyphicon-chevron-left"></span>
@@ -35,6 +36,12 @@
     <div id="toolboxUl" runat="server" class="toolbox-item-list">
 
     </div>
+</div>
+
+<!-- control designer (move to uc) -->
+<div class="designer">
+    
+
 </div>
 
 
@@ -205,6 +212,7 @@
                 sort:sort,
                 group: 'photo',
                 animation: 150,
+                filter: '.wc-edit-command',
                 handle: ".wc-layout-handle", // Restricts sort start click/touch to the specified element
                 draggable: ".wc-layout-handle", // Specifies which items inside the element should be sortable
 
@@ -228,6 +236,24 @@
                 }
             });
         });
+
+        $("[data-wc-editing-command-delete]").click(function() {
+
+            var moveContentId = $(this).data("wc-editing-command-delete");
+
+            $("wc-widget-render[data-wc-page-content-id=" + moveContentId + "]").hide();
+            $("wc-layout-handle[data-wc-page-content-id=" + moveContentId + "]").hide();
+
+            var deleteCommand =
+            {
+                "PageContentId": moveContentId
+            };
+            var deleteCommandJson = JSON.stringify(deleteCommand);
+            $("#WC_EDITING_DELETE_COMMAND").val(deleteCommandJson);
+            $("#WC_EDITING_SUBMIT").click();
+
+        });
+
 
 
         var drop = function(el,to) {

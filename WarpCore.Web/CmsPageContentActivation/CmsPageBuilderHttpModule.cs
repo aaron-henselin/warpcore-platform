@@ -47,6 +47,12 @@ namespace WarpCore.Web
         public Guid? BeforePageContentId { get; set; }
     }
 
+    public class DeleteCommand : EditingCommand
+    {
+        public Guid PageContentId { get; set; }
+
+    }
+
     public class AddCommand : EditingCommand
     {
         public string WidgetType { get; set; }
@@ -82,6 +88,7 @@ namespace WarpCore.Web
 <input name='WC_EDITING_CONTEXT_JSON' value='{htmlEncoded}'/>
 <input id='WC_EDITING_MOVE_COMMAND' name='WC_EDITING_MOVE_COMMAND' value=''/>
 <input id='WC_EDITING_ADD_COMMAND' name='WC_EDITING_ADD_COMMAND' value=''/>
+<input id='WC_EDITING_DELETE_COMMAND' name='WC_EDITING_DELETE_COMMAND' value=''/>
 <input id='WC_TOOLBOX_STATE' name='WC_TOOLBOX_STATE' value='{page.Server.HtmlEncode(toolboxPassthrough)}'/>
 
 ";
@@ -116,10 +123,20 @@ namespace WarpCore.Web
 
         }
 
+        public void ProcessDeleteCommand(EditingContext editingContext, DeleteCommand deleteCommand)
+        {
+            var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == deleteCommand.PageContentId).SingleOrDefault();
+            if (contentToMoveSearch == null)
+                throw new Exception("component not found.");
+
+            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
+        }
+
         public void ProcessAddCommand(EditingContext editingContext,AddCommand addCommand)
         {
             var newContent = new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = addCommand.ToContentPlaceHolderId,
                 PlacementLayoutBuilderId = addCommand.ToLayoutBuilderId,
                 WidgetTypeCode = addCommand.WidgetType,
@@ -198,6 +215,13 @@ namespace WarpCore.Web
             {
                 var addCommand = _js.Deserialize<AddCommand>(addCommandRaw);
                 ProcessAddCommand(editingContext, addCommand);
+            }
+
+            var deleteCommandRaw = HttpContext.Current.Request["WC_EDITING_DELETE_COMMAND"];
+            if (!string.IsNullOrWhiteSpace(deleteCommandRaw))
+            {
+                var deleteCommand = _js.Deserialize<DeleteCommand>(deleteCommandRaw);
+                ProcessDeleteCommand(editingContext, deleteCommand);
             }
         }
     }
@@ -457,7 +481,8 @@ namespace WarpCore.Web
 <div class=""StackedListContent"">
 <h4 class=""Heading Heading--size4 text-no-select"">{HandleName}
 
-<span class='pull-right' >X</span>
+<div class='pull-right wc-edit-command configure' data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
+<div class='pull-right wc-edit-command delete' data-wc-editing-command-delete=""{PageContentId}"" >X</div>
 </h4>
 <div class=""DragHandle""></div>
 <div class=""Pattern Pattern--typeHalftone""></div>
