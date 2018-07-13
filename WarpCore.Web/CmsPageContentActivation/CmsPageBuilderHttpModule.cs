@@ -40,30 +40,7 @@ namespace WarpCore.Web
         public bool IsEditing => SubContent != null;
     }
 
-    public abstract class EditingCommand
-    {
-        public string ToContentPlaceHolderId { get; set; }
-        public Guid? ToLayoutBuilderId { get; set; }
-        public Guid? BeforePageContentId { get; set; }
-    }
-
-    public class DeleteCommand : EditingCommand
-    {
-        public Guid PageContentId { get; set; }
-
-    }
-
-    public class AddCommand : EditingCommand
-    {
-        public string WidgetType { get; set; }
-
-    }
-
-    public class MoveCommand : EditingCommand
-    {
-        public Guid PageContentId { get; set; }
-    }
-
+   
     public class EditingContextManager
     {
         private JavaScriptSerializer _js;
@@ -78,6 +55,7 @@ namespace WarpCore.Web
             page.PreRender += (sender, args) =>
             {
                 var toolboxPassthrough = page.Request["WC_TOOLBOX_STATE"] ?? string.Empty;
+                var configuratorPassthrough = page.Request["WC_CONFIGURATOR_STATE"] ?? string.Empty;
 
                 var editingContext = GetEditingContext();
                 var editingContextJson = _js.Serialize(editingContext);
@@ -85,10 +63,9 @@ namespace WarpCore.Web
                 var lit = new Literal { };
                 lit.Text =
                 $@"
-<input name='WC_EDITING_CONTEXT_JSON' value='{htmlEncoded}'/>
-<input id='WC_EDITING_MOVE_COMMAND' name='WC_EDITING_MOVE_COMMAND' value=''/>
-<input id='WC_EDITING_ADD_COMMAND' name='WC_EDITING_ADD_COMMAND' value=''/>
-<input id='WC_EDITING_DELETE_COMMAND' name='WC_EDITING_DELETE_COMMAND' value=''/>
+<input name='WC_EDITING_CONTEXT_JSON' id='WC_EDITING_CONTEXT_JSON' value='{htmlEncoded}'/>
+
+<input id='WC_CONFIGURATOR_STATE' name='WC_CONFIGURATOR_STATE' value='{page.Server.HtmlEncode(configuratorPassthrough)}'/>
 <input id='WC_TOOLBOX_STATE' name='WC_TOOLBOX_STATE' value='{page.Server.HtmlEncode(toolboxPassthrough)}'/>
 
 ";
@@ -123,77 +100,6 @@ namespace WarpCore.Web
 
         }
 
-        public void ProcessDeleteCommand(EditingContext editingContext, DeleteCommand deleteCommand)
-        {
-            var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == deleteCommand.PageContentId).SingleOrDefault();
-            if (contentToMoveSearch == null)
-                throw new Exception("component not found.");
-
-            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
-        }
-
-        public void ProcessAddCommand(EditingContext editingContext,AddCommand addCommand)
-        {
-            var newContent = new CmsPageContent
-            {
-                Id = Guid.NewGuid(),
-                PlacementContentPlaceHolderId = addCommand.ToContentPlaceHolderId,
-                PlacementLayoutBuilderId = addCommand.ToLayoutBuilderId,
-                WidgetTypeCode = addCommand.WidgetType,
-                Parameters = new Dictionary<string, string>()
-            };
-
-            if (addCommand.ToLayoutBuilderId != null)
-            {
-                var newParentSearch =
-                    editingContext.FindSubContentReursive(x =>
-                        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
-                        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                        addCommand.ToLayoutBuilderId.Value).Single();
-
-                //todo: ordering.
-
-                newParentSearch.LocatedContent.SubContent.Add(newContent);
-            }
-            else
-            {
-                //todo: ordering.
-
-                editingContext.SubContent.Add(newContent);
-            }
-        }
-
-        public void ProcessMoveCommand(EditingContext editingContext, MoveCommand moveCommand)
-        {
-            var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.PageContentId).SingleOrDefault();
-            if (contentToMoveSearch == null)
-                throw new Exception("component not found.");
-
-            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
-
-            if (moveCommand.ToLayoutBuilderId != null)
-            {
-                var newParentSearch =
-                    editingContext.FindSubContentReursive(x =>
-                        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
-                        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                        moveCommand.ToLayoutBuilderId.Value).Single();
-
-                //todo: ordering.
-
-                newParentSearch.LocatedContent.SubContent.Add(contentToMoveSearch.LocatedContent);
-            }
-            else
-            {
-                //todo: ordering.
-
-                editingContext.SubContent.Add(contentToMoveSearch.LocatedContent);
-            }
-
-            contentToMoveSearch.LocatedContent.PlacementContentPlaceHolderId = moveCommand.ToContentPlaceHolderId;
-            contentToMoveSearch.LocatedContent.PlacementLayoutBuilderId = moveCommand.ToLayoutBuilderId;
-
-        }
 
         public EditingContext GetEditingContext()
         {
@@ -201,29 +107,29 @@ namespace WarpCore.Web
         }
 
 
-        public void ProcessEditingCommands(EditingContext editingContext)
-        {
-            var moveCommandRaw = HttpContext.Current.Request["WC_EDITING_MOVE_COMMAND"];
-            if (!string.IsNullOrWhiteSpace(moveCommandRaw))
-            {
-                var realMoveCommand = _js.Deserialize<MoveCommand>(moveCommandRaw);
-                ProcessMoveCommand(editingContext, realMoveCommand);
-            }
+        //public void ProcessEditingCommands(EditingContext editingContext)
+        //{
+        //    var moveCommandRaw = HttpContext.Current.Request["WC_EDITING_MOVE_COMMAND"];
+        //    if (!string.IsNullOrWhiteSpace(moveCommandRaw))
+        //    {
+        //        var realMoveCommand = _js.Deserialize<MoveCommand>(moveCommandRaw);
+        //        ProcessMoveCommand(editingContext, realMoveCommand);
+        //    }
 
-            var addCommandRaw = HttpContext.Current.Request["WC_EDITING_ADD_COMMAND"];
-            if (!string.IsNullOrWhiteSpace(addCommandRaw))
-            {
-                var addCommand = _js.Deserialize<AddCommand>(addCommandRaw);
-                ProcessAddCommand(editingContext, addCommand);
-            }
+        //    var addCommandRaw = HttpContext.Current.Request["WC_EDITING_ADD_COMMAND"];
+        //    if (!string.IsNullOrWhiteSpace(addCommandRaw))
+        //    {
+        //        var addCommand = _js.Deserialize<AddCommand>(addCommandRaw);
+        //        ProcessAddCommand(editingContext, addCommand);
+        //    }
 
-            var deleteCommandRaw = HttpContext.Current.Request["WC_EDITING_DELETE_COMMAND"];
-            if (!string.IsNullOrWhiteSpace(deleteCommandRaw))
-            {
-                var deleteCommand = _js.Deserialize<DeleteCommand>(deleteCommandRaw);
-                ProcessDeleteCommand(editingContext, deleteCommand);
-            }
-        }
+        //    var deleteCommandRaw = HttpContext.Current.Request["WC_EDITING_DELETE_COMMAND"];
+        //    if (!string.IsNullOrWhiteSpace(deleteCommandRaw))
+        //    {
+        //        var deleteCommand = _js.Deserialize<DeleteCommand>(deleteCommandRaw);
+        //        ProcessDeleteCommand(editingContext, deleteCommand);
+        //    }
+        //}
     }
 
     public class CmsPageBuilder
@@ -394,7 +300,7 @@ namespace WarpCore.Web
                 var editing = new EditingContextManager();
                 var context = editing.GetOrCreateEditingContext(_context.CmsPage);
                 editing.EnableEditingCommands(page);
-                editing.ProcessEditingCommands(context);
+                //editing.ProcessEditingCommands(context);
                 allContent = context.SubContent;
             }
 

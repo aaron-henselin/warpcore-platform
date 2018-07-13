@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Demo.master.cs" Inherits="DemoSite.Demo" %>
+<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Scripting" Assembly="WarpCore.Web" %>
 
 <!DOCTYPE html>
 
@@ -20,29 +21,8 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
-<!-- toolbox (move to uc) -->
-<div class="tbx">
-    <div class="handle">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-    </div>
-    
-    <h3>
-        Toolbox<br/>
-        <small>
-            <span class="glyphicon glyphicon-info-sign">
-            </span> Press <kbd>ESC</kbd> to close
-        </small>
-    </h3>
-    <div id="toolboxUl" runat="server" class="toolbox-item-list">
 
-    </div>
-</div>
 
-<!-- control designer (move to uc) -->
-<div class="designer">
-    
-
-</div>
 
 
     <form id="form1" runat="server">
@@ -51,11 +31,52 @@
             <asp:ContentPlaceHolder ID="Body" runat="server">
             </asp:ContentPlaceHolder>
         </div>
+        
+        <!-- control designer (move to uc) -->
+        <div class="designer wc-configurator">
+            <h3>
+                Settings<br/>
+                <small>
+                    <span class="glyphicon glyphicon-info-sign">
+                    </span> Press <kbd>ESC</kbd> to close
+                </small>
+            </h3>
+            <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
+            <asp:UpdatePanel runat="server">
+
+                <ContentTemplate>
+                    <asp:PlaceHolder runat="server" ID="DesignerSurface">
+                        
+                    </asp:PlaceHolder>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+       
+        <!-- toolbox (move to uc) -->
+        <div class="tbx">
+            <div class="handle">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </div>
+    
+            <h3>
+                Toolbox<br/>
+                <small>
+                    <span class="glyphicon glyphicon-info-sign">
+                    </span> Press <kbd>ESC</kbd> to close
+                </small>
+            </h3>
+            <div id="toolboxUl" runat="server" class="toolbox-item-list">
+
+            </div>
+        </div>
     </form>
 </body>
 </html>
 
 <style>
+    .wc-configurator{ color: #fff; background-color: #fff;}
+
+
     .tbx{ color: #fff;}
     .tbx .handle{
         
@@ -73,7 +94,7 @@
         box-shadow: 10px 0px 15px 10px #585858;
     }*/
 
-    .tbx h3 {
+    .tbx h3,.wc-configurator h3 {
         background-color: #2E2E2E;
         font-size: 1.9em;
         padding: 20px;
@@ -134,9 +155,6 @@
         z-index: 10000;
         position: relative;
     }
-
-
-
 </style>
 
 
@@ -154,7 +172,30 @@
         var $ = warpcore.jQuery;
 
         //$("body > *").wrapAll("<wc-page-preview/>");
-       
+
+        $('.wc-configurator').slideReveal({ overlay: true, speed: 0, position: "right", push: false, width: "450px"});
+        $("[data-wc-editing-command-configure]").click(function() {
+            var configureContentId = $(this).data("wc-editing-command-configure");
+            $('.wc-configurator').slideReveal("show");
+            $('.tbx').slideReveal("hide");
+            $("#WC_CONFIGURATOR_STATE").val(JSON.stringify({ isOpen: true, configureContentId:configureContentId }));
+        });
+
+        //$('.wc-configurator').slideReveal({
+        //    trigger: $(".tbx .handle"),
+        //    speed: 0,
+        //    shown: function(obj){
+        //        obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
+        //        obj.addClass("right-shadow-overlay");
+        //        $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
+        //    },
+        //    hidden: function(obj){
+        //        obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+        //        obj.removeClass("right-shadow-overlay");
+        //        $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: false }));
+        //    }
+        //});
+
 
         $('.tbx').slideReveal({
             trigger: $(".tbx .handle"),
@@ -162,13 +203,12 @@
             shown: function(obj){
                 obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
                 obj.addClass("right-shadow-overlay");
+                $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
             },
             hidden: function(obj){
                 obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
                 obj.removeClass("right-shadow-overlay");
-            },
-            shown: function() {
-                $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
+                $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: false }));
             }
         });
 
@@ -248,9 +288,28 @@
             {
                 "PageContentId": moveContentId
             };
+            deleteCommand.EditingContext = JSON.parse($("#WC_EDITING_CONTEXT_JSON").val());
             var deleteCommandJson = JSON.stringify(deleteCommand);
-            $("#WC_EDITING_DELETE_COMMAND").val(deleteCommandJson);
-            $("#WC_EDITING_SUBMIT").click();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/wc-api/pagedesigner/Delete",
+                // The key needs to match your method's input parameter (case-sensitive).
+                data: deleteCommandJson,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+
+                    var str = JSON.stringify(data);
+                    $("#WC_EDITING_CONTEXT_JSON").val(str);
+                    $("#WC_EDITING_SUBMIT").click();
+
+                },
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            });
 
         });
 
@@ -276,12 +335,34 @@
                     "PageContentId": moveContentId,
                     "ToContentPlaceHolderId": $to.data("wc-placeholder-id"),
                     "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
-                    "BeforePageContentId": $to.data("wc-before-page-content-id")
+                    "BeforePageContentId": $to.data("wc-before-page-content-id"),
                 };
+                moveCommand.EditingContext = JSON.parse($("#WC_EDITING_CONTEXT_JSON").val());
 
                 var moveCommandJson = JSON.stringify(moveCommand);
-                $("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
-                $("#WC_EDITING_SUBMIT").click();
+                //$("#WC_EDITING_MOVE_COMMAND").val(moveCommandJson);
+                //$("#WC_EDITING_SUBMIT").click();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/wc-api/pagedesigner/Move",
+                    // The key needs to match your method's input parameter (case-sensitive).
+                    data: moveCommandJson,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+
+                        var str = JSON.stringify(data);
+                        $("#WC_EDITING_CONTEXT_JSON").val(str);
+                        $("#WC_EDITING_SUBMIT").click();
+
+                    },
+                    failure: function(errMsg) {
+                        alert(errMsg);
+                    }
+                });
+
+
             } else {
 
                 var addCommand =
@@ -291,10 +372,27 @@
                     "ToLayoutBuilderId": $to.data("wc-layout-builder-id"),
                     "BeforePageContentId": $to.data("wc-before-page-content-id")
                 };
-
+                addCommand.EditingContext = JSON.parse($("#WC_EDITING_CONTEXT_JSON").val());
                 var addCommandJson = JSON.stringify(addCommand);
-                $("#WC_EDITING_ADD_COMMAND").val(addCommandJson);
-                $("#WC_EDITING_SUBMIT").click();
+                $.ajax({
+                    type: "POST",
+                    url: "/wc-api/pagedesigner/Add",
+                    // The key needs to match your method's input parameter (case-sensitive).
+                    data: addCommandJson,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+
+                        var str = JSON.stringify(data);
+                        $("#WC_EDITING_CONTEXT_JSON").val(str);
+                        $("#WC_EDITING_SUBMIT").click();
+
+                    },
+                    failure: function(errMsg) {
+                        alert(errMsg);
+                    }
+                });
+
 
             }
 

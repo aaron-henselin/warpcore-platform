@@ -15,6 +15,17 @@ namespace DemoSite
         {
             base.OnInit(e);
 
+            PopulateToolboxSidebar();
+            PopulateConfigurationSidebar();
+        }
+
+        private void PopulateConfigurationSidebar()
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void PopulateToolboxSidebar()
+        {
             var manager = new ToolboxManager();
             var allWidgets = manager.Find();
 
@@ -27,8 +38,6 @@ namespace DemoSite
                 div.InnerText = widget.Name;
                 toolboxUl.Controls.Add(div);
             }
-
-            
         }
 
         protected void Page_Load(object sender, EventArgs e)

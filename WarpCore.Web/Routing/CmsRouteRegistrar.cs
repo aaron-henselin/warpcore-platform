@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Web.DynamicData;
 using System.Web.Routing;
+using CatalystFire.CmsKit.Web.Framework.WidgetApi;
 
 namespace WarpCore.Cms
 {
@@ -15,7 +16,7 @@ namespace WarpCore.Cms
         public static void RegisterDynamicRoutes()
         {
             RouteTable.Routes.RouteExistingFiles = true;
-            //RouteTable.Routes.Add("DynamicRoute",new Route("{*url}",new WarpCorePageRouteHandler()));
+            RouteTable.Routes.Add("PageDesignerApi",new Route("wc-api/pagedesigner/{*pathInfo}",new PageDesignerApiRouteHandler()));
         }
 
 
