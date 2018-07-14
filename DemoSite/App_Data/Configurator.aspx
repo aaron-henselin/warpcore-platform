@@ -9,8 +9,8 @@
 <body>
     <form id="form1" runat="server">
         <input runat="server" name="WC_EDITING_CONTEXT_JSON" id="WC_EDITING_CONTEXT_JSON"/>
-        <div runat="server">
-            configurator
+        <div runat="server" id="surface">
+            
         </div>
         
     </form>

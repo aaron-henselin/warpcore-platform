@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.ModelBinding;
 using System.Web.Script.Serialization;
 using WarpCore.Cms;
+using WarpCore.Cms.Toolbox;
 using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.ServiceModel
@@ -45,8 +46,22 @@ namespace WarpCore.Web.ServiceModel
     }
 
 
+    
+    public class GetConfigurationDataCommand : EditingCommand
+    {
+        public Guid PageContentId { get; set; }
+    }
+
+
     public class PageDesignerApi
     {
+        public Dictionary<string, string> GetConfigurationData(GetConfigurationDataCommand command)
+        {
+            var contentToConfigure = command.EditingContext.FindSubContentReursive(x => x.Id == command.PageContentId).SingleOrDefault();
+            return contentToConfigure.LocatedContent.Parameters;
+        }
+
+
         public EditingContext Add(AddCommand addCommand)
         {
             ProcessAddCommand(addCommand.EditingContext,addCommand);
@@ -76,14 +91,20 @@ namespace WarpCore.Web.ServiceModel
 
         private void ProcessAddCommand(EditingContext editingContext, AddCommand addCommand)
         {
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(addCommand.WidgetType);
+            var defaults = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
+
+
             var newContent = new CmsPageContent
             {
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = addCommand.ToContentPlaceHolderId,
                 PlacementLayoutBuilderId = addCommand.ToLayoutBuilderId,
                 WidgetTypeCode = addCommand.WidgetType,
-                Parameters = new Dictionary<string, string>()
+                Parameters = defaults.ToDictionary(x => x.Key,x => x.Value)
             };
+
+
 
             if (addCommand.ToLayoutBuilderId != null)
             {
@@ -91,7 +112,11 @@ namespace WarpCore.Web.ServiceModel
                     editingContext.FindSubContentReursive(x =>
                         x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
                         new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                        addCommand.ToLayoutBuilderId.Value).Single();
+                        addCommand.ToLayoutBuilderId.Value).SingleOrDefault();
+
+                if (newParentSearch == null)
+                    throw new Exception("Invalid content location -- there is no layoutbuilder with id: " +
+                                        addCommand.ToLayoutBuilderId);
 
                 //todo: ordering.
 

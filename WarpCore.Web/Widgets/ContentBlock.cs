@@ -9,6 +9,7 @@ namespace WarpCore.Web.Widgets
     [IncludeInToolbox(Name="WC/ContentBlock")]
     public class ContentBlock : Control
     {
-        public MultilingualString AdHocHtml { get; set; }
+        [Setting]
+        public string AdHocHtml { get; set; }
     }
 }

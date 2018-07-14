@@ -24,16 +24,45 @@ namespace WarpCore.Web
         public static Control ActivateControl(CmsPageContent pageContent)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
+            return ActivateControl(toolboxItem, pageContent.Parameters);
+        }
+
+        public static Control ActivateControl(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
+        {
             var toolboxItemType = ResolveToolboxItemType(toolboxItem);
             var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
-            PropertySet(activatedWidget,pageContent.Parameters);
+            SetContentParameterValues(activatedWidget, parameters);
 
             return activatedWidget;
         }
 
-        
+        public static IDictionary<string, string> GetDefaultContentParameterValues(ToolboxItem toolboxItem)
+        {
+            
+            var activated = ActivateControl(toolboxItem, new Dictionary<string, string>());
+            return GetContentParameterValues(activated);
+        }
 
-        public static void PropertySet(Control activatedWidget, Dictionary<string,string> parameterValues)
+        public static IDictionary<string, string> GetContentParameterValues(Control activated)
+        {
+            var parameters = new Dictionary<string, string>();
+            foreach (var property in activated.GetType().GetProperties())
+            {
+                if (!property.CanRead)
+                    continue;
+
+                var isSetting = property.GetCustomAttribute<SettingAttribute>() != null;
+                if (!isSetting)
+                    continue;
+
+                var key = property.Name;
+                var val = (string)DesignerTypeConverter.ChangeType(property.GetValue(activated), typeof(string));
+                parameters.Add(key, val);
+            }
+            return parameters;
+        }
+
+        public static void SetContentParameterValues(Control activatedWidget, IDictionary<string,string> parameterValues)
         {
             foreach (var kvp in parameterValues)
             {
@@ -41,9 +70,22 @@ namespace WarpCore.Web
                 if (propertyInfo == null || !propertyInfo.CanWrite)
                     continue;
 
-                var newType = DesignerTypeConverter.ChangeType(kvp.Value, propertyInfo.PropertyType);
-                if (propertyInfo.CanWrite)
-                    propertyInfo.SetValue(activatedWidget, newType);
+                var isSetting = propertyInfo.GetCustomAttribute<SettingAttribute>() != null;
+                if (!isSetting)
+                    continue;
+
+                try
+                {
+                    var newType = DesignerTypeConverter.ChangeType(kvp.Value, propertyInfo.PropertyType);
+                    if (propertyInfo.CanWrite)
+                        propertyInfo.SetValue(activatedWidget, newType);
+                }
+                catch (Exception e)
+                {
+                    
+                }
+                
+
             }
             
         }

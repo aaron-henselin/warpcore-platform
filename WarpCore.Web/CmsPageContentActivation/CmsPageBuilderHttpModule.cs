@@ -86,11 +86,6 @@ namespace WarpCore.Web
                 var raw = _js.Serialize(new EditingContext {SubContent = cmsPage.PageContent});
                 HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(raw);
             }
-            else
-            {
-                var json = HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"];
-                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(json);
-            }
 
             return GetEditingContext();
         }
@@ -103,6 +98,12 @@ namespace WarpCore.Web
 
         public EditingContext GetEditingContext()
         {
+            if (HttpContext.Current.Items["WC_EDITING_CONTEXT"] == null)
+            {
+                var json = HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"];
+                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(json);
+            }
+
             return (EditingContext)HttpContext.Current.Items["WC_EDITING_CONTEXT"];
         }
 
@@ -230,7 +231,7 @@ namespace WarpCore.Web
             }
 
             var ph = searchContext.GetDescendantControls<ContentPlaceHolder>()
-                .SingleOrDefault(x => x.ID == content.PlacementContentPlaceHolderId);
+                .FirstOrDefault(x => x.ID == content.PlacementContentPlaceHolderId); //need first because of nested layouts. this can go back to single when I'm not sleepy.
             if (ph == null)
                 ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
             if (ph == null)
