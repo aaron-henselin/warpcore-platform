@@ -10,16 +10,7 @@
 namespace DemoSite {
     
     
-    public partial class Demo {
-        
-        /// <summary>
-        /// head control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+    public partial class Configurator {
         
         /// <summary>
         /// form1 control.
@@ -31,21 +22,12 @@ namespace DemoSite {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// Body control.
+        /// WC_EDITING_CONTEXT_JSON control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder Body;
-        
-        /// <summary>
-        /// toolboxUl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl toolboxUl;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText WC_EDITING_CONTEXT_JSON;
     }
 }

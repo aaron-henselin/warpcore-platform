@@ -19,6 +19,10 @@ using WarpCore.Web.Extensions;
 [assembly: PreApplicationStartMethod(typeof(WebBootstrapper), nameof(WebBootstrapper.PreInitialize))]
 namespace WarpCore.Web
 {
+    public class SettingAttribute : Attribute
+    {
+    }
+
     public class IncludeInToolboxAttribute:Attribute
     {
         public string Name { get; set; }

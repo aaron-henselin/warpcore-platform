@@ -387,7 +387,7 @@ namespace WarpCore.Web
 <div class=""StackedListContent"">
 <h4 class=""Heading Heading--size4 text-no-select"">{HandleName}
 
-<div class='pull-right wc-edit-command configure' data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
+<div class='pull-right wc-edit-command configure' data-wc-widget-type=""{HandleName}"" data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
 <div class='pull-right wc-edit-command delete' data-wc-editing-command-delete=""{PageContentId}"" >X</div>
 </h4>
 <div class=""DragHandle""></div>

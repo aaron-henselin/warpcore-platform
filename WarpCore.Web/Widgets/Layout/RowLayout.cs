@@ -6,6 +6,7 @@ namespace WarpCore.Web.Widgets
     [IncludeInToolbox(Name = "WC/RowLayout")]
     public class RowLayout : LayoutControl
     {
+        [Setting]
         public int? NumColumns { get; set; }
 
         public override void InitializeLayout()

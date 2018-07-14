@@ -1,10 +1,15 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 using System.Web.Routing;
-using WarpCore.Web.ServiceModel;
 
-namespace CatalystFire.CmsKit.Web.Framework.WidgetApi
+namespace WarpCore.Web.ServiceModel
 {
+    public class ConfiguratorRouteHandler : IRouteHandler
+    {
+        public IHttpHandler GetHttpHandler(RequestContext requestContext)
+        {
+            return new ConfiguratorHttpHandler();
+        }
+    }
 
     public class PageDesignerApiRouteHandler : IRouteHandler
     {

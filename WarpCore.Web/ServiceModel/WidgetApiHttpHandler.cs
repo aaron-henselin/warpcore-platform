@@ -139,6 +139,16 @@ namespace WarpCore.Web.ServiceModel
 
     }
 
+    public class ConfiguratorHttpHandler : IHttpHandler
+    {
+        public void ProcessRequest(HttpContext context)
+        {
+            context.Server.Transfer("/App_Data/Configurator.aspx",true);
+        }
+
+        public bool IsReusable { get; }
+    }
+
     public class PageDesignerApiHttpHandler : IHttpHandler
     {
 

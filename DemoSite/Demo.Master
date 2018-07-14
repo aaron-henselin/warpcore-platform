@@ -37,11 +37,20 @@
             <h3>
                 Settings<br/>
                 <small>
-                    <span class="glyphicon glyphicon-info-sign">
-                    </span> Press <kbd>ESC</kbd> to close
+                    <button class="configurator-cancel">
+                        <span class="glyphicon glyphicon-info-sign">
+                        </span> Cancel
+                    </button>
+
+                    <button class="configurator-save">
+                        <span class="glyphicon glyphicon-info-sign">
+                        </span> Save
+                    </button>
+
                 </small>
             </h3>
-            <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
+            <iframe class="configurator-embed" src="/wc-api/configurator"></iframe>
+            <%--<a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
             <asp:UpdatePanel runat="server">
 
                 <ContentTemplate>
@@ -49,7 +58,7 @@
                         
                     </asp:PlaceHolder>
                 </ContentTemplate>
-            </asp:UpdatePanel>
+            </asp:UpdatePanel>--%>
         </div>
        
         <!-- toolbox (move to uc) -->
@@ -76,6 +85,7 @@
 <style>
     .wc-configurator{ color: #fff; background-color: #fff;}
 
+    .configurator-embed{ width: 100%;height: 100%;}
 
     .tbx{ color: #fff;}
     .tbx .handle{
@@ -173,29 +183,51 @@
 
         //$("body > *").wrapAll("<wc-page-preview/>");
 
+        var embed = $('.wc-configurator iframe')[0];
+
+        $(".configurator-cancel").click(function() {});
+        $(".configurator-save").click(function() {
+
+            getElementById("WC_EDITING_CONTEXT_JSON").value =
+                embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value;
+
+            $("#WC_EDITING_SUBMIT").click();
+        });
+
+        
+        embed.onload = function() {
+
+            var editingContextJson = document.getElementById("WC_EDITING_CONTEXT_JSON").value;
+            if (!embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value) {
+                embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value = editingContextJson;
+                embed.contentDocument.getElementById("form1").submit();
+            }
+
+        };
+        //$embed.load(function() {
+
+            
+
+        //    
+        //        = 
+
+        //});
+
         $('.wc-configurator').slideReveal({ overlay: true, speed: 0, position: "right", push: false, width: "450px"});
         $("[data-wc-editing-command-configure]").click(function() {
             var configureContentId = $(this).data("wc-editing-command-configure");
+            var configureContentType = $(this).data("wc-widget-type");
+            
+
             $('.wc-configurator').slideReveal("show");
             $('.tbx').slideReveal("hide");
             $("#WC_CONFIGURATOR_STATE").val(JSON.stringify({ isOpen: true, configureContentId:configureContentId }));
+
+            $(embed).attr("src", "/wc-api/configurator?widgetType=" + configureContentType+"&pageContentId="+configureContentId+"&ts="+Math.floor(Date.now() / 1000));
+
+
         });
-
-        //$('.wc-configurator').slideReveal({
-        //    trigger: $(".tbx .handle"),
-        //    speed: 0,
-        //    shown: function(obj){
-        //        obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
-        //        obj.addClass("right-shadow-overlay");
-        //        $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
-        //    },
-        //    hidden: function(obj){
-        //        obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
-        //        obj.removeClass("right-shadow-overlay");
-        //        $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: false }));
-        //    }
-        //});
-
+        
 
         $('.tbx').slideReveal({
             trigger: $(".tbx .handle"),

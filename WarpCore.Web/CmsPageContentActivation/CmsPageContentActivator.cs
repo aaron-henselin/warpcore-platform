@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Web.Compilation;
 using System.Web.UI;
 using Framework;
 using WarpCore.Cms;
@@ -12,12 +13,18 @@ namespace WarpCore.Web
 
     public class CmsPageContentActivator
     {
+        public static Type ResolveToolboxItemType(ToolboxItem toolboxItem)
+        {
+            if (!string.IsNullOrWhiteSpace(toolboxItem.FullyQualifiedTypeName))
+                return Type.GetType(toolboxItem.FullyQualifiedTypeName);
 
+            return BuildManager.GetCompiledType(toolboxItem.AscxPath);
+        }
 
         public static Control ActivateControl(CmsPageContent pageContent)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var toolboxItemType = Type.GetType(toolboxItem.FullyQualifiedTypeName);
+            var toolboxItemType = ResolveToolboxItemType(toolboxItem);
             var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
             PropertySet(activatedWidget,pageContent.Parameters);
 
