@@ -10,25 +10,34 @@
 namespace DemoSite {
     
     
-    public partial class Configurator {
+    public partial class Configurator1 {
         
         /// <summary>
-        /// form1 control.
+        /// SaveButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Button SaveButton;
         
         /// <summary>
-        /// WC_EDITING_CONTEXT_JSON control.
+        /// DataBoundElements control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText WC_EDITING_CONTEXT_JSON;
+        protected global::System.Web.UI.WebControls.PlaceHolder DataBoundElements;
+        
+        /// <summary>
+        /// ConfiguratorInitButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ConfiguratorInitButton;
         
         /// <summary>
         /// surface control.

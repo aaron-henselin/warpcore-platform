@@ -69,9 +69,10 @@ namespace WarpCore.Web
 <input id='WC_TOOLBOX_STATE' name='WC_TOOLBOX_STATE' value='{page.Server.HtmlEncode(toolboxPassthrough)}'/>
 
 ";
-                page.Form.Controls.Add(lit);
-                //page.Form.Controls.Add(new HtmlInputHidden { ClientIDMode = ClientIDMode.Static, Name= "", ID = "WC_EDITING_CONTEXT_JSON",Value= editingContextJson });
-                //page.Form.Controls.Add(new HtmlInputHidden { ClientIDMode = ClientIDMode.Static, ID = "WC_EDITING_MOVE_COMMAND",Value=""});
+                var wrapper = page.Form.FindControl("EditingContextWrapper");
+
+
+                wrapper.Controls.Add(lit);
                 page.Form.Controls.Add(new Button { ClientIDMode = ClientIDMode.Static, ID = "WC_EDITING_SUBMIT" });
             };
 

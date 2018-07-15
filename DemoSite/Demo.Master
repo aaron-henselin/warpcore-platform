@@ -1,5 +1,6 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Demo.master.cs" Inherits="DemoSite.Demo" %>
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Scripting" Assembly="WarpCore.Web" %>
+<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
 <!DOCTYPE html>
 
@@ -31,34 +32,23 @@
             <asp:ContentPlaceHolder ID="Body" runat="server">
             </asp:ContentPlaceHolder>
         </div>
-        
+        <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
+        <asp:UpdatePanel runat="server" UpdateMode="Always">
+            <ContentTemplate>
+                <div runat="server" ID="EditingContextWrapper"></div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+
         <!-- control designer (move to uc) -->
         <div class="designer wc-configurator">
-            <h3>
-                Settings<br/>
-                <small>
-                    <button class="configurator-cancel">
-                        <span class="glyphicon glyphicon-info-sign">
-                        </span> Cancel
-                    </button>
-
-                    <button class="configurator-save">
-                        <span class="glyphicon glyphicon-info-sign">
-                        </span> Save
-                    </button>
-
-                </small>
-            </h3>
-            <iframe class="configurator-embed" src="/wc-api/configurator"></iframe>
-            <%--<a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
+            
+            <%--<iframe class="configurator-embed" src="/wc-api/configurator"></iframe>--%>
+           
             <asp:UpdatePanel runat="server">
-
                 <ContentTemplate>
-                    <asp:PlaceHolder runat="server" ID="DesignerSurface">
-                        
-                    </asp:PlaceHolder>
+                    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
                 </ContentTemplate>
-            </asp:UpdatePanel>--%>
+            </asp:UpdatePanel>
         </div>
        
         <!-- toolbox (move to uc) -->
@@ -84,6 +74,7 @@
 
 <style>
     .wc-configurator{ color: #fff; background-color: #fff;}
+    .wc-configurator .surface{ color: #000; background-color: #fff;}
 
     .configurator-embed{ width: 100%;height: 100%;}
 
@@ -170,6 +161,11 @@
 
 <script>
 
+    configurator_submit = function () {
+        debugger;
+        jQuery('#WC_EDITING_SUBMIT').click();
+    };
+
     warpcore.page = {};
     
     warpcore.page.edit = function () {
@@ -183,27 +179,54 @@
 
         //$("body > *").wrapAll("<wc-page-preview/>");
 
-        var embed = $('.wc-configurator iframe')[0];
 
         $(".configurator-cancel").click(function() {});
-        $(".configurator-save").click(function() {
+        //$(".configurator-save").click(function() {
 
-            getElementById("WC_EDITING_CONTEXT_JSON").value =
-                embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value;
+        //    //getElementById("WC_EDITING_CONTEXT_JSON").value =
+        //    //    embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value;
 
-            $("#WC_EDITING_SUBMIT").click();
-        });
+        //    //$("#WC_EDITING_SUBMIT").click();
+
+        //    var currentContext = JSON.parse($("#WC_CONFIGURATOR_CONTEXT_JSON").val());
+        //    var newConfiguration = currentContext.NewConfiguration;
+
+        //    var applyConfiguration = JSON.stringify({
+        //        NewConfiguration: newConfiguration,
+        //        PageContentId: currentContext.PageContentId
+        //    });
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/wc-api/pagedesigner/ApplyConfiguration",
+        //        // The key needs to match your method's input parameter (case-sensitive).
+        //        data: applyConfiguration,
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function(data) {
+
+        //            var str = JSON.stringify(data);
+        //            $("#WC_EDITING_CONTEXT_JSON").val(str);
+        //            $("#WC_EDITING_SUBMIT").click();
+
+        //        },
+        //        failure: function(errMsg) {
+        //            alert(errMsg);
+        //        }
+        //    });
+
+        //});
 
         
-        embed.onload = function() {
+        //embed.onload = function() {
 
-            var editingContextJson = document.getElementById("WC_EDITING_CONTEXT_JSON").value;
-            if (!embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value) {
-                embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value = editingContextJson;
-                embed.contentDocument.getElementById("form1").submit();
-            }
+        //    var editingContextJson = document.getElementById("WC_EDITING_CONTEXT_JSON").value;
+        //    if (!embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value) {
+        //        embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value = editingContextJson;
+        //        embed.contentDocument.getElementById("form1").submit();
+        //    }
 
-        };
+        //};
         //$embed.load(function() {
 
             
@@ -213,18 +236,23 @@
 
         //});
 
+
+
         $('.wc-configurator').slideReveal({ overlay: true, speed: 0, position: "right", push: false, width: "450px"});
         $("[data-wc-editing-command-configure]").click(function() {
             var configureContentId = $(this).data("wc-editing-command-configure");
             var configureContentType = $(this).data("wc-widget-type");
-            
 
-            $('.wc-configurator').slideReveal("show");
             $('.tbx').slideReveal("hide");
-            $("#WC_CONFIGURATOR_STATE").val(JSON.stringify({ isOpen: true, configureContentId:configureContentId }));
 
-            $(embed).attr("src", "/wc-api/configurator?widgetType=" + configureContentType+"&pageContentId="+configureContentId+"&ts="+Math.floor(Date.now() / 1000));
+            var newConfiguratorContextJson = JSON.stringify({
+                IsOpening: true,
+                PageContentId: configureContentId
+            });
+            $("#WC_CONFIGURATOR_CONTEXT_JSON").val(newConfiguratorContextJson);
 
+            $(".wc-configurator-init-button").click();
+            $('.wc-configurator').slideReveal("show");
 
         });
         

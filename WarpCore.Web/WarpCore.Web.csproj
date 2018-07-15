@@ -105,6 +105,7 @@
     <Compile Include="ServiceModel\WidgetApiHttpHandler.cs" />
     <Compile Include="ServiceModel\WidgetApiRouteHandler.cs" />
     <Compile Include="WebBootrstrapper.cs" />
+    <Compile Include="Widgets\AscxPlaceHolder.cs" />
     <Compile Include="Widgets\Layout\Column.cs" />
     <Compile Include="Widgets\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />

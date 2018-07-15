@@ -47,18 +47,20 @@ namespace WarpCore.Web.ServiceModel
 
 
     
-    public class GetConfigurationDataCommand : EditingCommand
+    public class ApplyConfigurationCommand : EditingCommand
     {
         public Guid PageContentId { get; set; }
+
+        public Dictionary<string,string> NewConfiguration { get; set; }
     }
 
 
     public class PageDesignerApi
     {
-        public Dictionary<string, string> GetConfigurationData(GetConfigurationDataCommand command)
+        public Dictionary<string, string> ApplyConfiguration(ApplyConfigurationCommand command)
         {
             var contentToConfigure = command.EditingContext.FindSubContentReursive(x => x.Id == command.PageContentId).SingleOrDefault();
-            return contentToConfigure.LocatedContent.Parameters;
+            return contentToConfigure.LocatedContent.Parameters = command.NewConfiguration;
         }
 
 
