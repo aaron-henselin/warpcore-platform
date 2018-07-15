@@ -40,34 +40,14 @@
         </asp:UpdatePanel>
 
         <!-- control designer (move to uc) -->
-        <div class="designer wc-configurator">
-            
-            <%--<iframe class="configurator-embed" src="/wc-api/configurator"></iframe>--%>
-           
-            <asp:UpdatePanel runat="server">
-                <ContentTemplate>
-                    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </div>
-       
-        <!-- toolbox (move to uc) -->
-        <div class="tbx">
-            <div class="handle">
-                <span class="glyphicon glyphicon-chevron-left"></span>
-            </div>
-    
-            <h3>
-                Toolbox<br/>
-                <small>
-                    <span class="glyphicon glyphicon-info-sign">
-                    </span> Press <kbd>ESC</kbd> to close
-                </small>
-            </h3>
-            <div id="toolboxUl" runat="server" class="toolbox-item-list">
 
-            </div>
-        </div>
+                
+
+                    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
+
+
+        <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
+
     </form>
 </body>
 </html>

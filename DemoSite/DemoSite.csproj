@@ -85,6 +85,7 @@
     <Content Include="App_Data\PageDesignerComponents\Configurator.ascx" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery.slidereveal.min.js" />
+    <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +127,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
+      <DependentUpon>Toolbox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.designer.cs">
+      <DependentUpon>Toolbox.ascx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Master\Global.Master" />

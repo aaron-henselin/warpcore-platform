@@ -15,30 +15,9 @@ namespace DemoSite
         {
             base.OnInit(e);
 
-            PopulateToolboxSidebar();
-            PopulateConfigurationSidebar();
         }
-
-        private void PopulateConfigurationSidebar()
-        {
-            //throw new NotImplementedException();
-        }
-
-        private void PopulateToolboxSidebar()
-        {
-            var manager = new ToolboxManager();
-            var allWidgets = manager.Find();
-
-            foreach (var widget in allWidgets)
-            {
-                var div = new HtmlGenericControl("div");
-                div.Attributes["class"] = "toolbox-item wc-layout-handle";
-                div.Attributes["data-wc-toolbox-item-name"] = widget.Name;
-
-                div.InnerText = widget.Name;
-                toolboxUl.Controls.Add(div);
-            }
-        }
+        
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {
