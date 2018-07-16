@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
 using System.Web.UI;
@@ -18,6 +19,12 @@ using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web
 {
+    public interface ILayoutHandle
+    {
+         string HandleName { get; set; }
+         Guid PageContentId { get; set; }
+    }
+
     public class CmsPageRequestContext
     {
         public SiteRoute Route { get; set; }
@@ -40,7 +47,17 @@ namespace WarpCore.Web
         public bool IsEditing => SubContent != null;
     }
 
-   
+    public struct EditingContextVars
+    {
+        public const string SerializedPageDesignStateKey = "WC_EDITING_CONTEXT_JSON";
+        public const string PageDesignContextKey = "WC_EDITING_CONTEXT";
+
+        public const string ClientSideToolboxStateKey = "WC_TOOLBOX_STATE";
+        public const string ClientSideConfiguratorStateKey = "WC_CONFIGURATOR_STATE";
+
+        public const string EditingContextSubmitKey = "WC_EDITING_SUBMIT";
+    }
+
     public class EditingContextManager
     {
         private JavaScriptSerializer _js;
@@ -54,84 +71,40 @@ namespace WarpCore.Web
         {
             page.PreRender += (sender, args) =>
             {
-                var toolboxPassthrough = page.Request["WC_TOOLBOX_STATE"] ?? string.Empty;
-                var configuratorPassthrough = page.Request["WC_CONFIGURATOR_STATE"] ?? string.Empty;
 
-                var editingContext = GetEditingContext();
-                var editingContextJson = _js.Serialize(editingContext);
-                var htmlEncoded = page.Server.HtmlEncode(editingContextJson);
-                var lit = new Literal { };
-                lit.Text =
-                $@"
-<input name='WC_EDITING_CONTEXT_JSON' id='WC_EDITING_CONTEXT_JSON' value='{htmlEncoded}'/>
-
-<input id='WC_CONFIGURATOR_STATE' name='WC_CONFIGURATOR_STATE' value='{page.Server.HtmlEncode(configuratorPassthrough)}'/>
-<input id='WC_TOOLBOX_STATE' name='WC_TOOLBOX_STATE' value='{page.Server.HtmlEncode(toolboxPassthrough)}'/>
-
-";
-                var wrapper = page.Form.FindControl("EditingContextWrapper");
-
-
-                wrapper.Controls.Add(lit);
-                page.Form.Controls.Add(new Button { ClientIDMode = ClientIDMode.Static, ID = "WC_EDITING_SUBMIT" });
             };
 
         }
 
+        private EditingContext CreateEditingContext(CmsPage cmsPage)
+        {
+            var raw = _js.Serialize(new EditingContext { SubContent = cmsPage.PageContent });
+            return _js.Deserialize<EditingContext>(raw);
+        }
+
         public EditingContext GetOrCreateEditingContext(CmsPage cmsPage)
         {
-            
+            var pageDesignHasNotStarted =
+                HttpContext.Current.Request[EditingContextVars.SerializedPageDesignStateKey] == null;
 
-            if (HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"] == null)
-            {
-                var raw = _js.Serialize(new EditingContext {SubContent = cmsPage.PageContent});
-                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(raw);
-            }
+            if (pageDesignHasNotStarted)
+                HttpContext.Current.Items[EditingContextVars.PageDesignContextKey] = CreateEditingContext(cmsPage);
 
             return GetEditingContext();
         }
 
-        private void X()
-        {
-
-        }
-
-
         public EditingContext GetEditingContext()
         {
-            if (HttpContext.Current.Items["WC_EDITING_CONTEXT"] == null)
+            if (HttpContext.Current.Items[EditingContextVars.PageDesignContextKey] == null)
             {
-                var json = HttpContext.Current.Request["WC_EDITING_CONTEXT_JSON"];
-                HttpContext.Current.Items["WC_EDITING_CONTEXT"] = _js.Deserialize<EditingContext>(json);
+                var json = HttpContext.Current.Request[EditingContextVars.SerializedPageDesignStateKey];
+                HttpContext.Current.Items[EditingContextVars.PageDesignContextKey] = _js.Deserialize<EditingContext>(json);
             }
 
-            return (EditingContext)HttpContext.Current.Items["WC_EDITING_CONTEXT"];
+            return (EditingContext)HttpContext.Current.Items[EditingContextVars.PageDesignContextKey];
         }
 
-
-        //public void ProcessEditingCommands(EditingContext editingContext)
-        //{
-        //    var moveCommandRaw = HttpContext.Current.Request["WC_EDITING_MOVE_COMMAND"];
-        //    if (!string.IsNullOrWhiteSpace(moveCommandRaw))
-        //    {
-        //        var realMoveCommand = _js.Deserialize<MoveCommand>(moveCommandRaw);
-        //        ProcessMoveCommand(editingContext, realMoveCommand);
-        //    }
-
-        //    var addCommandRaw = HttpContext.Current.Request["WC_EDITING_ADD_COMMAND"];
-        //    if (!string.IsNullOrWhiteSpace(addCommandRaw))
-        //    {
-        //        var addCommand = _js.Deserialize<AddCommand>(addCommandRaw);
-        //        ProcessAddCommand(editingContext, addCommand);
-        //    }
-
-        //    var deleteCommandRaw = HttpContext.Current.Request["WC_EDITING_DELETE_COMMAND"];
-        //    if (!string.IsNullOrWhiteSpace(deleteCommandRaw))
-        //    {
-        //        var deleteCommand = _js.Deserialize<DeleteCommand>(deleteCommandRaw);
-        //        ProcessDeleteCommand(editingContext, deleteCommand);
-        //    }
-        //}
+        
     }
 
     public class CmsPageBuilder
@@ -212,10 +185,13 @@ namespace WarpCore.Web
 
         private static void AddLayoutHandle(ContentPlaceHolder ph, CmsPageContent content)
         {
-            
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
-            var handle = new LayoutHandle {PageContentId = content.Id, HandleName = toolboxItem.Name};
-            ph.Controls.Add(handle);
+            var ascx = BuildManager.GetCompiledType("/App_Data/PageDesignerComponents/LayoutHandle.ascx");
+            var uc = (ILayoutHandle)Activator.CreateInstance(ascx);
+            uc.HandleName = toolboxItem.Name;
+            uc.PageContentId = content.Id;
+
+            ph.Controls.Add((Control)uc);
         }
 
         private static ContentPlaceHolder FindPlacementLocation(Page page, CmsPageContent content)
@@ -374,37 +350,37 @@ namespace WarpCore.Web
 
     }
 
-    public class LayoutHandle : PlaceHolder
-    {
-        public Guid PageContentId { get; set; }
-        public string HandleName { get; set; }
+//    public class LayoutHandleOld : PlaceHolder
+//    {
+//        public Guid PageContentId { get; set; }
+//        public string HandleName { get; set; }
 
-        protected override void OnInit(EventArgs e)
-        {
-            base.OnInit(e);
+//        protected override void OnInit(EventArgs e)
+//        {
+//            base.OnInit(e);
 
-            var literal = new Literal();
-            literal.Text = $@"
-<li class=""StackedListItem StackedListItem--isDraggable wc-layout-handle"" tabindex=""1""  data-wc-page-content-id=""{PageContentId}"" >
-<div class=""StackedListContent"">
-<h4 class=""Heading Heading--size4 text-no-select"">{HandleName}
+//            var literal = new Literal();
+//            literal.Text = $@"
+//<li class=""StackedListItem StackedListItem--isDraggable wc-layout-handle"" tabindex=""1""  data-wc-page-content-id=""{PageContentId}"" >
+//<div class=""StackedListContent"">
+//<h4 class=""Heading Heading--size4 text-no-select"">{HandleName}
 
-<div class='pull-right wc-edit-command configure' data-wc-widget-type=""{HandleName}"" data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
-<div class='pull-right wc-edit-command delete' data-wc-editing-command-delete=""{PageContentId}"" >X</div>
-</h4>
-<div class=""DragHandle""></div>
-<div class=""Pattern Pattern--typeHalftone""></div>
-<div class=""Pattern Pattern--typePlaced""></div></div></li>
-            ";
+//<div class='pull-right wc-edit-command configure' data-wc-widget-type=""{HandleName}"" data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
+//<div class='pull-right wc-edit-command delete' data-wc-editing-command-delete=""{PageContentId}"" >X</div>
+//</h4>
+//<div class=""DragHandle""></div>
+//<div class=""Pattern Pattern--typeHalftone""></div>
+//<div class=""Pattern Pattern--typePlaced""></div></div></li>
+//            ";
 
-            //var p = new Panel();
-            //p.Attributes["data-wc-role"] = "layout-handle";
-            //p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
-            //p.Attributes["class"] = "wc-layout-handle";
-            //p.Controls.Add(new Label{Text=HandleName});
-            this.Controls.Add(literal);
-        }
-    }
+//            //var p = new Panel();
+//            //p.Attributes["data-wc-role"] = "layout-handle";
+//            //p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
+//            //p.Attributes["class"] = "wc-layout-handle";
+//            //p.Controls.Add(new Label{Text=HandleName});
+//            this.Controls.Add(literal);
+//        }
+//    }
 
 
 
@@ -461,6 +437,13 @@ namespace WarpCore.Web
                     var pageBuilder = new CmsPageBuilder(rt);
                     pageBuilder.ActivateAndPlaceInheritedContent(localPage);
                     pageBuilder.ActivateAndPlaceAdHocPageContent(localPage);
+
+                    if (rt.ViewMode == ViewMode.Edit)
+                    {
+                        var htmlForm = localPage.GetDescendantControls<HtmlForm>().Single();
+                        var bundle = new AscxPlaceHolder{VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx"};
+                        htmlForm.Controls.Add(bundle);
+                    }
                 };
                 handlerPage.Init += (sender, args) =>
                 {
