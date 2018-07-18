@@ -158,7 +158,12 @@ namespace WarpCore.Web
                 var activatedWidget = CmsPageContentActivator.ActivateControl(content);
 
                 var layoutWidget = activatedWidget as LayoutControl;
-                layoutWidget?.InitializeLayout();
+                if (layoutWidget != null)
+                {
+                    layoutWidget.LayoutBuilderId = content.Id;
+                    layoutWidget.InitializeLayout();
+                }
+
 
                 var placementPlaceHolder = FindPlacementLocation(page, content);
                 if (placementPlaceHolder == null)

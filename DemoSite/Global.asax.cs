@@ -60,11 +60,12 @@ namespace DemoSite
             var lbId = Guid.NewGuid();
             var row = new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 WidgetTypeCode = "WC/RowLayout",
                 PlacementContentPlaceHolderId = "Body",
                 Parameters = new Dictionary<string, string>
                 {
-                    [nameof(RowLayout.LayoutBuilderId)] = lbId.ToString(),
+                    //[nameof(RowLayout.LayoutBuilderId)] = lbId.ToString(),
                     [nameof(RowLayout.NumColumns)] = 3.ToString()
                 }
             };

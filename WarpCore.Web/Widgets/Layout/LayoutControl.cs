@@ -7,7 +7,6 @@ namespace WarpCore.Web.Widgets
     {
         public abstract void InitializeLayout();
 
-        [Setting]
-        public Guid LayoutBuilderId { get; set; } = Guid.NewGuid();
+        public Guid LayoutBuilderId { get; set; }
     }
 }
