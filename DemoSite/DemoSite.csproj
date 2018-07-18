@@ -82,9 +82,13 @@
   <ItemGroup>
     <Content Include="App_Data\Booting.aspx" />
     <Content Include="App_Data\DynamicPage.aspx" />
-    <Content Include="App_Data\Configurator.aspx" />
+    <Content Include="App_Data\PageDesignerComponents\Configurator.ascx" />
     <Content Include="Global.asax" />
+    <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
+    <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
+    <Content Include="App_Data\PageDesignerComponents\LayoutHandle.ascx" />
     <Content Include="Scripts\jquery.slidereveal.min.js" />
+    <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -109,11 +113,11 @@
     <Compile Include="App_Master\Global.Master.designer.cs">
       <DependentUpon>Global.Master</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\Configurator.aspx.cs">
-      <DependentUpon>Configurator.aspx</DependentUpon>
+    <Compile Include="App_Data\PageDesignerComponents\Configurator.ascx.cs">
+      <DependentUpon>Configurator.ascx</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\Configurator.aspx.designer.cs">
-      <DependentUpon>Configurator.aspx</DependentUpon>
+    <Compile Include="App_Data\PageDesignerComponents\Configurator.ascx.designer.cs">
+      <DependentUpon>Configurator.ascx</DependentUpon>
     </Compile>
     <Compile Include="Demo.Master.cs">
       <DependentUpon>Demo.Master</DependentUpon>
@@ -125,7 +129,35 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.cs">
+      <DependentUpon>PageDesignerState.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.designer.cs">
+      <DependentUpon>PageDesignerState.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.cs">
+      <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.designer.cs">
+      <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\LayoutHandle.ascx.cs">
+      <DependentUpon>LayoutHandle.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\LayoutHandle.ascx.designer.cs">
+      <DependentUpon>LayoutHandle.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
+      <DependentUpon>Toolbox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.designer.cs">
+      <DependentUpon>Toolbox.ascx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Master\Global.Master" />
