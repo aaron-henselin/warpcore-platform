@@ -5,8 +5,7 @@
     data-wc-page-content-id="<%# PageContentId %>">
     <div class="StackedListContent">
         <h4 class="Heading Heading--size4 text-no-select">
-            
-            
+
             <span class="glyphicon glyphicon-cog wc-edit-command configure"
                 data-wc-widget-type="<%# HandleName %>" 
                 data-wc-editing-command-configure="<%# PageContentId %>">

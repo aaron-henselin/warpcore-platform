@@ -5,6 +5,17 @@
     <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
     <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
+<script>
+    var jQueryRestore = $;
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+<script src="Scripts/jquery.slidereveal.min.js"></script>
+<script>
+    var warpcore = {};
+    warpcore.jQuery = jQuery.noConflict();
+    $ = jQueryRestore;
+</script>
 
 <style>
     .wc-configurator{ color: #fff; background-color: #fff;}
@@ -36,12 +47,21 @@
         margin: 0;
         font-weight: 300;
     }
-
+    .wc-layout-handle h4{ 
+        font-size: 12px;    
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .wc-layout-handle span.configure {
+        margin-left: 5px;
+    }
+    .wc-layout-handle span.delete {
+        margin-right: 2px;
+    }
     .wc-layout-handle {
         display: block;
         width: 100%;
-        background: #d4e4f2;
-        border: #7fa6c8 1px solid;
+        background: #2E2E2E;
+        border: #2E2E2E 1px solid;
         font-family: monospace;
         color: white;
         font-weight: bold;
@@ -73,7 +93,7 @@
     wc-droptarget {
         display: block;
         min-height: 100px;
-        border: 1px dashed grey;
+        border: 1px dashed #efefef;
         transition-property: height;
         transition-duration: 1s;
     }
@@ -200,7 +220,7 @@
                 $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: true }));
             },
             hidden: function(obj){
-                obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+                obj.find(".handle").html('<span class="glyphicon glyphicon-wrench"></span>');
                 obj.removeClass("right-shadow-overlay");
                 $("#WC_TOOLBOX_STATE").val(JSON.stringify({ isOpen: false }));
             }

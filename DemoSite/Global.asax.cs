@@ -27,6 +27,7 @@ namespace DemoSite
             PublishingShortcuts.PublishSites();
         }
 
+
         private Site SetupTestSite()
         {
             var tbx = new ToolboxManager();

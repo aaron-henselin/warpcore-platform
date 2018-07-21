@@ -4,7 +4,7 @@
 <!-- toolbox (move to uc) -->
 <div class="tbx">
     <div class="handle">
-        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="glyphicon glyphicon-wrench"></span>
     </div>
     
     <h3>
