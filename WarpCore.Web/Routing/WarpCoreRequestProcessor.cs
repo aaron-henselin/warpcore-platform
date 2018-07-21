@@ -20,7 +20,7 @@ namespace WarpCore.Cms
             else
                 transferUrl = "/App_Data/DynamicPage.aspx";
 
-            context.RewritePath(transferUrl,true);
+            context.RewritePath(transferUrl,false);
         }
 
         private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext)
