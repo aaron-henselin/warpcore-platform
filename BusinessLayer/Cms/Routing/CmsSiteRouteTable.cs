@@ -9,9 +9,22 @@ namespace WarpCore.Cms
         private ILookup<Uri, SiteRoute> _routesByPath;
         private ILookup<Guid, SiteRoute> _routesByPageId;
 
+        private class AbsolutePathComparer : IEqualityComparer<Uri>
+        {
+            public bool Equals(Uri x, Uri y)
+            {
+                return string.Equals(x.ToString(),y.ToString(),StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            public int GetHashCode(Uri obj)
+            {
+                return obj.ToString().ToLowerInvariant().GetHashCode();
+            }
+        }
+
         public CmsSiteRouteTable(IReadOnlyCollection<SiteRoute> siteRoutes)
         {
-            _routesByPath = siteRoutes.ToLookup(x => x.VirtualPath);
+            _routesByPath = siteRoutes.ToLookup(x => x.VirtualPath,new AbsolutePathComparer());
             _routesByPageId = siteRoutes.Where(x => x.PageId != null).ToLookup(x => x.PageId.Value);
         }
 

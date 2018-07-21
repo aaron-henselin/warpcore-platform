@@ -246,7 +246,7 @@ namespace WarpCore.Cms
             newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
             newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
-            var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
+            var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"SiteId eq '{page.SiteId}' and ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
             var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
 
             Orm.Save(newPageLocation);

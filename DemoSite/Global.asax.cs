@@ -22,19 +22,69 @@ namespace DemoSite
         {
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             
+            SetupToolbox();
             SetupTestSite();
+            SetupBackendSite();
 
             PublishingShortcuts.PublishSites();
+        }
+
+        private void SetupToolbox()
+        {
+            var tbx = new ToolboxManager();
+            tbx.Save(new ToolboxItem
+            {
+                AscxPath = "/App_Data/BackendWidgets/PageTree.ascx",
+                Name = "PageTree",
+            });
+        }
+
+        private void SetupBackendSite()
+        {
+  
+
+            var backendLayout = new Layout
+            {
+                MasterPagePath = "/App_Data/BackendPage.Master"
+            };
+
+
+            var layoutRepository = new LayoutRepository();
+            layoutRepository.Save(backendLayout);
+
+     
+            var siteRepo = new SiteRepository();
+            var backendSite = new Site
+            {
+                Name = "Admin",
+                RoutePrefix = "Admin"
+            };
+            siteRepo.Save(backendSite);
+
+
+            var pageTree = new CmsPage
+            {
+                Name = "PageTree",
+                SiteId = backendSite.ContentId.Value,
+                LayoutId = backendLayout.ContentId.Value
+            };
+            pageTree.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "PageTree"
+
+            });
+
+            var pageRepo = new PageRepository();
+            pageRepo.Save(pageTree);
+
+            backendSite.HomepageId = pageTree.ContentId;
+            siteRepo.Save(backendSite);
         }
 
         private Site SetupTestSite()
         {
             var tbx = new ToolboxManager();
-            tbx.Save(new ToolboxItem
-            {
-                FullyQualifiedTypeName = typeof(Literal).AssemblyQualifiedName,
-                Name="Literal"
-            });
 
             var myLayout = new Layout
             {
@@ -75,8 +125,8 @@ namespace DemoSite
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "0",
                 PlacementLayoutBuilderId = lbId,
-                WidgetTypeCode = "Literal",
-                Parameters = new Dictionary<string, string> {["Text"] = "Hello World (0)"}
+                WidgetTypeCode = "WC/ContentBlock",
+                Parameters = new Dictionary<string, string> {["AdHocHtml"] = "Hello World (0)"}
             };
 
             var helloWorld1 = new CmsPageContent
@@ -84,8 +134,8 @@ namespace DemoSite
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "1",
                 PlacementLayoutBuilderId = lbId,
-                WidgetTypeCode = "Literal",
-                Parameters = new Dictionary<string, string> { ["Text"] = "Hello World (1)" }
+                WidgetTypeCode = "WC/ContentBlock",
+                Parameters = new Dictionary<string, string> { ["AdHocHtml"] = "Hello World (1)" }
             };
 
             row.SubContent.Add(helloWorld0);

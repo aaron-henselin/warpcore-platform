@@ -50,7 +50,16 @@ namespace WarpCore.Cms.Routing
     {
 
         private readonly Dictionary<RouteConstraint, CmsSiteRouteTable> _siteRouteTables = new Dictionary<RouteConstraint, CmsSiteRouteTable>();
-       
+
+
+        private string NormalizeRoutePrefix(string routePrefix)
+        {
+            if (string.IsNullOrWhiteSpace(routePrefix))
+                return null;
+
+            return routePrefix.Trim('/');
+        }
+
 
         public void AddSubTable(Site site, CmsSiteRouteTable subRouteTable)
         {
@@ -58,7 +67,7 @@ namespace WarpCore.Cms.Routing
             //if (!string.IsNullOrWhiteSpace(site.RoutePrefix))
             //    key = key + site.RoutePrefix;
 
-            _siteRouteTables.Add(new RouteConstraint{ RoutePrefix = site.RoutePrefix, UriAuthority = site.UriAuthority}, subRouteTable);
+            _siteRouteTables.Add(new RouteConstraint{ RoutePrefix = NormalizeRoutePrefix(site.RoutePrefix), UriAuthority = site.UriAuthority}, subRouteTable);
 
         }
 
@@ -84,6 +93,7 @@ namespace WarpCore.Cms.Routing
             return inUri;
         }
 
+
         public bool TryResolveRoute(Uri absoluteUri, out SiteRoute route)
         {
             if (!absoluteUri.IsAbsoluteUri)
@@ -103,24 +113,52 @@ namespace WarpCore.Cms.Routing
             }
 
             var absPath = new Uri(absoluteUri.AbsolutePath, UriKind.Relative);
-            if (constraint.RoutePrefix != null)
-                absPath = new Uri(absPath.AbsolutePath.Remove(0, constraint.RoutePrefix.Length),UriKind.Relative);
+            //if (constraint.RoutePrefix != null)
+            //{
+            //    var routePrefixRemoved = absoluteUri.AbsolutePath.Remove(0, constraint.RoutePrefix.Length+1);
+            //    absPath = new Uri(routePrefixRemoved, UriKind.Relative);
+            //}
 
             absPath = RemoveTrailingSlashes(absPath);
 
             return _siteRouteTables[constraint].TryGetRoute(absPath, out route);
         }
 
+        private IEnumerable<RouteConstraint> FilterRouteContraintsByRoutePrefix(Uri absoluteUri, IEnumerable<RouteConstraint> allContraints)
+        {
+            foreach (var route in allContraints)
+            {
+                if (route.UriAuthority != UriAuthorityFilter.Any && route.UriAuthority != absoluteUri.Authority)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(route.RoutePrefix))
+                {
+                    yield return route;
+                    continue;
+                }
+
+                if (absoluteUri.AbsolutePath.Equals("/" + route.RoutePrefix,
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return route;
+                    continue;
+                }
+
+                if (absoluteUri.AbsolutePath.StartsWith("/" + route.RoutePrefix + "/",
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return route;
+                    continue;
+                }
+
+            }
+        }
+
         private RouteConstraint GetBestRouteConstraint(Uri absoluteUri)
         {
             var allSites = _siteRouteTables.Keys;
 
-            var matchingSites = allSites.Where(x => x.UriAuthority == absoluteUri.Authority 
-                                                || x.UriAuthority == UriAuthorityFilter.Any)
-
-                                        .Where(x => string.IsNullOrWhiteSpace(x.RoutePrefix)
-                                                || absoluteUri.AbsolutePath.StartsWith(x.RoutePrefix,StringComparison.InvariantCultureIgnoreCase))
-
+            var matchingSites = FilterRouteContraintsByRoutePrefix(absoluteUri,allSites)
                                         .OrderByDescending(x => x.UriAuthority != UriAuthorityFilter.Any) //prefer most specific site
                                         .ThenByDescending(x => (x.RoutePrefix ?? "").Length) //prefer longest routeprefix
                                         .ToList();

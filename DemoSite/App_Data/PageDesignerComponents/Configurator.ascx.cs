@@ -104,7 +104,7 @@ namespace DemoSite
         {
             surface.Controls.Clear();
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
-            var _toolboxItemType = CmsPageContentActivator.ResolveToolboxItemType(toolboxItem);
+            var _toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
             var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
