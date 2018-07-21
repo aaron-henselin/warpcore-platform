@@ -19,6 +19,8 @@ namespace WarpCore.Cms.Toolbox
         public string FullyQualifiedTypeName { get; set; }
         public string AscxPath { get; set; }
         public string Category { get; set; }
+
+        public string FriendlyName { get; set; }
     }
 
     public class ToolboxManager : UnversionedContentRepository<ToolboxItem>

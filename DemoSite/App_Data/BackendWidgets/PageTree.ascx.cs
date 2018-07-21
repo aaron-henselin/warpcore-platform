@@ -11,6 +11,16 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace DemoSite
 {
+
+    public class PageTreeItem
+    {
+        public SitemapNode SitemapNode { get; set; }
+        public int Depth { get; set; }
+        public string ParentItem { get; set; }
+        public bool IsHomePage { get; internal set; }
+        public bool IsPublished { get; set; }
+    }
+
     public partial class PageTree : System.Web.UI.UserControl
     {
 
@@ -44,31 +54,39 @@ namespace DemoSite
                 return;
 
             var matchedSite = allSites.Single(x => x.ContentId == siteId);
-            var fullSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft);
-            var ul = BuildPageList(fullSitemap);
-            PageTreeWrapper.Controls.Add(ul);
-        }
+            var draftSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft);
+            var liveSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Live);
 
-        private HtmlGenericControl BuildPageList(ISitemapNode sitemapNode)
-        {
-            var ul = new HtmlGenericControl("ul");
-
-            foreach (var childNode in sitemapNode.ChildNodes)
+            var pagesTreeItems = new List<PageTreeItem>();
+            foreach (var childNode in draftSitemap.ChildNodes)
             {
-                var li = new HtmlGenericControl("li");
-                li.Attributes["class"] = "pagetree-item";
-
-                var div = new HtmlGenericControl("div");
-                div.Attributes["class"] = "pagetree-item-title";
-                div.InnerText = childNode.Page.Name;
-                li.Controls.Add(div);
-
-                var subPageList = BuildPageList(childNode);
-                li.Controls.Add(subPageList);
-                ul.Controls.Add(li);
+                AddChildNode(childNode, pagesTreeItems, 0);
             }
 
-            return ul;
+            foreach (var pageTreeItem in pagesTreeItems)
+            {
+                pageTreeItem.IsPublished = liveSitemap.GetSitemapNode(pageTreeItem.SitemapNode.Page) != null;
+                pageTreeItem.IsHomePage = pageTreeItem.SitemapNode.Page.ContentId == matchedSite.HomepageId;
+            }
+
+            PageTreeItemRepeater.DataSource = pagesTreeItems;
+            PageTreeWrapper.DataBind();
+        }
+
+
+        private void AddChildNode(SitemapNode sitemapNode, List<PageTreeItem> nodes, int depth)
+        {
+            var last = nodes.LastOrDefault();
+
+            nodes.Add(new PageTreeItem {
+                SitemapNode = sitemapNode,
+                Depth = depth,
+                ParentItem = last?.SitemapNode?.VirtualPath.ToString()
+            });
+            
+            foreach (var childNode in sitemapNode.ChildNodes)
+                AddChildNode(childNode,nodes,depth+1);
+          
         }
     }
 }

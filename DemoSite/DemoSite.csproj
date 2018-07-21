@@ -160,7 +160,6 @@
     </Compile>
     <Compile Include="App_Data\BackendWidgets\PageTree.ascx.cs">
       <DependentUpon>PageTree.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="App_Data\BackendWidgets\PageTree.ascx.designer.cs">
       <DependentUpon>PageTree.ascx</DependentUpon>
@@ -168,7 +167,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
       <DependentUpon>Toolbox.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.designer.cs">
       <DependentUpon>Toolbox.ascx</DependentUpon>

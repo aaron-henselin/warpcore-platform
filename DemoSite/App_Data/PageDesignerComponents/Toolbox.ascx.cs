@@ -9,6 +9,13 @@ using WarpCore.Cms.Toolbox;
 
 namespace DemoSite
 {
+    public class ToolboxItemViewModel
+    {
+        public string WidgetTypeCode { get; set; }
+
+        public string FriendlyName { get; set; }
+    }
+
     public partial class Toolbox : System.Web.UI.UserControl
     {
         protected override void OnInit(EventArgs e)
@@ -16,22 +23,31 @@ namespace DemoSite
             base.OnInit(e);
             
             PopulateToolboxSidebar();
+
+            DataBind();
         }
 
         private void PopulateToolboxSidebar()
         {
             var manager = new ToolboxManager();
             var allWidgets = manager.Find();
-
-            foreach (var widget in allWidgets)
+            ToolboxItemRepeater.DataSource = allWidgets.Select(x => new ToolboxItemViewModel
             {
-                var div = new HtmlGenericControl("div");
-                div.Attributes["class"] = "toolbox-item wc-layout-handle";
-                div.Attributes["data-wc-toolbox-item-name"] = widget.Name;
+                FriendlyName = x.Name,
+                WidgetTypeCode = x.Name
+            }).ToList();
 
-                div.InnerText = widget.Name;
-                toolboxUl.Controls.Add(div);
-            }
+            //foreach (var widget in allWidgets)
+            //{
+            //    var div = new HtmlGenericControl("div");
+            //    div.Attributes["class"] = "toolbox-item wc-layout-handle";
+            //    div.Attributes["data-wc-toolbox-item-name"] = widget.Name;
+
+            //    div.InnerText = widget.Name;
+            //    toolboxUl.Controls.Add(div);
+            //}
+
+            //toolboxUl.Controls.Add(div);
         }
     }
 }

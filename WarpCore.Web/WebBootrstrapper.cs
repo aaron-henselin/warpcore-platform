@@ -25,7 +25,9 @@ namespace WarpCore.Web
 
     public class IncludeInToolboxAttribute:Attribute
     {
-        public string Name { get; set; }
+        public string WidgetUid { get; set; }
+
+        public string FriendlyName { get; set; }
     }
 
     public static class WebBootstrapper
@@ -42,12 +44,12 @@ namespace WarpCore.Web
                 var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
 
                 ToolboxItem widget;
-                if (alreadyInToolbox.ContainsKey(includeInToolboxAtr.Name))
-                    widget = alreadyInToolbox[includeInToolboxAtr.Name];
+                if (alreadyInToolbox.ContainsKey(includeInToolboxAtr.WidgetUid))
+                    widget = alreadyInToolbox[includeInToolboxAtr.WidgetUid];
                 else
                     widget = new ToolboxItem();
 
-                widget.Name = includeInToolboxAtr.Name;
+                widget.Name = includeInToolboxAtr.WidgetUid;
                 widget.FullyQualifiedTypeName = typeToInclude.AssemblyQualifiedName;
                 mgr.Save(widget);
             }

@@ -23,19 +23,21 @@ namespace DemoSite
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             
             SetupToolbox();
-            SetupTestSite();
+          
             SetupBackendSite();
 
             PublishingShortcuts.PublishSites();
+            SetupTestSite();
         }
 
-        private Site SetupTestSite()
+        private void SetupToolbox()
         {
             var tbx = new ToolboxManager();
             tbx.Save(new ToolboxItem
             {
                 AscxPath = "/App_Data/BackendWidgets/PageTree.ascx",
                 Name = "PageTree",
+                FriendlyName = "Page Tree"
             });
         }
 
