@@ -55,10 +55,14 @@ namespace DemoSite
 
             foreach (var childNode in sitemapNode.ChildNodes)
             {
-                var li = new HtmlGenericControl("li")
-                {
-                    InnerText = childNode.Page.Name
-                };
+                var li = new HtmlGenericControl("li");
+                li.Attributes["class"] = "pagetree-item";
+
+                var div = new HtmlGenericControl("div");
+                div.Attributes["class"] = "pagetree-item-title";
+                div.InnerText = childNode.Page.Name;
+                li.Controls.Add(div);
+
                 var subPageList = BuildPageList(childNode);
                 li.Controls.Add(subPageList);
                 ul.Controls.Add(li);
