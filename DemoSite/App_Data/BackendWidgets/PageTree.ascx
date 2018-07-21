@@ -17,6 +17,23 @@
                     <small class="unpublished badge" runat="server" Visible="<%# !Item.IsPublished %>">Draft</small>
                     
                 </span>
+                <span class="pull-right">
+                    <a href="<%# Item.DesignUrl %>">
+                        <span class=" glyphicon glyphicon-text-background"></span>
+                        Design
+                    </a>
+                    <a href="javascript:void(0);">
+                        <span class="glyphicon glyphicon-send"></span>
+                        Publish
+                    </a>
+                    <a href="javascript:void(0);">
+                        <span class="glyphicon glyphicon glyphicon-tasks"></span>
+                        Settings
+                    </a>
+                   
+
+                </span>
+               
 
             </div>
         </ItemTemplate>

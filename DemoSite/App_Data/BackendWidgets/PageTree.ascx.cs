@@ -19,6 +19,7 @@ namespace DemoSite
         public string ParentItem { get; set; }
         public bool IsHomePage { get; internal set; }
         public bool IsPublished { get; set; }
+        public string DesignUrl { get; set; }
     }
 
     public partial class PageTree : System.Web.UI.UserControl
@@ -65,8 +66,13 @@ namespace DemoSite
 
             foreach (var pageTreeItem in pagesTreeItems)
             {
-                pageTreeItem.IsPublished = liveSitemap.GetSitemapNode(pageTreeItem.SitemapNode.Page) != null;
+                var liveNode = liveSitemap.GetSitemapNode(pageTreeItem.SitemapNode.Page);
+                pageTreeItem.IsPublished = liveNode != null;
                 pageTreeItem.IsHomePage = pageTreeItem.SitemapNode.Page.ContentId == matchedSite.HomepageId;
+
+              
+                    pageTreeItem.DesignUrl = pageTreeItem.SitemapNode.VirtualPath + "?wc-viewmode=edit&wc-pg="+ pageTreeItem.SitemapNode.Page?.ContentId?.ToString();
+                
             }
 
             PageTreeItemRepeater.DataSource = pagesTreeItems;

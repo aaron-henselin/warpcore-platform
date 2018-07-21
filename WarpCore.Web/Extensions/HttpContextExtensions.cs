@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
+using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Web.Extensions
@@ -26,29 +27,51 @@ namespace WarpCore.Web.Extensions
 
         public static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
         {
+            var routeRaw = context.Request["wc-pg"];
             var environmentRaw = context.Request["wc-ce"];
             var contentVersionRaw = context.Request["wc-cv"];
             var viewModeRaw = context.Request["wc-viewmode"];
+
+            ViewMode viewMode = ViewMode.Default;
+            if (!string.IsNullOrWhiteSpace(viewModeRaw))
+                viewMode = (ViewMode)Enum.Parse(typeof(ViewMode), viewModeRaw, true);
+
 
             ContentEnvironment env = ContentEnvironment.Live;
             if (!string.IsNullOrWhiteSpace(environmentRaw))
             {
                 env = (ContentEnvironment)Enum.Parse(typeof(ContentEnvironment),environmentRaw,true);
             }
+            else
+            {
+                if (viewMode == ViewMode.Edit)
+                    env = ContentEnvironment.Draft;
+            }
 
             decimal contentVersion = 0;
             if (!string.IsNullOrWhiteSpace(contentVersionRaw))
                 contentVersion = Convert.ToDecimal(contentVersionRaw);
 
-            ViewMode viewMode = ViewMode.Default;
-            if (!string.IsNullOrWhiteSpace(viewModeRaw))
-                viewMode = (ViewMode) Enum.Parse(typeof(ViewMode), viewModeRaw, true);
 
             var routeContext = new CmsPageRequestContext();
             routeContext.ViewMode = viewMode;
 
-            var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out var route);
+            SiteRoute route;
+
+            if (!string.IsNullOrWhiteSpace(routeRaw))
+            {
+                route = new ContentPageRoute
+                {
+                    Authority = UriAuthorityFilter.Any,
+                    PageId = new Guid(routeRaw)
+                };
+            }
+            else
+            {
+                var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out route);
+            }
             routeContext.Route = route;
+            
 
             if (route?.PageId == null)
                 return routeContext;

@@ -316,20 +316,21 @@ namespace WarpCore.Web
 
         public void ActivateAndPlaceInheritedContent(Page localPage)
         {
-            var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);          
-            var structure=layoutRepository.GetLayoutStructure(layoutToApply);
-            var lns = FlattenLayoutTree(structure);
-
-            if (lns.Any())
+            localPage.MasterPageFile = "/App_Data/AdHocLayout.master";
+            if (_context.CmsPage.LayoutId != Guid.Empty)
             {
-                localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
-            }
-            else
-                localPage.MasterPageFile = "/App_Data/AdHocLayoutMaster.master";
+                var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);
+                var structure = layoutRepository.GetLayoutStructure(layoutToApply);
+                var lns = FlattenLayoutTree(structure);
 
-            foreach (var ln in lns)
-                ActivateAndPlaceContent(localPage,ln.Layout.PageContent,ViewMode.Default);
-            
+                if (lns.Any())
+                {
+                    localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
+                }
+
+                foreach (var ln in lns)
+                    ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default);
+            } 
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)
