@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Script.Serialization;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
@@ -16,7 +18,7 @@ namespace DemoSite
 {
     public class ConfiguratorTextBox : PlaceHolder
     {
-        private TextBox _tbx = new TextBox { AutoPostBack = true };
+        private TextBox _tbx = new TextBox { AutoPostBack = true,CssClass = "form-control"};
         public string PropertyName { get; set; }
         public string DisplayName { get; set; }
 
@@ -102,18 +104,25 @@ namespace DemoSite
         {
             surface.Controls.Clear();
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
-            var _toolboxItemType = CmsPageContentActivator.ResolveToolboxItemType(toolboxItem);
+            var _toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
             var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
 
 
+
+
             foreach (var property in _toolboxItemType.GetProperties())
             {
+
+
                 var displayNameDefinition = (DisplayNameAttribute) property.GetCustomAttribute(typeof(DisplayNameAttribute));
                 var settingDefinition = (SettingAttribute) property.GetCustomAttribute(typeof(SettingAttribute));
                 if (settingDefinition != null)
                 {
+                    var wrapper = new HtmlGenericControl("div");
+                    wrapper.Attributes["class"] = "form-group";
+
                     var textbox = new ConfiguratorTextBox
                     {
                         PropertyName = property.Name,
@@ -126,7 +135,8 @@ namespace DemoSite
                    
                         textbox.Value = parametersAfterActivation[property.Name];
 
-                    surface.Controls.Add(textbox);
+                    wrapper.Controls.Add(textbox);
+                    surface.Controls.Add(wrapper);
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Web.Compilation;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms.Toolbox
@@ -24,7 +25,19 @@ namespace WarpCore.Cms.Toolbox
     {
         public ToolboxItem GetToolboxItemByCode(string code)
         {
-            return Orm.FindUnversionedContent<ToolboxItem>("Name eq '" + code + "'").Result.Single();
+            var toolboxResult = Orm.FindUnversionedContent<ToolboxItem>("Name eq '" + code + "'").Result;
+            if (!toolboxResult.Any())
+                throw new Exception($"Toolbox does not contain item '{code}'");
+
+            return toolboxResult.Single();
+        }
+
+        public static Type ResolveToolboxItemType(ToolboxItem toolboxItem)
+        {
+            if (!string.IsNullOrWhiteSpace(toolboxItem.FullyQualifiedTypeName))
+                return Type.GetType(toolboxItem.FullyQualifiedTypeName);
+
+            return BuildManager.GetCompiledType(toolboxItem.AscxPath);
         }
     }
 }

@@ -110,11 +110,14 @@ namespace WarpCore.Web.ServiceModel
 
             if (addCommand.ToLayoutBuilderId != null)
             {
-                var newParentSearch =
-                    editingContext.FindSubContentReursive(x =>
-                        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
-                        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                        addCommand.ToLayoutBuilderId.Value).SingleOrDefault();
+                var newParentSearch = editingContext.FindSubContentReursive(x => x.Id == addCommand.ToLayoutBuilderId).Single();
+
+
+                //var newParentSearch =
+                //    editingContext.FindSubContentReursive(x =>
+                //        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
+                //        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
+                //        addCommand.ToLayoutBuilderId.Value).SingleOrDefault();
 
                 if (newParentSearch == null)
                     throw new Exception("Invalid content location -- there is no layoutbuilder with id: " +
@@ -142,11 +145,13 @@ namespace WarpCore.Web.ServiceModel
 
             if (moveCommand.ToLayoutBuilderId != null)
             {
-                var newParentSearch =
-                    editingContext.FindSubContentReursive(x =>
-                        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
-                        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                        moveCommand.ToLayoutBuilderId.Value).Single();
+                //var newParentSearch =
+                //    editingContext.FindSubContentReursive(x =>
+                //        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
+                //        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
+                //        moveCommand.ToLayoutBuilderId.Value).Single();
+
+                var newParentSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.ToLayoutBuilderId).Single();
 
                 //todo: ordering.
 

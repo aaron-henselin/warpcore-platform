@@ -13,13 +13,7 @@ namespace WarpCore.Web
 
     public class CmsPageContentActivator
     {
-        public static Type ResolveToolboxItemType(ToolboxItem toolboxItem)
-        {
-            if (!string.IsNullOrWhiteSpace(toolboxItem.FullyQualifiedTypeName))
-                return Type.GetType(toolboxItem.FullyQualifiedTypeName);
 
-            return BuildManager.GetCompiledType(toolboxItem.AscxPath);
-        }
 
         public static Control ActivateControl(CmsPageContent pageContent)
         {
@@ -29,7 +23,7 @@ namespace WarpCore.Web
 
         public static Control ActivateControl(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
         {
-            var toolboxItemType = ResolveToolboxItemType(toolboxItem);
+            var toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
             var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
             SetContentParameterValues(activatedWidget, parameters);
 
@@ -64,6 +58,9 @@ namespace WarpCore.Web
 
         public static void SetContentParameterValues(Control activatedWidget, IDictionary<string,string> parameterValues)
         {
+            if (parameterValues == null)
+                parameterValues = new Dictionary<string, string>();
+
             foreach (var kvp in parameterValues)
             {
                 var propertyInfo = activatedWidget.GetType().GetProperty(kvp.Key);
