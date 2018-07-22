@@ -57,7 +57,7 @@ namespace WarpCore.Cms.Sites
         public Guid ParentNodeId { get; set; }
 
         [Column]
-        public Guid? BeforeNodeId { get; set; }
+        public int Order { get; set; }
 
         public Guid NodeId { get => this.ContentId.Value; }
 
@@ -81,25 +81,25 @@ namespace WarpCore.Cms.Sites
 
         private static void PopulateChildNodes(ISiteStructureNode node, ILookup<Guid, CmsPageLocationNode> parentNodeLookup)
         {
-            var ll = new List<CmsPageLocationNode>();
+            //var ll = new List<CmsPageLocationNode>();
 
-            var pendingToInsert = parentNodeLookup[node.NodeId].ToList();
+            //var pendingToInsert = parentNodeLookup[node.NodeId].ToList();
 
-            if (pendingToInsert.Any())
-            {
-                var remainingRoot = pendingToInsert.Single(x => x.BeforeNodeId == null);
-                pendingToInsert.Remove(remainingRoot);
-                ll.Insert(0, remainingRoot);
-            }
+            //if (pendingToInsert.Any())
+            //{
+            //    var remainingRoot = pendingToInsert.Single(x => x.BeforeNodeId == null);
+            //    pendingToInsert.Remove(remainingRoot);
+            //    ll.Insert(0, remainingRoot);
+            //}
 
-            while (pendingToInsert.Any())
-            {
-                var nextBefore = pendingToInsert.SingleOrDefault(x => x.BeforeNodeId == ll.First().NodeId);
-                pendingToInsert.Remove(nextBefore);
-                ll.Insert(0, nextBefore);
-            }
+            //while (pendingToInsert.Any())
+            //{
+            //    var nextBefore = pendingToInsert.SingleOrDefault(x => x.BeforeNodeId == ll.First().NodeId);
+            //    pendingToInsert.Remove(nextBefore);
+            //    ll.Insert(0, nextBefore);
+            //}
 
-            node.ChildNodes = ll;
+            node.ChildNodes = parentNodeLookup[node.NodeId].OrderBy(x => x.Order).ToList();
 
             foreach (var childNode in node.ChildNodes)
                 PopulateChildNodes(childNode, parentNodeLookup);

@@ -21,7 +21,7 @@
 
 <style>
     .tbx .toolbox-item {
-        border-top: 1px dotted #fff;
+        border-top: 1px dotted #3c3c3c;
         cursor: move;
         padding: 5px;
     }

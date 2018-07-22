@@ -51,8 +51,7 @@ namespace WarpCore.Cms
 
         public Guid? RedirectPageId { get; set; }
 
-        [Column]
-        public int Order { get; set; }
+
 
         [Column]
         public bool RequireSsl { get; set; }
@@ -244,17 +243,36 @@ namespace WarpCore.Cms
             newPageLocation.PageId = page.ContentId.Value;
             newPageLocation.SiteId = page.SiteId;
             newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
-            newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
+            //newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
+
 
             var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"SiteId eq '{page.SiteId}' and ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
-            var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
+            var collection = sitemapNodesToUpdate.ToList();
 
-            Orm.Save(newPageLocation);
-            if (previousBefore != null)
+            var insertAt = 0;
+            if (null != newSitemapRelativePosition.BeforeSitemapNodeId)
             {
-                previousBefore.BeforeNodeId = newPageLocation.ContentId;
-                Orm.Save(previousBefore);
+                var beforeNode = collection.Single(x => newSitemapRelativePosition.BeforeSitemapNodeId == x.NodeId);
+                insertAt = collection.IndexOf(beforeNode);
             }
+            collection.Insert(insertAt,newPageLocation);
+
+            for (int i = 0; i < collection.Count; i++)
+            {
+                collection[i].Order = i;
+                Orm.Save(collection[i]);
+            }
+
+            CmsRoutes.RegenerateAllRoutes();
+
+            //var previousBefore = sitemapNodesToUpdate.SingleOrDefault(x => x.BeforeNodeId == newSitemapRelativePosition.BeforeSitemapNodeId);
+
+            //Orm.Save(newPageLocation);
+            //if (previousBefore != null)
+            //{
+            //    previousBefore.BeforeNodeId = newPageLocation.ContentId;
+            //    Orm.Save(previousBefore);
+            //}
 
             //this addresses only half of the linked list move.
             //need to relink 
@@ -340,12 +358,19 @@ namespace WarpCore.Cms
                 sitemapRelativePosition = SitemapRelativePosition.Root;
             else
             {
-                var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{cmsPage.ContentId}'";
-                var node = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.Single();
+                var existingLocationSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{cmsPage.ContentId}'";
+                var node = Orm.FindUnversionedContent<CmsPageLocationNode>(existingLocationSearch).Result.Single();
+
+
+                var siblingSearch = $@"{nameof(CmsPageLocationNode.ParentNodeId)} eq '{node.ParentNodeId}'";
+                var siblingNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingSearch).Result;
+                var newBeforeNode = siblingNodes.Where(x => x.Order > node.Order).OrderBy(x => x.Order).FirstOrDefault();
+
+
                 sitemapRelativePosition = new SitemapRelativePosition
                 {
                     ParentSitemapNodeId = node.ParentNodeId,
-                    BeforeSitemapNodeId = node.BeforeNodeId,
+                    BeforeSitemapNodeId = newBeforeNode?.NodeId,
                 };
             }
 

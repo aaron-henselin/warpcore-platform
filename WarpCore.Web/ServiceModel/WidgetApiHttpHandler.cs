@@ -138,34 +138,38 @@ namespace WarpCore.Web.ServiceModel
         private void ProcessMoveCommand(EditingContext editingContext, MoveCommand moveCommand)
         {
             var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.PageContentId).SingleOrDefault();
-            if (contentToMoveSearch == null)
-                throw new Exception("component not found.");
+            var contentToMove = contentToMoveSearch.LocatedContent;
+            var previousParentCollection = contentToMoveSearch.ParentContent.SubContent;
 
-            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
+            previousParentCollection.Remove(contentToMove);
 
+            List<CmsPageContent> insertInCollection;
             if (moveCommand.ToLayoutBuilderId != null)
             {
-                //var newParentSearch =
-                //    editingContext.FindSubContentReursive(x =>
-                //        x.Parameters.ContainsKey(nameof(LayoutControl.LayoutBuilderId)) &&
-                //        new Guid(x.Parameters[nameof(LayoutControl.LayoutBuilderId)]) ==
-                //        moveCommand.ToLayoutBuilderId.Value).Single();
-
                 var newParentSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.ToLayoutBuilderId).Single();
-
-                //todo: ordering.
-
-                newParentSearch.LocatedContent.SubContent.Add(contentToMoveSearch.LocatedContent);
+                insertInCollection = newParentSearch.LocatedContent.SubContent;
             }
             else
             {
-                //todo: ordering.
-
-                editingContext.SubContent.Add(contentToMoveSearch.LocatedContent);
+                insertInCollection = editingContext.SubContent;
             }
 
-            contentToMoveSearch.LocatedContent.PlacementContentPlaceHolderId = moveCommand.ToContentPlaceHolderId;
-            contentToMoveSearch.LocatedContent.PlacementLayoutBuilderId = moveCommand.ToLayoutBuilderId;
+            int insertLocation = 0;
+            if (moveCommand.BeforePageContentId != null)
+            {
+                var before = insertInCollection.Single(x => x.Id == moveCommand.PageContentId);
+                insertLocation = insertInCollection.IndexOf(before);
+            }
+
+            insertInCollection.Insert(insertLocation, contentToMove);
+
+            contentToMove.PlacementContentPlaceHolderId = moveCommand.ToContentPlaceHolderId;
+            contentToMove.PlacementLayoutBuilderId = moveCommand.ToLayoutBuilderId;
+
+            for (int i = 0; i < insertInCollection.Count; i++)
+            {
+                insertInCollection[i].Order = i;
+            }
 
         }
 
