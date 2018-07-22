@@ -23,17 +23,22 @@ namespace WarpCore.Cms
 
         public ISitemapNode GetSitemapNode(CmsPage cmsPage)
         {
-            return GetSitemapNode(cmsPage, this);
+            return GetSitemapNode(cmsPage.ContentId.Value);
         }
 
-        private static ISitemapNode GetSitemapNode(CmsPage cmsPage, ISitemapNode root)
+        public ISitemapNode GetSitemapNode(Guid pageId)
+        {
+            return GetSitemapNode(pageId, this);
+        }
+
+        private static ISitemapNode GetSitemapNode(Guid pageId, ISitemapNode root)
         {
             foreach (var childNode in root.ChildNodes)
             {
-                if (childNode.Page.ContentId == cmsPage.ContentId)
+                if (childNode.Page.ContentId == pageId)
                     return childNode;
 
-                var found = GetSitemapNode(cmsPage, childNode);
+                var found = GetSitemapNode(pageId, childNode);
                 if (found != null)
                     return found;
             }

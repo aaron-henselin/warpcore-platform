@@ -5,29 +5,45 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace DemoSite
 {
-
+    [Serializable]
     public class PageTreeItem
     {
-        public SitemapNode SitemapNode { get; set; }
+        public string Name { get; set; }
+        public string VirtualPath { get; set; }
         public int Depth { get; set; }
-        public string ParentItem { get; set; }
+        public string ParentPath { get; set; }
         public bool IsHomePage { get; internal set; }
         public bool IsPublished { get; set; }
         public string DesignUrl { get; set; }
+        public bool IsExpanded { get; set; }
+        public bool Visible { get; set; }
+        public bool HasChildItems { get; set; }
+        public Guid PageId { get; set; }
+    }
+
+    [Serializable]
+    public class PageTreeControlState
+    {
+        public List<PageTreeItem> PageTreeItems { get; set; }
+        
     }
 
     public partial class PageTree : System.Web.UI.UserControl
     {
+        PageTreeControlState _controlState = new PageTreeControlState();
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
+            Page.RegisterRequiresControlState(this);
 
             SiteSelectorDropDownList.SelectedIndexChanged += (sender, args) =>
             {
@@ -56,6 +72,28 @@ namespace DemoSite
             if (siteId == Guid.Empty)
                 return;
 
+
+
+            if (!Page.IsPostBack)
+            {
+                RebuildControlState(allSites, siteId);
+                OnControlStateAvailable();
+            }
+        }
+
+        protected override void LoadControlState(object savedState)
+        {
+            _controlState = (PageTreeControlState) savedState;
+            OnControlStateAvailable();
+        }
+
+        protected override object SaveControlState()
+        {
+            return _controlState;
+        }
+
+        private void RebuildControlState(IReadOnlyCollection<Site> allSites, Guid siteId)
+        {
             var matchedSite = allSites.Single(x => x.ContentId == siteId);
             var draftSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft);
             var liveSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Live);
@@ -63,38 +101,77 @@ namespace DemoSite
             var pagesTreeItems = new List<PageTreeItem>();
             foreach (var childNode in draftSitemap.ChildNodes)
             {
-                AddChildNode(childNode, pagesTreeItems, 0);
+                FlattenPageTree(childNode, pagesTreeItems, 0);
             }
 
             foreach (var pageTreeItem in pagesTreeItems)
             {
-                var liveNode = liveSitemap.GetSitemapNode(pageTreeItem.SitemapNode.Page);
+                var liveNode = liveSitemap.GetSitemapNode(pageTreeItem.PageId);
                 pageTreeItem.IsPublished = liveNode != null;
-                pageTreeItem.IsHomePage = pageTreeItem.SitemapNode.Page.ContentId == matchedSite.HomepageId;
-
-              
-                    pageTreeItem.DesignUrl = pageTreeItem.SitemapNode.VirtualPath + "?wc-viewmode=edit&wc-pg="+ pageTreeItem.SitemapNode.Page?.ContentId?.ToString();
-                
+                pageTreeItem.IsHomePage = pageTreeItem.PageId == matchedSite.HomepageId;
+                pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=edit&wc-pg=" +
+                                         pageTreeItem.PageId;
+               
             }
 
-            PageTreeItemRepeater.DataSource = pagesTreeItems;
+            _controlState.PageTreeItems = pagesTreeItems.ToList();
+
+            foreach (var item in _controlState.PageTreeItems)
+            {
+                if (item.ParentPath == null)
+                {
+                    item.Visible = true;
+                    ExpandPath(item.VirtualPath.ToString());
+                }
+            }
+        }
+
+        private void OnControlStateAvailable()
+        {
+            PageTreeItemRepeater.DataSource = _controlState.PageTreeItems;
             PageTreeWrapper.DataBind();
         }
 
-
-        private void AddChildNode(SitemapNode sitemapNode, List<PageTreeItem> nodes, int depth)
+        private void FlattenPageTree(SitemapNode sitemapNode, List<PageTreeItem> nodes, int depth, SitemapNode parentNode= null)
         {
-            var last = nodes.LastOrDefault();
 
             nodes.Add(new PageTreeItem {
-                SitemapNode = sitemapNode,
+                //SitemapNode = sitemapNode,
+                Name = sitemapNode.Page.Name,
+                PageId = sitemapNode.Page.ContentId.Value,
+                VirtualPath = sitemapNode.VirtualPath.ToString(),
                 Depth = depth,
-                ParentItem = last?.SitemapNode?.VirtualPath.ToString()
+                ParentPath = parentNode?.VirtualPath.ToString(),
+                HasChildItems = sitemapNode.ChildNodes.Any()
             });
             
             foreach (var childNode in sitemapNode.ChildNodes)
-                AddChildNode(childNode,nodes,depth+1);
+                FlattenPageTree(childNode,nodes,depth+1,sitemapNode);
           
+        }
+
+        protected void ToggleExpandPageItem_OnClick(object sender, EventArgs e)
+        {
+            var lb = (LinkButton) sender;
+            var expandId = lb.CommandArgument;
+
+            ExpandPath(expandId);
+
+            this.DataBind();
+        }
+
+        private void ExpandPath(string expandId)
+        {
+            var item =
+                _controlState.PageTreeItems.Single(x => x.VirtualPath.ToString() == expandId);
+
+            item.IsExpanded = !item.IsExpanded;
+
+            var childItems =
+                _controlState.PageTreeItems.Where(x => x.ParentPath == expandId);
+
+            foreach (var childItem in childItems)
+                childItem.Visible = item.IsExpanded;
         }
     }
 }

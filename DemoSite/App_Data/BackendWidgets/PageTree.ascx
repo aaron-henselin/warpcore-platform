@@ -1,43 +1,64 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PageTree.ascx.cs" Inherits="DemoSite.PageTree" %>
+<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Scripting" Assembly="WarpCore.Web" %>
 
 <h2>Page Tree</h2>
+<a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
 <asp:DropDownList runat="server" ID="SiteSelectorDropDownList" AutoPostBack="True"/>
 <div runat="server" class="pagetree" ID="PageTreeWrapper">
-    <asp:Repeater runat="server" ID="PageTreeItemRepeater" ItemType="DemoSite.PageTreeItem">
-        <ItemTemplate>
-            <div class="pagetree-item depth-<%# Item.Depth %>" 
-                 data-path="<%# Item.SitemapNode.VirtualPath.ToString() %>"
-                 data-parent="<%# Item.ParentItem %>">
-                <span class="glyphicon glyphicon-triangle-right"></span>
-                <span class="pagetree-item-title">
-                    <%# Item.SitemapNode.Page.Name %>
-                    <span runat="server" 
-                          Visible="<%# Item.IsHomePage %>"
-                          class="glyphicon glyphicon-home homepage-icon"></span>
-                    <small class="unpublished badge" runat="server" Visible="<%# !Item.IsPublished %>">Draft</small>
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:Repeater runat="server" ID="PageTreeItemRepeater" ItemType="DemoSite.PageTreeItem">
+                <ItemTemplate>
+                    <asp:PlaceHolder runat="server" runat="server" Visible="<%# Item.Visible %>">
+                          <div class="pagetree-item depth-<%# Item.Depth %>" 
+                         data-path="<%# Item.VirtualPath.ToString() %>"
+                         data-parent="<%# Item.ParentPath %>">
+                        
+                        <asp:LinkButton runat="server" 
+                                        CommandArgument="<%# Item.VirtualPath.ToString() %>" 
+                                        OnClick="ToggleExpandPageItem_OnClick" 
+                                        ID="ExpandPageItem" 
+                                        Visible="<%# Item.HasChildItems %>">
+                         
+                                <span runat="server" Visible="<%# !Item.IsExpanded %>" class="glyphicon glyphicon-triangle-right"></span>
+                                <span runat="server" Visible="<%# Item.IsExpanded %>" class="glyphicon glyphicon-triangle-bottom"></span>
+                        </asp:LinkButton>
+                  
+                        <span class="pagetree-item-title">
+                            <%# Item.Name %>
+                            <span runat="server" 
+                                  Visible="<%# Item.IsHomePage %>"
+                                  class="glyphicon glyphicon-home homepage-icon"></span>
+                            <small class="unpublished badge" runat="server" Visible="<%# !Item.IsPublished %>">Draft</small>
                     
-                </span>
-                <span class="pull-right pagetree-item-actions">
-                    <a href="<%# Item.DesignUrl %>">
-                        <span class=" glyphicon glyphicon-text-background"></span>
-                        Design
-                    </a>
-                    <a href="javascript:void(0);">
-                        <span class="glyphicon glyphicon-send"></span>
-                        Publish
-                    </a>
-                    <a href="javascript:void(0);">
-                        <span class="glyphicon glyphicon glyphicon-tasks"></span>
-                        Settings
-                    </a>
+                        </span>
+                        <span class="pull-right pagetree-item-actions">
+                            <a href="<%# Item.DesignUrl %>">
+                                <span class=" glyphicon glyphicon-text-background"></span>
+                                Design
+                            </a>
+                            <a href="javascript:void(0);">
+                                <span class="glyphicon glyphicon-send"></span>
+                                Publish
+                            </a>
+                            <a href="javascript:void(0);">
+                                <span class="glyphicon glyphicon glyphicon-tasks"></span>
+                                Settings
+                            </a>
                    
 
-                </span>
+                        </span>
                
 
-            </div>
-        </ItemTemplate>
-    </asp:Repeater>
+                    </div>
+                    </asp:PlaceHolder>
+                  
+                </ItemTemplate>
+            </asp:Repeater>
+
+        </ContentTemplate>
+    </asp:UpdatePanel>
+
 </div>
 <style>
     .unpublished.badge{ font-size: 10px;right:0}
