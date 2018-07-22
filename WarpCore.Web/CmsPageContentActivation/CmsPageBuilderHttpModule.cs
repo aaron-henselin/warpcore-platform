@@ -193,7 +193,7 @@ namespace WarpCore.Web
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
             var ascx = BuildManager.GetCompiledType("/App_Data/PageDesignerComponents/LayoutHandle.ascx");
             var uc = (ILayoutHandle)Activator.CreateInstance(ascx);
-            uc.HandleName = toolboxItem.Name;
+            uc.HandleName = toolboxItem.WidgetUid;
             uc.PageContentId = content.Id;
 
             ph.Controls.Add((Control)uc);

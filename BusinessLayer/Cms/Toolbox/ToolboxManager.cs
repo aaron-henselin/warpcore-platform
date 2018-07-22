@@ -14,7 +14,7 @@ namespace WarpCore.Cms.Toolbox
     public class ToolboxItem : UnversionedContentEntity
     {
         public Guid SectionId { get; set; }
-        public string Name { get; set; }
+        public string WidgetUid { get; set; }
         public string Description { get; set; }
         public string FullyQualifiedTypeName { get; set; }
         public string AscxPath { get; set; }
@@ -27,7 +27,7 @@ namespace WarpCore.Cms.Toolbox
     {
         public ToolboxItem GetToolboxItemByCode(string code)
         {
-            var toolboxResult = Orm.FindUnversionedContent<ToolboxItem>("Name eq '" + code + "'").Result;
+            var toolboxResult = Orm.FindUnversionedContent<ToolboxItem>("WidgetUid eq '" + code + "'").Result;
             if (!toolboxResult.Any())
                 throw new Exception($"Toolbox does not contain item '{code}'");
 

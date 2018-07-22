@@ -33,8 +33,8 @@ namespace DemoSite
             var allWidgets = manager.Find();
             ToolboxItemRepeater.DataSource = allWidgets.Select(x => new ToolboxItemViewModel
             {
-                FriendlyName = x.Name,
-                WidgetTypeCode = x.Name
+                FriendlyName = x.FriendlyName,
+                WidgetTypeCode = x.WidgetUid
             }).ToList();
 
             //foreach (var widget in allWidgets)

@@ -8,7 +8,7 @@ using Cms;
 
 namespace WarpCore.Web.Widgets
 {
-    [IncludeInToolbox(WidgetUid="WC/ContentBlock")]
+    [IncludeInToolbox(WidgetUid="WC/ContentBlock", FriendlyName = "Content Block")]
     public class ContentBlock : Control
     {
         [Setting]

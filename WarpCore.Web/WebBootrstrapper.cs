@@ -38,7 +38,7 @@ namespace WarpCore.Web
             var toIncludeInToolbox = allTypes.Where(x => x.GetCustomAttributes<IncludeInToolboxAttribute>().Any());
 
             var mgr = new ToolboxManager();
-            var alreadyInToolbox = mgr.Find().ToDictionary(x => x.Name);
+            var alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
             foreach (var typeToInclude in toIncludeInToolbox)
             {
                 var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
@@ -49,7 +49,8 @@ namespace WarpCore.Web
                 else
                     widget = new ToolboxItem();
 
-                widget.Name = includeInToolboxAtr.WidgetUid;
+                widget.WidgetUid = includeInToolboxAtr.WidgetUid;
+                widget.FriendlyName = includeInToolboxAtr.FriendlyName;
                 widget.FullyQualifiedTypeName = typeToInclude.AssemblyQualifiedName;
                 mgr.Save(widget);
             }

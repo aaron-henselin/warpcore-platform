@@ -36,7 +36,7 @@ namespace DemoSite
             tbx.Save(new ToolboxItem
             {
                 AscxPath = "/App_Data/BackendWidgets/PageTree.ascx",
-                Name = "PageTree",
+                WidgetUid = "PageTree",
                 FriendlyName = "Page Tree"
             });
         }

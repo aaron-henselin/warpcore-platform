@@ -17,7 +17,10 @@
     <div id="toolboxUl" runat="server" class="toolbox-item-list">
         <asp:Repeater runat="server" ID="ToolboxItemRepeater" ItemType="DemoSite.ToolboxItemViewModel">
             <ItemTemplate>
+
                 <div class="toolbox-item wc-layout-handle" data-wc-toolbox-item-name="<%# Item.WidgetTypeCode %>">
+                    <span class="glyphicon glyphicon-option-vertical">
+                    </span>
                     <%# Item.FriendlyName %>
                 </div>
 

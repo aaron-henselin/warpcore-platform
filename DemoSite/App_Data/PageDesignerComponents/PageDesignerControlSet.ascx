@@ -18,6 +18,11 @@
 </script>
 
 <style>
+    .tbx .toolbox-item {
+        border-top: 1px dotted #fff;
+        cursor: move;
+        padding: 5px;
+    }
     .wc-configurator{ color: #fff; background-color: #fff;}
     .wc-configurator .surface{ color: #000; background-color: #fff;}
 
