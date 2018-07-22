@@ -6,7 +6,27 @@
     <div class="handle">
         <span class="glyphicon glyphicon-wrench"></span>
     </div>
-    
+    <h3 class="save-header">
+        <span>
+        <span class="button">
+            <span class="glyphicon glyphicon-arrow-left">
+                <asp:LinkButton runat="server" Text="Back" ID="BackToPageTreeLinkButton" OnClick="BackToPageTreeLinkButton_OnClick"></asp:LinkButton>
+            </span>
+            </span>
+        </span>
+        <span class="pull-right">
+            <span class="button">
+                <span class="glyphicon glyphicon-floppy-save">
+                    <asp:LinkButton runat="server" Text="Save" ID="SaveDraftButton" OnClick="SaveDraftButton_OnClick"></asp:LinkButton>
+                </span>
+            </span>
+            <span class="button last">
+                <span class="glyphicon  glyphicon-send">
+                <asp:LinkButton runat="server" Text="Publish" ID="SaveAndPublishButton" OnClick="SaveAndPublishButton_OnClick"></asp:LinkButton>
+                </span>
+            </span>
+        </span>
+    </h3>
     <h3>
         Toolbox<br/>
         <small>

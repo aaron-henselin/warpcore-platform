@@ -5,6 +5,8 @@
     <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
     <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 <script>
     var jQueryRestore = $;
 </script>
@@ -52,6 +54,20 @@
         margin: 0;
         font-weight: 300;
     }
+
+    
+    .tbx h3.save-header .button a { color: white;}
+    .tbx h3.save-header .button.last {
+        border-left: 1px solid white;
+    }
+    .tbx h3.save-header .button {
+        font-size: 10px;
+        color:white;
+       
+        padding: 5px;
+        margin-left: 2px;
+    }
+
     .wc-layout-handle h4{ 
         font-size: 12px;    
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
