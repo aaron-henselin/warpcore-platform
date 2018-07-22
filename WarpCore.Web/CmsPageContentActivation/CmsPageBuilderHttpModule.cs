@@ -104,7 +104,12 @@ namespace WarpCore.Web
             return (EditingContext)HttpContext.Current.Items[EditingContextVars.PageDesignContextKey];
         }
 
-        
+
+        public void CommitChanges()
+        {
+            var editing = GetEditingContext();
+
+        }
     }
 
     public class CmsPageBuilder
@@ -317,20 +322,20 @@ namespace WarpCore.Web
         public void ActivateAndPlaceInheritedContent(Page localPage)
         {
             localPage.MasterPageFile = "/App_Data/AdHocLayout.master";
-            if (_context.CmsPage.LayoutId != Guid.Empty)
+            if (_context.CmsPage.LayoutId == Guid.Empty)
+                return;
+
+            var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);
+            var structure = layoutRepository.GetLayoutStructure(layoutToApply);
+            var lns = FlattenLayoutTree(structure);
+
+            if (lns.Any())
             {
-                var layoutToApply = layoutRepository.GetById(_context.CmsPage.LayoutId);
-                var structure = layoutRepository.GetLayoutStructure(layoutToApply);
-                var lns = FlattenLayoutTree(structure);
+                localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
+            }
 
-                if (lns.Any())
-                {
-                    localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
-                }
-
-                foreach (var ln in lns)
-                    ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default);
-            } 
+            foreach (var ln in lns)
+                ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default);
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)

@@ -5,7 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Web;
 
 namespace DemoSite
 {
@@ -48,6 +50,23 @@ namespace DemoSite
             //}
 
             //toolboxUl.Controls.Add(div);
+        }
+
+        protected void BackToPageTreeLinkButton_OnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void SaveDraftButton_OnClick(object sender, EventArgs e)
+        {
+            var mgr = new EditingContextManager();
+            mgr.CommitChanges();
+            throw new NotImplementedException();
+        }
+
+        protected void SaveAndPublishButton_OnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

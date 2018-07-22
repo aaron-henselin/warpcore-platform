@@ -13,6 +13,33 @@ namespace DemoSite {
     public partial class Toolbox {
         
         /// <summary>
+        /// BackToPageTreeLinkButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton BackToPageTreeLinkButton;
+        
+        /// <summary>
+        /// SaveDraftButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton SaveDraftButton;
+        
+        /// <summary>
+        /// SaveAndPublishButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton SaveAndPublishButton;
+        
+        /// <summary>
         /// toolboxUl control.
         /// </summary>
         /// <remarks>
