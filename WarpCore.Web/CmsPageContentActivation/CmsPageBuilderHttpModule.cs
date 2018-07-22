@@ -45,6 +45,7 @@ namespace WarpCore.Web
         public List<CmsPageContent> SubContent { get; set; }
 
         public bool IsEditing => SubContent != null;
+        public Guid PageId { get; set; }
     }
 
     public struct EditingContextVars
@@ -78,7 +79,11 @@ namespace WarpCore.Web
 
         private EditingContext CreateEditingContext(CmsPage cmsPage)
         {
-            var raw = _js.Serialize(new EditingContext { SubContent = cmsPage.PageContent });
+            var raw = _js.Serialize(new EditingContext
+            {
+                PageId = cmsPage.ContentId.Value,
+                SubContent = cmsPage.PageContent
+            });
             return _js.Deserialize<EditingContext>(raw);
         }
 
@@ -105,11 +110,7 @@ namespace WarpCore.Web
         }
 
 
-        public void CommitChanges()
-        {
-            var editing = GetEditingContext();
 
-        }
     }
 
     public class CmsPageBuilder
@@ -310,9 +311,6 @@ namespace WarpCore.Web
                 {
                     page.Form.Controls.Add(new ProxiedScriptManager());
                     ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
-
-
-
                 };
             }
         }

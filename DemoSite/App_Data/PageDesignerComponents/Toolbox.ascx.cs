@@ -6,7 +6,9 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
+using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 
 namespace DemoSite
@@ -54,19 +56,36 @@ namespace DemoSite
 
         protected void BackToPageTreeLinkButton_OnClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Response.Redirect("/admin/pagetree");
         }
 
         protected void SaveDraftButton_OnClick(object sender, EventArgs e)
         {
-            var mgr = new EditingContextManager();
-            mgr.CommitChanges();
-            throw new NotImplementedException();
+            SaveChanges(false);
+            Response.Redirect("/admin/pagetree");
         }
 
         protected void SaveAndPublishButton_OnClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            SaveChanges(true);
+            Response.Redirect("/admin/pagetree");
         }
+
+        private static void SaveChanges(bool publish)
+        {
+            var mgr = new EditingContextManager();
+            var editingContext = mgr.GetEditingContext();
+
+            var pageRepository = new PageRepository();
+            var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.PageId), ContentEnvironment.Draft)
+                .Result.Single();
+            pageToUpdate.PageContent = editingContext.SubContent;
+
+            pageRepository.Save(pageToUpdate);
+            if (publish)
+                pageRepository.Publish(By.ContentId(editingContext.PageId));
+        }
+
+        
     }
 }

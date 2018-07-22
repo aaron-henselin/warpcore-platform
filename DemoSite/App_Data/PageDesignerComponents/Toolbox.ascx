@@ -7,14 +7,14 @@
         <span class="glyphicon glyphicon-wrench"></span>
     </div>
     <h3 class="save-header">
-        <span>
+        <span class="button-group">
         <span class="button">
             <span class="glyphicon glyphicon-arrow-left">
                 <asp:LinkButton runat="server" Text="Back" ID="BackToPageTreeLinkButton" OnClick="BackToPageTreeLinkButton_OnClick"></asp:LinkButton>
             </span>
             </span>
         </span>
-        <span class="pull-right">
+        <span class="button-group right">
             <span class="button">
                 <span class="glyphicon glyphicon-floppy-save">
                     <asp:LinkButton runat="server" Text="Save" ID="SaveDraftButton" OnClick="SaveDraftButton_OnClick"></asp:LinkButton>

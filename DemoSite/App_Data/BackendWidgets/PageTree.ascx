@@ -17,7 +17,7 @@
                     <small class="unpublished badge" runat="server" Visible="<%# !Item.IsPublished %>">Draft</small>
                     
                 </span>
-                <span class="pull-right">
+                <span class="pull-right pagetree-item-actions">
                     <a href="<%# Item.DesignUrl %>">
                         <span class=" glyphicon glyphicon-text-background"></span>
                         Design
@@ -48,6 +48,18 @@
         font-size: 10px;
         padding: 5px;
         top: 0px;
+    }
+
+    .pagetree-item-actions {
+        visibility: hidden;
+        opacity: .25;
+        transition: visibility 0s, opacity 0.5s linear;
+    }
+
+    .pagetree-item:hover
+    .pagetree-item-actions {
+        visibility: visible;
+        opacity: 1;
     }
     .pagetree-item-title {
         

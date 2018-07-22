@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using WarpCore.Web.Extensions;
 
 namespace DemoSite
 {
@@ -12,7 +13,7 @@ namespace DemoSite
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            
+
         }
     }
 }

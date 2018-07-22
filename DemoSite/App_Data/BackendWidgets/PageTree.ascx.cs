@@ -33,8 +33,10 @@ namespace DemoSite
             {
                 var isNewValueSelected = !string.IsNullOrEmpty(SiteSelectorDropDownList.SelectedValue);
                 if (isNewValueSelected)
-                    HttpContext.Current.Response.Redirect("?siteId=" +
-                                                          SiteSelectorDropDownList.SelectedValue);
+                    Response.Redirect("/admin/pagetree?siteId=" +
+                                      SiteSelectorDropDownList.SelectedValue);
+
+               
 
             };
 

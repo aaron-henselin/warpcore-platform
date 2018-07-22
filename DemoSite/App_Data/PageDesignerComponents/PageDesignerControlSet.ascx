@@ -47,15 +47,31 @@
         box-shadow: 10px 0px 15px 10px #585858;
     }*/
 
-    .tbx h3,.wc-configurator h3 {
-        background-color: #2E2E2E;
-        font-size: 1.9em;
-        padding: 20px;
-        margin: 0;
-        font-weight: 300;
+    .tbx h3 .button-group {
+        top: 0;
+        position: absolute;
+        
+    }
+
+    .tbx h3 .button-group.right {
+        right: 0;
     }
 
     
+
+    .tbx h3,.wc-configurator h3 {
+        background-color: #2E2E2E;
+        font-size: 1.9em;
+        padding: 5px;
+        margin: 0;
+        font-weight: 300;
+      
+    }
+
+    .tbx h3.save-header {
+        height: 40px;
+        border-bottom: 1px solid #fff;
+    }
     .tbx h3.save-header .button a { color: white;}
     .tbx h3.save-header .button.last {
         border-left: 1px solid white;

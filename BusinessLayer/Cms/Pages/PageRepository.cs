@@ -237,7 +237,7 @@ namespace WarpCore.Cms
                 newPageLocation = new CmsPageLocationNode();
             else
             {
-                CreateRouteHistory(page);
+                AppendToRouteHistory(page);
             }
 
             newPageLocation.ContentId = Guid.NewGuid();
@@ -267,20 +267,22 @@ namespace WarpCore.Cms
         }
 
 
-        private void CreateRouteHistory(CmsPage page)
+        private void AppendToRouteHistory(CmsPage page)
         {
             var site = new SiteRepository().GetById(page.SiteId);
             var sitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
             var previousLivePosition = sitemap.GetSitemapNode(page);
-            
-            var historicalRoute = new HistoricalRoute
+            if (previousLivePosition != null)
             {
-                Priority = (int) RoutePriority.Former,
-                VirtualPath = previousLivePosition.VirtualPath.ToString(),
-                PageId = page.ContentId.Value,
-                SiteId = page.SiteId,
-            };
-            Orm.Save(historicalRoute);
+                var historicalRoute = new HistoricalRoute
+                {
+                    Priority = (int) RoutePriority.Former,
+                    VirtualPath = previousLivePosition.VirtualPath.ToString(),
+                    PageId = page.ContentId.Value,
+                    SiteId = page.SiteId,
+                };
+                Orm.Save(historicalRoute);
+            }
         }
 
         public void Save(CmsPage cmsPage, PageRelativePosition pageRelativePosition)
