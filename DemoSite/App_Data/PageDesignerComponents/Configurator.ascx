@@ -1,4 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Configurator.ascx.cs" Inherits="DemoSite.Configurator1" %>
+<%@ Import Namespace="DemoSite" %>
+<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
 <div class="designer wc-configurator">
     <asp:UpdatePanel runat="server">
@@ -30,7 +32,11 @@
                 />
             </asp:PlaceHolder>
             <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
-            <div runat="server" ID="surface" class="surface">
+        
+            <div id="surface" runat="server">
+                <a:RuntimeContentPlaceHolder ID="ConfiguratorFormBuilderRuntimePlaceHolder" PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" runat="server">
+
+                </a:RuntimeContentPlaceHolder>
             </div>
 
         </ContentTemplate>

@@ -85,9 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
-    <Compile Include="Design\ControlDesigner.cs" />
+    <Compile Include="Widgets\FormBuilder\ConfiguratorTextBox.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="CmsPageContentActivation\CmsPageContentActivator.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -136,6 +135,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Design\" />
     <Folder Include="_EmbeddedResources\" />
   </ItemGroup>
   <PropertyGroup>

@@ -4,6 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Reflection;
+using System.Web.UI;
+using Cms;
+using Cms.Toolbox;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
@@ -11,6 +15,13 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
+    public interface IDesignable
+    {
+        Guid DesignForContentId { get; }
+
+        List<CmsPageContent> DesignedContent { get; }
+    }
+
     public struct PageType
     {
         public const string ContentPage = "ContentPage";
@@ -19,7 +30,7 @@ namespace WarpCore.Cms
     }
 
     [Table("cms_page")]
-    public class CmsPage : VersionedContentEntity
+    public class CmsPage : VersionedContentEntity, IDesignable
     {
 
 
@@ -56,6 +67,9 @@ namespace WarpCore.Cms
 
         [Column]
         public bool RequireSsl { get; set; }
+
+        public List<CmsPageContent> DesignedContent => PageContent;
+        public Guid DesignForContentId => ContentId.Value;
     }
 
     public enum RoutePriority
@@ -67,7 +81,7 @@ namespace WarpCore.Cms
 
     public interface IPageContent
     {
-        List<CmsPageContent> SubContent { get; } 
+        List<CmsPageContent> AllContent { get; } 
     }
 
     public class FoundSubContent
@@ -82,7 +96,7 @@ namespace WarpCore.Cms
         public static IReadOnlyCollection<FoundSubContent> FindSubContentReursive(this IPageContent pageContent, Func<CmsPageContent, bool> match)
         {
             List<FoundSubContent> foundContents = new List<FoundSubContent>();
-            foreach (var originalItem in pageContent.SubContent)
+            foreach (var originalItem in pageContent.AllContent)
             {
                 if (match(originalItem))
                     foundContents.Add(new FoundSubContent{ParentContent = pageContent,LocatedContent = originalItem});
@@ -95,22 +109,50 @@ namespace WarpCore.Cms
 
         public static void RemoveSubContentReursive(this IPageContent pageContent, Func<CmsPageContent, bool> match)
         {
-            var originalItems = pageContent.SubContent.ToList();
+            var originalItems = pageContent.AllContent.ToList();
             foreach (var originalItem in originalItems)
             {
                 if (match(originalItem))
-                    pageContent.SubContent.Remove(originalItem);
+                    pageContent.AllContent.Remove(originalItem);
             }
 
-            foreach (var remainingSubContentItem in pageContent.SubContent)
+            foreach (var remainingSubContentItem in pageContent.AllContent)
                 RemoveSubContentReursive(remainingSubContentItem,match);
         }
     }
 
+    public class CmsPageContentFactory
+    {
+        public CmsPageContent CreateToolboxItemContent<T>(T activated=null) where T : Control
+        {
+            var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(typeof(T));
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);
+
+            IDictionary<string, string> settings;
+            
+            if(activated != null)
+                settings = CmsPageContentActivator.GetContentParameterValues(activated);
+            else
+                settings = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
+
+            return new CmsPageContent(toolboxItem, settings);
+        }
+    }
 
 
     public class CmsPageContent : IPageContent
     {
+        public CmsPageContent()
+        {
+        }
+
+        public CmsPageContent(ToolboxItem toolboxItem, IDictionary<string,string> settings)
+        {
+            Id = Guid.NewGuid();
+            WidgetTypeCode = toolboxItem.WidgetUid;
+            Parameters = settings.ToDictionary(x => x.Key,x => x.Value);
+        }
+
         [Column]
         public Guid Id { get; set; }
 
@@ -130,7 +172,7 @@ namespace WarpCore.Cms
         public Dictionary<string,string> Parameters { get; set; }
 
         [StoreAsComplexData]
-        public List<CmsPageContent> SubContent { get; set; } = new List<CmsPageContent>();
+        public List<CmsPageContent> AllContent { get; set; } = new List<CmsPageContent>();
 
 
 

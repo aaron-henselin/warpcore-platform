@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
+using Cms.Toolbox;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -17,41 +18,36 @@ using WarpCore.Web.Extensions;
 
 
 [assembly: PreApplicationStartMethod(typeof(WebBootstrapper), nameof(WebBootstrapper.PreInitialize))]
+
 namespace WarpCore.Web
 {
-    public class SettingAttribute : Attribute
-    {
-    }
+ 
 
-    public class IncludeInToolboxAttribute:Attribute
-    {
-        public string WidgetUid { get; set; }
-
-        public string FriendlyName { get; set; }
-    }
 
     public static class WebBootstrapper
     {
         public static void BuildUpToolbox()
         {
             var allTypes = typeof(WebBootstrapper).Assembly.GetTypes();
-            var toIncludeInToolbox = allTypes.Where(x => x.GetCustomAttributes<IncludeInToolboxAttribute>().Any());
+            var toIncludeInToolbox = allTypes
+                                        .Select(ToolboxMetadataReader.ReadMetadata)
+                                        .Where(x => x != null);
 
             var mgr = new ToolboxManager();
             var alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
-            foreach (var typeToInclude in toIncludeInToolbox)
+            foreach (var discoveredToolboxItem in toIncludeInToolbox)
             {
-                var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
+                //var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
 
                 ToolboxItem widget;
-                if (alreadyInToolbox.ContainsKey(includeInToolboxAtr.WidgetUid))
-                    widget = alreadyInToolbox[includeInToolboxAtr.WidgetUid];
+                if (alreadyInToolbox.ContainsKey(discoveredToolboxItem.WidgetUid))
+                    widget = alreadyInToolbox[discoveredToolboxItem.WidgetUid];
                 else
                     widget = new ToolboxItem();
 
-                widget.WidgetUid = includeInToolboxAtr.WidgetUid;
-                widget.FriendlyName = includeInToolboxAtr.FriendlyName;
-                widget.FullyQualifiedTypeName = typeToInclude.AssemblyQualifiedName;
+                widget.WidgetUid = discoveredToolboxItem.WidgetUid;
+                widget.FriendlyName = discoveredToolboxItem.FriendlyName;
+                widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
                 mgr.Save(widget);
             }
 

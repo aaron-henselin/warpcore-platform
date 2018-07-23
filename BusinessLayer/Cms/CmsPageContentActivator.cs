@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Web.Compilation;
 using System.Web.UI;
+using Cms.Toolbox;
 using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 
-namespace WarpCore.Web
+namespace Cms
 {
 
 
@@ -23,7 +23,7 @@ namespace WarpCore.Web
 
         public static Control ActivateControl(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
         {
-            var toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
+            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
             var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
             SetContentParameterValues(activatedWidget, parameters);
 
