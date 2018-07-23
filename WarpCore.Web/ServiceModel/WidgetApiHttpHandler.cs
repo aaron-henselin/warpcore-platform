@@ -140,7 +140,7 @@ namespace WarpCore.Web.ServiceModel
         {
             var contentToMoveSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.PageContentId).SingleOrDefault();
             var contentToMove = contentToMoveSearch.LocatedContent;
-            var previousParentCollection = contentToMoveSearch.ParentContent.SubContent;
+            var previousParentCollection = contentToMoveSearch.ParentContent.AllContent;
 
             previousParentCollection.Remove(contentToMove);
 
@@ -148,11 +148,11 @@ namespace WarpCore.Web.ServiceModel
             if (moveCommand.ToLayoutBuilderId != null)
             {
                 var newParentSearch = editingContext.FindSubContentReursive(x => x.Id == moveCommand.ToLayoutBuilderId).Single();
-                insertInCollection = newParentSearch.LocatedContent.SubContent;
+                insertInCollection = newParentSearch.LocatedContent.AllContent;
             }
             else
             {
-                insertInCollection = editingContext.SubContent;
+                insertInCollection = editingContext.AllContent;
             }
 
             int insertLocation = 0;

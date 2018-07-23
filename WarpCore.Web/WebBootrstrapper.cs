@@ -48,7 +48,7 @@ namespace WarpCore.Web
 
                 widget.WidgetUid = discoveredToolboxItem.WidgetUid;
                 widget.FriendlyName = discoveredToolboxItem.FriendlyName;
-                widget.FullyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedName;
+                widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
                 widget.Category = discoveredToolboxItem.Category;
                 mgr.Save(widget);
             }

@@ -17,12 +17,14 @@ namespace Cms.Toolbox
         public string WidgetUid { get; set; }
 
         public string FriendlyName { get; set; }
+        public string Category { get; set; }
     }
     public class ToolboxMetadata
     {
         public string WidgetUid { get; set; }
         public string FriendlyName { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
+        public string Category { get; set; }
     }
 
     internal class AttributeBasedToolboxMetadataReader : IToolboxMetadataReader
@@ -37,7 +39,8 @@ namespace Cms.Toolbox
             {
                 WidgetUid = includeInToolboxAtr.WidgetUid,
                 FriendlyName = includeInToolboxAtr.FriendlyName,
-                AssemblyQualifiedTypeName = type.AssemblyQualifiedName
+                AssemblyQualifiedTypeName = type.AssemblyQualifiedName,
+                Category = includeInToolboxAtr.Category
             };
         }
     }
