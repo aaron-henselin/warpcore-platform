@@ -28,6 +28,8 @@ namespace WarpCore.Web
         public string WidgetUid { get; set; }
 
         public string FriendlyName { get; set; }
+
+        public string Category { get; set; }
     }
 
     public static class WebBootstrapper
@@ -52,6 +54,7 @@ namespace WarpCore.Web
                 widget.WidgetUid = includeInToolboxAtr.WidgetUid;
                 widget.FriendlyName = includeInToolboxAtr.FriendlyName;
                 widget.FullyQualifiedTypeName = typeToInclude.AssemblyQualifiedName;
+                widget.Category = includeInToolboxAtr.Category;
                 mgr.Save(widget);
             }
 

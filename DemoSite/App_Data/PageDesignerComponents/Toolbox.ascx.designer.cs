@@ -40,6 +40,15 @@ namespace DemoSite {
         protected global::System.Web.UI.WebControls.LinkButton SaveAndPublishButton;
         
         /// <summary>
+        /// ToolboxCategorySelector control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ToolboxCategorySelector;
+        
+        /// <summary>
         /// toolboxUl control.
         /// </summary>
         /// <remarks>

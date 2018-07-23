@@ -40,6 +40,9 @@ namespace DemoSite
                 FriendlyName = x.FriendlyName,
                 WidgetTypeCode = x.WidgetUid
             }).ToList();
+            var allCategories = allWidgets.Select(x => x.Category).Distinct();
+            foreach (var category in allCategories)
+                ToolboxCategorySelector.Items.Add(category);
 
             //foreach (var widget in allWidgets)
             //{

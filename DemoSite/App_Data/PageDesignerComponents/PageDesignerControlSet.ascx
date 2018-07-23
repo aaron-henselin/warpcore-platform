@@ -20,11 +20,17 @@
 </script>
 
 <style>
-    .tbx .toolbox-item {
-        border-top: 1px dotted #3c3c3c;
-        cursor: move;
-        padding: 5px;
+    .tbx select {
+        background-color: #2E2E2E;
+        border: 0;
+        width: 100%;
+        font-size: 18px;
     }
+     .tbx .toolbox-item {
+         border-top: 1px dotted #3c3c3c;
+         cursor: move;
+         padding: 5px;
+     }
     .wc-configurator{ color: #fff; background-color: #fff;}
     .wc-configurator .surface{ color: #000; background-color: #fff;}
 
@@ -71,6 +77,7 @@
     .tbx h3.save-header {
         height: 40px;
         border-bottom: 1px solid #fff;
+        filter: drop-shadow(0px 0px 10px rgba(0,0,0,.8));
     }
     .tbx h3.save-header .button a { color: white;}
     .tbx h3.save-header .button.last {

@@ -3,7 +3,7 @@ using System.Web.UI.WebControls;
 
 namespace WarpCore.Web.Widgets
 {
-    [IncludeInToolbox(WidgetUid = "WC/RowLayout", FriendlyName = "Row (Bootstrap)")]
+    [IncludeInToolbox(WidgetUid = "WC/RowLayout", FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : LayoutControl
     {
         [Setting]

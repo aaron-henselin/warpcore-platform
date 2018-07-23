@@ -13,7 +13,6 @@ namespace WarpCore.Cms.Toolbox
     [Table("cms_toolbox_item")]
     public class ToolboxItem : UnversionedContentEntity
     {
-        public Guid SectionId { get; set; }
         public string WidgetUid { get; set; }
         public string Description { get; set; }
         public string FullyQualifiedTypeName { get; set; }
