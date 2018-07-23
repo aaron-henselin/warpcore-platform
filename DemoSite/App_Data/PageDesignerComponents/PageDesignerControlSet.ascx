@@ -12,7 +12,7 @@
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
-<script src="Scripts/jquery.slidereveal.min.js"></script>
+<script src="/Scripts/jquery.slidereveal.min.js"></script>
 <script>
     var warpcore = {};
     warpcore.jQuery = jQuery.noConflict();

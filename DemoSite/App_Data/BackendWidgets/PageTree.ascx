@@ -4,9 +4,10 @@
 <h2>Page Tree</h2>
 <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
 <asp:DropDownList runat="server" ID="SiteSelectorDropDownList" AutoPostBack="True"/>
-<div runat="server" class="pagetree" ID="PageTreeWrapper">
+
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
+            <div runat="server" class="pagetree" ID="PageTreeWrapper">
             <asp:Repeater runat="server" ID="PageTreeItemRepeater" ItemType="DemoSite.PageTreeItem">
                 <ItemTemplate>
                     <asp:PlaceHolder runat="server" runat="server" Visible="<%# Item.Visible %>">
@@ -55,11 +56,11 @@
                   
                 </ItemTemplate>
             </asp:Repeater>
-
+            </div>
         </ContentTemplate>
     </asp:UpdatePanel>
 
-</div>
+
 <style>
     .unpublished.badge{ font-size: 10px;right:0}
     .homepage-icon {
@@ -103,21 +104,29 @@
 
 </style>
 <script>
+    var pagetree = {};
+    pagetree.init = function() {
+        var containers = document.querySelectorAll('.pagetree');
+        [].forEach.call(containers, function (el) {
 
-    const containers = document.querySelectorAll('.pagetree');
-    [].forEach.call(containers, function (el) {
+            var alreadyInit = jQuery(el).attr("pagetree-init");
+            if (alreadyInit)
+                return;
 
+            jQuery(el).attr("pagetree-init","true");
 
-        Sortable.create(el, {
-            pull: true,
-            put: true,
-            sort:true,
-            group: 'photo',
-            animation: 150,
-            draggable: ".pagetree-item", // Specifies which items inside the element should be sortable
+            Sortable.create(el, {
+                pull: true,
+                put: true,
+                sort:true,
+                group: 'photo',
+                animation: 150,
+                draggable: ".pagetree-item" // Specifies which items inside the element should be sortable
 
+            });
         });
-    });
+    }
+
 
 
 </script>

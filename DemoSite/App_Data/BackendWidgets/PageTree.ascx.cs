@@ -9,6 +9,8 @@ using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Web.Extensions;
+using WarpCore.Web.Scripting;
 
 namespace DemoSite
 {
@@ -130,6 +132,8 @@ namespace DemoSite
         {
             PageTreeItemRepeater.DataSource = _controlState.PageTreeItems;
             PageTreeWrapper.DataBind();
+
+            
         }
 
         private void FlattenPageTree(SitemapNode sitemapNode, List<PageTreeItem> nodes, int depth, SitemapNode parentNode= null)
@@ -172,6 +176,14 @@ namespace DemoSite
 
             foreach (var childItem in childItems)
                 childItem.Visible = item.IsExpanded;
+        }
+
+        public override void DataBind()
+        {
+            base.DataBind();
+
+            ControlExtensions.RegisterDescendentAsyncPostBackControl(PageTreeWrapper);
+            ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(this.Page, "pagetree.init();");
         }
     }
 }
