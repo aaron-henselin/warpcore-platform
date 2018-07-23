@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
+using Cms.Toolbox;
 
 namespace WarpCore.Web.Widgets
 {
+    public class RuntimeContentPlaceHolder : Control
+    {
+        public string PlaceHolderId { get; set; }
+    }
+
     [IncludeInToolbox(WidgetUid = "WC/RowLayout", FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : LayoutControl
     {

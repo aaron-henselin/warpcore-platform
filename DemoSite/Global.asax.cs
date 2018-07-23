@@ -140,8 +140,8 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { ["AdHocHtml"] = "Hello World (1)" }
             };
 
-            row.SubContent.Add(helloWorld0);
-            row.SubContent.Add(helloWorld1);
+            row.AllContent.Add(helloWorld0);
+            row.AllContent.Add(helloWorld1);
 
             homePage.PageContent.Add(row);
 

@@ -8,6 +8,8 @@ using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Cms;
+using Cms.Forms;
 using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -42,10 +44,10 @@ namespace WarpCore.Web
     
     public class EditingContext : IPageContent
     {
-        public List<CmsPageContent> SubContent { get; set; }
+        public List<CmsPageContent> AllContent { get; set; }
 
-        public bool IsEditing => SubContent != null;
-        public Guid PageId { get; set; }
+        public bool IsEditing => AllContent != null;
+        public Guid DesignForContentId { get; set; }
     }
 
     public struct EditingContextVars
@@ -77,17 +79,20 @@ namespace WarpCore.Web
 
         }
 
-        private EditingContext CreateEditingContext(CmsPage cmsPage)
+
+
+        private EditingContext CreateEditingContext(IDesignable cmsPage)
         {
-            var raw = _js.Serialize(new EditingContext
+            var ec = new EditingContext
             {
-                PageId = cmsPage.ContentId.Value,
-                SubContent = cmsPage.PageContent
-            });
+                DesignForContentId = cmsPage.DesignForContentId,
+                AllContent = cmsPage.DesignedContent
+            };
+            var raw = _js.Serialize(ec);
             return _js.Deserialize<EditingContext>(raw);
         }
 
-        public EditingContext GetOrCreateEditingContext(CmsPage cmsPage)
+        public EditingContext GetOrCreateEditingContext(IDesignable cmsPage)
         {
             var pageDesignHasNotStarted =
                 HttpContext.Current.Request[EditingContextVars.SerializedPageDesignStateKey] == null;
@@ -129,7 +134,7 @@ namespace WarpCore.Web
         }
 
 
-        public IReadOnlyCollection<Control> ActivateAndPlaceContent(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm)
+        public IReadOnlyCollection<Control> ActivateAndPlaceContent(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm, Control placementSearchContext)
         {
             List<Control> activatedControls = new List<Control>();
 
@@ -145,7 +150,7 @@ namespace WarpCore.Web
                 }
 
 
-                var placementPlaceHolder = FindPlacementLocation(page, content);
+                var placementPlaceHolder = FindPlacementLocation(page, content,placementSearchContext);
                 if (placementPlaceHolder == null)
                     continue;
 
@@ -170,9 +175,9 @@ namespace WarpCore.Web
                 activatedControls.Add(activatedWidget);
 
                 var newlyGeneratedPlaceholders = layoutWidget?.GetDescendantControls<ContentPlaceHolder>();
-                if (content.SubContent.Any())
+                if (content.AllContent.Any())
                 {
-                    var subCollection = ActivateAndPlaceContent(page, content.SubContent, vm);
+                    var subCollection = ActivateAndPlaceContent(page, content.AllContent, vm,placementSearchContext);
                     activatedControls.AddRange(subCollection);
                 }
 
@@ -194,7 +199,7 @@ namespace WarpCore.Web
             return activatedControls;
         }
 
-        private static void AddLayoutHandle(ContentPlaceHolder ph, CmsPageContent content)
+        private static void AddLayoutHandle(Control ph, CmsPageContent content)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
             var ascx = BuildManager.GetCompiledType("/App_Data/PageDesignerComponents/LayoutHandle.ascx");
@@ -205,9 +210,11 @@ namespace WarpCore.Web
             ph.Controls.Add((Control)uc);
         }
 
-        private static ContentPlaceHolder FindPlacementLocation(Page page, CmsPageContent content)
+        private static Control FindPlacementLocation(Page page, CmsPageContent content, Control searchContext)
         {
-            Control searchContext = page.Master;
+            if (searchContext == null)
+                searchContext = page.Master;
+
             if (content.PlacementLayoutBuilderId != null)
             {
                 var layoutControls = searchContext.GetDescendantControls<LayoutControl>().ToList();
@@ -218,10 +225,19 @@ namespace WarpCore.Web
                     searchContext = subLayout;
             }
 
-            var ph = searchContext.GetDescendantControls<ContentPlaceHolder>()
+            Control ph;
+
+             ph = searchContext.GetDescendantControls<ContentPlaceHolder>()
                 .FirstOrDefault(x => x.ID == content.PlacementContentPlaceHolderId); //need first because of nested layouts. this can go back to single when I'm not sleepy.
+
+            if (ph == null)
+                ph = searchContext.GetDescendantControls<RuntimeContentPlaceHolder>()
+                    .FirstOrDefault(x =>
+                    x.PlaceHolderId == content.PlacementContentPlaceHolderId);
+
             if (ph == null)
                 ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+
             if (ph == null)
                 ph = page.Master.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
             return ph;
@@ -290,12 +306,12 @@ namespace WarpCore.Web
                 var context = editing.GetOrCreateEditingContext(_context.CmsPage);
                 editing.EnableEditingCommands(page);
                 //editing.ProcessEditingCommands(context);
-                allContent = context.SubContent;
+                allContent = context.AllContent;
             }
 
             var leaves = IdentifyLeaves(page);
 
-            ActivateAndPlaceContent(page, allContent, _context.ViewMode);
+            ActivateAndPlaceContent(page, allContent, _context.ViewMode,null);
 
             foreach (var leaf in leaves)
                 leaf.Controls.AddAt(0,new DropTarget(leaf,DropTargetDirective.Begin));
@@ -333,7 +349,7 @@ namespace WarpCore.Web
             }
 
             foreach (var ln in lns)
-                ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default);
+                ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default,null);
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)

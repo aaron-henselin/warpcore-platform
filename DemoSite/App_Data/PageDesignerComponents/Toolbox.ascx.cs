@@ -80,13 +80,13 @@ namespace DemoSite
             var editingContext = mgr.GetEditingContext();
 
             var pageRepository = new PageRepository();
-            var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.PageId), ContentEnvironment.Draft)
+            var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
                 .Result.Single();
-            pageToUpdate.PageContent = editingContext.SubContent;
+            pageToUpdate.PageContent = editingContext.AllContent;
 
             pageRepository.Save(pageToUpdate);
             if (publish)
-                pageRepository.Publish(By.ContentId(editingContext.PageId));
+                pageRepository.Publish(By.ContentId(editingContext.DesignForContentId));
         }
 
         

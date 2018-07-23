@@ -8,38 +8,64 @@ using System.Web.Compilation;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
+using Cms;
+using Cms.Forms;
+using Cms.Toolbox;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
+using WarpCore.Web.Widgets;
 
 namespace DemoSite
 {
-    public class ConfiguratorTextBox : PlaceHolder
+
+
+    public class ConfiguratorFormBuilder
     {
-        private TextBox _tbx = new TextBox { AutoPostBack = true,CssClass = "form-control"};
-        public string PropertyName { get; set; }
-        public string DisplayName { get; set; }
+        public const string RuntimePlaceHolderId = "FormBody";
 
-        public string Value
+        private static Guid ToGuid(int value)
         {
-            get { return _tbx.Text; }
-            set { _tbx.Text = value; }
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes, 0);
+            return new Guid(bytes);
         }
 
-        protected override void OnInit(EventArgs e)
+        public static CmsForm GenerateDefaultFormForWidget(ToolboxItem toolboxItem)
         {
-            base.OnInit(e);
+            var cmsForm = new CmsForm();
 
-            ID = PropertyName;
+            var factory = new CmsPageContentFactory();
+            var rowLayout = factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1});
+            rowLayout.Id = ToGuid(1);
+            rowLayout.PlacementContentPlaceHolderId = RuntimePlaceHolderId;
+            cmsForm.FormContent.Add(rowLayout);
+           
 
-            this.Controls.Add(new Label { Text = DisplayName });
-            _tbx.ID = PropertyName + "_TextBox";
-            this.Controls.Add(_tbx);
+            var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+            foreach (var property in clrType.GetProperties())
+            {
+                var displayNameDefinition = (DisplayNameAttribute) property.GetCustomAttribute(typeof(DisplayNameAttribute));
+                var settingDefinition = (SettingAttribute) property.GetCustomAttribute(typeof(SettingAttribute));
+                if (settingDefinition == null)
+                    continue;
+
+                var textboxPageContent=
+                        factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                        {
+                            PropertyName = property.Name,
+                            DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
+                        });
+
+                textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
+                rowLayout.AllContent.Add(textboxPageContent);
+        
+            }
+
+            return cmsForm;
         }
-
-
     }
 
     public class ConfiguratorContext
@@ -102,43 +128,21 @@ namespace DemoSite
 
         private void RebuildDesignSurface()
         {
-            surface.Controls.Clear();
+            ConfiguratorFormBuilderRuntimePlaceHolder.DataBind();
+            ConfiguratorFormBuilderRuntimePlaceHolder.Controls.Clear();
+
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
-            var _toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
             var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
 
-
-
-
-            foreach (var property in _toolboxItemType.GetProperties())
-            {
-
-
-                var displayNameDefinition = (DisplayNameAttribute) property.GetCustomAttribute(typeof(DisplayNameAttribute));
-                var settingDefinition = (SettingAttribute) property.GetCustomAttribute(typeof(SettingAttribute));
-                if (settingDefinition != null)
-                {
-                    var wrapper = new HtmlGenericControl("div");
-                    wrapper.Attributes["class"] = "form-group";
-
-                    var textbox = new ConfiguratorTextBox
-                    {
-                        PropertyName = property.Name,
-                        DisplayName = property.Name,
-                    };
-
-                    if (displayNameDefinition != null)
-                        textbox.DisplayName = displayNameDefinition.DisplayName;
-
-                   
-                        textbox.Value = parametersAfterActivation[property.Name];
-
-                    wrapper.Controls.Add(textbox);
-                    surface.Controls.Add(wrapper);
-                }
-            }
+            var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
+            Dependency.Resolve<CmsPageBuilder>()
+                .ActivateAndPlaceContent(this.Page, cmsForm.DesignedContent, ViewMode.Default,surface);
+            
+            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
+                tbx.Value = parametersAfterActivation[tbx.PropertyName];
+            
         }
 
         protected override void OnPreRender(EventArgs e)

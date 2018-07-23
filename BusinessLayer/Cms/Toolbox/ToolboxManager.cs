@@ -15,7 +15,7 @@ namespace WarpCore.Cms.Toolbox
     {
         public string WidgetUid { get; set; }
         public string Description { get; set; }
-        public string FullyQualifiedTypeName { get; set; }
+        public string AssemblyQualifiedTypeName { get; set; }
         public string AscxPath { get; set; }
         public string Category { get; set; }
 
@@ -33,10 +33,10 @@ namespace WarpCore.Cms.Toolbox
             return toolboxResult.Single();
         }
 
-        public static Type ResolveToolboxItemType(ToolboxItem toolboxItem)
+        public static Type ResolveToolboxItemClrType(ToolboxItem toolboxItem)
         {
-            if (!string.IsNullOrWhiteSpace(toolboxItem.FullyQualifiedTypeName))
-                return Type.GetType(toolboxItem.FullyQualifiedTypeName);
+            if (!string.IsNullOrWhiteSpace(toolboxItem.AssemblyQualifiedTypeName))
+                return Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
 
             return BuildManager.GetCompiledType(toolboxItem.AscxPath);
         }

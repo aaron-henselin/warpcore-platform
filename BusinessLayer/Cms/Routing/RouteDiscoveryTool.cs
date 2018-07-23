@@ -61,7 +61,7 @@ namespace WarpCore.Cms
                 var toolboxManager = new ToolboxManager();
                 var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
 
-                var toolboxItemType = ToolboxManager.ResolveToolboxItemType(toolboxItem);
+                var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
                 var contentRouteAttributes = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
 
                 foreach (var contentRouteAttribute in contentRouteAttributes)

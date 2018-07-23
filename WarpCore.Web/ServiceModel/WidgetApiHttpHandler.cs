@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.ModelBinding;
 using System.Web.Script.Serialization;
+using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Web.Widgets;
@@ -88,7 +89,7 @@ namespace WarpCore.Web.ServiceModel
             if (contentToMoveSearch == null)
                 throw new Exception("component not found.");
 
-            contentToMoveSearch.ParentContent.SubContent.Remove(contentToMoveSearch.LocatedContent);
+            contentToMoveSearch.ParentContent.AllContent.Remove(contentToMoveSearch.LocatedContent);
         }
 
         private void ProcessAddCommand(EditingContext editingContext, AddCommand addCommand)
@@ -125,13 +126,13 @@ namespace WarpCore.Web.ServiceModel
 
                 //todo: ordering.
 
-                newParentSearch.LocatedContent.SubContent.Add(newContent);
+                newParentSearch.LocatedContent.AllContent.Add(newContent);
             }
             else
             {
                 //todo: ordering.
 
-                editingContext.SubContent.Add(newContent);
+                editingContext.AllContent.Add(newContent);
             }
         }
 
