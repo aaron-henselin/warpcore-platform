@@ -64,6 +64,21 @@ namespace DemoSite
             foreach (var site in allSites)
                 SiteSelectorDropDownList.Items.Add(new ListItem(site.Name,site.ContentId.Value.ToString()));
 
+            var selectedSite = ResolveSelectedSite();
+
+
+            if (!Page.IsPostBack)
+            {
+                RebuildControlState(selectedSite);
+                DataBind();
+            }
+        }
+
+        private Site ResolveSelectedSite()
+        {
+            var siteRepository = new SiteRepository();
+            var allSites = siteRepository.Find();
+
             Guid siteId = Guid.Empty;
             var siteToManageRaw = Request["siteId"];
             if (!string.IsNullOrWhiteSpace(siteToManageRaw))
@@ -71,22 +86,13 @@ namespace DemoSite
             else if (allSites.Any())
                 siteId = allSites.First().ContentId.Value;
 
-            if (siteId == Guid.Empty)
-                return;
-
-
-
-            if (!Page.IsPostBack)
-            {
-                RebuildControlState(allSites, siteId);
-                OnControlStateAvailable();
-            }
+            return allSites.Single(x => x.ContentId == siteId);
         }
 
         protected override void LoadControlState(object savedState)
         {
             _controlState = (PageTreeControlState) savedState;
-            OnControlStateAvailable();
+            DataBind();
         }
 
         protected override object SaveControlState()
@@ -94,9 +100,9 @@ namespace DemoSite
             return _controlState;
         }
 
-        private void RebuildControlState(IReadOnlyCollection<Site> allSites, Guid siteId)
+        private void RebuildControlState(Site matchedSite)
         {
-            var matchedSite = allSites.Single(x => x.ContentId == siteId);
+            
             var draftSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft);
             var liveSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Live);
 
@@ -128,12 +134,10 @@ namespace DemoSite
             }
         }
 
-        private void OnControlStateAvailable()
+        protected override void OnDataBinding(EventArgs e)
         {
             PageTreeItemRepeater.DataSource = _controlState.PageTreeItems;
             PageTreeWrapper.DataBind();
-
-            
         }
 
         private void FlattenPageTree(SitemapNode sitemapNode, List<PageTreeItem> nodes, int depth, SitemapNode parentNode= null)
@@ -181,9 +185,22 @@ namespace DemoSite
         public override void DataBind()
         {
             base.DataBind();
-
+      
             ControlExtensions.RegisterDescendentAsyncPostBackControl(PageTreeWrapper);
             ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(this.Page, "pagetree.init();");
+        }
+
+        protected void PublishLinkButton_OnClick(object sender, EventArgs e)
+        {
+            var lb = (LinkButton) sender;
+            var contentId = new Guid(lb.CommandArgument);
+            var pageRepository = new PageRepository();
+            pageRepository.Publish(By.ContentId(contentId));
+
+            var selectedSite = ResolveSelectedSite();
+            RebuildControlState(selectedSite);
+            DataBind();
+
         }
     }
 }

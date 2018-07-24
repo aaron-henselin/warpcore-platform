@@ -38,10 +38,13 @@
                                 <span class=" glyphicon glyphicon-text-background"></span>
                                 Design
                             </a>
-                            <a href="javascript:void(0);">
+                            <asp:LinkButton runat="server"
+                                ID="PublishLinkButton"
+                                CommandArgument="<%# Item.PageId %>"
+                                OnClick="PublishLinkButton_OnClick">
                                 <span class="glyphicon glyphicon-send"></span>
-                                Publish
-                            </a>
+                                Publish                                
+                            </asp:LinkButton>
                             <a href="javascript:void(0);">
                                 <span class="glyphicon glyphicon glyphicon-tasks"></span>
                                 Settings
