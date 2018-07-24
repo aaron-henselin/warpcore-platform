@@ -1,0 +1,7 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" MasterPageFile="BackendPage.Master" CodeBehind="FormDesigner.master.cs" Inherits="DemoSite.FormDesigner" %>
+
+<asp:Content runat="server" ContentPlaceHolderID="Body">
+    <asp:ContentPlaceHolder runat="server" ID="FormBody">
+        
+    </asp:ContentPlaceHolder>
+</asp:Content>

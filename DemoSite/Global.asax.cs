@@ -49,12 +49,15 @@ namespace DemoSite
             {
                 MasterPagePath = "/App_Data/BackendPage.Master"
             };
-
+            var formDesignerLayout = new Layout
+            {
+                MasterPagePath = "/App_Data/FormDesigner.Master"
+            };
 
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(backendLayout);
+            layoutRepository.Save(formDesignerLayout);
 
-     
             var siteRepo = new SiteRepository();
             var backendSite = new Site
             {
@@ -62,6 +65,14 @@ namespace DemoSite
                 RoutePrefix = "Admin"
             };
             siteRepo.Save(backendSite);
+
+
+            var formDesigner = new CmsPage
+            {
+                Name = "formDesigner",
+                SiteId = backendSite.ContentId.Value,
+                LayoutId = formDesignerLayout.ContentId.Value
+            };
 
 
             var pageTree = new CmsPage
@@ -79,6 +90,7 @@ namespace DemoSite
 
             var pageRepo = new PageRepository();
             pageRepo.Save(pageTree);
+            pageRepo.Save(formDesigner);
 
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);

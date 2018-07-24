@@ -60,6 +60,18 @@ namespace WarpCore.Web.Extensions
                 }
         }
 
+        public static Control GetPageRoot(this Page pageActual)
+        {
+            MasterPage topLevelMaster = pageActual.Master;
+            if (topLevelMaster == null)
+                return pageActual;
+
+            while (topLevelMaster.Master != null)
+                topLevelMaster = topLevelMaster.Master;
+
+            return topLevelMaster;
+        }
+
         public static IEnumerable<T> GetAnscestorControls<T>(this Control childControl) where T : Control
         {
             while (childControl.Parent != null)

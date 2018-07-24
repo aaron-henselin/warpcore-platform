@@ -10,7 +10,7 @@ using WarpCore.DbEngines.AzureStorage;
 namespace Cms.Forms
 {
     [Table("cms_form")]
-    public class CmsForm : VersionedContentEntity, IDesignable
+    public class CmsForm : VersionedContentEntity, IHasDesignedLayout
     {
         [Column]
         public string Name { get; set; }

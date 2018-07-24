@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
 
 namespace DemoSite
 {
     [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox")]
-    public class ConfiguratorTextBox : PlaceHolder
+    public class ConfiguratorTextBox : PlaceHolder, INamingContainer
     {
         private TextBox _tbx = new TextBox { AutoPostBack = true,CssClass = "form-control"};
 

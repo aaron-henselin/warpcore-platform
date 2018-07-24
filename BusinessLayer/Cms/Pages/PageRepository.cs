@@ -15,12 +15,13 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms
 {
-    public interface IDesignable
+    public interface IHasDesignedLayout
     {
         Guid DesignForContentId { get; }
 
         List<CmsPageContent> DesignedContent { get; }
     }
+
 
     public struct PageType
     {
@@ -28,12 +29,10 @@ namespace WarpCore.Cms
         public const string GroupingPage = "GroupingPage";
         public const string RedirectPage = "RedirectPage";
     }
-
+    
     [Table("cms_page")]
-    public class CmsPage : VersionedContentEntity, IDesignable
+    public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
-
-
 
         [Column]
         public string Name { get; set; }

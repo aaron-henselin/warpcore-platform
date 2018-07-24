@@ -70,18 +70,10 @@ namespace WarpCore.Web
             _js = new JavaScriptSerializer();
         }
 
-        public void EnableEditingCommands(Page page)
-        {
-            page.PreRender += (sender, args) =>
-            {
-
-            };
-
-        }
 
 
 
-        private EditingContext CreateEditingContext(IDesignable cmsPage)
+        private EditingContext CreateEditingContext(IHasDesignedLayout cmsPage)
         {
             var ec = new EditingContext
             {
@@ -92,7 +84,7 @@ namespace WarpCore.Web
             return _js.Deserialize<EditingContext>(raw);
         }
 
-        public EditingContext GetOrCreateEditingContext(IDesignable cmsPage)
+        public EditingContext GetOrCreateEditingContext(IHasDesignedLayout cmsPage)
         {
             var pageDesignHasNotStarted =
                 HttpContext.Current.Request[EditingContextVars.SerializedPageDesignStateKey] == null;
@@ -275,10 +267,10 @@ namespace WarpCore.Web
             public Guid? BeforePageContentId { get; set; }
         }
 
-        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLeaves(Page page)
+        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Page page)
         {
             List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
-            var allPhs = page.Master.GetDescendantControls<ContentPlaceHolder>();
+            var allPhs = page.GetPageRoot().GetDescendantControls<ContentPlaceHolder>();
 
             foreach (var ph in allPhs)
             {
@@ -293,36 +285,19 @@ namespace WarpCore.Web
         }
         
 
-        public void ActivateAndPlaceAdHocPageContent(Page page)
+        public void ActivateAndPlaceAdHocPageContent(Page page, List<CmsPageContent> allContent)
         {
-            if (_context.CmsPage == null)
-                return;
-
-            var allContent = _context.CmsPage.PageContent;
-
-            if (_context.ViewMode == ViewMode.Edit)
-            {
-                var editing = new EditingContextManager();
-                var context = editing.GetOrCreateEditingContext(_context.CmsPage);
-                editing.EnableEditingCommands(page);
-                //editing.ProcessEditingCommands(context);
-                allContent = context.AllContent;
-            }
-
-            var leaves = IdentifyLeaves(page);
-
+            var leaves = IdentifyLayoutLeaves(page);
             ActivateAndPlaceContent(page, allContent, _context.ViewMode,null);
 
-            foreach (var leaf in leaves)
-                leaf.Controls.AddAt(0,new DropTarget(leaf,DropTargetDirective.Begin));
-
-            //ActivateAndPlaceContent(page,_context.CmsPage.PageContent,_context.ViewMode);
-            
-            foreach (var leaf in leaves)
-                leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
-
             if (_context.ViewMode == ViewMode.Edit)
             {
+                foreach (var leaf in leaves)
+                    leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
+
+                foreach (var leaf in leaves)
+                    leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
+
                 page.PreRender += (sender, args) =>
                 {
                     page.Form.Controls.Add(new ProxiedScriptManager());
@@ -333,7 +308,7 @@ namespace WarpCore.Web
 
 
 
-        public void ActivateAndPlaceInheritedContent(Page localPage)
+        public void ActivateAndPlaceLayoutContent(Page localPage)
         {
             localPage.MasterPageFile = "/App_Data/AdHocLayout.master";
             if (_context.CmsPage.LayoutId == Guid.Empty)
@@ -460,12 +435,49 @@ namespace WarpCore.Web
 
                     var localPage = (Page)sender;
                     var pageBuilder = new CmsPageBuilder(rt);
-                    pageBuilder.ActivateAndPlaceInheritedContent(localPage);
-                    pageBuilder.ActivateAndPlaceAdHocPageContent(localPage);
+                    pageBuilder.ActivateAndPlaceLayoutContent(localPage);
+
+                    var allContent = rt.CmsPage.PageContent;
+                    if (rt.ViewMode == ViewMode.Edit)
+                    {
+                        var editing = new EditingContextManager();
+
+                        //todo: see if this can get better once content routing is in place.
+                        var designMode = HttpContext.Current.Request["wc-editor"];
+                        if ("form" == designMode)
+                        {
+                            var formIdRaw = HttpContext.Current.Request["wc-form-id"];
+                            if (string.IsNullOrWhiteSpace(formIdRaw))
+                            {
+                                var blankForm = new CmsForm {ContentId = Guid.NewGuid()};
+                                var context = editing.GetOrCreateEditingContext(blankForm);
+                                allContent = context.AllContent;
+                            }
+                            else
+                            {
+                                var formId = new Guid(formIdRaw);
+                                var form = new FormRepository().FindContentVersions(By.ContentId(formId),ContentEnvironment.Draft).Result.Single();
+                                var context = editing.GetOrCreateEditingContext(form);
+                                allContent = context.AllContent;
+                            }
+                        }
+                        else
+                        {
+                            var context = editing.GetOrCreateEditingContext(rt.CmsPage);
+                            allContent = context.AllContent;
+                        }
+
+
+
+                    }
+
+                    pageBuilder.ActivateAndPlaceAdHocPageContent(localPage, allContent);
 
                     if (rt.ViewMode == ViewMode.Edit)
                     {
-                        var htmlForm = localPage.GetDescendantControls<HtmlForm>().Single();
+                        
+
+                        var htmlForm = localPage.GetPageRoot().GetDescendantControls<HtmlForm>().Single();
                         var bundle = new AscxPlaceHolder{VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx"};
                         htmlForm.Controls.Add(bundle);
                     }
