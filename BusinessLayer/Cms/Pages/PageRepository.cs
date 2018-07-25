@@ -67,7 +67,7 @@ namespace WarpCore.Cms
         public bool RequireSsl { get; set; }
 
         public List<CmsPageContent> DesignedContent => PageContent;
-        public Guid DesignForContentId => ContentId.Value;
+        public Guid DesignForContentId => ContentId;
     }
 
     public enum RoutePriority
@@ -281,7 +281,7 @@ namespace WarpCore.Cms
             }
 
             newPageLocation.ContentId = Guid.NewGuid();
-            newPageLocation.PageId = page.ContentId.Value;
+            newPageLocation.PageId = page.ContentId;
             newPageLocation.SiteId = page.SiteId;
             newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
             //newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
@@ -337,7 +337,7 @@ namespace WarpCore.Cms
                 {
                     Priority = (int) RoutePriority.Former,
                     VirtualPath = previousLivePosition.VirtualPath.ToString(),
-                    PageId = page.ContentId.Value,
+                    PageId = page.ContentId,
                     SiteId = page.SiteId,
                 };
                 Orm.Save(historicalRoute);

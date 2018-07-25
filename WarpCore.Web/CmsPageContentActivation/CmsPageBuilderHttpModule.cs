@@ -31,12 +31,12 @@ namespace WarpCore.Web
     {
         public SiteRoute Route { get; set; }
         public CmsPage CmsPage { get; set; }
-        public ViewMode ViewMode { get; set; }
+        public PageRenderMode PageRenderMode { get; set; }
     }
 
-    public enum ViewMode
+    public enum PageRenderMode
     {
-        Default,Edit
+        Readonly,PageDesigner
     }
 
     public enum DropTargetDirective { Begin,End}
@@ -48,6 +48,7 @@ namespace WarpCore.Web
 
         public bool IsEditing => AllContent != null;
         public Guid DesignForContentId { get; set; }
+        public string DesignForContentType { get; set; }
     }
 
     public struct EditingContextVars
@@ -73,24 +74,26 @@ namespace WarpCore.Web
 
 
 
-        private EditingContext CreateEditingContext(IHasDesignedLayout cmsPage)
+        private EditingContext CreateEditingContext(IHasDesignedLayout hasDesignedLayout)
         {
             var ec = new EditingContext
             {
-                DesignForContentId = cmsPage.DesignForContentId,
-                AllContent = cmsPage.DesignedContent
+                DesignForContentType = hasDesignedLayout.GetType().AssemblyQualifiedName,
+            DesignForContentId = hasDesignedLayout.DesignForContentId,
+                AllContent = hasDesignedLayout.DesignedContent
             };
             var raw = _js.Serialize(ec);
             return _js.Deserialize<EditingContext>(raw);
         }
 
-        public EditingContext GetOrCreateEditingContext(IHasDesignedLayout cmsPage)
+        public EditingContext GetOrCreateEditingContext(IHasDesignedLayout hasDesignedLayout)
         {
+
             var pageDesignHasNotStarted =
                 HttpContext.Current.Request[EditingContextVars.SerializedPageDesignStateKey] == null;
 
             if (pageDesignHasNotStarted)
-                HttpContext.Current.Items[EditingContextVars.PageDesignContextKey] = CreateEditingContext(cmsPage);
+                HttpContext.Current.Items[EditingContextVars.PageDesignContextKey] = CreateEditingContext(hasDesignedLayout);
 
             return GetEditingContext();
         }
@@ -110,6 +113,8 @@ namespace WarpCore.Web
 
     }
 
+
+
     public class CmsPageBuilder
     {
         private readonly CmsPageRequestContext _context;
@@ -119,14 +124,9 @@ namespace WarpCore.Web
             _context = context;
         }
 
-        private class LayoutPlacement
-        {
-            public LayoutControl ActivatedControl { get; set; }
-
-        }
 
 
-        public IReadOnlyCollection<Control> ActivateAndPlaceContent(Page page, IReadOnlyCollection<CmsPageContent> contents, ViewMode vm, Control placementSearchContext)
+        public static IReadOnlyCollection<Control> ActivateAndPlaceContent(Control placementSearchContext, IReadOnlyCollection<CmsPageContent> contents, PageRenderMode vm = PageRenderMode.Readonly)
         {
             List<Control> activatedControls = new List<Control>();
 
@@ -142,23 +142,29 @@ namespace WarpCore.Web
                 }
 
 
-                var placementPlaceHolder = FindPlacementLocation(page, content,placementSearchContext);
+                var placementPlaceHolder = FindPlacementLocation(placementSearchContext, content);
                 if (placementPlaceHolder == null)
                     continue;
 
                 //if (vm == ViewMode.Edit)
                 //    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-page-content data-wc-page-content-id='{content.Id}'>" });
 
-                if (vm == ViewMode.Edit)
+                if (vm == PageRenderMode.PageDesigner)
                     AddLayoutHandle(placementPlaceHolder, content);
 
-                if (vm == ViewMode.Edit)
-                    placementPlaceHolder.Controls.Add(new Literal { Text = $"<wc-widget-render data-wc-layout='{layoutWidget != null}' data-wc-page-content-id='{content.Id}'>" });
+
+                if (vm == PageRenderMode.PageDesigner)
+                    placementPlaceHolder.Controls.Add(new Literal
+                    {
+                        Text =
+                            $"<wc-widget-render data-wc-layout='{layoutWidget != null}' data-wc-page-content-id='{content.Id}'>"
+                    });
 
                 placementPlaceHolder.Controls.Add(activatedWidget);
 
-                if (vm == ViewMode.Edit)
-                    placementPlaceHolder.Controls.Add(new Literal { Text = "</wc-widget-render>" });
+                if (vm == PageRenderMode.PageDesigner)
+                    placementPlaceHolder.Controls.Add(new Literal {Text = "</wc-widget-render>"});
+
 
                 //if (vm == ViewMode.Edit)
                 //    placementPlaceHolder.Controls.Add(new Literal { Text = $"</wc-page-content>" });
@@ -169,11 +175,11 @@ namespace WarpCore.Web
                 var newlyGeneratedPlaceholders = layoutWidget?.GetDescendantControls<ContentPlaceHolder>();
                 if (content.AllContent.Any())
                 {
-                    var subCollection = ActivateAndPlaceContent(page, content.AllContent, vm,placementSearchContext);
+                    var subCollection = ActivateAndPlaceContent(activatedWidget, content.AllContent, vm);
                     activatedControls.AddRange(subCollection);
                 }
 
-                if (vm == ViewMode.Edit)
+                if (vm == PageRenderMode.PageDesigner)
                 {
                     if (layoutWidget != null)
                     {
@@ -202,16 +208,18 @@ namespace WarpCore.Web
             ph.Controls.Add((Control)uc);
         }
 
-        private static Control FindPlacementLocation(Page page, CmsPageContent content, Control searchContext)
+        private static Control FindPlacementLocation(Control searchContext,CmsPageContent content)
         {
-            if (searchContext == null)
-                searchContext = page.Master;
 
             if (content.PlacementLayoutBuilderId != null)
             {
-                var layoutControls = searchContext.GetDescendantControls<LayoutControl>().ToList();
                 var subLayout =
-                    layoutControls.SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+                    searchContext.FindDescendantControlOrSelf<LayoutControl>(x =>
+                        x.LayoutBuilderId == content.PlacementLayoutBuilderId);
+
+                //searchContext.GetDescendantControls<LayoutControl>().ToList();
+                //var subLayout =
+                //    layoutControls.SingleOrDefault(x => x.LayoutBuilderId == content.PlacementLayoutBuilderId);
 
                 if (subLayout != null)
                     searchContext = subLayout;
@@ -219,23 +227,20 @@ namespace WarpCore.Web
 
             Control ph;
 
-             ph = searchContext.GetDescendantControls<ContentPlaceHolder>()
-                .FirstOrDefault(x => x.ID == content.PlacementContentPlaceHolderId); //need first because of nested layouts. this can go back to single when I'm not sleepy.
+            ph = searchContext.FindDescendantControlOrSelf<ContentPlaceHolder>(x =>
+                x.ID == content.PlacementContentPlaceHolderId);
 
             if (ph == null)
-                ph = searchContext.GetDescendantControls<RuntimeContentPlaceHolder>()
-                    .FirstOrDefault(x =>
+                ph = searchContext.FindDescendantControlOrSelf<RuntimeContentPlaceHolder>(x =>
                     x.PlaceHolderId == content.PlacementContentPlaceHolderId);
 
             if (ph == null)
-                ph = searchContext.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
+                ph = searchContext.FindDescendantControlOrSelf<ContentPlaceHolder>(x => true);
 
-            if (ph == null)
-                ph = page.Master.GetDescendantControls<ContentPlaceHolder>().FirstOrDefault();
             return ph;
         }
 
-        private class DropTarget : PlaceHolder
+        public class DropTarget : PlaceHolder
         {
             private readonly string _directive;
 
@@ -249,6 +254,12 @@ namespace WarpCore.Web
                 _directive = directive.ToString();
                 PlaceHolderId = leaf.ID;
                 LayoutBuilderId = (leaf as LayoutBuilderContentPlaceHolder)?.LayoutBuilderId;
+            }
+
+            public DropTarget(RuntimeContentPlaceHolder leaf, DropTargetDirective directive)
+            {
+                _directive = directive.ToString();
+                PlaceHolderId = leaf.PlaceHolderId;
             }
 
             protected override void Render(HtmlTextWriter writer)
@@ -267,10 +278,10 @@ namespace WarpCore.Web
             public Guid? BeforePageContentId { get; set; }
         }
 
-        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Page page)
+        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Control searchRoot)
         {
             List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
-            var allPhs = page.GetPageRoot().GetDescendantControls<ContentPlaceHolder>();
+            var allPhs = searchRoot.GetDescendantControls<ContentPlaceHolder>();
 
             foreach (var ph in allPhs)
             {
@@ -288,21 +299,17 @@ namespace WarpCore.Web
         public void ActivateAndPlaceAdHocPageContent(Page page, List<CmsPageContent> allContent)
         {
             var leaves = IdentifyLayoutLeaves(page);
-            ActivateAndPlaceContent(page, allContent, _context.ViewMode,null);
 
-            if (_context.ViewMode == ViewMode.Edit)
+            var pageRoot = page.GetPageRoot();
+            ActivateAndPlaceContent(pageRoot, allContent, _context.PageRenderMode);
+
+            if (_context.PageRenderMode == PageRenderMode.PageDesigner)
             {
                 foreach (var leaf in leaves)
                     leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
 
                 foreach (var leaf in leaves)
                     leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
-
-                page.PreRender += (sender, args) =>
-                {
-                    page.Form.Controls.Add(new ProxiedScriptManager());
-                    ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(page, "warpcore.page.edit();");
-                };
             }
         }
 
@@ -323,8 +330,9 @@ namespace WarpCore.Web
                 localPage.MasterPageFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
             }
 
+            var root = localPage.GetPageRoot();
             foreach (var ln in lns)
-                ActivateAndPlaceContent(localPage, ln.Layout.PageContent, ViewMode.Default,null);
+                ActivateAndPlaceContent(root, ln.Layout.PageContent, PageRenderMode.Readonly);
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)
@@ -438,49 +446,41 @@ namespace WarpCore.Web
                     pageBuilder.ActivateAndPlaceLayoutContent(localPage);
 
                     var allContent = rt.CmsPage.PageContent;
-                    if (rt.ViewMode == ViewMode.Edit)
+                    if (rt.PageRenderMode == PageRenderMode.PageDesigner)
                     {
                         var editing = new EditingContextManager();
 
-                        //todo: see if this can get better once content routing is in place.
-                        var designMode = HttpContext.Current.Request["wc-editor"];
-                        if ("form" == designMode)
-                        {
-                            var formIdRaw = HttpContext.Current.Request["wc-form-id"];
-                            if (string.IsNullOrWhiteSpace(formIdRaw))
-                            {
-                                var blankForm = new CmsForm {ContentId = Guid.NewGuid()};
-                                var context = editing.GetOrCreateEditingContext(blankForm);
-                                allContent = context.AllContent;
-                            }
-                            else
-                            {
-                                var formId = new Guid(formIdRaw);
-                                var form = new FormRepository().FindContentVersions(By.ContentId(formId),ContentEnvironment.Draft).Result.Single();
-                                var context = editing.GetOrCreateEditingContext(form);
-                                allContent = context.AllContent;
-                            }
-                        }
-                        else
-                        {
+                        ////todo: see if this can get better once content routing is in place.
+                        //var designMode = HttpContext.Current.Request["wc-editor"];
+                        //if ("form" == designMode)
+                        //{
+                        //    var formIdRaw = HttpContext.Current.Request["wc-form-id"];
+                        //    if (string.IsNullOrWhiteSpace(formIdRaw))
+                        //    {
+                        //        var blankForm = new CmsForm {ContentId = Guid.NewGuid()};
+                        //        var context = editing.GetOrCreateEditingContext(blankForm);
+                        //        allContent = context.AllContent;
+                        //    }
+                        //    else
+                        //    {
+                        //        var formId = new Guid(formIdRaw);
+                        //        var form = new FormRepository().FindContentVersions(By.ContentId(formId),ContentEnvironment.Draft).Result.Single();
+                        //        var context = editing.GetOrCreateEditingContext(form);
+                        //        allContent = context.AllContent;
+                        //    }
+                        //}
+                        //else
+                        //{
                             var context = editing.GetOrCreateEditingContext(rt.CmsPage);
                             allContent = context.AllContent;
-                        }
-
-
-
+                        //}
                     }
 
                     pageBuilder.ActivateAndPlaceAdHocPageContent(localPage, allContent);
 
-                    if (rt.ViewMode == ViewMode.Edit)
-                    {
-                        
+                    if (rt.PageRenderMode == PageRenderMode.PageDesigner)
+                        localPage.Init += (x, y) => localPage.EnableDesignerDependencies();
 
-                        var htmlForm = localPage.GetPageRoot().GetDescendantControls<HtmlForm>().Single();
-                        var bundle = new AscxPlaceHolder{VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx"};
-                        htmlForm.Controls.Add(bundle);
-                    }
                 };
                 handlerPage.Init += (sender, args) =>
                 {

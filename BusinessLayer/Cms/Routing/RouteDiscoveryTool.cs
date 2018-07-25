@@ -142,8 +142,8 @@ namespace WarpCore.Cms
 
             primaryRoute.Authority = site.UriAuthority;
             primaryRoute.Priority = (int) RoutePriority.Primary;
-            primaryRoute.SiteId = site.ContentId.Value;
-            primaryRoute.PageId = node.Page.ContentId.Value;
+            primaryRoute.SiteId = site.ContentId;
+            primaryRoute.PageId = node.Page.ContentId;
             primaryRoute.VirtualPath = MakeRelativeUri(site, node.VirtualPath.ToString());
             
             pageRoutes.Add(primaryRoute);
@@ -197,7 +197,7 @@ foreach (var location in historicalPageLocations)
                 {
                     Authority = site.UriAuthority,
                     Priority = 0,
-                    SiteId = site.ContentId.Value,
+                    SiteId = site.ContentId,
                     PageId = site.HomepageId,
                     VirtualPath = MakeRelativeUri(site, string.Empty),
                     RequireSsl = associatedSitemap.HomePage.RequireSsl

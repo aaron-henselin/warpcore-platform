@@ -4,7 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using WarpCore.Web.Scripting;
+using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.Extensions
 {
@@ -39,6 +42,22 @@ namespace WarpCore.Web.Extensions
             }
         }
 
+        public static T FindDescendantControlOrSelf<T>(this Control parentControl, Func<T, bool> condition) where T : Control
+        {
+            var matchedType = parentControl as T;
+            if (matchedType != null && condition((T) parentControl))
+                return (T)parentControl;
+
+            foreach (Control subControl in parentControl.Controls)
+            {
+                var subMatch = FindDescendantControlOrSelf<T>(subControl, condition);
+                if (subMatch != null)
+                    return subMatch;
+            }
+
+            return null;
+        }
+
         public static IEnumerable<T> GetDescendantControls<T>(this Control parentControl) where T : Control
         {
             return ControlExtensions.GetDescendantControls(parentControl, typeof(T)).Cast<T>();
@@ -58,6 +77,19 @@ namespace WarpCore.Web.Extensions
                         yield return childControl;
                     }
                 }
+        }
+
+        public static void EnableDesignerDependencies(this Page localPage)
+        {
+            var htmlForm = localPage.GetPageRoot().GetDescendantControls<HtmlForm>().Single();
+            htmlForm.Controls.Add(new ProxiedScriptManager());
+            var bundle = new AscxPlaceHolder { VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx" };
+            htmlForm.Controls.Add(bundle);
+
+            //localPage.PreLoad += (o, eventArgs) =>
+            //{
+                ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(localPage, "warpcore.page.edit();");
+            //};
         }
 
         public static Control GetPageRoot(this Page pageActual)

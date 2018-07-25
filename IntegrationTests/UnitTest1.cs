@@ -23,17 +23,17 @@ namespace IntegrationTests
             var homePage = new CmsPage
             {
                 Name = "Homepage",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             var aboutUs = new CmsPage
             {
                 Name = "About Us",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             var contactUs = new CmsPage
             {
                 Name = "Contact Us",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
 
             var pageRepository = new PageRepository();
@@ -46,14 +46,14 @@ namespace IntegrationTests
             var subPage1 = new CmsPage
             {
                 Name = "Subpage 1",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             pageRepository.Save(subPage1, new PageRelativePosition { ParentPageId = homePage.ContentId });
 
             var subPage0 = new CmsPage
             {
                 Name = "Subpage 0",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             pageRepository.Save(subPage0, new PageRelativePosition { ParentPageId = homePage.ContentId, BeforePageId = subPage1.ContentId });
 

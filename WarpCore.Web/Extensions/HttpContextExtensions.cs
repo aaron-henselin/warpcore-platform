@@ -32,9 +32,9 @@ namespace WarpCore.Web.Extensions
             var contentVersionRaw = context.Request["wc-cv"];
             var viewModeRaw = context.Request["wc-viewmode"];
 
-            ViewMode viewMode = ViewMode.Default;
+            PageRenderMode pageRenderMode = PageRenderMode.Readonly;
             if (!string.IsNullOrWhiteSpace(viewModeRaw))
-                viewMode = (ViewMode)Enum.Parse(typeof(ViewMode), viewModeRaw, true);
+                pageRenderMode = (PageRenderMode)Enum.Parse(typeof(PageRenderMode), viewModeRaw, true);
 
 
             ContentEnvironment env = ContentEnvironment.Live;
@@ -44,7 +44,7 @@ namespace WarpCore.Web.Extensions
             }
             else
             {
-                if (viewMode == ViewMode.Edit)
+                if (pageRenderMode == PageRenderMode.PageDesigner)
                     env = ContentEnvironment.Draft;
             }
 
@@ -54,7 +54,7 @@ namespace WarpCore.Web.Extensions
 
 
             var routeContext = new CmsPageRequestContext();
-            routeContext.ViewMode = viewMode;
+            routeContext.PageRenderMode = pageRenderMode;
 
             SiteRoute route;
 

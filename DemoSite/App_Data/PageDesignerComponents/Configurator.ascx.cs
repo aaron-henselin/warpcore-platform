@@ -137,8 +137,7 @@ namespace DemoSite
             var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            Dependency.Resolve<CmsPageBuilder>()
-                .ActivateAndPlaceContent(this.Page, cmsForm.DesignedContent, ViewMode.Default,surface);
+            CmsPageBuilder.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
             
             foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
                 tbx.Value = parametersAfterActivation[tbx.PropertyName];

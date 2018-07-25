@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Cms.Forms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
@@ -64,29 +65,58 @@ namespace DemoSite
 
         protected void SaveDraftButton_OnClick(object sender, EventArgs e)
         {
-            SaveChanges(false);
+            SaveChangesImpl(false);
             Response.Redirect("/admin/pagetree");
         }
 
         protected void SaveAndPublishButton_OnClick(object sender, EventArgs e)
         {
-            SaveChanges(true);
+            SaveChangesImpl(true);
             Response.Redirect("/admin/pagetree");
         }
 
-        private static void SaveChanges(bool publish)
+        private static void SaveChangesImpl(bool publish)
         {
             var mgr = new EditingContextManager();
             var editingContext = mgr.GetEditingContext();
 
-            var pageRepository = new PageRepository();
-            var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
-                .Result.Single();
-            pageToUpdate.PageContent = editingContext.AllContent;
+            var editingTypes = new[]
+            {
+                typeof(CmsPage).AssemblyQualifiedName,
+                typeof(CmsForm).AssemblyQualifiedName
+            };
 
-            pageRepository.Save(pageToUpdate);
-            if (publish)
-                pageRepository.Publish(By.ContentId(editingContext.DesignForContentId));
+            var editingTypeString = editingTypes.Single(x => editingContext.DesignForContentType == x);
+            var editingType = Type.GetType(editingTypeString);
+
+            
+            if (editingType == typeof(CmsPage))
+            {
+                var pageRepository = new PageRepository();
+                var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
+                    .Result.Single();
+                pageToUpdate.PageContent = editingContext.AllContent;
+
+                pageRepository.Save(pageToUpdate);
+                if (publish)
+                    pageRepository.Publish(By.ContentId(editingContext.DesignForContentId));
+            }
+
+            if (editingType == typeof(CmsForm))
+            {
+                var formRepository = new FormRepository();
+                var pageToUpdate = formRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
+                    .Result.SingleOrDefault();
+                if (pageToUpdate == null)
+                    pageToUpdate = new CmsForm();
+
+                pageToUpdate.FormContent = editingContext.AllContent;
+
+                formRepository.Save(pageToUpdate);
+                if (publish)
+                    formRepository.Publish(By.ContentId(editingContext.DesignForContentId));
+            }
+
         }
 
         

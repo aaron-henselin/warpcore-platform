@@ -23,7 +23,7 @@ namespace WarpCore.Cms
 
         public ISitemapNode GetSitemapNode(CmsPage cmsPage)
         {
-            return GetSitemapNode(cmsPage.ContentId.Value);
+            return GetSitemapNode(cmsPage.ContentId);
         }
 
         public ISitemapNode GetSitemapNode(Guid pageId)
@@ -62,17 +62,19 @@ namespace WarpCore.Cms
             var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
 
             var pageRepostiory = new PageRepository();
-            var allPages = pageRepostiory.FindContentVersions(null, environment).Result.ToDictionary(x => x.ContentId);
+            var allPages = pageRepostiory
+                .FindContentVersions(null, environment)
+                .Result.ToDictionary(x => x.ContentId);
 
             var sitemap = new Sitemap();
-            if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId))
-                sitemap.HomePage = allPages[site.HomepageId];
+            if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId.Value))
+                sitemap.HomePage = allPages[site.HomepageId.Value];
 
             AttachChildNodes(sitemap,siteStructure,string.Empty,allPages);
             return sitemap;
         }
 
-        private static void AttachChildNodes(ISitemapNode sitemapNode, ISiteStructureNode node, string path, Dictionary<Guid?, CmsPage> allPages)
+        private static void AttachChildNodes(ISitemapNode sitemapNode, ISiteStructureNode node, string path, Dictionary<Guid, CmsPage> allPages)
         {
 
             foreach (var childStructureNode in node.ChildNodes)

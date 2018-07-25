@@ -62,7 +62,7 @@ namespace DemoSite
             var siteRepository = new SiteRepository();
             var allSites = siteRepository.Find();
             foreach (var site in allSites)
-                SiteSelectorDropDownList.Items.Add(new ListItem(site.Name,site.ContentId.Value.ToString()));
+                SiteSelectorDropDownList.Items.Add(new ListItem(site.Name,site.ContentId.ToString()));
 
             var selectedSite = ResolveSelectedSite();
 
@@ -84,7 +84,7 @@ namespace DemoSite
             if (!string.IsNullOrWhiteSpace(siteToManageRaw))
                 siteId = new Guid(siteToManageRaw);
             else if (allSites.Any())
-                siteId = allSites.First().ContentId.Value;
+                siteId = allSites.First().ContentId;
 
             return allSites.Single(x => x.ContentId == siteId);
         }
@@ -117,7 +117,7 @@ namespace DemoSite
                 var liveNode = liveSitemap.GetSitemapNode(pageTreeItem.PageId);
                 pageTreeItem.IsPublished = liveNode != null;
                 pageTreeItem.IsHomePage = pageTreeItem.PageId == matchedSite.HomepageId;
-                pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=edit&wc-pg=" +
+                pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=PageDesigner&wc-pg=" +
                                          pageTreeItem.PageId;
                
             }
@@ -146,7 +146,7 @@ namespace DemoSite
             nodes.Add(new PageTreeItem {
                 //SitemapNode = sitemapNode,
                 Name = sitemapNode.Page.Name,
-                PageId = sitemapNode.Page.ContentId.Value,
+                PageId = sitemapNode.Page.ContentId,
                 VirtualPath = sitemapNode.VirtualPath.ToString(),
                 Depth = depth,
                 ParentPath = parentNode?.VirtualPath.ToString(),

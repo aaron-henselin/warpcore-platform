@@ -59,7 +59,7 @@ namespace WarpCore.Cms.Sites
         [Column]
         public int Order { get; set; }
 
-        public Guid NodeId { get => this.ContentId.Value; }
+        public Guid NodeId { get => this.ContentId; }
 
         [JsonIgnore]
         public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();

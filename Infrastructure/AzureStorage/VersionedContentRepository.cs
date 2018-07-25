@@ -82,7 +82,7 @@ namespace WarpCore.DbEngines.AzureStorage
             var currentLive = contentVersions.SingleOrDefault(x => ContentEnvironment.Live == x.ContentEnvironment);
             var currentDraft = contentVersions.SingleOrDefault(x => ContentEnvironment.Draft == x.ContentEnvironment);
 
-            publishResult.ContentId = currentDraft.ContentId.Value;
+            publishResult.ContentId = currentDraft.ContentId;
 
             var areInSync = string.Equals(currentLive?.GetContentChecksum(),currentDraft?.GetContentChecksum());
             if (areInSync)

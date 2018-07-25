@@ -36,8 +36,14 @@ namespace DemoSite
             tbx.Save(new ToolboxItem
             {
                 AscxPath = "/App_Data/BackendWidgets/PageTree.ascx",
-                WidgetUid = "PageTree",
+                WidgetUid = "wc-pagetree",
                 FriendlyName = "Page Tree"
+            });
+            tbx.Save(new ToolboxItem
+            {
+                AscxPath = "/App_Data/BackendWidgets/FormDesigner.ascx",
+                WidgetUid = "wc-formdesigner",
+                FriendlyName = "Form Designer"
             });
         }
 
@@ -49,14 +55,11 @@ namespace DemoSite
             {
                 MasterPagePath = "/App_Data/BackendPage.Master"
             };
-            var formDesignerLayout = new Layout
-            {
-                MasterPagePath = "/App_Data/FormDesigner.Master"
-            };
+
 
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(backendLayout);
-            layoutRepository.Save(formDesignerLayout);
+            
 
             var siteRepo = new SiteRepository();
             var backendSite = new Site
@@ -70,22 +73,26 @@ namespace DemoSite
             var formDesigner = new CmsPage
             {
                 Name = "formDesigner",
-                SiteId = backendSite.ContentId.Value,
-                LayoutId = formDesignerLayout.ContentId.Value
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
             };
+            formDesigner.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-formdesigner"
+            });
 
 
             var pageTree = new CmsPage
             {
                 Name = "PageTree",
-                SiteId = backendSite.ContentId.Value,
-                LayoutId = backendLayout.ContentId.Value
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
             };
             pageTree.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = "PageTree"
-
+                WidgetTypeCode = "wc-pagetree"
             });
 
             var pageRepo = new PageRepository();
@@ -117,8 +124,8 @@ namespace DemoSite
             var homePage = new CmsPage
             {
                 Name = "Homepage",
-                SiteId = newSite.ContentId.Value,
-                LayoutId = myLayout.ContentId.Value
+                SiteId = newSite.ContentId,
+                LayoutId = myLayout.ContentId
             };
 
             var lbId = Guid.NewGuid();
@@ -165,14 +172,14 @@ namespace DemoSite
             var aboutUs = new CmsPage
             {
                 Name = "About Us",
-                SiteId = newSite.ContentId.Value,
-                LayoutId = myLayout.ContentId.Value
+                SiteId = newSite.ContentId,
+                LayoutId = myLayout.ContentId
             };
             var contactUs = new CmsPage
             {
                 Name = "Contact Us",
-                SiteId = newSite.ContentId.Value,
-                LayoutId = myLayout.ContentId.Value
+                SiteId = newSite.ContentId,
+                LayoutId = myLayout.ContentId
             };
 
             var pageRepository = new PageRepository();
@@ -185,14 +192,14 @@ namespace DemoSite
             var subPage1 = new CmsPage
             {
                 Name = "Subpage 1",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             pageRepository.Save(subPage1, new PageRelativePosition { ParentPageId = homePage.ContentId });
 
             var subPage0 = new CmsPage
             {
                 Name = "Subpage 0",
-                SiteId = newSite.ContentId.Value
+                SiteId = newSite.ContentId
             };
             pageRepository.Save(subPage0, new PageRelativePosition { ParentPageId = homePage.ContentId, BeforePageId = subPage1.ContentId });
 

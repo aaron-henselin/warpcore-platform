@@ -83,6 +83,7 @@
     <Content Include="App_Data\Booting.aspx" />
     <Content Include="App_Data\DynamicPage.aspx" />
     <Content Include="App_Data\PageDesignerComponents\Configurator.ascx" />
+    <Content Include="App_Data\BackendWidgets\FormDesigner.ascx" />
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
@@ -134,12 +135,12 @@
     <Compile Include="Demo.Master.designer.cs">
       <DependentUpon>Demo.Master</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\FormDesigner.Master.cs">
-      <DependentUpon>FormDesigner.Master</DependentUpon>
+    <Compile Include="App_Data\BackendWidgets\FormDesigner.ascx.cs">
+      <DependentUpon>FormDesigner.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="App_Data\FormDesigner.Master.designer.cs">
-      <DependentUpon>FormDesigner.Master</DependentUpon>
+    <Compile Include="App_Data\BackendWidgets\FormDesigner.ascx.designer.cs">
+      <DependentUpon>FormDesigner.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -184,7 +185,6 @@
     <Content Include="Demo.Master" />
     <Content Include="App_Data\AdHocLayout.Master" />
     <Content Include="App_Data\BackendPage.Master" />
-    <Content Include="App_Data\FormDesigner.Master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

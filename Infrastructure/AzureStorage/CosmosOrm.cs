@@ -128,7 +128,7 @@ namespace WarpCore.DbEngines.AzureStorage
         /// <summary>
         /// An id unique to this content, but shared between master and published copies.
         /// </summary>
-        public Guid? ContentId { get; set; }
+        public Guid ContentId { get; set; }
 
         private string ChangeTracking { get; set; }
 

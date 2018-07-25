@@ -32,7 +32,7 @@ namespace WarpCore.DbEngines.AzureStorage
                 dr = tableRef.NewRow();
                 item.RowKey = Guid.NewGuid().ToString();
 
-                if (item.ContentId == null)
+                if (item.ContentId == Guid.Empty)
                     item.ContentId = Guid.NewGuid();
             }
 

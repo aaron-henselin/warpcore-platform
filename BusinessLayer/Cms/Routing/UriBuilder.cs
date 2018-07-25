@@ -67,7 +67,7 @@ namespace WarpCore.Cms.Routing
         public Uri CreateUri(CmsPage destinationPage, UriSettings settings)
         {
             SiteRoute sr;
-            var success = CmsRoutes.Current.TryResolveRoute(destinationPage.ContentId.Value, out sr);
+            var success = CmsRoutes.Current.TryResolveRoute(destinationPage.ContentId, out sr);
             if (!success)
                 throw new Exception();
 
