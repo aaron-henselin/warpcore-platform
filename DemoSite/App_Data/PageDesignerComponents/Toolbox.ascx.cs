@@ -19,17 +19,46 @@ namespace DemoSite
         public string WidgetTypeCode { get; set; }
 
         public string FriendlyName { get; set; }
+        public string Category { get; set; }
+    }
+
+    [Serializable]
+    public class ToolboxControlState
+    {
+        public string SelectedCategory { get; set; }
     }
 
     public partial class Toolbox : System.Web.UI.UserControl
     {
+        private ToolboxControlState _controlState = new ToolboxControlState{ SelectedCategory = "Content"};
+
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+            Page.RegisterRequiresControlState(this);
             
-            PopulateToolboxSidebar();
+            
 
+            if (!Page.IsPostBack)
+                DataBind();
+        }
+
+        protected override void LoadControlState(object savedState)
+        {
+            _controlState = (ToolboxControlState)savedState;
             DataBind();
+        }
+
+        protected override object SaveControlState()
+        {
+            return _controlState;
+        }
+
+        public override void DataBind()
+        {
+            base.DataBind();
+
+            PopulateToolboxSidebar();
         }
 
         private void PopulateToolboxSidebar()
@@ -39,23 +68,18 @@ namespace DemoSite
             ToolboxItemRepeater.DataSource = allWidgets.Select(x => new ToolboxItemViewModel
             {
                 FriendlyName = x.FriendlyName,
-                WidgetTypeCode = x.WidgetUid
-            }).ToList();
+                WidgetTypeCode = x.WidgetUid,
+                Category = x.Category
+            })
+            .Where(x => x.Category == _controlState.SelectedCategory)
+            .ToList();
+            ToolboxItemRepeater.DataBind();
             var allCategories = allWidgets.Select(x => x.Category).Distinct();
+
+            ToolboxCategorySelector.Items.Clear();
             foreach (var category in allCategories)
                 ToolboxCategorySelector.Items.Add(category);
 
-            //foreach (var widget in allWidgets)
-            //{
-            //    var div = new HtmlGenericControl("div");
-            //    div.Attributes["class"] = "toolbox-item wc-layout-handle";
-            //    div.Attributes["data-wc-toolbox-item-name"] = widget.Name;
-
-            //    div.InnerText = widget.Name;
-            //    toolboxUl.Controls.Add(div);
-            //}
-
-            //toolboxUl.Controls.Add(div);
         }
 
         protected void BackToPageTreeLinkButton_OnClick(object sender, EventArgs e)
@@ -119,6 +143,11 @@ namespace DemoSite
 
         }
 
-        
+
+        protected void ToolboxCategorySelector_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            _controlState.SelectedCategory = ((DropDownList) sender).SelectedValue;
+            DataBind();
+        }
     }
 }

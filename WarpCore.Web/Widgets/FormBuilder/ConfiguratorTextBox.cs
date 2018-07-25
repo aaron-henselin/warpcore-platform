@@ -5,7 +5,7 @@ using Cms.Toolbox;
 
 namespace DemoSite
 {
-    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox")]
+    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer
     {
         private TextBox _tbx = new TextBox { AutoPostBack = true,CssClass = "form-control"};

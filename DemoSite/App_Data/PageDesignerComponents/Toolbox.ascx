@@ -29,7 +29,7 @@
     </h3>
     <h3>
         Toolbox<br/>
-        <asp:DropDownList runat="server" ID="ToolboxCategorySelector"/>
+        <asp:DropDownList runat="server" ID="ToolboxCategorySelector" AutoPostBack="True" OnSelectedIndexChanged="ToolboxCategorySelector_OnSelectedIndexChanged"/>
 
 <%--        <small>
             <span class="glyphicon glyphicon-info-sign">
