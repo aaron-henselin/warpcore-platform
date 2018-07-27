@@ -68,6 +68,9 @@ namespace WarpCore.Cms
 
         public List<CmsPageContent> DesignedContent => PageContent;
         public Guid DesignForContentId => ContentId;
+
+        [Column]
+        public bool EnableViewState { get; set; }
     }
 
     public enum RoutePriority

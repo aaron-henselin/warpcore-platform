@@ -3,7 +3,6 @@
 
 <h2>Page Tree</h2>
 <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
-<asp:DropDownList runat="server" ID="SiteSelectorDropDownList" AutoPostBack="True"/>
 
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
@@ -65,7 +64,7 @@
 
 
 <style>
-    .unpublished.badge{ font-size: 10px;right:0}
+    .unpublished.badge{ font-size: 10px;right: 0; margin-left:5px;}
     .homepage-icon {
         background-color: #009688;
         border-radius: 20px;
@@ -73,6 +72,7 @@
         font-size: 10px;
         padding: 5px;
         top: 0px;
+        margin-left: 5px;
     }
 
     .pagetree-item-actions {

@@ -21,7 +21,10 @@ using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web
 {
-    public interface ILayoutHandle
+
+
+
+public interface ILayoutHandle
     {
          string HandleName { get; set; }
          Guid PageContentId { get; set; }
@@ -32,6 +35,9 @@ namespace WarpCore.Web
         public SiteRoute Route { get; set; }
         public CmsPage CmsPage { get; set; }
         public PageRenderMode PageRenderMode { get; set; }
+
+        public static CmsPageRequestContext Current=>(CmsPageRequestContext) HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
+    
     }
 
     public enum PageRenderMode
@@ -436,12 +442,15 @@ namespace WarpCore.Web
                 Page handlerPage = (Page)HttpContext.Current.Handler;
                 handlerPage.PreInit += (sender, args) =>
                 {
-                    var rt = (CmsPageRequestContext)HttpContext.Current.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
+                    var rt = CmsPageRequestContext.Current;
                     var isUnmanagedAspxPage = rt == null || rt.CmsPage == null;
                     if (isUnmanagedAspxPage)
                         return;
 
                     var localPage = (Page)sender;
+                    localPage.EnableViewState = rt.CmsPage.EnableViewState;
+                    localPage.Title = rt.CmsPage.Name;
+
                     var pageBuilder = new CmsPageBuilder(rt);
                     pageBuilder.ActivateAndPlaceLayoutContent(localPage);
 
@@ -449,31 +458,8 @@ namespace WarpCore.Web
                     if (rt.PageRenderMode == PageRenderMode.PageDesigner)
                     {
                         var editing = new EditingContextManager();
-
-                        ////todo: see if this can get better once content routing is in place.
-                        //var designMode = HttpContext.Current.Request["wc-editor"];
-                        //if ("form" == designMode)
-                        //{
-                        //    var formIdRaw = HttpContext.Current.Request["wc-form-id"];
-                        //    if (string.IsNullOrWhiteSpace(formIdRaw))
-                        //    {
-                        //        var blankForm = new CmsForm {ContentId = Guid.NewGuid()};
-                        //        var context = editing.GetOrCreateEditingContext(blankForm);
-                        //        allContent = context.AllContent;
-                        //    }
-                        //    else
-                        //    {
-                        //        var formId = new Guid(formIdRaw);
-                        //        var form = new FormRepository().FindContentVersions(By.ContentId(formId),ContentEnvironment.Draft).Result.Single();
-                        //        var context = editing.GetOrCreateEditingContext(form);
-                        //        allContent = context.AllContent;
-                        //    }
-                        //}
-                        //else
-                        //{
-                            var context = editing.GetOrCreateEditingContext(rt.CmsPage);
-                            allContent = context.AllContent;
-                        //}
+                        var context = editing.GetOrCreateEditingContext(rt.CmsPage);
+                        allContent = context.AllContent;
                     }
 
                     pageBuilder.ActivateAndPlaceAdHocPageContent(localPage, allContent);

@@ -4,14 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using WarpCore.Web;
 
 namespace DemoSite
 {
     public partial class BackendPage : System.Web.UI.MasterPage
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected override void OnInit(EventArgs e)
         {
-
+            base.OnInit(e);
+            PageHeader.DataBind();
         }
     }
 }

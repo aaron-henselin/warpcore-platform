@@ -10,24 +10,24 @@
 namespace DemoSite {
     
     
-    public partial class PageTree {
+    public partial class NavBar {
         
         /// <summary>
-        /// PageTreeWrapper control.
+        /// SiteSelectorDropDownList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PageTreeWrapper;
+        protected global::System.Web.UI.WebControls.DropDownList SiteSelectorDropDownList;
         
         /// <summary>
-        /// PageTreeItemRepeater control.
+        /// NavBarRepeater control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater PageTreeItemRepeater;
+        protected global::System.Web.UI.WebControls.Repeater NavBarRepeater;
     }
 }

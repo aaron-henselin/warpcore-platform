@@ -72,7 +72,7 @@ namespace DemoSite
 
             var formDesigner = new CmsPage
             {
-                Name = "formDesigner",
+                Name = "Form Designer",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId
             };
@@ -85,7 +85,7 @@ namespace DemoSite
 
             var pageTree = new CmsPage
             {
-                Name = "PageTree",
+                Name = "Pages",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId
             };
@@ -117,7 +117,8 @@ namespace DemoSite
             var siteRepo = new SiteRepository();
             var newSite = new Site
             {
-                Name = "WarpCore Demo"
+                Name = "WarpCore Demo",
+                IsFrontendSite = true
             };
             siteRepo.Save(newSite);
 

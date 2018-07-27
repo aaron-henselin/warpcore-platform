@@ -47,26 +47,8 @@ namespace DemoSite
 
             Page.RegisterRequiresControlState(this);
 
-            SiteSelectorDropDownList.SelectedIndexChanged += (sender, args) =>
-            {
-                var isNewValueSelected = !string.IsNullOrEmpty(SiteSelectorDropDownList.SelectedValue);
-                if (isNewValueSelected)
-                    Response.Redirect("/admin/pagetree?siteId=" +
-                                      SiteSelectorDropDownList.SelectedValue);
 
-               
-
-            };
-
-
-            var siteRepository = new SiteRepository();
-            var allSites = siteRepository.Find();
-            foreach (var site in allSites)
-                SiteSelectorDropDownList.Items.Add(new ListItem(site.Name,site.ContentId.ToString()));
-
-            var selectedSite = ResolveSelectedSite();
-
-
+            var selectedSite = SiteManagementContext.GetSiteToManage();
             if (!Page.IsPostBack)
             {
                 RebuildControlState(selectedSite);
@@ -74,20 +56,7 @@ namespace DemoSite
             }
         }
 
-        private Site ResolveSelectedSite()
-        {
-            var siteRepository = new SiteRepository();
-            var allSites = siteRepository.Find();
 
-            Guid siteId = Guid.Empty;
-            var siteToManageRaw = Request["siteId"];
-            if (!string.IsNullOrWhiteSpace(siteToManageRaw))
-                siteId = new Guid(siteToManageRaw);
-            else if (allSites.Any())
-                siteId = allSites.First().ContentId;
-
-            return allSites.Single(x => x.ContentId == siteId);
-        }
 
         protected override void LoadControlState(object savedState)
         {
@@ -197,7 +166,7 @@ namespace DemoSite
             var pageRepository = new PageRepository();
             pageRepository.Publish(By.ContentId(contentId));
 
-            var selectedSite = ResolveSelectedSite();
+            var selectedSite = SiteManagementContext.GetSiteToManage();
             RebuildControlState(selectedSite);
             DataBind();
 

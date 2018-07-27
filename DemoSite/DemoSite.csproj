@@ -89,11 +89,13 @@
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
     <Content Include="App_Data\PageDesignerComponents\LayoutHandle.ascx" />
     <Content Include="App_Data\BackendWidgets\PageTree.ascx" />
+    <Content Include="App_Data\AdminSite\NavBar.ascx" />
     <Content Include="Scripts\jquery.slidereveal.min.js" />
     <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\AdminSite\SiteManagementContext.cs" />
     <Compile Include="App_Data\Booting.aspx.cs">
       <DependentUpon>Booting.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -172,6 +174,12 @@
     <Compile Include="App_Data\BackendWidgets\PageTree.ascx.designer.cs">
       <DependentUpon>PageTree.ascx</DependentUpon>
     </Compile>
+    <Compile Include="App_Data\AdminSite\NavBar.ascx.cs">
+      <DependentUpon>NavBar.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Data\AdminSite\NavBar.ascx.designer.cs">
+      <DependentUpon>NavBar.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
       <DependentUpon>Toolbox.ascx</DependentUpon>
@@ -194,7 +202,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\AdminSite\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
