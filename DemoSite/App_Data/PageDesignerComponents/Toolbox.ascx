@@ -31,10 +31,6 @@
         Toolbox<br/>
         <asp:DropDownList runat="server" ID="ToolboxCategorySelector" AutoPostBack="True" OnSelectedIndexChanged="ToolboxCategorySelector_OnSelectedIndexChanged"/>
 
-<%--        <small>
-            <span class="glyphicon glyphicon-info-sign">
-            </span> Press <kbd>ESC</kbd> to close
-        </small>--%>
     </h3>
     <div id="toolboxUl" runat="server" class="toolbox-item-list">
         <asp:Repeater runat="server" ID="ToolboxItemRepeater" ItemType="DemoSite.ToolboxItemViewModel">

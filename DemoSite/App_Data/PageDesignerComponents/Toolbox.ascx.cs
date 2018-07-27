@@ -17,7 +17,6 @@ namespace DemoSite
     public class ToolboxItemViewModel
     {
         public string WidgetTypeCode { get; set; }
-
         public string FriendlyName { get; set; }
         public string Category { get; set; }
     }
@@ -30,23 +29,36 @@ namespace DemoSite
 
     public partial class Toolbox : System.Web.UI.UserControl
     {
-        private ToolboxControlState _controlState = new ToolboxControlState{ SelectedCategory = "Content"};
+        private ToolboxControlState _controlState = new ToolboxControlState{ SelectedCategory = "Layout"};
+
+        private ToolboxManager _manager = new ToolboxManager();
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
             Page.RegisterRequiresControlState(this);
-            
-            
+
+            var allCategories = _manager.Find().Select(x => x.Category).Distinct();
+            foreach (var category in allCategories)
+                ToolboxCategorySelector.Items.Add(category);
+
+            ToolboxCategorySelector.SelectedValue = _controlState.SelectedCategory;
 
             if (!Page.IsPostBack)
-                DataBind();
+                FinishInit();
         }
 
         protected override void LoadControlState(object savedState)
         {
             _controlState = (ToolboxControlState)savedState;
-            DataBind();
+            ToolboxCategorySelector.SelectedValue = _controlState.SelectedCategory;
+
+            FinishInit();
+        }
+
+        private void FinishInit()
+        {
+            PopulateToolboxSidebar(_controlState.SelectedCategory);
         }
 
         protected override object SaveControlState()
@@ -54,31 +66,19 @@ namespace DemoSite
             return _controlState;
         }
 
-        public override void DataBind()
-        {
-            base.DataBind();
 
-            PopulateToolboxSidebar();
-        }
-
-        private void PopulateToolboxSidebar()
+        private void PopulateToolboxSidebar(string category)
         {
-            var manager = new ToolboxManager();
-            var allWidgets = manager.Find();
-            ToolboxItemRepeater.DataSource = allWidgets.Select(x => new ToolboxItemViewModel
-            {
-                FriendlyName = x.FriendlyName,
-                WidgetTypeCode = x.WidgetUid,
-                Category = x.Category
-            })
-            .Where(x => x.Category == _controlState.SelectedCategory)
-            .ToList();
+         
+            ToolboxItemRepeater.DataSource = _manager.Find().Select(x => new ToolboxItemViewModel
+                {
+                    FriendlyName = x.FriendlyName,
+                    WidgetTypeCode = x.WidgetUid,
+                    Category = x.Category
+                })
+                .Where(x => x.Category == category)
+                .ToList();
             ToolboxItemRepeater.DataBind();
-            var allCategories = allWidgets.Select(x => x.Category).Distinct();
-
-            ToolboxCategorySelector.Items.Clear();
-            foreach (var category in allCategories)
-                ToolboxCategorySelector.Items.Add(category);
 
         }
 
@@ -147,7 +147,7 @@ namespace DemoSite
         protected void ToolboxCategorySelector_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             _controlState.SelectedCategory = ((DropDownList) sender).SelectedValue;
-            DataBind();
+            PopulateToolboxSidebar(_controlState.SelectedCategory);
         }
     }
 }
