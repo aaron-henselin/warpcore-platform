@@ -121,11 +121,11 @@ public interface ILayoutHandle
 
 
 
-    public class CmsPageBuilder
+    public class CmsPageDynamicLayoutBuilder
     {
         private readonly CmsPageRequestContext _context;
         private readonly LayoutRepository layoutRepository = new LayoutRepository();
-        public CmsPageBuilder(CmsPageRequestContext context)
+        public CmsPageDynamicLayoutBuilder(CmsPageRequestContext context)
         {
             _context = context;
         }
@@ -242,6 +242,9 @@ public interface ILayoutHandle
 
             if (ph == null)
                 ph = searchContext.FindDescendantControlOrSelf<ContentPlaceHolder>(x => true);
+
+            if (ph == null)
+                ph = searchContext.FindDescendantControlOrSelf<RuntimeContentPlaceHolder>(x => true);
 
             return ph;
         }
@@ -451,7 +454,7 @@ public interface ILayoutHandle
                     localPage.EnableViewState = rt.CmsPage.EnableViewState;
                     localPage.Title = rt.CmsPage.Name;
 
-                    var pageBuilder = new CmsPageBuilder(rt);
+                    var pageBuilder = new CmsPageDynamicLayoutBuilder(rt);
                     pageBuilder.ActivateAndPlaceLayoutContent(localPage);
 
                     var allContent = rt.CmsPage.PageContent;

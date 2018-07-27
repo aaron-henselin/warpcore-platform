@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PageTree.ascx.cs" Inherits="DemoSite.PageTree" %>
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Scripting" Assembly="WarpCore.Web" %>
 
-<h2>Page Tree</h2>
 <a:ProxiedScriptManager runat="server"></a:ProxiedScriptManager>
 
     <asp:UpdatePanel runat="server">

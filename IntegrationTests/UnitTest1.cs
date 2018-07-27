@@ -36,7 +36,7 @@ namespace IntegrationTests
                 SiteId = newSite.ContentId
             };
 
-            var pageRepository = new PageRepository();
+            var pageRepository = new CmsPageRepository();
             pageRepository.Save(homePage, SitemapRelativePosition.Root);
             pageRepository.Save(aboutUs, SitemapRelativePosition.Root);
             pageRepository.Save(contactUs, SitemapRelativePosition.Root);

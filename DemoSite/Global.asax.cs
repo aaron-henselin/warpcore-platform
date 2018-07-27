@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.UI.WebControls;
+using Cms.Forms;
 using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -45,6 +46,14 @@ namespace DemoSite
                 WidgetUid = "wc-formdesigner",
                 FriendlyName = "Form Designer"
             });
+            tbx.Save(new ToolboxItem
+            {
+                AscxPath = "/App_Data/Forms/DynamicForm.ascx",
+                WidgetUid = "wc-dynamic-form",
+                FriendlyName = "Dynamic Form"
+            });
+
+            WebBootstrapper.BuildUpToolbox();
         }
 
         private void SetupBackendSite()
@@ -95,9 +104,46 @@ namespace DemoSite
                 WidgetTypeCode = "wc-pagetree"
             });
 
-            var pageRepo = new PageRepository();
+
+            var form = new CmsForm
+            {
+                ContentId = Guid.NewGuid(),
+                Name = "Page Settings",
+                RepositoryUid = new Guid("979fde2a-1983-480e-aca4-8caab3f762b0"),
+            };
+
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+            var textboxPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = typeof(CmsPage).Name,
+                    DisplayName = "Page Name",
+                });
+            form.FormContent.Add(textboxPageContent);
+
+            var formRepository = new FormRepository();
+            formRepository.Save(form);
+            formRepository.Publish(By.ContentId(form.ContentId));
+
+            var pageSettings = new CmsPage
+            {
+                Name = "Settings",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
+            };
+            pageSettings.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-dynamic-form",
+                Parameters = new Dictionary<string, string>{["FormId"]= form.ContentId.ToString()}
+            });
+
+
+
+            var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
             pageRepo.Save(formDesigner);
+            pageRepo.Save(pageSettings);
 
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);
@@ -183,7 +229,7 @@ namespace DemoSite
                 LayoutId = myLayout.ContentId
             };
 
-            var pageRepository = new PageRepository();
+            var pageRepository = new CmsPageRepository();
             pageRepository.Save(homePage, SitemapRelativePosition.Root);
             pageRepository.Save(aboutUs, SitemapRelativePosition.Root);
             pageRepository.Save(contactUs, SitemapRelativePosition.Root);

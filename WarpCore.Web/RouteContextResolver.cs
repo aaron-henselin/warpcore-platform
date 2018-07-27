@@ -18,7 +18,7 @@ namespace WarpCore.Cms
     //        //.Where(x => x.UriAuthority == uri.Authority || string.IsNullOrEmpty(x.UriAuthority))
     //        //.OrderBy(x => x.Priority);
 
-    //        var pageRepo = new PageRepository();
+    //        var pageRepo = new CmsPageRepository();
     //        var foundPages = pageRepo.GetAllPages().ToLookup(x => x.SiteId);
 
     //        var pageRoutes = new RouteRepository().GetAllRoutes().ToLookup(x => x.PageId);

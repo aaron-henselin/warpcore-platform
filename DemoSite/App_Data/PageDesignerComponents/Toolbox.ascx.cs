@@ -116,7 +116,7 @@ namespace DemoSite
             
             if (editingType == typeof(CmsPage))
             {
-                var pageRepository = new PageRepository();
+                var pageRepository = new CmsPageRepository();
                 var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
                     .Result.Single();
                 pageToUpdate.PageContent = editingContext.AllContent;

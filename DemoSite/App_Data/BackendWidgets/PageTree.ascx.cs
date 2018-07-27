@@ -163,7 +163,7 @@ namespace DemoSite
         {
             var lb = (LinkButton) sender;
             var contentId = new Guid(lb.CommandArgument);
-            var pageRepository = new PageRepository();
+            var pageRepository = new CmsPageRepository();
             pageRepository.Publish(By.ContentId(contentId));
 
             var selectedSite = SiteManagementContext.GetSiteToManage();

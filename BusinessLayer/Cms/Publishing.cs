@@ -12,7 +12,7 @@ namespace WarpCore.Cms
     {
         public static void PublishSite(Site site)
         {
-            new PageRepository().Publish("SiteId eq '"+site.ContentId+"'");
+            new CmsPageRepository().Publish("SiteId eq '"+site.ContentId+"'");
             //todo: move to domain event.
             CmsRoutes.RegenerateAllRoutes();
 
@@ -20,7 +20,7 @@ namespace WarpCore.Cms
 
         public static void PublishSites()
         {
-            new PageRepository().Publish(null);
+            new CmsPageRepository().Publish(null);
             //todo: move to domain event.
             CmsRoutes.RegenerateAllRoutes();
         }

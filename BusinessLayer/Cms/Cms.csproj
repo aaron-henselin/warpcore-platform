@@ -57,7 +57,7 @@
     <Compile Include="Forms\Class1.cs" />
     <Compile Include="Layout\LayoutRepository.cs" />
     <Compile Include="MultilingualString.cs" />
-    <Compile Include="Pages\PageRepository.cs" />
+    <Compile Include="Pages\CmsPageRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Publishing.cs" />
     <Compile Include="Routing\CmsRouteTable.cs" />

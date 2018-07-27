@@ -175,7 +175,7 @@ namespace WarpCore.Cms
             var allRoutes = new List<SiteRoute>();
 
 
-            var pageRepository = new PageRepository();
+            var pageRepository = new CmsPageRepository();
             var historicalPageLocations = pageRepository.GetHistoricalPageLocations(site);
 foreach (var location in historicalPageLocations)
                     allRoutes.Add(new RedirectPageRoute

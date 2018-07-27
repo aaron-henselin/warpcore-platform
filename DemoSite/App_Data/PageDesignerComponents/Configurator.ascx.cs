@@ -21,7 +21,6 @@ using WarpCore.Web.Widgets;
 namespace DemoSite
 {
 
-
     public class ConfiguratorFormBuilder
     {
         public const string RuntimePlaceHolderId = "FormBody";
@@ -113,17 +112,9 @@ namespace DemoSite
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            Dictionary<string, string> newParameters = new Dictionary<string, string>();
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-            {
-                newParameters.Add(tbx.PropertyName, tbx.Value);
-            }
-
-
-            _contentToEdit.Parameters = newParameters;
+            var newParameters = CmsFormReadWriter.ReadValuesFromControls(surface);
+            _contentToEdit.Parameters = newParameters.ToDictionary(x => x.Key,x => x.Value);
             ScriptManager.RegisterClientScriptBlock(this.Page,typeof(Configurator1),"submit", "configurator_submit();",true);
-            //
-
         }
 
         private void RebuildDesignSurface()
@@ -137,25 +128,18 @@ namespace DemoSite
             var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            CmsPageBuilder.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
-            
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-                tbx.Value = parametersAfterActivation[tbx.PropertyName];
-            
+            CmsPageDynamicLayoutBuilder.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
+
+            CmsFormReadWriter.FillInControlValues(surface,parametersAfterActivation);
+
         }
 
         protected override void OnPreRender(EventArgs e)
         {
             base.OnPreRender(e);
 
-            //_contentToEdit.Parameters.Clear();
-
-
-
             if (_configuratorContext != null)
             {
-
-                //_configuratorContext.NewConfiguration = newParameters;
                 _configuratorContext.IsOpening = false;
                 
                 WC_CONFIGURATOR_CONTEXT_JSON =

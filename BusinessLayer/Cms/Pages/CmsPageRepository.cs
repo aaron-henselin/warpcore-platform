@@ -61,8 +61,6 @@ namespace WarpCore.Cms
 
         public Guid? RedirectPageId { get; set; }
 
-
-
         [Column]
         public bool RequireSsl { get; set; }
 
@@ -71,6 +69,7 @@ namespace WarpCore.Cms
 
         [Column]
         public bool EnableViewState { get; set; }
+        
     }
 
     public enum RoutePriority
@@ -230,9 +229,19 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
     }
 
+    public class RepositoryUidAttribute:Attribute
+    {
+        public string Uid { get; }
 
+        public RepositoryUidAttribute(string uid)
+        {
+            Uid = uid;
+        }
 
-    public class PageRepository : VersionedContentRepository<CmsPage>
+    }
+
+    [RepositoryUid("979fde2a-1983-480e-aca4-8caab3f762b0")]
+    public class CmsPageRepository : VersionedContentRepository<CmsPage>
     {
 
 

@@ -61,7 +61,7 @@ namespace WarpCore.Cms
         {
             var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
 
-            var pageRepostiory = new PageRepository();
+            var pageRepostiory = new CmsPageRepository();
             var allPages = pageRepostiory
                 .FindContentVersions(null, environment)
                 .Result.ToDictionary(x => x.ContentId);

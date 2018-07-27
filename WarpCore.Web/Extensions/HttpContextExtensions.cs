@@ -76,7 +76,7 @@ namespace WarpCore.Web.Extensions
             if (route?.PageId == null)
                 return routeContext;
 
-            var cmsPageVersions = new PageRepository().FindContentVersions(By.ContentId(route.PageId.Value), env).Result;
+            var cmsPageVersions = new CmsPageRepository().FindContentVersions(By.ContentId(route.PageId.Value), env).Result;
 
             if (env == ContentEnvironment.Archive)
                 routeContext.CmsPage = cmsPageVersions.Single(x => x.ContentVersion == contentVersion);

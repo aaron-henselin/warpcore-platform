@@ -20,6 +20,8 @@ namespace Cms.Forms
 
         public List<CmsPageContent> DesignedContent => FormContent;
         public Guid DesignForContentId => ContentId;
+
+        public Guid RepositoryUid { get; set; }
     }
 
     public class FormRepository : VersionedContentRepository<CmsForm>
