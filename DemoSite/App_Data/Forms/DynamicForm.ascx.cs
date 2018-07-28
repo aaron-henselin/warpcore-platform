@@ -76,11 +76,12 @@ namespace DemoSite
 
             _repo.Save(draft);
             
+            Response.Redirect("/admin");
         }
 
         protected void CancelButton_OnClickButton_OnClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Response.Redirect("/admin");
         }
     }
 }

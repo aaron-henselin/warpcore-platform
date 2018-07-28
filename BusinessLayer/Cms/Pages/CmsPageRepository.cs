@@ -420,7 +420,7 @@ namespace WarpCore.Cms
                 var node = Orm.FindUnversionedContent<CmsPageLocationNode>(existingLocationSearch).Result.Single();
 
 
-                var siblingSearch = $@"{nameof(CmsPageLocationNode.ParentNodeId)} eq '{node.ParentNodeId}'";
+                var siblingSearch = $@"{nameof(CmsPageLocationNode.SiteId)} eq '{cmsPage.SiteId}' and {nameof(CmsPageLocationNode.ParentNodeId)} eq '{node.ParentNodeId}'";
                 var siblingNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingSearch).Result;
                 var newBeforeNode = siblingNodes.Where(x => x.Order > node.Order).OrderBy(x => x.Order).FirstOrDefault();
 

@@ -123,6 +123,23 @@ namespace DemoSite
                 });
             form.FormContent.Add(textboxPageContent);
 
+
+            var keywords =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Keywords),
+                    DisplayName = "Keywords",
+                });
+            form.FormContent.Add(keywords);
+
+            var description =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Description),
+                    DisplayName = "Description",
+                });
+            form.FormContent.Add(description);
+
             var formRepository = new FormRepository();
             formRepository.Save(form);
             formRepository.Publish(By.ContentId(form.ContentId));
@@ -174,7 +191,10 @@ namespace DemoSite
             {
                 Name = "Homepage",
                 SiteId = newSite.ContentId,
-                LayoutId = myLayout.ContentId
+                LayoutId = myLayout.ContentId,
+                Keywords = "WarpCore,CMS,Demo",
+               Description = "WarpCore CMS Demo"
+
             };
 
             var lbId = Guid.NewGuid();
