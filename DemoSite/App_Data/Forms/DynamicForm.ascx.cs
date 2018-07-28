@@ -30,23 +30,23 @@ namespace DemoSite
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
             var repoManager = new RepositoryMetadataManager();
-            var repoMetadata = repoManager.GetById(_cmsForm.RepositoryUid);
+            var repoMetadata = repoManager.Find(nameof(RepositoryMetdata.RepositoryUid) + " eq '" +_cmsForm.RepositoryUid+"'").First();
             var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
             _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
-
+            
 
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent);
 
             var contentIdRaw = Request["contentId"];
-            if (string.IsNullOrWhiteSpace(contentIdRaw))
+            if (!string.IsNullOrWhiteSpace(contentIdRaw))
                 _contentId = new Guid(contentIdRaw);
 
             var draft = GetDraft();
 
-            var allProperties = ToolboxMetadataReader.ReadProperties(draft.GetType(), x => true);
+            //var allProperties = ToolboxMetadataReader.ReadProperties(draft.GetType(), x => true);
+            var d = draft.GetPropertyValues(x => true);
 
-
-            var d = new Dictionary<string,string>();
+            //var d = new Dictionary<string,string>();
             CmsFormReadWriter.FillInControlValues(surface,d);
             //todo: props from form.
         }

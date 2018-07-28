@@ -43,7 +43,7 @@
                                 <span class="glyphicon glyphicon-send"></span>
                                 Publish                                
                             </asp:LinkButton>
-                            <a href="javascript:void(0);">
+                            <a href="<%# Item.SettingsUrl %>">
                                 <span class="glyphicon glyphicon glyphicon-tasks"></span>
                                 Settings
                             </a>

@@ -54,6 +54,7 @@ namespace DemoSite
             });
 
             WebBootstrapper.PreloadPlugins();
+            WebBootstrapper.BuildUpRepositoryMetadata();
             WebBootstrapper.BuildUpToolbox();
         }
 
@@ -117,7 +118,7 @@ namespace DemoSite
             var textboxPageContent =
                 factory.CreateToolboxItemContent(new ConfiguratorTextBox
                 {
-                    PropertyName = typeof(CmsPage).Name,
+                    PropertyName = nameof(CmsPage.Name),
                     DisplayName = "Page Name",
                 });
             form.FormContent.Add(textboxPageContent);

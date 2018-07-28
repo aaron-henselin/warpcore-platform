@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using Cms.Toolbox;
+using Framework;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -35,38 +36,39 @@ namespace WarpCore.Web
 
             var alreadyLoaded = AppDomain.CurrentDomain
                 .GetAssemblies()
+                .Where(x => !x.IsDynamic)
                 .Select(x => x.Location);
 
             binariesToCheck = binariesToCheck.Except(alreadyLoaded).ToList();
 
 
-            //var assembliesDir = setup.PrivateBinPathProbe != null 
-            //    ? setup.PrivateBinPath : setup.ApplicationBase;
+            ////var assembliesDir = setup.PrivateBinPathProbe != null 
+            ////    ? setup.PrivateBinPath : setup.ApplicationBase;
 
-            AppDomain oTempAppDomain = AppDomain.CreateDomain("tempAppDomain");
+            //AppDomain oTempAppDomain = AppDomain.CreateDomain("tempAppDomain");
 
-            foreach (var binaryToCheck in binariesToCheck)
-            try
-            {
-                AssemblyLoader al =
-                    (AssemblyLoader) oTempAppDomain
-                        .CreateInstanceAndUnwrap(typeof(AssemblyLoader).Assembly.FullName,
-                        typeof(AssemblyLoader).FullName);
+            //foreach (var binaryToCheck in binariesToCheck)
+            //try
+            //{
+            //    AssemblyLoader al =
+            //        (AssemblyLoader) oTempAppDomain
+            //            .CreateInstanceAndUnwrap(typeof(AssemblyLoader).Assembly.FullName,
+            //            typeof(AssemblyLoader).FullName);
 
-                var isPlugin = al.IsPluginAssembly(binaryToCheck,condition);
-                if (isPlugin)
-                    filesToLoad.Add(binaryToCheck);
-            }
-            catch (Exception ex)
-            {
+            //    var isPlugin = al.IsPluginAssembly(binaryToCheck,condition);
+            //    if (isPlugin)
+            //        filesToLoad.Add(binaryToCheck);
+            //}
+            //catch (Exception ex)
+            //{
                 
-            }
+            //}
 
-            AppDomain.Unload(oTempAppDomain);
+            //AppDomain.Unload(oTempAppDomain);
 
-            foreach (var file in filesToLoad)
+            foreach (var file in binariesToCheck)
             {
-
+                Assembly.LoadFile(file);
             }
         }
 
@@ -95,6 +97,28 @@ namespace WarpCore.Web
 
         public static void BuildUpRepositoryMetadata()
         {
+            var respositoryManager = new RepositoryMetadataManager();
+            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.RepositoryUid);
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var asm in assemblies)
+            {
+                var repositoryTypes = asm.GetTypes().HavingAttribute<RepositoryUidAttribute>();
+                foreach (var repoType in repositoryTypes)
+                {
+                    var uid = repoType.GetCustomAttribute<RepositoryUidAttribute>().Uid;
+                    var alreadyExists = preexistingMetadata.ContainsKey(uid);
+
+                    RepositoryMetdata metadata = new RepositoryMetdata();
+                    if (alreadyExists)
+                        metadata = preexistingMetadata[uid];
+
+                    metadata.RepositoryUid = uid;
+                    metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
+                    respositoryManager.Save(metadata);
+                }
+
+            }
         }
 
         public static void BuildUpToolbox()

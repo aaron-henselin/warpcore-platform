@@ -1,9 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Framework
 {
+    public static class TypeExtensions
+    {
+        public static IEnumerable<Type> HavingAttribute<T>(this IEnumerable<Type> types) where T : Attribute
+        {
+            return types.Where(x => x.GetCustomAttribute<T>() != null);
+        }
+    }
+
     public static class ObjectExtensions
     {
         public static IDictionary<string, string> GetPropertyValues(this object activated, Func<PropertyInfo,bool> condition)
@@ -12,6 +21,10 @@ namespace Framework
             foreach (var property in activated.GetType().GetProperties())
             {
                 if (!property.CanRead)
+                    continue;
+
+                var success = condition(property);
+                if (!success)
                     continue;
 
                 //var isSetting = property.GetCustomAttribute<SettingAttribute>() != null;
@@ -27,6 +40,9 @@ namespace Framework
 
         public static void SetPropertyValues(this object obj, IDictionary<string,string> valuesToSet, Func<PropertyInfo,bool> condition)
         {
+            if (valuesToSet == null)
+                return;
+
             foreach (var kvp in valuesToSet)
             {
                 var propertyInfo = obj.GetType().GetProperty(kvp.Key);

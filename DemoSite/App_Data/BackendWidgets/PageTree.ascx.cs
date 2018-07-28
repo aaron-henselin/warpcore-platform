@@ -24,6 +24,8 @@ namespace DemoSite
         public bool IsHomePage { get; internal set; }
         public bool IsPublished { get; set; }
         public string DesignUrl { get; set; }
+
+        public string SettingsUrl { get; set; }
         public bool IsExpanded { get; set; }
         public bool Visible { get; set; }
         public bool HasChildItems { get; set; }
@@ -88,7 +90,11 @@ namespace DemoSite
                 pageTreeItem.IsHomePage = pageTreeItem.PageId == matchedSite.HomepageId;
                 pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=PageDesigner&wc-pg=" +
                                          pageTreeItem.PageId;
-               
+
+                pageTreeItem.SettingsUrl = "/admin/settings?contentId=" +
+                                         pageTreeItem.PageId;
+
+                    
             }
 
             _controlState.PageTreeItems = pagesTreeItems.ToList();

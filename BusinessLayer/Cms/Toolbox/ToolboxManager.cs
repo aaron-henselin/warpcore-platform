@@ -22,7 +22,7 @@ namespace WarpCore.Cms.Toolbox
         public string FriendlyName { get; set; }
     }
 
-    [Table("cms_toolbox_item")]
+    [Table("cms_repository_metadata")]
     public class RepositoryMetdata : UnversionedContentEntity
     {
         public string RepositoryUid { get; set; }
