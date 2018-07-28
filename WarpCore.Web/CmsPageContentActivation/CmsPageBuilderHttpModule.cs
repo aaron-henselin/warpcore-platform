@@ -418,7 +418,8 @@ public interface ILayoutHandle
                     var localPage = (Page)sender;
                     localPage.EnableViewState = rt.CmsPage.EnableViewState;
                     localPage.Title = rt.CmsPage.Name;
-
+                    localPage.MetaKeywords = rt.CmsPage.Keywords;
+                    localPage.MetaDescription = rt.CmsPage.Description;
                     var pageBuilder = new CmsPageLayoutEngine(rt);
                     pageBuilder.ActivateAndPlaceLayoutContent(localPage);
 

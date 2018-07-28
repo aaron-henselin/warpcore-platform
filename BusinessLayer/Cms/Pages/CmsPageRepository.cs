@@ -44,6 +44,8 @@ namespace WarpCore.Cms
         [Column]
         public Guid LayoutId { get; set; }
 
+        [Column]
+        public string Keywords { get; set; }
 
         [Column]
         public Guid SiteId { get; set; }
@@ -70,7 +72,9 @@ namespace WarpCore.Cms
 
         [Column]
         public bool EnableViewState { get; set; }
-        
+
+        [Column]
+        public string Description { get; set; }
     }
 
     public enum RoutePriority
