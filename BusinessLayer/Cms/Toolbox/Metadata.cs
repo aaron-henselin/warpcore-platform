@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Framework;
 
 namespace Cms.Toolbox
 {
+    public class IsWarpCorePluginAssemblyAttribute : Attribute
+    {
+    }
+
     public class SettingAttribute : Attribute
     {
     }
 
+    public class SettingProperty
+    {
+        public PropertyInfo PropertyInfo { get; set; }
+        public string DisplayName { get; set; }
+    }
 
     public class IncludeInToolboxAttribute : Attribute
     {
@@ -29,6 +40,7 @@ namespace Cms.Toolbox
 
     internal class AttributeBasedToolboxMetadataReader : IToolboxMetadataReader
     {
+
         public ToolboxMetadata ReadMetadata(Type type)
         {
             var includeInToolboxAtr = type.GetCustomAttribute<IncludeInToolboxAttribute>();
@@ -50,6 +62,19 @@ namespace Cms.Toolbox
         ToolboxMetadata ReadMetadata(Type type);
     }
 
+    public static class ToolboxPropertyFilter
+    {
+        public static Func<PropertyInfo, bool> IsConfigurable => x => x.HasAttribute<SettingAttribute>();
+    }
+
+    public static class RepositoryMetadataReader
+    {
+        public static void X()
+        {
+            
+        }
+    }
+
     public static class ToolboxMetadataReader
     {
         public static ToolboxMetadata ReadMetadata(Type type)
@@ -57,6 +82,28 @@ namespace Cms.Toolbox
             var atr = new AttributeBasedToolboxMetadataReader();
             return atr.ReadMetadata(type);
         }
+        public static IReadOnlyCollection<SettingProperty> ReadProperties(Type clrType, Func<PropertyInfo,bool> propertyFilter)
+        {
+            List<SettingProperty> properties = new List<SettingProperty>();
+            foreach (var property in clrType.GetProperties())
+            {
+                var include = propertyFilter(property);
+                if (!include)
+                    continue;
+
+
+                var displayNameDefinition = (DisplayNameAttribute)property.GetCustomAttribute(typeof(DisplayNameAttribute));
+                properties.Add(new SettingProperty
+                {
+                    PropertyInfo = property,
+                    DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
+
+                });
+            }
+
+            return properties;
+        }
+
     }
 
 }

@@ -2,64 +2,85 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
+using Framework;
+using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
-using WarpCore.Web.Extensions;
 
 namespace DemoSite
 {
-    public static class CmsFormReadWriter
+    public partial class DynamicForm : System.Web.UI.UserControl
     {
-        public static void FillInControlValues(Control surface, IDictionary<string,string> entityValues)
-        {
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-                tbx.Value = entityValues[tbx.PropertyName];
-        }
+        private CmsForm _cmsForm;
 
-        public static IDictionary<string, string> ReadValuesFromControls(Control surface)
-        {
-            Dictionary<string, string> newParameters = new Dictionary<string, string>();
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-            {
-                newParameters.Add(tbx.PropertyName, tbx.Value);
-            }
-            return newParameters;
-        }
-
-    }
-
-
-
-public partial class DynamicForm : System.Web.UI.UserControl
-    {
         [Setting]
         public Guid FormId { get; set; }
+
+        private Guid? _contentId;
+        private IVersionedContentRepositoryBase _repo;
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
             var formRepository = new FormRepository();
-            var cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
+            _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
-            CmsPageDynamicLayoutBuilder.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
+            var repoManager = new RepositoryMetadataManager();
+            var repoMetadata = repoManager.GetById(_cmsForm.RepositoryUid);
+            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
+            _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
+
+
+            CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent);
 
             var contentIdRaw = Request["contentId"];
             if (string.IsNullOrWhiteSpace(contentIdRaw))
-            {
+                _contentId = new Guid(contentIdRaw);
 
-            }
+            var draft = GetDraft();
 
-            CmsFormReadWriter
+            var allProperties = ToolboxMetadataReader.ReadProperties(draft.GetType(), x => true);
+
+
+            var d = new Dictionary<string,string>();
+            CmsFormReadWriter.FillInControlValues(surface,d);
+            //todo: props from form.
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private CosmosEntity GetDraft()
+        {
+            CosmosEntity draft;
+            if (_contentId != null)
+                draft = _repo.FindContentVersions(By.ContentId(_contentId.Value), ContentEnvironment.Draft).Single();
+            else
+                draft = _repo.New();
+
+            return draft;
+        }
+
+        protected void SaveButton_OnClick(object sender, EventArgs e)
+        {
+            var draft = GetDraft();
+
+            var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
+            draft.SetPropertyValues(newValues, x => true);
+
+            _repo.Save(draft);
+            
+        }
+
+        protected void CancelButton_OnClickButton_OnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

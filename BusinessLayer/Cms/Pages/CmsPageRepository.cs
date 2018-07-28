@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Web.UI;
 using Cms;
 using Cms.Toolbox;
+using Framework;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
@@ -129,9 +130,9 @@ namespace WarpCore.Cms
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);
 
             IDictionary<string, string> settings;
-            
-            if(activated != null)
-                settings = CmsPageContentActivator.GetContentParameterValues(activated);
+
+            if (activated != null)
+                settings = activated.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
             else
                 settings = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
 

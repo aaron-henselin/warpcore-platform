@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -21,12 +22,81 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
 {
- 
+    public static class ConditionalAssemblyLoader
+    {
+
+
+        public static void LoadAssemblies(Func<Assembly,bool> condition)
+        {
+            List<string> filesToLoad = new List<string>();
+
+            var setup = AppDomain.CurrentDomain.SetupInformation;
+            var binariesToCheck =Directory.GetFiles(setup.PrivateBinPath, "*.dll").ToList();
+
+            var alreadyLoaded = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Select(x => x.Location);
+
+            binariesToCheck = binariesToCheck.Except(alreadyLoaded).ToList();
+
+
+            //var assembliesDir = setup.PrivateBinPathProbe != null 
+            //    ? setup.PrivateBinPath : setup.ApplicationBase;
+
+            AppDomain oTempAppDomain = AppDomain.CreateDomain("tempAppDomain");
+
+            foreach (var binaryToCheck in binariesToCheck)
+            try
+            {
+                AssemblyLoader al =
+                    (AssemblyLoader) oTempAppDomain
+                        .CreateInstanceAndUnwrap(typeof(AssemblyLoader).Assembly.FullName,
+                        typeof(AssemblyLoader).FullName);
+
+                var isPlugin = al.IsPluginAssembly(binaryToCheck,condition);
+                if (isPlugin)
+                    filesToLoad.Add(binaryToCheck);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            AppDomain.Unload(oTempAppDomain);
+
+            foreach (var file in filesToLoad)
+            {
+
+            }
+        }
+
+
+        public class AssemblyLoader : MarshalByRefObject
+        {
+            public bool IsPluginAssembly(string assembly, Func<Assembly, bool> condition)
+            {
+                Assembly a = Assembly.ReflectionOnlyLoadFrom(assembly);
+                return condition(a);
+            }
+        }
+
+
+    }
+
 
 
 
     public static class WebBootstrapper
     {
+        public static void PreloadPlugins()
+        {
+            ConditionalAssemblyLoader.LoadAssemblies(asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
+        }
+
+        public static void BuildUpRepositoryMetadata()
+        {
+        }
+
         public static void BuildUpToolbox()
         {
             var allTypes = typeof(WebBootstrapper).Assembly.GetTypes();

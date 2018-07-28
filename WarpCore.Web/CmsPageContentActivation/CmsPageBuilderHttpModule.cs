@@ -121,11 +121,11 @@ public interface ILayoutHandle
 
 
 
-    public class CmsPageDynamicLayoutBuilder
+    public class CmsPageLayoutEngine
     {
         private readonly CmsPageRequestContext _context;
         private readonly LayoutRepository layoutRepository = new LayoutRepository();
-        public CmsPageDynamicLayoutBuilder(CmsPageRequestContext context)
+        public CmsPageLayoutEngine(CmsPageRequestContext context)
         {
             _context = context;
         }
@@ -322,8 +322,6 @@ public interface ILayoutHandle
             }
         }
 
-
-
         public void ActivateAndPlaceLayoutContent(Page localPage)
         {
             localPage.MasterPageFile = "/App_Data/AdHocLayout.master";
@@ -366,39 +364,7 @@ public interface ILayoutHandle
 
 
     }
-
-//    public class LayoutHandleOld : PlaceHolder
-//    {
-//        public Guid PageContentId { get; set; }
-//        public string HandleName { get; set; }
-
-//        protected override void OnInit(EventArgs e)
-//        {
-//            base.OnInit(e);
-
-//            var literal = new Literal();
-//            literal.Text = $@"
-//<li class=""StackedListItem StackedListItem--isDraggable wc-layout-handle"" tabindex=""1""  data-wc-page-content-id=""{PageContentId}"" >
-//<div class=""StackedListContent"">
-//<h4 class=""Heading Heading--size4 text-no-select"">{HandleName}
-
-//<div class='pull-right wc-edit-command configure' data-wc-widget-type=""{HandleName}"" data-wc-editing-command-configure=""{PageContentId}"" >settings</div>
-//<div class='pull-right wc-edit-command delete' data-wc-editing-command-delete=""{PageContentId}"" >X</div>
-//</h4>
-//<div class=""DragHandle""></div>
-//<div class=""Pattern Pattern--typeHalftone""></div>
-//<div class=""Pattern Pattern--typePlaced""></div></div></li>
-//            ";
-
-//            //var p = new Panel();
-//            //p.Attributes["data-wc-role"] = "layout-handle";
-//            //p.Attributes["data-wc-page-content-id"] = PageContentId.ToString();
-//            //p.Attributes["class"] = "wc-layout-handle";
-//            //p.Controls.Add(new Label{Text=HandleName});
-//            this.Controls.Add(literal);
-//        }
-//    }
-
+    
 
 
     public sealed class CmsPageBuilderHttpModule : IHttpModule
@@ -419,7 +385,6 @@ public interface ILayoutHandle
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
-                //HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.OriginalUriToken, HttpContext.Current.Request.Url.AbsolutePath);
 
                 if (routingContext.Route != null)
                 {
@@ -454,7 +419,7 @@ public interface ILayoutHandle
                     localPage.EnableViewState = rt.CmsPage.EnableViewState;
                     localPage.Title = rt.CmsPage.Name;
 
-                    var pageBuilder = new CmsPageDynamicLayoutBuilder(rt);
+                    var pageBuilder = new CmsPageLayoutEngine(rt);
                     pageBuilder.ActivateAndPlaceLayoutContent(localPage);
 
                     var allContent = rt.CmsPage.PageContent;

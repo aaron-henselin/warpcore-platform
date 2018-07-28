@@ -53,6 +53,7 @@ namespace DemoSite
                 FriendlyName = "Dynamic Form"
             });
 
+            WebBootstrapper.PreloadPlugins();
             WebBootstrapper.BuildUpToolbox();
         }
 

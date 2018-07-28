@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
-using static WarpCore.Web.CmsPageDynamicLayoutBuilder;
+using static WarpCore.Web.CmsPageLayoutEngine;
 
 namespace DemoSite
 {
@@ -31,7 +31,7 @@ namespace DemoSite
             var mgr = new EditingContextManager();
             var ec = mgr.GetOrCreateEditingContext(cmsForm);
             
-            CmsPageDynamicLayoutBuilder.ActivateAndPlaceContent(RuntimePlaceHolder, ec.AllContent,PageRenderMode.PageDesigner);
+            CmsPageLayoutEngine.ActivateAndPlaceContent(RuntimePlaceHolder, ec.AllContent,PageRenderMode.PageDesigner);
 
             RuntimePlaceHolder.Controls.AddAt(0, new DropTarget(RuntimePlaceHolder, DropTargetDirective.Begin));
             RuntimePlaceHolder.Controls.Add(new DropTarget(RuntimePlaceHolder, DropTargetDirective.End));

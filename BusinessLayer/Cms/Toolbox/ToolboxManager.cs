@@ -22,6 +22,18 @@ namespace WarpCore.Cms.Toolbox
         public string FriendlyName { get; set; }
     }
 
+    [Table("cms_toolbox_item")]
+    public class RepositoryMetdata : UnversionedContentEntity
+    {
+        public string RepositoryUid { get; set; }
+        public string AssemblyQualifiedTypeName { get; set; }
+    }
+    
+    public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
+    {
+
+    }
+
     public class ToolboxManager : UnversionedContentRepository<ToolboxItem>
     {
         public ToolboxItem GetToolboxItemByCode(string code)

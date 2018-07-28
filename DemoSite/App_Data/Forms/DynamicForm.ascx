@@ -7,3 +7,7 @@
         
     </a:RuntimeContentPlaceHolder>
 </asp:PlaceHolder>
+<div>
+    <asp:Button runat="server" ID="SaveButton" Text="Save" OnClick="SaveButton_OnClick"/>
+    <asp:Button runat="server" ID="CancelButton" Text="Cancel" OnClick="CancelButton_OnClickButton_OnClick"/>
+</div>

@@ -15,7 +15,17 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public abstract class VersionedContentRepository<T> where T : VersionedContentEntity, new()
+    public interface IVersionedContentRepositoryBase
+    {
+        CosmosEntity New();
+
+        void Save(CosmosEntity item);
+
+        IReadOnlyCollection<CosmosEntity> FindContentVersions(string condition,
+            ContentEnvironment version = ContentEnvironment.Live);
+    }
+
+    public abstract class VersionedContentRepository<T> : IVersionedContentRepositoryBase where T : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -31,9 +41,9 @@ namespace WarpCore.DbEngines.AzureStorage
         public virtual void Save(T item)
         {
             Orm.Save(item);
-
             SaveDraftChecksum(item);
         }
+        
 
         private void SaveDraftChecksum(T item)
         {
@@ -53,6 +63,22 @@ namespace WarpCore.DbEngines.AzureStorage
             }
         }
 
+
+        CosmosEntity IVersionedContentRepositoryBase.New()
+        {
+            return new T();
+        }
+
+        void IVersionedContentRepositoryBase.Save(CosmosEntity item)
+        {
+            this.Save((T)item);
+        }
+
+        IReadOnlyCollection<CosmosEntity> IVersionedContentRepositoryBase.FindContentVersions(string condition, ContentEnvironment version)
+        {
+            return this.FindContentVersions(condition, version).Result.Cast<CosmosEntity>().ToList();
+            
+        }
 
         public Task<IReadOnlyCollection<T>> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live)
@@ -128,5 +154,7 @@ namespace WarpCore.DbEngines.AzureStorage
             return publishResult;
 
         }
+
+
     }
 }

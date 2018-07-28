@@ -11,6 +11,7 @@ using System.Web.UI.HtmlControls;
 using Cms;
 using Cms.Forms;
 using Cms.Toolbox;
+using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
@@ -42,20 +43,16 @@ namespace DemoSite
             rowLayout.PlacementContentPlaceHolderId = RuntimePlaceHolderId;
             cmsForm.FormContent.Add(rowLayout);
            
-
             var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
-            foreach (var property in clrType.GetProperties())
-            {
-                var displayNameDefinition = (DisplayNameAttribute) property.GetCustomAttribute(typeof(DisplayNameAttribute));
-                var settingDefinition = (SettingAttribute) property.GetCustomAttribute(typeof(SettingAttribute));
-                if (settingDefinition == null)
-                    continue;
+            var configuratorSettingProperties = ToolboxMetadataReader.ReadProperties(clrType,ToolboxPropertyFilter.IsConfigurable);
 
+            foreach (var property in configuratorSettingProperties)
+            {
                 var textboxPageContent=
                         factory.CreateToolboxItemContent(new ConfiguratorTextBox
                         {
-                            PropertyName = property.Name,
-                            DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
+                            PropertyName = property.PropertyInfo.Name,
+                            DisplayName = property.DisplayName
                         });
 
                 textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
@@ -125,10 +122,10 @@ namespace DemoSite
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
-            var parametersAfterActivation = CmsPageContentActivator.GetContentParameterValues(activatedControl);
+            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            CmsPageDynamicLayoutBuilder.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
+            CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
 
             CmsFormReadWriter.FillInControlValues(surface,parametersAfterActivation);
 
