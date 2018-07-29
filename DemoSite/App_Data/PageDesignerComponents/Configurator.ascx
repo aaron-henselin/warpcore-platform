@@ -6,15 +6,16 @@
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             
-            <h3>
-                Settings<br/>
-                <small>
+            <h3 style="min-height: 50px;">
+                <small class="pull-right">
                     <button class="configurator-cancel btn">
                         <span class="glyphicon glyphicon-info-sign">
                         </span> Cancel
                     </button>
                     <asp:Button CssClass="btn" runat="server" Text="Save" ID="SaveButton"/>
                 </small>
+                Settings<br/>
+                
             </h3>
             <wc-configurator-data style="display: none;">
                 <asp:PlaceHolder runat="server" ID="DataBoundElements">

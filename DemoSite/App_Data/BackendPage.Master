@@ -20,7 +20,7 @@
 <body class="wc-backend">
     <form id="form1" runat="server">
         <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/AdminSite/NavBar.ascx"/>
-        <div>
+        <div class="container">
             <h1 runat="server" ID="PageHeader"><%# Page.Title %></h1>
             <asp:ContentPlaceHolder ID="Body" runat="server">
             </asp:ContentPlaceHolder>

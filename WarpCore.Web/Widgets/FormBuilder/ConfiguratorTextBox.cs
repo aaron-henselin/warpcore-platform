@@ -41,7 +41,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
             ID = PropertyName;
 
-            this.Controls.Add(new Label { Text = DisplayName });
+            this.Controls.Add(new Label { Text = DisplayName,CssClass = "form-label"});
             _tbx.ID = PropertyName + "_TextBox";
             this.Controls.Add(_tbx);
         }
