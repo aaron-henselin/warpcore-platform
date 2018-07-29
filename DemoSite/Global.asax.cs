@@ -24,12 +24,16 @@ namespace DemoSite
         {
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             
-            SetupToolbox();
-          
-            SetupBackendSite();
+            BootEvents.RegisterSiteBootAction(() =>
+            {
+                SetupToolbox();
+                SetupBackendSite();
 
-            PublishingShortcuts.PublishSites();
-            SetupTestSite();
+                PublishingShortcuts.PublishSites();
+                SetupTestSite();
+            });
+
+
         }
 
         private void SetupToolbox()
@@ -54,9 +58,7 @@ namespace DemoSite
                 FriendlyName = "Dynamic Form"
             });
 
-            WebBootstrapper.PreloadPlugins();
-            WebBootstrapper.BuildUpRepositoryMetadata();
-            WebBootstrapper.BuildUpToolbox();
+
         }
 
         private void SetupBackendSite()

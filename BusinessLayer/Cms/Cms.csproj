@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="ContentBlock\ContentSpecification.cs" />
+    <Compile Include="DynamicContent\RepositoryActivator.cs" />
     <Compile Include="Forms\Class1.cs" />
     <Compile Include="Layout\LayoutRepository.cs" />
     <Compile Include="MultilingualString.cs" />

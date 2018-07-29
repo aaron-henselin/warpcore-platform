@@ -11,10 +11,21 @@ namespace Framework
         {
             return types.Where(x => x.GetCustomAttribute<T>() != null);
         }
+
+        public static object GetDefault(this Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
     }
 
     public static class ObjectExtensions
     {
+
         public static IEnumerable<PropertyInfo> GetPropertiesFiltered(this Type type, Func<PropertyInfo, bool> condition)
         {
             foreach (var property in type.GetProperties())

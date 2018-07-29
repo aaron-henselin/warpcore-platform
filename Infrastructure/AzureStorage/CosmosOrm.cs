@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Framework;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -34,11 +35,13 @@ namespace WarpCore.DbEngines.AzureStorage
     public interface ICosmosOrm
     {
         void Save<T>(T item) where T : CosmosEntity;
-        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment version = ContentEnvironment.Live) 
+
+        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition,
+            ContentEnvironment version = ContentEnvironment.Live)
             where T : VersionedContentEntity, new();
 
         Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
-            where T :UnversionedContentEntity, new();
+            where T : UnversionedContentEntity, new();
 
         void Delete<T>(T copy) where T : CosmosEntity;
     }
@@ -63,10 +66,12 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public abstract class VersionedContentEntity : CosmosEntity
     {
-        public VersionedContentEntity()
+
+        public VersionedContentEntity() : base(Dependency.Resolve<IDynamicContentDefinitionResolver>())
         {
             this.ContentEnvironment = ContentEnvironment.Draft;
         }
+        
 
         public string GetContentChecksum()
         {
@@ -79,15 +84,14 @@ namespace WarpCore.DbEngines.AzureStorage
 
             return dict.ToString();
         }
-        
 
-        [JsonIgnore]
-        public decimal ContentVersion { get; set; }
+
+        [JsonIgnore] public decimal ContentVersion { get; set; }
 
         [JsonIgnore]
         public ContentEnvironment ContentEnvironment
         {
-            get => (ContentEnvironment)Enum.Parse(typeof(ContentEnvironment), PartitionKey);
+            get => (ContentEnvironment) Enum.Parse(typeof(ContentEnvironment), PartitionKey);
             set => PartitionKey = value.ToString();
         }
 
@@ -95,16 +99,57 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public abstract class UnversionedContentEntity : CosmosEntity
     {
-        public UnversionedContentEntity()
+        public UnversionedContentEntity() : base(Dependency.Resolve<IDynamicContentDefinitionResolver>())
         {
             this.PartitionKey = ContentEnvironment.Any.ToString();
         }
     }
 
+    public class DynamicPropertyDescription
+    {
+        public string PropertyName { get; set; }
+        public string PropertyTypeName { get; set; }
 
+    }
 
+    public interface IDynamicContentDefinitionResolver
+    {
+        DynamicContentDefinition Resolve(Type type);
+    }
+
+    public class DynamicContentDefinition
+    {
+        public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
+            new List<DynamicPropertyDescription>();
+
+        public string EntityUid { get; set; }
+    }
+    
     public abstract class CosmosEntity : TableEntity
     {
+        private IDynamicContentDefinitionResolver dynamicContentDefinitionResolver;
+
+        public CosmosEntity(DynamicContentDefinition definition)
+        {
+            InitializeCustomFields(definition);
+        }
+
+        private void InitializeCustomFields(DynamicContentDefinition definition)
+        {
+            foreach (var field in definition.DynamicProperties)
+            {
+                var t = Type.GetType(field.PropertyTypeName);
+                CustomFieldData[field.PropertyName] = t.GetDefault()?.ToString();
+            }
+        }
+
+        protected CosmosEntity(IDynamicContentDefinitionResolver dynamicContentDefinitionResolver)
+        {
+            var def =dynamicContentDefinitionResolver.Resolve(this.GetType());
+            if (def != null)
+                InitializeCustomFields(def);
+        }
+
         [JsonIgnore]
         public bool IsNew => RowKey == null;
         
@@ -138,6 +183,9 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
         internal bool IsDirty => InternalId == null || !string.Equals(ChangeTracking, JsonConvert.SerializeObject(this));
+
+        [StoreAsComplexData]
+        public Dictionary<string,string> CustomFieldData { get; set; }=new Dictionary<string, string>();
 
         public string ComplexData
         {
@@ -176,7 +224,7 @@ namespace WarpCore.DbEngines.AzureStorage
     }
 
     
-    
+
 
     public static class By
     {
@@ -272,17 +320,22 @@ namespace WarpCore.DbEngines.AzureStorage
             return result;
         }
 
-        private async Task<CloudTable> GetOrCreateTable<T>() where T : CosmosEntity
+        private async Task<CloudTable> GetOrCreateTable(Type type) 
         {
-            var table = typeof(T).GetCustomAttribute<TableAttribute>();
+            var table = type.GetCustomAttribute<TableAttribute>();
             var tableRef = _client.GetTableReference(table.Name);
-            if (!_collectionUris.ContainsKey(typeof(T)))
+            if (!_collectionUris.ContainsKey(type))
             {
                 await tableRef.CreateIfNotExistsAsync();
-                _collectionUris.Add(typeof(T), tableRef.Uri);
+                _collectionUris.Add(type, tableRef.Uri);
             }
 
             return tableRef;
+        }
+
+        private async Task<CloudTable> GetOrCreateTable<T>() where T : CosmosEntity
+        {
+            return await GetOrCreateTable(typeof(T));
         }
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Web.Compilation;
 using WarpCore.DbEngines.AzureStorage;
@@ -11,6 +12,7 @@ namespace WarpCore.Cms.Toolbox
 
 
     [Table("cms_toolbox_item")]
+    [CosmosEntity(AllowCustomFields = true, Uid = "cms-toolbox-item")]
     public class ToolboxItem : UnversionedContentEntity
     {
         public string WidgetUid { get; set; }
@@ -23,11 +25,36 @@ namespace WarpCore.Cms.Toolbox
     }
 
     [Table("cms_repository_metadata")]
+    [CosmosEntity(AllowCustomFields = false,Uid= "cms-repository-metadata")]
     public class RepositoryMetdata : UnversionedContentEntity
     {
         public string RepositoryUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
         public string ContentName { get; set; }
+        public List<DynamicContentDefinition> DynamicContentDefinitions { get; set; } = new List<DynamicContentDefinition>();
+    }
+
+    public class DynamicContentDefinitionResolver : IDynamicContentDefinitionResolver
+    {
+        static Dictionary<Type,DynamicContentDefinition> _definitions = new Dictionary<Type, DynamicContentDefinition>();
+
+        public DynamicContentDefinition Resolve(Type type)
+        {
+            if (_definitions.ContainsKey(type))
+                return _definitions[type];
+
+            var cosmosEntityAttribute = type.GetCustomAttribute<CosmosEntityAttribute>();
+            if (cosmosEntityAttribute == null)
+                return null;
+
+            if (!cosmosEntityAttribute.AllowCustomFields)
+                return null;
+
+            var dynamiContentDefinitions = new RepositoryMetadataManager().Find().SelectMany(x => x.DynamicContentDefinitions);
+            var def = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == cosmosEntityAttribute.Uid);
+            _definitions.Add(type,def);
+            return _definitions[type];
+        }
     }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Web.UI;
 using Cms.Toolbox;
 using Framework;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using TinyIoC;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
@@ -85,11 +87,26 @@ namespace WarpCore.Web
 
     }
 
+    public static class BootEvents
+    {
+        private static ConcurrentBag<Action> _afterBootActions = new ConcurrentBag<Action>();
+        public static void RegisterSiteBootAction(Action a)
+        {
+            _afterBootActions.Add(a);
+        }
 
+        internal static void RunSiteBootActions()
+        {
+            foreach (var action in _afterBootActions)
+                action();
+        }
+
+    }
 
 
     public static class WebBootstrapper
     {
+
         public static void PreloadPlugins()
         {
             ConditionalAssemblyLoader.LoadAssemblies(asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
@@ -156,6 +173,7 @@ namespace WarpCore.Web
         private static readonly object _bootStartedSync = new object();
         private static bool _bootingStarted;
 
+      
         public static void EnsureSiteBootHasBeenStarted()
         {
             lock (_bootStartedSync)
@@ -166,12 +184,15 @@ namespace WarpCore.Web
                 _bootingStarted = true;
                 Task.Run(() =>
                 {
-
+                    Dependency.Register<IDynamicContentDefinitionResolver>(typeof(DynamicContentDefinitionResolver));
+                    
+                    PreloadPlugins();
+                    BuildUpRepositoryMetadata();
                     BuildUpToolbox();
-                    Thread.Sleep(2000);
+                    
                     IsBooted = true;
 
-                });
+                }).ContinueWith(x =>BootEvents.RunSiteBootActions());
             }
         }
 

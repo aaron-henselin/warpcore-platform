@@ -9,6 +9,11 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
+    public class CosmosEntityAttribute : Attribute
+    {
+        public string Uid { get; set; }
+        public bool AllowCustomFields { get; set; } = true;
+    }
     public class InMemoryDb : ICosmosOrm
     {
         private static DataSet _ds = new DataSet();
