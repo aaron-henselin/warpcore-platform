@@ -5,22 +5,37 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI;
 using Framework;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace Cms.Toolbox
 {
+
+
+
+
+    public class ListOption
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
     public class IsWarpCorePluginAssemblyAttribute : Attribute
     {
     }
 
+    public enum SettingType { Text,OptionList}
+
     public class SettingAttribute : Attribute
     {
+        public SettingType SettingType { get; set; }
     }
 
     public class SettingProperty
     {
         public PropertyInfo PropertyInfo { get; set; }
         public string DisplayName { get; set; }
+        public SettingType? SettingType { get; set; }
     }
 
     public class IncludeInToolboxAttribute : Attribute
@@ -64,7 +79,10 @@ namespace Cms.Toolbox
 
     public static class ToolboxPropertyFilter
     {
-        public static Func<PropertyInfo, bool> IsConfigurable => x => x.HasAttribute<SettingAttribute>();
+        public static Func<PropertyInfo, bool> IsConfigurable => x => x.HasAttribute<SettingAttribute>() && IsNotIgnoredType(x);
+        public static Func<PropertyInfo, bool> IsNotIgnoredType => x => x.DeclaringType != typeof(Control) &&
+                                                                        x.DeclaringType != typeof(CosmosEntity);
+        
     }
 
     public static class RepositoryMetadataReader
@@ -91,13 +109,14 @@ namespace Cms.Toolbox
                 if (!include)
                     continue;
 
-
+                
                 var displayNameDefinition = (DisplayNameAttribute)property.GetCustomAttribute(typeof(DisplayNameAttribute));
                 properties.Add(new SettingProperty
                 {
                     PropertyInfo = property,
                     DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
-
+                    //DataSource = property.GetCustomAttributes().OfType<IListControlSource>().FirstOrDefault(),
+                    SettingType = property.GetCustomAttributes().OfType<SettingAttribute>().FirstOrDefault()?.SettingType
                 });
             }
 

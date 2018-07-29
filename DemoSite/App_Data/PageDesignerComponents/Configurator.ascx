@@ -9,29 +9,25 @@
             <h3>
                 Settings<br/>
                 <small>
-                    <button class="configurator-cancel">
+                    <button class="configurator-cancel btn">
                         <span class="glyphicon glyphicon-info-sign">
                         </span> Cancel
                     </button>
-
-                    <%--                    <button class="configurator-save">
-                        <span class="glyphicon glyphicon-info-sign">
-                        </span> Save
-                    </button>--%>
-                    <asp:Button runat="server" Text="Save" ID="SaveButton"/>
+                    <asp:Button CssClass="btn" runat="server" Text="Save" ID="SaveButton"/>
                 </small>
             </h3>
+            <wc-configurator-data style="display: none;">
+                <asp:PlaceHolder runat="server" ID="DataBoundElements">
 
-            <asp:PlaceHolder runat="server" ID="DataBoundElements">
 
-
-                <input 
-                    name="WC_CONFIGURATOR_CONTEXT_JSON" 
-                    id="WC_CONFIGURATOR_CONTEXT_JSON"
-                    value="<%# WC_CONFIGURATOR_CONTEXT_JSON %>"
-                />
-            </asp:PlaceHolder>
-            <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
+                    <input 
+                        name="WC_CONFIGURATOR_CONTEXT_JSON" 
+                        id="WC_CONFIGURATOR_CONTEXT_JSON"
+                        value="<%# WC_CONFIGURATOR_CONTEXT_JSON %>"
+                    />
+                </asp:PlaceHolder>
+                <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
+            </wc-configurator-data>
         
             <div id="surface" runat="server">
                 <a:RuntimeContentPlaceHolder ID="ConfiguratorFormBuilderRuntimePlaceHolder" PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" runat="server">

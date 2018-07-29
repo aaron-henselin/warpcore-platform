@@ -18,6 +18,7 @@ using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Scripting;
 using WarpCore.Web.Widgets;
+using WarpCore.Web.Widgets.FormBuilder;
 
 namespace WarpCore.Web
 {

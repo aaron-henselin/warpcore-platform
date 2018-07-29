@@ -106,7 +106,8 @@ namespace WarpCore.Web
                 var repositoryTypes = asm.GetTypes().HavingAttribute<RepositoryUidAttribute>();
                 foreach (var repoType in repositoryTypes)
                 {
-                    var uid = repoType.GetCustomAttribute<RepositoryUidAttribute>().Uid;
+                    var repositoryUid = repoType.GetCustomAttribute<RepositoryUidAttribute>();
+                    var uid = repositoryUid.Uid;
                     var alreadyExists = preexistingMetadata.ContainsKey(uid);
 
                     RepositoryMetdata metadata = new RepositoryMetdata();
@@ -115,6 +116,7 @@ namespace WarpCore.Web
 
                     metadata.RepositoryUid = uid;
                     metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
+                    metadata.ContentName = repositoryUid.ManagedContentFriendlyName;
                     respositoryManager.Save(metadata);
                 }
 

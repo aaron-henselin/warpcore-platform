@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms;
 using Cms.Toolbox;
 
-namespace WarpCore.Web.Widgets
+namespace WarpCore.Web.Widgets.Content
 {
     [IncludeInToolbox(WidgetUid="WC/ContentBlock", FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control

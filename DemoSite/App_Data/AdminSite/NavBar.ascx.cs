@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
+using WarpCore.Web.Extensions;
 
 namespace DemoSite
 {
@@ -52,7 +55,11 @@ namespace DemoSite
 
         private NavBarItem CreateNavBarItem(SitemapNode node)
         {
-            var topLevel = new NavBarItem { Text = node.Page.Name, Url = node.VirtualPath.ToString(), ChildItems = new List<NavBarItem>() };
+            var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
+            var uriBuilder = new CmsUriBuilder(uriBuilderContext);
+            var uri = uriBuilder.CreateUri(node.Page, UriSettings.Default);
+
+            var topLevel = new NavBarItem { Text = node.Page.Name, Url = uri.ToString(), ChildItems = new List<NavBarItem>() };
             foreach (var child in node.ChildNodes)
                 topLevel.ChildItems.Add(CreateNavBarItem(child));
 

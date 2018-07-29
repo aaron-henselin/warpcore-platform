@@ -85,6 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
+    <Compile Include="Widgets\FormBuilder\CmsFormReadWriter.cs" />
+    <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
+    <Compile Include="Widgets\FormBuilder\ConfiguratorDropDownList.cs" />
+    <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorTextBox.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="DynamicPage.aspx.cs">
@@ -105,8 +109,9 @@
     <Compile Include="ServiceModel\WidgetApiRouteHandler.cs" />
     <Compile Include="WebBootrstrapper.cs" />
     <Compile Include="Widgets\AscxPlaceHolder.cs" />
+    <Compile Include="Widgets\FormBuilder\Support\FormBuilderDataSources.cs" />
     <Compile Include="Widgets\Layout\Column.cs" />
-    <Compile Include="Widgets\ContentBlock.cs" />
+    <Compile Include="Widgets\Content\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
     <Compile Include="Widgets\Layout\LayoutControl.cs" />
     <Compile Include="Widgets\Layout\RowLayout.cs" />

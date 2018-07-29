@@ -96,7 +96,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Data\AdminSite\SiteManagementContext.cs" />
     <Compile Include="App_Data\Booting.aspx.cs">
       <DependentUpon>Booting.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

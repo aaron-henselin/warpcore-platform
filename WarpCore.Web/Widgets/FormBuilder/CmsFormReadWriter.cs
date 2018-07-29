@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Web.UI;
 using WarpCore.Web.Extensions;
-using WarpCore.Web.Widgets.FormBuilder;
 
-namespace DemoSite
+namespace WarpCore.Web.Widgets.FormBuilder
 {
     public static class CmsFormReadWriter
     {
@@ -20,16 +18,7 @@ namespace DemoSite
             {
                 configuratorControl.InitializeEditingContext(editingContext);
             }
-
-            //var configuratorWidget = activatedWidget as IConfiguratorControl;
-            //if (configuratorWidget != null)
-            //{
-            //    var editingContext = new ConfiguratorEditingContext();
-            //    editingContext.CmsPageContent = content;
-            //    editingContext.
-            //        configuratorWidget.InitializeEditingContext();
-            //}
-
+            
         }
 
         public static void FillInControlValues(Control surface,ConfiguratorEditingContext editingContext)

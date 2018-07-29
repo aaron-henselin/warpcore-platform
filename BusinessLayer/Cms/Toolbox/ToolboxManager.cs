@@ -27,8 +27,11 @@ namespace WarpCore.Cms.Toolbox
     {
         public string RepositoryUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
+        public string ContentName { get; set; }
     }
-    
+
+
+    [RepositoryUid("3f4d69f2-5849-4a49-9ee5-ad91b9ad251e", ManagedContentFriendlyName = "Repositories")]
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {
 

@@ -9,6 +9,9 @@ namespace DemoSite
     {
         public static Site GetSiteToManage()
         {
+            if (HttpContext.Current == null)
+                return null;
+
             var siteRepository = new SiteRepository();
             var allSites = siteRepository.Find();
 

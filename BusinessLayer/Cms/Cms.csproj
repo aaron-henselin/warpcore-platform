@@ -66,6 +66,7 @@
     <Compile Include="Routing\RouteDiscoveryTool.cs" />
     <Compile Include="Routing\SlugGenerator.cs" />
     <Compile Include="Routing\UriBuilder.cs" />
+    <Compile Include="SiteManagement\SiteManagementContext.cs" />
     <Compile Include="Sitemap\SitemapBuilder.cs" />
     <Compile Include="Sites\SiteRepository.cs" />
     <Compile Include="Sites\SiteStructure.cs" />

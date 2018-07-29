@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Web.UI;
 using Cms;
 using Cms.Toolbox;
+using DemoSite;
 using Framework;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
@@ -237,6 +238,7 @@ namespace WarpCore.Cms
     public class RepositoryUidAttribute:Attribute
     {
         public string Uid { get; }
+        public string ManagedContentFriendlyName { get; set; }
 
         public RepositoryUidAttribute(string uid)
         {
@@ -245,7 +247,7 @@ namespace WarpCore.Cms
 
     }
 
-    [RepositoryUid("979fde2a-1983-480e-aca4-8caab3f762b0")]
+    [RepositoryUid("979fde2a-1983-480e-aca4-8caab3f762b0",ManagedContentFriendlyName = "Pages")]
     public class CmsPageRepository : VersionedContentRepository<CmsPage>
     {
 
@@ -395,7 +397,13 @@ namespace WarpCore.Cms
         public void Save(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
             if (cmsPage.SiteId == default(Guid))
+            {
+                var defaultFrontendSite = SiteManagementContext.GetSiteToManage();
+                if (defaultFrontendSite != null)
+                    cmsPage.SiteId = defaultFrontendSite.ContentId;
+                else
                 throw new Exception("Must specify site.");
+            }
 
             if (string.IsNullOrWhiteSpace(cmsPage.Slug))
             {

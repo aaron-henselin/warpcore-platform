@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using Framework;
+using WarpCore.Cms;
+using WarpCore.Cms.Toolbox;
 
-namespace DemoSite
+namespace WarpCore.Web.Widgets.FormBuilder
 {
+    
+
     [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox", Category = "Form Controls")]
-    public class ConfiguratorTextBox : PlaceHolder, INamingContainer
+    public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl
     {
-        private TextBox _tbx = new TextBox { AutoPostBack = true,CssClass = "form-control"};
+        private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
         [Setting]
         public string PropertyName { get; set; }
@@ -16,10 +24,15 @@ namespace DemoSite
         [Setting]
         public string DisplayName { get; set; }
 
-        public string Value
+        public string Text
         {
             get { return _tbx.Text; }
             set { _tbx.Text = value; }
+        }
+
+        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        {
+            //throw new NotImplementedException();
         }
 
         protected override void OnInit(EventArgs e)

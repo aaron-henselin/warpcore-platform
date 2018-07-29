@@ -9,6 +9,7 @@ using Framework;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
+using WarpCore.Web.Widgets.FormBuilder;
 
 namespace DemoSite
 {
@@ -42,13 +43,17 @@ namespace DemoSite
                 _contentId = new Guid(contentIdRaw);
 
             var draft = GetDraft();
+            var d = draft.GetPropertyValues(ToolboxPropertyFilter.IsNotIgnoredType);
 
-            //var allProperties = ToolboxMetadataReader.ReadProperties(draft.GetType(), x => true);
-            var d = draft.GetPropertyValues(x => true);
-
-            //var d = new Dictionary<string,string>();
-            CmsFormReadWriter.FillInControlValues(surface,d);
-            //todo: props from form.
+            var configuratorEditingContext = new ConfiguratorEditingContext
+            {
+                ClrType = draft.GetType(),
+                PropertyFilter = ToolboxPropertyFilter.IsNotIgnoredType,
+                CurrentValues = d
+            };
+            CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
+            CmsFormReadWriter.FillInControlValues(surface,configuratorEditingContext);
+            
         }
 
         protected void Page_Load(object sender, EventArgs e)

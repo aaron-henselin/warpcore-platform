@@ -15,22 +15,25 @@ namespace Framework
 
     public static class ObjectExtensions
     {
+        public static IEnumerable<PropertyInfo> GetPropertiesFiltered(this Type type, Func<PropertyInfo, bool> condition)
+        {
+            foreach (var property in type.GetProperties())
+            {
+                if (condition(property))
+                    yield return property;
+            }
+        }
+
         public static IDictionary<string, string> GetPropertyValues(this object activated, Func<PropertyInfo,bool> condition)
         {
+            var propertiesFilered = activated.GetType().GetPropertiesFiltered(condition).ToList();
+
             var parameters = new Dictionary<string, string>();
-            foreach (var property in activated.GetType().GetProperties())
+            foreach (var property in propertiesFilered)
             {
                 if (!property.CanRead)
                     continue;
-
-                var success = condition(property);
-                if (!success)
-                    continue;
-
-                //var isSetting = property.GetCustomAttribute<SettingAttribute>() != null;
-                //if (!isSetting)
-                //    continue;
-
+                
                 var key = property.Name;
                 var val = (string)DesignerTypeConverter.ChangeType(property.GetValue(activated), typeof(string));
                 parameters.Add(key, val);

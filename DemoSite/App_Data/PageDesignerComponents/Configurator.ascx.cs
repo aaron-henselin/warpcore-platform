@@ -18,6 +18,7 @@ using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets;
+using WarpCore.Web.Widgets.FormBuilder;
 
 namespace DemoSite
 {
@@ -44,20 +45,36 @@ namespace DemoSite
             cmsForm.FormContent.Add(rowLayout);
            
             var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+            var defaults = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
             var configuratorSettingProperties = ToolboxMetadataReader.ReadProperties(clrType,ToolboxPropertyFilter.IsConfigurable);
 
             foreach (var property in configuratorSettingProperties)
             {
-                var textboxPageContent=
+                if (property.SettingType == null || property.SettingType == SettingType.Text)
+                {
+                    var textboxPageContent =
                         factory.CreateToolboxItemContent(new ConfiguratorTextBox
                         {
                             PropertyName = property.PropertyInfo.Name,
                             DisplayName = property.DisplayName
                         });
 
-                textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
-                rowLayout.AllContent.Add(textboxPageContent);
-        
+                    textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
+                    rowLayout.AllContent.Add(textboxPageContent);
+                }
+                else
+                {
+                    var textboxPageContent =
+                        factory.CreateToolboxItemContent(new ConfiguratorDropDownList
+                        {
+                            PropertyName = property.PropertyInfo.Name,
+                            DisplayName = property.DisplayName,
+                                                        //RepositoryUid = defaults[property.PropertyInfo.Name] //todo: no idea how to handle this one yet.
+                        });
+
+                    textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
+                    rowLayout.AllContent.Add(textboxPageContent);
+                }
             }
 
             return cmsForm;
@@ -127,7 +144,15 @@ namespace DemoSite
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
 
-            CmsFormReadWriter.FillInControlValues(surface,parametersAfterActivation);
+            var configuratorEditingContext = new ConfiguratorEditingContext
+            {
+                ClrType = activatedControl.GetType(),
+                PropertyFilter = ToolboxPropertyFilter.IsConfigurable,
+                CurrentValues = parametersAfterActivation
+            };
+            CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
+            CmsFormReadWriter.FillInControlValues(surface, configuratorEditingContext);
+
 
         }
 
