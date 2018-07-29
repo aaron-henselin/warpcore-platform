@@ -84,19 +84,19 @@ namespace DemoSite
 
         protected void BackToPageTreeLinkButton_OnClick(object sender, EventArgs e)
         {
-            Response.Redirect("/admin/pagetree");
+            Response.Redirect("/admin/pages");
         }
 
         protected void SaveDraftButton_OnClick(object sender, EventArgs e)
         {
             SaveChangesImpl(false);
-            Response.Redirect("/admin/pagetree");
+            Response.Redirect("/admin/pages");
         }
 
         protected void SaveAndPublishButton_OnClick(object sender, EventArgs e)
         {
             SaveChangesImpl(true);
-            Response.Redirect("/admin/pagetree");
+            Response.Redirect("/admin/pages");
         }
 
         private static void SaveChangesImpl(bool publish)
