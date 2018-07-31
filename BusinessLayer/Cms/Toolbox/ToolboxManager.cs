@@ -25,12 +25,10 @@ namespace WarpCore.Cms.Toolbox
     }
 
     [Table("cms_repository_metadata")]
-    [CosmosEntity(AllowCustomFields = false,Uid= "cms-repository-metadata")]
     public class RepositoryMetdata : UnversionedContentEntity
     {
-        public string RepositoryUid { get; set; }
+        public string TypeResolverUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
-        public string ContentName { get; set; }
         public List<DynamicContentDefinition> DynamicContentDefinitions { get; set; } = new List<DynamicContentDefinition>();
     }
 
@@ -43,25 +41,31 @@ namespace WarpCore.Cms.Toolbox
             if (_definitions.ContainsKey(type))
                 return _definitions[type];
 
-            var cosmosEntityAttribute = type.GetCustomAttribute<CosmosEntityAttribute>();
-            if (cosmosEntityAttribute == null)
-                return null;
-
-            if (!cosmosEntityAttribute.AllowCustomFields)
-                return null;
 
             var dynamiContentDefinitions = new RepositoryMetadataManager().Find().SelectMany(x => x.DynamicContentDefinitions);
-            var def = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == cosmosEntityAttribute.Uid);
-            _definitions.Add(type,def);
+
+            var cosmosEntityAttribute = type.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
+            if (cosmosEntityAttribute != null)
+            {
+                
+                var def = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == cosmosEntityAttribute.TypeUid);
+                _definitions.Add(type, def);
+                return _definitions[type];
+            }
+
+            var altDef = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == type.AssemblyQualifiedName);
+            _definitions.Add(type, altDef);
             return _definitions[type];
         }
     }
 
 
-    [RepositoryUid("3f4d69f2-5849-4a49-9ee5-ad91b9ad251e", ManagedContentFriendlyName = "Repositories")]
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {
-
+        public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid typeResolverUid)
+        {
+            return Find(nameof(RepositoryMetdata.TypeResolverUid) + " eq '" + typeResolverUid + "'").First();
+        }
     }
 
     public class ToolboxManager : UnversionedContentRepository<ToolboxItem>

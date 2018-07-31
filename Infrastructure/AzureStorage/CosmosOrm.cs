@@ -152,7 +152,17 @@ namespace WarpCore.DbEngines.AzureStorage
 
         [JsonIgnore]
         public bool IsNew => RowKey == null;
-        
+
+        [StoreAsComplexData]
+        public Dictionary<string, string> CustomFieldData { get; set; } = new Dictionary<string, string>();
+
+        public void SetCustomField<T>(string fieldName, T value)
+        {
+            if (!CustomFieldData.ContainsKey(fieldName))
+                throw new Exception(fieldName + " is not a registered field.");
+
+            CustomFieldData[fieldName] = (string)DesignerTypeConverter.ChangeType(value, typeof(string));
+        }
 
         /// <summary>
         /// An id unique to each environment, not shared between master and published copies
@@ -184,8 +194,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         internal bool IsDirty => InternalId == null || !string.Equals(ChangeTracking, JsonConvert.SerializeObject(this));
 
-        [StoreAsComplexData]
-        public Dictionary<string,string> CustomFieldData { get; set; }=new Dictionary<string, string>();
+
 
         public string ComplexData
         {

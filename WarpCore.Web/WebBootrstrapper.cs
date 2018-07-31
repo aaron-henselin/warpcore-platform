@@ -115,29 +115,41 @@ namespace WarpCore.Web
         public static void BuildUpRepositoryMetadata()
         {
             var respositoryManager = new RepositoryMetadataManager();
-            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.RepositoryUid);
+            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.TypeResolverUid);
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
+            var allTypes = assemblies.SelectMany(x => x.GetTypes());
+
+            var customizableTypes = allTypes.HavingAttribute<TypeResolverKnownTypeAttribute>().ToList();
+            var repositories = customizableTypes.Where(x => typeof(IContentRepository).IsAssignableFrom(x));
+            var entities = customizableTypes.Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
+
+            foreach (var repoType in repositories)
             {
-                var repositoryTypes = asm.GetTypes().HavingAttribute<RepositoryUidAttribute>();
-                foreach (var repoType in repositoryTypes)
-                {
-                    var repositoryUid = repoType.GetCustomAttribute<RepositoryUidAttribute>();
-                    var uid = repositoryUid.Uid;
-                    var alreadyExists = preexistingMetadata.ContainsKey(uid);
+                var repositoryUid = repoType.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
+                var uid = repositoryUid.TypeUid;
+                var alreadyExists = preexistingMetadata.ContainsKey(uid);
 
-                    RepositoryMetdata metadata = new RepositoryMetdata();
-                    if (alreadyExists)
-                        metadata = preexistingMetadata[uid];
+                RepositoryMetdata metadata = new RepositoryMetdata();
+                if (alreadyExists)
+                    metadata = preexistingMetadata[uid];
 
-                    metadata.RepositoryUid = uid;
-                    metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
-                    metadata.ContentName = repositoryUid.ManagedContentFriendlyName;
-                    respositoryManager.Save(metadata);
-                }
-
+                metadata.TypeResolverUid = uid;
+                metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
+                respositoryManager.Save(metadata);
             }
+
+            preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.TypeResolverUid);
+            foreach (var entityType in entities)
+            {
+                var repositoryUid = entityType.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
+                var uid = repositoryUid.TypeUid;
+                var parentUid = repositoryUid.ParentUid;
+                var exists = preexistingMetadata[parentUid].DynamicContentDefinitions.Any(x => x.EntityUid == uid);
+                if (!exists)
+                    preexistingMetadata[parentUid].DynamicContentDefinitions.Add(new DynamicContentDefinition{EntityUid = uid});
+            }
+
         }
 
         public static void BuildUpToolbox()

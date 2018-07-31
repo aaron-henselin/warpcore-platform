@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using Cms.Toolbox;
 using Framework;
@@ -22,9 +24,19 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
         {
+            
+
             var mgr = new RepositoryMetadataManager();
             foreach (var repo in mgr.Find())
-                yield return new ListOption { Text = repo.ContentName, Value = repo.RepositoryUid };
+            {
+                var t = Type.GetType(repo.AssemblyQualifiedTypeName);
+                var displayName = t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name;
+                yield return new ListOption
+                {
+                    Text = displayName,
+                    Value = repo.TypeResolverUid
+                };
+            }
         }
     }
 

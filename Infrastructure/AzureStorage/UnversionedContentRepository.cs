@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
-    public abstract class UnversionedContentRepository<T> where T : UnversionedContentEntity, new()
+    public abstract class UnversionedContentRepository<T> : IUnversionedContentRepositoryBase where T : UnversionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -32,6 +32,14 @@ namespace WarpCore.DbEngines.AzureStorage
             return Orm.FindUnversionedContent<T>(condition).Result.ToList();
         }
 
-        
+        CosmosEntity IContentRepository.New()
+        {
+            return new T();
+        }
+
+        void IContentRepository.Save(CosmosEntity item)
+        {
+            Save((T)item);
+        }
     }
 }

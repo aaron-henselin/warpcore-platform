@@ -15,12 +15,22 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public interface IVersionedContentRepositoryBase
+    public interface IContentRepository
     {
         CosmosEntity New();
 
         void Save(CosmosEntity item);
+    }
 
+    public interface IUnversionedContentRepositoryBase : IContentRepository
+    {
+        //IReadOnlyCollection<CosmosEntity> FindContentVersions(string condition,
+        //    ContentEnvironment version = ContentEnvironment.Live);
+    }
+
+
+    public interface IVersionedContentRepositoryBase : IContentRepository
+    {
         IReadOnlyCollection<CosmosEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
     }
@@ -64,12 +74,12 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
 
-        CosmosEntity IVersionedContentRepositoryBase.New()
+        CosmosEntity IContentRepository.New()
         {
             return new T();
         }
 
-        void IVersionedContentRepositoryBase.Save(CosmosEntity item)
+        void IContentRepository.Save(CosmosEntity item)
         {
             this.Save((T)item);
         }

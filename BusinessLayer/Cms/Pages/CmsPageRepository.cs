@@ -33,8 +33,10 @@ namespace WarpCore.Cms
     }
     
     [Table("cms_page")]
+    [TypeResolverKnownType(TypeResolverUid, CmsPageRepository.TypeResolverUid)]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
+        public const string TypeResolverUid = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
 
         [Column]
         public string Name { get; set; }
@@ -235,24 +237,31 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
     }
 
-
-
-    public class RepositoryUidAttribute:Attribute
+    public class TypeResolverKnownTypeAttribute : Attribute
     {
-        public string Uid { get; }
-        public string ManagedContentFriendlyName { get; set; }
-
-        public RepositoryUidAttribute(string uid)
+        public TypeResolverKnownTypeAttribute(string uid)
         {
-            Uid = uid;
+            TypeUid = uid;
         }
 
+        public TypeResolverKnownTypeAttribute(string uid, string parentUid)
+        {
+            TypeUid = uid;
+            ParentUid = parentUid;
+        }
+
+        public string ParentUid { get; set; }
+
+        public string TypeUid { get; set; }
     }
 
-    [RepositoryUid("979fde2a-1983-480e-aca4-8caab3f762b0",ManagedContentFriendlyName = "Pages")]
+
+
+
+    [TypeResolverKnownType(TypeResolverUid)]
     public class CmsPageRepository : VersionedContentRepository<CmsPage>
     {
-
+        public const string TypeResolverUid = "979fde2a-1983-480e-aca4-8caab3f762b0";
 
         private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {

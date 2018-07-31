@@ -31,7 +31,7 @@ namespace DemoSite
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
             var repoManager = new RepositoryMetadataManager();
-            var repoMetadata = repoManager.Find(nameof(RepositoryMetdata.RepositoryUid) + " eq '" +_cmsForm.RepositoryUid+"'").First();
+            var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(_cmsForm.RepositoryUid);
             var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
             _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
             

@@ -26,14 +26,31 @@ namespace DemoSite
             
             BootEvents.RegisterSiteBootAction(() =>
             {
+                SetupCustomFields();
                 SetupToolbox();
                 SetupBackendSite();
+                
 
                 PublishingShortcuts.PublishSites();
                 SetupTestSite();
             });
 
 
+        }
+
+        private void SetupCustomFields()
+        {
+            var mgr = new RepositoryMetadataManager();
+            var cmsPageRepositoryMetdata = mgr.GetRepositoryMetdataByTypeResolverUid(new Guid(CmsPageRepository.TypeResolverUid));
+            var cmsPageMetadata = cmsPageRepositoryMetdata.DynamicContentDefinitions.Single(x => x.EntityUid == CmsPage.TypeResolverUid);
+
+            cmsPageMetadata.DynamicProperties.Add(new DynamicPropertyDescription
+            {
+                PropertyName = "DisplayInNav",
+                PropertyTypeName = typeof(bool).FullName
+            });
+
+            mgr.Save(cmsPageRepositoryMetdata);
         }
 
         private void SetupToolbox()
@@ -97,6 +114,7 @@ namespace DemoSite
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId
             };
+            formDesigner.SetCustomField("DisplayInNav",false);
             formDesigner.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
