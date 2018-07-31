@@ -47,6 +47,12 @@ namespace DemoSite
             });
             tbx.Save(new ToolboxItem
             {
+                AscxPath = "/App_Data/BackendWidgets/EntityBuilder.ascx",
+                WidgetUid = "wc-entitybuilder",
+                FriendlyName = "Entity Builder"
+            });
+            tbx.Save(new ToolboxItem
+            {
                 AscxPath = "/App_Data/BackendWidgets/FormDesigner.ascx",
                 WidgetUid = "wc-formdesigner",
                 FriendlyName = "Form Designer"
@@ -57,6 +63,7 @@ namespace DemoSite
                 WidgetUid = "wc-dynamic-form",
                 FriendlyName = "Dynamic Form"
             });
+
 
 
         }
@@ -161,11 +168,25 @@ namespace DemoSite
             });
 
 
+            var entityBuilderPage = new CmsPage
+            {
+                Name = "Entity Builder",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
+            };
+            entityBuilderPage.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-entitybuilder",
+                Parameters = new Dictionary<string, string> { }
+            });
+
 
             var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
             pageRepo.Save(formDesigner);
             pageRepo.Save(pageSettings);
+            pageRepo.Save(entityBuilderPage);
 
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);
