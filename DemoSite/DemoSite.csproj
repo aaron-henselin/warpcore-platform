@@ -86,6 +86,7 @@
     <Content Include="App_Data\BackendWidgets\FormDesigner.ascx" />
     <Content Include="App_Data\Forms\DynamicForm.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityBuilder.ascx" />
+    <Content Include="App_Data\BackendWidgets\EntityList.ascx" />
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
@@ -158,6 +159,12 @@
     </Compile>
     <Compile Include="App_Data\BackendWidgets\EntityBuilder.ascx.designer.cs">
       <DependentUpon>EntityBuilder.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Data\BackendWidgets\EntityList.ascx.cs">
+      <DependentUpon>EntityList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Data\BackendWidgets\EntityList.ascx.designer.cs">
+      <DependentUpon>EntityList.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

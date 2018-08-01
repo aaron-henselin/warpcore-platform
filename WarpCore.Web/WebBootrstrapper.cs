@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
+using Cms.DynamicContent;
 using Cms.Toolbox;
 using Framework;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -151,7 +152,11 @@ namespace WarpCore.Web
                 var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
                 var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
-                    typeExtensionRepo.Save(new TypeExtension{TypeResolverUid = repositoryUid.TypeExtensionUid, ExtensionName = KnownTypeExtensionNames.CustomFields });
+                    typeExtensionRepo.Save(new TypeExtension
+                    {
+                        TypeResolverUid = repositoryUid.TypeExtensionUid,
+                        ExtensionName = KnownTypeExtensionNames.CustomFields
+                    });
                 
             }
 

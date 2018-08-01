@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.UI.WebControls;
+using Cms.DynamicContent;
 using Cms.Forms;
 using Cms.Layout;
 using WarpCore.Cms;
@@ -78,6 +79,12 @@ namespace DemoSite
                 AscxPath = "/App_Data/Forms/DynamicForm.ascx",
                 WidgetUid = "wc-dynamic-form",
                 FriendlyName = "Dynamic Form"
+            });
+            tbx.Save(new ToolboxItem
+            {
+                AscxPath = "/App_Data/BackendWidgets/EntityList.ascx",
+                WidgetUid = "wc-entity-list",
+                FriendlyName = "Entity List"
             });
 
 
@@ -198,12 +205,26 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { }
             });
 
+            var entityListPage = new CmsPage
+            {
+                Name = "Entities",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
+            };
+            entityListPage.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-entity-list",
+                Parameters = new Dictionary<string, string> { }
+            });
+
 
             var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
             pageRepo.Save(formDesigner);
             pageRepo.Save(pageSettings);
             pageRepo.Save(entityBuilderPage);
+            pageRepo.Save(entityListPage);
 
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);

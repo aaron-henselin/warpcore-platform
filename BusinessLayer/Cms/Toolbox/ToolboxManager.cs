@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.Compilation;
+using Cms.DynamicContent;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Cms.Toolbox
@@ -34,50 +35,6 @@ namespace WarpCore.Cms.Toolbox
     }
 
 
-
-    public class DynamicTypeDefinitionResolver : IDynamicTypeDefinitionResolver
-    {
-        static Dictionary<Guid, DynamicTypeDefinition> _definitions = new Dictionary<Guid, DynamicTypeDefinition>();
-
-        public DynamicTypeDefinition Resolve(Guid uid)
-        {
-            if (_definitions.ContainsKey(uid))
-                return _definitions[uid];
-
-            var typeExtensions = new TypeExtensionRepository().Find().Where(x => x.TypeResolverUid == uid);
-
-            var dtd = new DynamicTypeDefinition();
-            foreach (var extension in typeExtensions)
-            {
-                dtd.DynamicProperties.AddRange(extension.DynamicProperties);
-            }
-
-            _definitions.Add(uid, dtd);
-            return _definitions[uid];
-        }
-
-        public DynamicTypeDefinition Resolve(Type type)
-        {
-            var cosmosEntityAttribute = type.GetCustomAttribute<SupportsCustomFieldsAttribute>();
-            if (cosmosEntityAttribute != null)
-                return Resolve(cosmosEntityAttribute.TypeExtensionUid);
-
-            return null;
-        }
-    }
-
-    public struct KnownTypeExtensionNames
-    {
-        public const string CustomFields = "CustomFields";
-    }
-
-    public class TypeExtensionRepository : UnversionedContentRepository<TypeExtension>
-    {
-        public TypeExtension GetCustomFieldsTypeExtension(Guid uid)
-        {
-            return Find().Single(x => x.TypeResolverUid == uid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
-        }
-    }
 
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {

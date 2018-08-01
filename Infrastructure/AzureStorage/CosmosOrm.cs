@@ -7,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Framework;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -141,138 +140,17 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    [Table("cms_type_extension")]
-    public class TypeExtension : UnversionedContentEntity
-    {
-        public Guid TypeResolverUid { get; set; }
-
-        public string ExtensionName { get; set; }
-
-        public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
-            new List<DynamicPropertyDescription>();
-    }
-
     public class DynamicTypeDefinition
     {
         public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
             new List<DynamicPropertyDescription>();
     }
 
+
     public interface IDynamicTypeDefinitionResolver
     {
         DynamicTypeDefinition Resolve(Type type);
     }
-
-    
-    
-    public abstract class CosmosEntity : TableEntity
-    {
-        private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
-
-        public CosmosEntity(DynamicTypeDefinition definition)
-        {
-            InitializeCustomFields(definition);
-        }
-
-        private void InitializeCustomFields(DynamicTypeDefinition definition)
-        {
-            foreach (var field in definition.DynamicProperties)
-            {
-                var t = Type.GetType(field.PropertyTypeName);
-                CustomFieldData[field.PropertyName] = t.GetDefault()?.ToString();
-            }
-        }
-
-        protected CosmosEntity(IDynamicTypeDefinitionResolver dynamicTypeDefinitionResolver)
-        {
-            var def =dynamicTypeDefinitionResolver.Resolve(this.GetType());
-            if (def != null)
-                InitializeCustomFields(def);
-        }
-
-        [JsonIgnore]
-        public bool IsNew => RowKey == null;
-
-        [StoreAsComplexData]
-        public Dictionary<string, string> CustomFieldData { get; set; } = new Dictionary<string, string>();
-
-        public void SetCustomField<T>(string fieldName, T value)
-        {
-            if (!CustomFieldData.ContainsKey(fieldName))
-                throw new Exception(fieldName + " is not a registered field.");
-
-            CustomFieldData[fieldName] = (string)DesignerTypeConverter.ChangeType(value, typeof(string));
-        }
-
-        /// <summary>
-        /// An id unique to each environment, not shared between master and published copies
-        /// </summary>
-        [IgnoreProperty]
-        public Guid? InternalId
-        {
-            get
-            {
-                if (RowKey == null)
-                    return null;
-
-                return new Guid(this.RowKey);
-            }
-            set { this.RowKey = value?.ToString(); }
-        }
-
-        /// <summary>
-        /// An id unique to this content, but shared between master and published copies.
-        /// </summary>
-        public Guid ContentId { get; set; }
-
-        private string ChangeTracking { get; set; }
-
-        internal void InitializeChangeTracking()
-        {
-            ChangeTracking = JsonConvert.SerializeObject(this);
-        }
-
-        internal bool IsDirty => InternalId == null || !string.Equals(ChangeTracking, JsonConvert.SerializeObject(this));
-
-
-
-        public string ComplexData
-        {
-            get
-            {
-                var propsToSerialize = this.GetType()
-                    .GetProperties()
-                    .Where(x => x.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
-                             || x.PropertyType.GetCustomAttribute<StoreAsComplexDataAttribute>() != null  
-                           );
-                  
-
-                var dataDict = new Dictionary<string, object>();
-                foreach (var prop in propsToSerialize)
-                {
-                    dataDict.Add(prop.Name, prop.GetValue(this));
-                }
-
-                return JsonConvert.SerializeObject(dataDict);
-            }
-            set
-            {
-                var dataDict = JsonConvert.DeserializeObject(value, this.GetType());
-                var propsToSerialize = this.GetType()
-                    .GetProperties()
-                    .Where(x => x.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
-                             || x.PropertyType.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
-                                );
-
-                foreach (var prop in propsToSerialize)
-                {
-                    prop.SetValue(this, prop.GetValue(dataDict));
-                }
-            }
-        }
-    }
-
-    
 
 
     public static class By

@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CosmosEntity.cs" />
     <Compile Include="CosmosOrm.cs" />
     <Compile Include="InMemoryDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
