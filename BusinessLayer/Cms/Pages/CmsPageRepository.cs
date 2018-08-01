@@ -33,7 +33,7 @@ namespace WarpCore.Cms
     }
     
     [Table("cms_page")]
-    [TypeResolverKnownType(TypeResolverUid, CmsPageRepository.TypeResolverUid)]
+    [SupportsCustomFields(TypeResolverUid)]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
         public const string TypeResolverUid = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
@@ -237,20 +237,22 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
     }
 
-    public class TypeResolverKnownTypeAttribute : Attribute
+    public class SupportsCustomFieldsAttribute : Attribute
     {
-        public TypeResolverKnownTypeAttribute(string uid)
+        public SupportsCustomFieldsAttribute(string typeExtensionId)
+        {
+            TypeExtensionUid = new Guid(typeExtensionId);
+        }
+
+        public Guid TypeExtensionUid { get; set; }
+    }
+
+    public class FormDesignerInteropAttribute : Attribute
+    {
+        public FormDesignerInteropAttribute(string uid)
         {
             TypeUid = uid;
         }
-
-        public TypeResolverKnownTypeAttribute(string uid, string parentUid)
-        {
-            TypeUid = uid;
-            ParentUid = parentUid;
-        }
-
-        public string ParentUid { get; set; }
 
         public string TypeUid { get; set; }
     }
@@ -258,7 +260,7 @@ namespace WarpCore.Cms
 
 
 
-    [TypeResolverKnownType(TypeResolverUid)]
+    [FormDesignerInterop(TypeResolverUid)]
     public class CmsPageRepository : VersionedContentRepository<CmsPage>
     {
         public const string TypeResolverUid = "979fde2a-1983-480e-aca4-8caab3f762b0";

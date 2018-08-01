@@ -64,10 +64,39 @@ namespace WarpCore.DbEngines.AzureStorage
         public string Live { get; set; }
     }
 
+    interface IHasRuntimeTypeExtensionDefinition
+    {
+        string TypeExtensionUid { get; }
+    }
+
+    public class DynamicVersionedContent : VersionedContentEntity, IHasRuntimeTypeExtensionDefinition
+    {
+        private readonly string _uid;
+
+        public DynamicVersionedContent(string uid)
+        {
+            _uid = uid;
+        }
+
+        string IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
+    }
+
+    public class DynamicUnversionedContent : UnversionedContentEntity, IHasRuntimeTypeExtensionDefinition
+    {
+        private readonly string _uid;
+
+        public DynamicUnversionedContent(string uid)
+        {
+            _uid = uid;
+        }
+
+        string IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
+    }
+
     public abstract class VersionedContentEntity : CosmosEntity
     {
 
-        public VersionedContentEntity() : base(Dependency.Resolve<IDynamicContentDefinitionResolver>())
+        public VersionedContentEntity() : base(Dependency.Resolve<IDynamicTypeDefinitionResolver>())
         {
             this.ContentEnvironment = ContentEnvironment.Draft;
         }
@@ -99,7 +128,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public abstract class UnversionedContentEntity : CosmosEntity
     {
-        public UnversionedContentEntity() : base(Dependency.Resolve<IDynamicContentDefinitionResolver>())
+        public UnversionedContentEntity() : base(Dependency.Resolve<IDynamicTypeDefinitionResolver>())
         {
             this.PartitionKey = ContentEnvironment.Any.ToString();
         }
@@ -112,29 +141,40 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public interface IDynamicContentDefinitionResolver
+    [Table("cms_type_extension")]
+    public class TypeExtension : UnversionedContentEntity
     {
-        DynamicContentDefinition Resolve(Type type);
+        public Guid TypeResolverUid { get; set; }
+
+        public string ExtensionName { get; set; }
+
+        public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
+            new List<DynamicPropertyDescription>();
     }
 
-    public class DynamicContentDefinition
+    public class DynamicTypeDefinition
     {
         public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
             new List<DynamicPropertyDescription>();
-
-        public string EntityUid { get; set; }
     }
+
+    public interface IDynamicTypeDefinitionResolver
+    {
+        DynamicTypeDefinition Resolve(Type type);
+    }
+
+    
     
     public abstract class CosmosEntity : TableEntity
     {
-        private IDynamicContentDefinitionResolver dynamicContentDefinitionResolver;
+        private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
 
-        public CosmosEntity(DynamicContentDefinition definition)
+        public CosmosEntity(DynamicTypeDefinition definition)
         {
             InitializeCustomFields(definition);
         }
 
-        private void InitializeCustomFields(DynamicContentDefinition definition)
+        private void InitializeCustomFields(DynamicTypeDefinition definition)
         {
             foreach (var field in definition.DynamicProperties)
             {
@@ -143,9 +183,9 @@ namespace WarpCore.DbEngines.AzureStorage
             }
         }
 
-        protected CosmosEntity(IDynamicContentDefinitionResolver dynamicContentDefinitionResolver)
+        protected CosmosEntity(IDynamicTypeDefinitionResolver dynamicTypeDefinitionResolver)
         {
-            var def =dynamicContentDefinitionResolver.Resolve(this.GetType());
+            var def =dynamicTypeDefinitionResolver.Resolve(this.GetType());
             if (def != null)
                 InitializeCustomFields(def);
         }

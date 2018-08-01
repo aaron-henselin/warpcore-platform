@@ -8,7 +8,7 @@ using WarpCore.Cms.Toolbox;
 
 namespace Cms.DynamicContent
 {
-    [TypeResolverKnownType(TypeResolverUid)]
+    [FormDesignerInterop(TypeResolverUid)]
     public class DynamicRepository
     {
         public const string TypeResolverUid = "cdeb5593-a6b5-4b1f-9a0c-ab32047eac90";

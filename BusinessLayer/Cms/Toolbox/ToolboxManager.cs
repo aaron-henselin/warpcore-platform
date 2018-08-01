@@ -12,7 +12,6 @@ namespace WarpCore.Cms.Toolbox
 
 
     [Table("cms_toolbox_item")]
-    [CosmosEntity(AllowCustomFields = true, Uid = "cms-toolbox-item")]
     public class ToolboxItem : UnversionedContentEntity
     {
         public string WidgetUid { get; set; }
@@ -24,41 +23,61 @@ namespace WarpCore.Cms.Toolbox
         public string FriendlyName { get; set; }
     }
 
+
+
     [Table("cms_repository_metadata")]
     public class RepositoryMetdata : UnversionedContentEntity
     {
         public string TypeResolverUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
-        public List<DynamicContentDefinition> DynamicContentDefinitions { get; set; } = new List<DynamicContentDefinition>();
+
     }
 
-    public class DynamicContentDefinitionResolver : IDynamicContentDefinitionResolver
+
+
+    public class DynamicTypeDefinitionResolver : IDynamicTypeDefinitionResolver
     {
-        static Dictionary<Type,DynamicContentDefinition> _definitions = new Dictionary<Type, DynamicContentDefinition>();
+        static Dictionary<Guid, DynamicTypeDefinition> _definitions = new Dictionary<Guid, DynamicTypeDefinition>();
 
-        public DynamicContentDefinition Resolve(Type type)
+        public DynamicTypeDefinition Resolve(Guid uid)
         {
-            if (_definitions.ContainsKey(type))
-                return _definitions[type];
+            if (_definitions.ContainsKey(uid))
+                return _definitions[uid];
 
+            var typeExtensions = new TypeExtensionRepository().Find().Where(x => x.TypeResolverUid == uid);
 
-            var dynamiContentDefinitions = new RepositoryMetadataManager().Find().SelectMany(x => x.DynamicContentDefinitions);
-
-            var cosmosEntityAttribute = type.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
-            if (cosmosEntityAttribute != null)
+            var dtd = new DynamicTypeDefinition();
+            foreach (var extension in typeExtensions)
             {
-                
-                var def = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == cosmosEntityAttribute.TypeUid);
-                _definitions.Add(type, def);
-                return _definitions[type];
+                dtd.DynamicProperties.AddRange(extension.DynamicProperties);
             }
 
-            var altDef = dynamiContentDefinitions.SingleOrDefault(x => x.EntityUid == type.AssemblyQualifiedName);
-            _definitions.Add(type, altDef);
-            return _definitions[type];
+            _definitions.Add(uid, dtd);
+            return _definitions[uid];
+        }
+
+        public DynamicTypeDefinition Resolve(Type type)
+        {
+            var cosmosEntityAttribute = type.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+            if (cosmosEntityAttribute != null)
+                return Resolve(cosmosEntityAttribute.TypeExtensionUid);
+
+            return null;
         }
     }
 
+    public struct KnownTypeExtensionNames
+    {
+        public const string CustomFields = "CustomFields";
+    }
+
+    public class TypeExtensionRepository : UnversionedContentRepository<TypeExtension>
+    {
+        public TypeExtension GetCustomFieldsTypeExtension(Guid uid)
+        {
+            return Find().Single(x => x.TypeResolverUid == uid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
+        }
+    }
 
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {

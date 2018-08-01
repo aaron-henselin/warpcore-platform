@@ -64,7 +64,7 @@ namespace DemoSite
             var entityUiRaw = Request["wc-entity-uid"];
             if (!string.IsNullOrWhiteSpace(entityUiRaw))
             {
-                var dynamicPropertyViewModels = GetAllDynamicFields(entityUiRaw);
+                var dynamicPropertyViewModels = GetAllDynamicFields(new Guid(entityUiRaw));
                 _controlState.Properties = dynamicPropertyViewModels;
             }
 
@@ -72,14 +72,15 @@ namespace DemoSite
             
         }
 
-        private static List<DynamicPropertyViewModel> GetAllDynamicFields(string entityUiRaw)
+        private static List<DynamicPropertyViewModel> GetAllDynamicFields(Guid entityUiRaw)
         {
-            var md = new RepositoryMetadataManager().Find()
-                .SelectMany(x => x.DynamicContentDefinitions)
-                .First(x => x.EntityUid == entityUiRaw);
+            var dtd = new DynamicTypeDefinitionResolver().Resolve(entityUiRaw);
+
+            //var md = new TypeExtensionRepository().Find()
+            //    .First(x => x.TypeResolverUid == entityUiRaw);
 
             var dynamicPropertyViewModels =
-                md.DynamicProperties.Select(x => new DynamicPropertyViewModel
+                dtd.DynamicProperties.Select(x => new DynamicPropertyViewModel
                 {
                     Name = x.PropertyName,
                     FieldType = x.PropertyTypeName

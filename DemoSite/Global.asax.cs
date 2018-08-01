@@ -40,17 +40,16 @@ namespace DemoSite
 
         private void SetupCustomFields()
         {
-            var mgr = new RepositoryMetadataManager();
-            var cmsPageRepositoryMetdata = mgr.GetRepositoryMetdataByTypeResolverUid(new Guid(CmsPageRepository.TypeResolverUid));
-            var cmsPageMetadata = cmsPageRepositoryMetdata.DynamicContentDefinitions.Single(x => x.EntityUid == CmsPage.TypeResolverUid);
 
-            cmsPageMetadata.DynamicProperties.Add(new DynamicPropertyDescription
+            var mgr = new TypeExtensionRepository();
+            var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.TypeResolverUid));
+            extension.DynamicProperties.Add(new DynamicPropertyDescription
             {
                 PropertyName = "DisplayInNav",
                 PropertyTypeName = typeof(bool).FullName
             });
 
-            mgr.Save(cmsPageRepositoryMetdata);
+            mgr.Save(extension);
         }
 
         private void SetupToolbox()

@@ -103,6 +103,13 @@ namespace WarpCore.Web
 
     }
 
+    public static class FormDesignerClrInterop
+    {
+        public static void Load()
+        {
+
+        }
+    }
 
     public static class WebBootstrapper
     {
@@ -118,15 +125,14 @@ namespace WarpCore.Web
             var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.TypeResolverUid);
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var allTypes = assemblies.SelectMany(x => x.GetTypes());
-
-            var customizableTypes = allTypes.HavingAttribute<TypeResolverKnownTypeAttribute>().ToList();
-            var repositories = customizableTypes.Where(x => typeof(IContentRepository).IsAssignableFrom(x));
-            var entities = customizableTypes.Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
+            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
+            
+            var repositories = allTypes.HavingAttribute<FormDesignerInteropAttribute>().Where(x => typeof(IContentRepository).IsAssignableFrom(x));
+            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>().Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
 
             foreach (var repoType in repositories)
             {
-                var repositoryUid = repoType.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
+                var repositoryUid = repoType.GetCustomAttribute<FormDesignerInteropAttribute>();
                 var uid = repositoryUid.TypeUid;
                 var alreadyExists = preexistingMetadata.ContainsKey(uid);
 
@@ -139,15 +145,14 @@ namespace WarpCore.Web
                 respositoryManager.Save(metadata);
             }
 
-            preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.TypeResolverUid);
+            var typeExtensionRepo = new TypeExtensionRepository();
             foreach (var entityType in entities)
             {
-                var repositoryUid = entityType.GetCustomAttribute<TypeResolverKnownTypeAttribute>();
-                var uid = repositoryUid.TypeUid;
-                var parentUid = repositoryUid.ParentUid;
-                var exists = preexistingMetadata[parentUid].DynamicContentDefinitions.Any(x => x.EntityUid == uid);
-                if (!exists)
-                    preexistingMetadata[parentUid].DynamicContentDefinitions.Add(new DynamicContentDefinition{EntityUid = uid});
+                var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
+                if (preexisting == null)
+                    typeExtensionRepo.Save(new TypeExtension{TypeResolverUid = repositoryUid.TypeExtensionUid, ExtensionName = KnownTypeExtensionNames.CustomFields });
+                
             }
 
         }
@@ -196,7 +201,7 @@ namespace WarpCore.Web
                 _bootingStarted = true;
                 Task.Run(() =>
                 {
-                    Dependency.Register<IDynamicContentDefinitionResolver>(typeof(DynamicContentDefinitionResolver));
+                    Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
                     PreloadPlugins();
                     BuildUpRepositoryMetadata();
