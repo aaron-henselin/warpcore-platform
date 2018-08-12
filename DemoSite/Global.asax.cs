@@ -27,6 +27,7 @@ namespace DemoSite
             
             BootEvents.RegisterSiteBootAction(() =>
             {
+                SetupDynamicTypes();
                 SetupCustomFields();
                 SetupToolbox();
                 SetupBackendSite();
@@ -37,6 +38,31 @@ namespace DemoSite
             });
 
 
+        }
+
+        private void SetupDynamicTypes()
+        {
+            var mgr = new TypeExtensionRepository();
+            var newType = new TypeExtension{TypeResolverUid = Guid.NewGuid(),ExtensionName = KnownTypeExtensionNames.CustomFields};
+            mgr.Save(newType);
+
+            var extension = mgr.GetCustomFieldsTypeExtension(newType.TypeResolverUid);
+            extension.DynamicProperties.Add(new DynamicPropertyDescription
+            {
+                PropertyName = "TEST",
+                PropertyTypeName = typeof(bool).FullName
+            });
+
+            mgr.Save(extension);
+
+            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(newType.TypeResolverUid);
+            var repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
+
+            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);
+            repo.Save(new DynamicVersionedContent(newType.TypeResolverUid));
+            var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
+            if (!drafts.Any())
+                throw new Exception();
         }
 
         private void SetupCustomFields()

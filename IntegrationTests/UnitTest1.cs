@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Cms.DynamicContent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;

@@ -104,13 +104,7 @@ namespace WarpCore.Web
 
     }
 
-    public static class FormDesignerClrInterop
-    {
-        public static void Load()
-        {
 
-        }
-    }
 
     public static class WebBootstrapper
     {

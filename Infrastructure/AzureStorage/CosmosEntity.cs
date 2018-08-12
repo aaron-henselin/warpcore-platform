@@ -8,6 +8,12 @@ using Newtonsoft.Json;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
+    public abstract class DynamicEntityProxy : TableEntity
+    {
+        public Dictionary<string, string> CustomFieldData { get; set; } = new Dictionary<string, string>();
+
+    }
+
     public abstract class CosmosEntity : TableEntity
     {
         private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;

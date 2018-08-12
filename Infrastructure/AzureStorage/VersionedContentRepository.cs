@@ -31,11 +31,12 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public interface IVersionedContentRepositoryBase : IContentRepository
     {
-        IReadOnlyCollection<CosmosEntity> FindContentVersions(string condition,
+        IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
     }
+    
 
-    public abstract class VersionedContentRepository<T> : IVersionedContentRepositoryBase where T : VersionedContentEntity, new()
+    public abstract class VersionedContentRepository<T> : IContentRepository, IVersionedContentRepositoryBase where T : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -48,16 +49,20 @@ namespace WarpCore.DbEngines.AzureStorage
             Orm = orm;
         }
 
-        public virtual void Save(T item)
+        public void Save(VersionedContentEntity item)
         {
             Orm.Save(item);
             SaveDraftChecksum(item);
         }
-        
 
-        private void SaveDraftChecksum(T item)
+        public virtual void Save(T item)
         {
-            var contentType = typeof(T).GetCustomAttribute<TableAttribute>().Name;
+            Save((VersionedContentEntity)item);
+        }
+
+        private void SaveDraftChecksum(VersionedContentEntity item)
+        {
+            var contentType = item.GetType().GetCustomAttribute<TableAttribute>().Name;
 
             var currentPublishingData = Orm.FindUnversionedContent<ContentChecksum>("ContentId eq '" + item.ContentId + "'")
                 .Result.SingleOrDefault();
@@ -81,12 +86,12 @@ namespace WarpCore.DbEngines.AzureStorage
 
         void IContentRepository.Save(CosmosEntity item)
         {
-            this.Save((T)item);
+            this.Save((VersionedContentEntity)item);
         }
 
-        IReadOnlyCollection<CosmosEntity> IVersionedContentRepositoryBase.FindContentVersions(string condition, ContentEnvironment version)
+        IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepositoryBase.FindContentVersions(string condition, ContentEnvironment version)
         {
-            return this.FindContentVersions(condition, version).Result.Cast<CosmosEntity>().ToList();
+            return this.FindContentVersions(condition, version).Result.Cast<VersionedContentEntity>().ToList();
             
         }
 

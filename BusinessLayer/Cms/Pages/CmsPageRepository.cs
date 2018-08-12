@@ -430,6 +430,7 @@ namespace WarpCore.Cms
             Move(cmsPage,newSitemapRelativePosition);
         }
 
+        
         public override void Save(CmsPage cmsPage)
         {
             SitemapRelativePosition sitemapRelativePosition;

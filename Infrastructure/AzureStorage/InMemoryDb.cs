@@ -16,12 +16,12 @@ namespace WarpCore.DbEngines.AzureStorage
 
         private object _syncroot = new object();
 
-        public void Save<T>(T item) where T : CosmosEntity
+        public void Save(CosmosEntity item)
         {
             if (!item.IsDirty)
                 return;
 
-            var tableRef = GetOrCreateTable<T>();
+            var tableRef = GetOrCreateTable(item.GetType());
 
             DataRow dr=null;
             if (item.RowKey != null)
@@ -41,7 +41,7 @@ namespace WarpCore.DbEngines.AzureStorage
             dr["RowKey"] = new Guid(item.RowKey);
             dr["PartitionKey"] = item.PartitionKey;
 
-            var readProperties = typeof(T).GetProperties().Where(x =>
+            var readProperties = item.GetType().GetProperties().Where(x =>
                 !ShouldSkipProperty(x) && x.GetCustomAttribute<StoreAsComplexDataAttribute>() == null);
 
             foreach (var prop in readProperties)
@@ -67,7 +67,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         private IReadOnlyCollection<T> FindContentImpl<T>( string condition) where T : CosmosEntity, new()
         {
-            var tableRef = GetOrCreateTable<T>();
+            var tableRef = GetOrCreateTable(typeof(T));
             condition = ConvertToSql(condition);
             var rows = tableRef.Select(condition);
 
@@ -104,9 +104,9 @@ namespace WarpCore.DbEngines.AzureStorage
             return await Task.FromResult(FindContentImpl<T>(condition));
         }
 
-        public void Delete<T>(T copy) where T : CosmosEntity
+        public void Delete(CosmosEntity copy) 
         {
-            var tableRef = GetOrCreateTable<T>();
+            var tableRef = GetOrCreateTable(copy.GetType());
 
             DataRow dr = tableRef.Select("RowKey = '" + copy.RowKey + "'").SingleOrDefault();
             if (dr != null)
@@ -131,11 +131,11 @@ namespace WarpCore.DbEngines.AzureStorage
             return string.Join(" ", conditionWords);
         }
 
-        private DataTable GetOrCreateTable<T>() where T : CosmosEntity
+        private DataTable GetOrCreateTable(Type type)
         {
             lock (_syncroot)
             {
-                var tableAttribute = typeof(T).GetCustomAttribute<TableAttribute>();
+                var tableAttribute = type.GetCustomAttribute<TableAttribute>();
                 var tableRef = _ds.Tables.Cast<DataTable>().SingleOrDefault(x => x.TableName == tableAttribute.Name);
                 if (tableRef != null)
                     return tableRef;
@@ -145,7 +145,7 @@ namespace WarpCore.DbEngines.AzureStorage
                 dataTable.Columns.Add("RowKey", typeof(Guid));
                 dataTable.Columns.Add("PartitionKey", typeof(string));
 
-                var publicProperties = typeof(T).GetProperties().Where(x =>
+                var publicProperties = type.GetProperties().Where(x =>
                     !ShouldSkipProperty(x) && x.GetCustomAttribute<StoreAsComplexDataAttribute>() == null);
 
                 foreach (var prop in publicProperties)

@@ -33,7 +33,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public interface ICosmosOrm
     {
-        void Save<T>(T item) where T : CosmosEntity;
+        void Save(CosmosEntity item);
 
         Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition,
             ContentEnvironment version = ContentEnvironment.Live)
@@ -42,7 +42,7 @@ namespace WarpCore.DbEngines.AzureStorage
         Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
             where T : UnversionedContentEntity, new();
 
-        void Delete<T>(T copy) where T : CosmosEntity;
+        void Delete(CosmosEntity copy);
     }
 
 
@@ -62,34 +62,43 @@ namespace WarpCore.DbEngines.AzureStorage
         public string Draft { get; set; }
         public string Live { get; set; }
     }
+    
 
     interface IHasRuntimeTypeExtensionDefinition
     {
-        string TypeExtensionUid { get; }
+        Guid TypeExtensionUid { get; }
     }
 
+    //public class DynamicVersionedContentBase : VersionedContentEntity
+    //{
+    //    public DynamicVersionedContentBase()
+    //    {
+    //    }
+    //}
+    
+    [Table("orm_dynamic_object")]
     public class DynamicVersionedContent : VersionedContentEntity, IHasRuntimeTypeExtensionDefinition
     {
-        private readonly string _uid;
+        private readonly Guid _uid;
 
-        public DynamicVersionedContent(string uid)
+        public DynamicVersionedContent(Guid uid)
         {
             _uid = uid;
         }
 
-        string IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
+        Guid IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
     }
 
     public class DynamicUnversionedContent : UnversionedContentEntity, IHasRuntimeTypeExtensionDefinition
     {
-        private readonly string _uid;
+        private readonly Guid _uid;
 
-        public DynamicUnversionedContent(string uid)
+        public DynamicUnversionedContent(Guid uid)
         {
             _uid = uid;
         }
 
-        string IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
+        Guid IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
     }
 
     public abstract class VersionedContentEntity : CosmosEntity
@@ -183,15 +192,15 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
 
-        public async void Delete<T>(T item) where T : CosmosEntity
+        public async void Delete(CosmosEntity item)
         {
             AssertIsOnline();
 
-            var table = GetOrCreateTable<T>().Result;
+            var table = GetOrCreateTable(item.GetType()).Result;
             await table.ExecuteAsync(TableOperation.Delete(item));
         }
 
-        public async void Save<T>(T item) where T : CosmosEntity
+        public async void Save(CosmosEntity item)
         {
             AssertIsOnline();
 
@@ -201,9 +210,7 @@ namespace WarpCore.DbEngines.AzureStorage
             if (item.InternalId == null)
                 item.InternalId = Guid.NewGuid();
 
-
-
-            var table = GetOrCreateTable<T>().Result;
+            var table = GetOrCreateTable(item.GetType()).Result;
             await table.ExecuteAsync(TableOperation.InsertOrReplace(item));
         }
 
@@ -223,20 +230,17 @@ namespace WarpCore.DbEngines.AzureStorage
 
         public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
         {
-            //var search = $"PartitionKey eq '{ContentEnvironment.Any}'";
-            //if (!string.IsNullOrWhiteSpace(condition))
-            //    search += condition;
-
             return await FindContentImpl<T>(condition);
         }
 
-
+   
+        
 
         private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : CosmosEntity, new()
         {
             AssertIsOnline();
 
-            var cloudTable = GetOrCreateTable<T>().Result;
+            var cloudTable = GetOrCreateTable(typeof(T)).Result;
             var query = new TableQuery<T> { FilterString = condition };
             var items = await cloudTable.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
 
@@ -259,11 +263,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
             return tableRef;
         }
-
-        private async Task<CloudTable> GetOrCreateTable<T>() where T : CosmosEntity
-        {
-            return await GetOrCreateTable(typeof(T));
-        }
+        
 
 
 
