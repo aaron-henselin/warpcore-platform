@@ -42,12 +42,17 @@ namespace DemoSite
 
         private void SetupDynamicTypes()
         {
-            var mgr = new TypeExtensionRepository();
-            var newType = new TypeExtension{TypeResolverUid = Guid.NewGuid(),ExtensionName = KnownTypeExtensionNames.CustomFields};
-            mgr.Save(newType);
+            var mgr = new ContentInterfaceRepository();
 
-            var extension = mgr.GetCustomFieldsTypeExtension(newType.TypeResolverUid);
-            extension.DynamicProperties.Add(new DynamicPropertyDescription
+            var newContentType = new DynamicContentType{ Name = "Test Type"};
+            var contentTypeRepo = new DynamicContentTypeRepository();
+            contentTypeRepo.Save(newContentType);
+
+            var newInterface = new ContentInterface{ContentTypeId = newContentType.ContentId, InterfaceName = KnownTypeExtensionNames.CustomFields};
+            mgr.Save(newInterface);
+
+            var extension = mgr.GetCustomFieldsTypeExtension(newInterface.ContentTypeId);
+            extension.InterfaceFields.Add(new ContentField
             {
                 PropertyName = "TEST",
                 PropertyTypeName = typeof(bool).FullName
@@ -55,11 +60,11 @@ namespace DemoSite
 
             mgr.Save(extension);
 
-            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(newType.TypeResolverUid);
+            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(newInterface.ContentTypeId);
             var repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
 
-            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);
-            repo.Save(new DynamicVersionedContent(newType.TypeResolverUid));
+            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.ContentTypeId);
+            repo.Save(new DynamicVersionedContent(newInterface.ContentTypeId));
             var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
             if (!drafts.Any())
                 throw new Exception();
@@ -68,9 +73,9 @@ namespace DemoSite
         private void SetupCustomFields()
         {
 
-            var mgr = new TypeExtensionRepository();
+            var mgr = new ContentInterfaceRepository();
             var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.TypeResolverUid));
-            extension.DynamicProperties.Add(new DynamicPropertyDescription
+            extension.InterfaceFields.Add(new ContentField
             {
                 PropertyName = "DisplayInNav",
                 PropertyTypeName = typeof(bool).FullName

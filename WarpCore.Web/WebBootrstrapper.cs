@@ -140,16 +140,16 @@ namespace WarpCore.Web
                 respositoryManager.Save(metadata);
             }
 
-            var typeExtensionRepo = new TypeExtensionRepository();
+            var typeExtensionRepo = new ContentInterfaceRepository();
             foreach (var entityType in entities)
             {
                 var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
-                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
+                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
-                    typeExtensionRepo.Save(new TypeExtension
+                    typeExtensionRepo.Save(new ContentInterface
                     {
-                        TypeResolverUid = repositoryUid.TypeExtensionUid,
-                        ExtensionName = KnownTypeExtensionNames.CustomFields
+                        ContentTypeId = repositoryUid.TypeExtensionUid,
+                        InterfaceName = KnownTypeExtensionNames.CustomFields
                     });
                 
             }

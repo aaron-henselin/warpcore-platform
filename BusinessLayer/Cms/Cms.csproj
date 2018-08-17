@@ -54,7 +54,11 @@
   <ItemGroup>
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="ContentBlock\ContentSpecification.cs" />
-    <Compile Include="DynamicContent\RepositoryActivator.cs" />
+    <Compile Include="DynamicContent\ContentInterfaceRepository.cs" />
+    <Compile Include="DynamicContent\DynamicContentTypeRepository.cs" />
+    <Compile Include="DynamicContent\WarpCoreIlGenerator.cs" />
+    <Compile Include="DynamicContent\DynamicUnversionedContentRepository.cs" />
+    <Compile Include="DynamicContent\TypeResolvers.cs" />
     <Compile Include="Forms\Class1.cs" />
     <Compile Include="Layout\LayoutRepository.cs" />
     <Compile Include="MultilingualString.cs" />

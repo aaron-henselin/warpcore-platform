@@ -142,7 +142,7 @@ namespace WarpCore.DbEngines.AzureStorage
         }
     }
 
-    public class DynamicPropertyDescription
+    public class ContentField
     {
         public string PropertyName { get; set; }
         public string PropertyTypeName { get; set; }
@@ -151,8 +151,8 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public class DynamicTypeDefinition
     {
-        public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
-            new List<DynamicPropertyDescription>();
+        public List<ContentField> DynamicProperties { get; set; } =
+            new List<ContentField>();
     }
 
 

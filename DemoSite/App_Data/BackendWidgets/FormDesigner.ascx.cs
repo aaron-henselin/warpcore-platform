@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Cms.DynamicContent;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
@@ -18,10 +19,20 @@ namespace DemoSite
         {
             base.OnInit(e);
 
+            var formTypeRaw = Request["formType"];
+            var contentType = new DynamicContentTypeRepository().GetById(new Guid(formTypeRaw));
+
+            
+
             CmsForm cmsForm;
             var formIdRaw = Request["formId"];
             if (string.IsNullOrEmpty(formIdRaw))
-                cmsForm = new CmsForm { ContentId = Guid.NewGuid()};
+                cmsForm = new CmsForm
+                {
+                    ContentId = Guid.NewGuid(),
+                    ContentTypeId = contentType.ContentId
+                    
+                };
             else
             {
                 var formRepository = new FormRepository();
