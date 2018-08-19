@@ -23,11 +23,28 @@ namespace Cms.DynamicContent
         {
             if (!_types.ContainsKey(id))
             {
-                var entityType = DynamicTypeBuilder.TypeBuilderHelper.CreateDynamicContentEntity(id);
-                Activator.CreateInstance(entityType);
-                var repoType = DynamicTypeBuilder.TypeBuilderHelper.CreateDynamicRepository(entityType);
-                Activator.CreateInstance(repoType);
-                _types.Add(id,repoType);
+                var metadataManager = new RepositoryMetadataManager();
+                var repositoryMetadata = metadataManager.GetRepositoryMetdataByTypeResolverUid(id);
+                if (repositoryMetadata.IsDynamic)
+                {
+                    var entityType = DynamicTypeBuilder.TypeBuilderHelper.CreateDynamicContentEntity(id);
+                    var repoType = DynamicTypeBuilder.TypeBuilderHelper.CreateDynamicRepository(entityType);
+                    _types.Add(id, repoType);
+                }
+                else
+                {
+                    Type repoType = null;
+                    var metadata = metadataManager.GetRepositoryMetdataByTypeResolverUid(id);
+                    if (metadata.CustomAssemblyQualifiedTypeName != null)
+                        repoType= Type.GetType(metadata.CustomAssemblyQualifiedTypeName);
+
+                    if (metadata.AssemblyQualifiedTypeName != null)
+                        repoType= Type.GetType(metadata.AssemblyQualifiedTypeName);
+
+                    _types.Add(id, repoType);
+                }
+
+                
             }
 
             return _types[id];
@@ -36,6 +53,8 @@ namespace Cms.DynamicContent
     
     public class DynamicTypeBuilder
     {
+        public const string DynamicTypeAssembly = "Warpcore.DynamicTypes";
+
         public static class TypeBuilderHelper
         {
             
@@ -49,7 +68,7 @@ namespace Cms.DynamicContent
 
                 // Create a Type Builder that generates a type directly into the current AppDomain.
                 var appDomain = AppDomain.CurrentDomain;
-                var assemblyName = new AssemblyName("Warpcore.DynamicTypes");
+                var assemblyName = new AssemblyName(DynamicTypeAssembly);
                 var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
                 var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
 
@@ -68,7 +87,7 @@ namespace Cms.DynamicContent
 
                 // Create a Type Builder that generates a type directly into the current AppDomain.
                 var appDomain = AppDomain.CurrentDomain;
-                var assemblyName = new AssemblyName("Warpcore.DynamicTypes");
+                var assemblyName = new AssemblyName(DynamicTypeAssembly);
                 var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
                 var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
 
@@ -77,25 +96,20 @@ namespace Cms.DynamicContent
 
                 // Create a parameterless (default) constructor.
                 var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, null);
-
                 var ilGenerator = constructor.GetILGenerator();
          
-                LocalBuilder locAi = ilGenerator.DeclareLocal(typeof(Guid));
-                ilGenerator.Emit(OpCodes.Ldstr,dynamicTypeId.ToString());
-                ilGenerator.Emit(OpCodes.Newobj, typeof(Guid).GetConstructor(new []{typeof(string)}));
-
-                ilGenerator.Emit(OpCodes.Stloc_0);
+                LocalBuilder locAi = ilGenerator.DeclareLocal(typeof(Guid));                                //var g;
+                ilGenerator.Emit(OpCodes.Ldstr,dynamicTypeId.ToString());                                   //var dynamicTypeId = '1234567567567'
+                ilGenerator.Emit(OpCodes.Newobj, typeof(Guid).GetConstructor(new []{typeof(string)}));      //var newGuid = new Guid(dynamicTypeId)
+                ilGenerator.Emit(OpCodes.Stloc_0);                                                          //g = newGuid;      
 
                 // Generate constructor code
-                ilGenerator.Emit(OpCodes.Ldarg_0);                // push &quot;this&quot; onto stack.
-                ilGenerator.Emit(OpCodes.Ldloc_0);                // push guid onto stack.
+                ilGenerator.Emit(OpCodes.Ldarg_0);                                                          // var cotr_arg0 = this;
+                ilGenerator.Emit(OpCodes.Ldloc_0);                                                          // var cotr_arg1 = g;
 
-                ilGenerator.Emit(OpCodes.Call, baseConstructor);  // call base constructor
+                ilGenerator.Emit(OpCodes.Call, baseConstructor);                                            // cotr_arg0.base(cotr_arg1);
 
-                ilGenerator.Emit(OpCodes.Nop);                    // C# compiler add 2 NOPS, so
-                ilGenerator.Emit(OpCodes.Nop);                    // we'll add them, too.
-
-                ilGenerator.Emit(OpCodes.Ret);                    // Return
+                ilGenerator.Emit(OpCodes.Ret);                                                              // return
 
                 return typeBuilder.CreateType();
             }
@@ -113,15 +127,17 @@ namespace Cms.DynamicContent
 
 
     [Table("cms_type_extension")]
-    public class TypeExtension : UnversionedContentEntity
+    public class ContentInterface : UnversionedContentEntity
     {
         public Guid TypeResolverUid { get; set; }
 
-        public string ExtensionName { get; set; }
+        public string Name { get; set; }
 
         public List<DynamicPropertyDescription> DynamicProperties { get; set; } =
             new List<DynamicPropertyDescription>();
+
     }
+
 
     public class DynamicTypeDefinitionResolver : IDynamicTypeDefinitionResolver
     {
@@ -132,7 +148,7 @@ namespace Cms.DynamicContent
             if (_definitions.ContainsKey(uid))
                 return _definitions[uid];
 
-            var typeExtensions = new TypeExtensionRepository().Find().Where(x => x.TypeResolverUid == uid);
+            var typeExtensions = new ContentInterfaceRepository().Find().Where(x => x.TypeResolverUid == uid);
 
             var dtd = new DynamicTypeDefinition();
             foreach (var extension in typeExtensions)
@@ -159,11 +175,23 @@ namespace Cms.DynamicContent
         public const string CustomFields = "CustomFields";
     }
 
-    public class TypeExtensionRepository : UnversionedContentRepository<TypeExtension>
+    public class FriendlyTypeInfo : UnversionedContentEntity
     {
-        public TypeExtension GetCustomFieldsTypeExtension(Guid uid)
+        public string FriendlyName { get; set; }
+
+    }
+
+    public class FiendlyTypeInfoRepository : UnversionedContentRepository<FriendlyTypeInfo>
+    {
+
+    }
+
+    public class ContentInterfaceRepository : UnversionedContentRepository<ContentInterface>
+    {
+        public ContentInterface GetCustomFieldsContentInterface(Guid uid)
         {
-            return Find().Single(x => x.TypeResolverUid == uid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
+            return Find().Single(x => x.TypeResolverUid == uid 
+                                   && x.Name == KnownTypeExtensionNames.CustomFields);
         }
     }
 

@@ -29,9 +29,11 @@ namespace WarpCore.Cms.Toolbox
     [Table("cms_repository_metadata")]
     public class RepositoryMetdata : UnversionedContentEntity
     {
-        public string TypeResolverUid { get; set; }
+        public string FormInteropUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
-
+        public string CustomAssemblyQualifiedTypeName { get; set; }
+        public string FriendlyEntityName { get; set; }
+        public bool IsDynamic { get; set; }
     }
 
 
@@ -40,7 +42,7 @@ namespace WarpCore.Cms.Toolbox
     {
         public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid typeResolverUid)
         {
-            return Find(nameof(RepositoryMetdata.TypeResolverUid) + " eq '" + typeResolverUid + "'").First();
+            return Find(nameof(RepositoryMetdata.FormInteropUid) + " eq '" + typeResolverUid + "'").First();
         }
     }
 

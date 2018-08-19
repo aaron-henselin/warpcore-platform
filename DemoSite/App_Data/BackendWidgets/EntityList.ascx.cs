@@ -55,13 +55,14 @@ namespace DemoSite
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
 
+            
 
             var clrLookup = allTypes
                 .HavingAttribute<SupportsCustomFieldsAttribute>()
                 .Where(x => typeof(CosmosEntity).IsAssignableFrom(x))
                 .ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
 
-            var repo = new TypeExtensionRepository();
+            var repo = new ContentInterfaceRepository();
             var allEntities = repo.Find()
                 .Select(x => new EntityViewModel
                 {

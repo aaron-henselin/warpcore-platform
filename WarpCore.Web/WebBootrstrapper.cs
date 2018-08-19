@@ -117,7 +117,7 @@ namespace WarpCore.Web
         public static void BuildUpRepositoryMetadata()
         {
             var respositoryManager = new RepositoryMetadataManager();
-            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.TypeResolverUid);
+            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.FormInteropUid);
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
@@ -135,21 +135,21 @@ namespace WarpCore.Web
                 if (alreadyExists)
                     metadata = preexistingMetadata[uid];
 
-                metadata.TypeResolverUid = uid;
+                metadata.FormInteropUid = uid;
                 metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
                 respositoryManager.Save(metadata);
             }
 
-            var typeExtensionRepo = new TypeExtensionRepository();
+            var typeExtensionRepo = new ContentInterfaceRepository();
             foreach (var entityType in entities)
             {
                 var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
-                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.ExtensionName == KnownTypeExtensionNames.CustomFields);
+                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.Name == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
-                    typeExtensionRepo.Save(new TypeExtension
+                    typeExtensionRepo.Save(new ContentInterface
                     {
                         TypeResolverUid = repositoryUid.TypeExtensionUid,
-                        ExtensionName = KnownTypeExtensionNames.CustomFields
+                        Name = KnownTypeExtensionNames.CustomFields
                     });
                 
             }

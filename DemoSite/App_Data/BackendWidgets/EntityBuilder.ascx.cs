@@ -24,6 +24,7 @@ namespace DemoSite
         public bool IsAddingOrEditing { get; set; }
         public List<DynamicPropertyViewModel> Properties { get; set; } = new List<DynamicPropertyViewModel>();
         public string EditingId { get; set; }
+
     }
 
     public class EntityBuilderActionBarPlaceHolder : PlaceHolder
