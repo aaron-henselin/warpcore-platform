@@ -2,6 +2,17 @@
 <%@ Register TagPrefix="a" Namespace="DemoSite" Assembly="DemoSite" %>
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Scripting" Assembly="WarpCore.Web" %>
 
+<style>
+    textarea {
+        width: 100%;
+        height: 100%;
+    }
+
+
+      
+    
+</style>
+
 <a:ProxiedScriptManager runat="server"/> 
 <div>
 

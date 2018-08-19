@@ -15,8 +15,17 @@ namespace DemoSite
     [Serializable]
     public class EntityViewModel
     {
-        public Guid TypeExtensionUid { get; set; }
+        public Guid ContentTypeId { get; set; }
         public string DisplayName { get; set; }
+
+        public List<EntityInterfaceViewModel> EditableInterfaces { get; set; } = new List<EntityInterfaceViewModel>();
+    }
+
+    [Serializable]
+    public class EntityInterfaceViewModel
+    {
+        public Guid InterfaceId { get; set; }
+        public string Name { get; set; }
     }
 
     [Serializable]
@@ -55,23 +64,53 @@ namespace DemoSite
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
 
-            
 
-            var clrLookup = allTypes
+            var extendableClrTypes = allTypes
                 .HavingAttribute<SupportsCustomFieldsAttribute>()
-                .Where(x => typeof(CosmosEntity).IsAssignableFrom(x))
-                .ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
+                .Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
+                //.ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
+
+            List<EntityViewModel> vms = new List<EntityViewModel>();
+            var allDynamicContentTypes = new DynamicContentTypeRepository().Find();
+            foreach (var t in allDynamicContentTypes)
+            {
+                vms.Add(new EntityViewModel{DisplayName = t.Name,ContentTypeId = t.ContentId});
+            }
+
+            foreach (var t in extendableClrTypes)
+            {
+                var contentTypeId = t.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid;
+                vms.Add(new EntityViewModel { DisplayName = t.Name, ContentTypeId = contentTypeId });
+            }
+
 
             var repo = new ContentInterfaceRepository();
-            var allEntities = repo.Find()
-                .Select(x => new EntityViewModel
+            var contentInterfaceLookup = repo.Find().ToLookup(x => x.ContentTypeId);
+            foreach (var entityViewModel in vms)
+            {
+                var appliedInterfaces = contentInterfaceLookup[entityViewModel.ContentTypeId];
+                foreach (var contentInterface in appliedInterfaces)
                 {
-                    TypeExtensionUid = x.TypeResolverUid,
-                    DisplayName = clrLookup[x.TypeResolverUid].FirstOrDefault()?.Name
+                    entityViewModel.EditableInterfaces.Add(new EntityInterfaceViewModel
+                    {
+                        InterfaceId = contentInterface.ContentId,
+                        Name = contentInterface.InterfaceName
+                    });
+                }
+            }
 
-                });
+            _controlState.Entities = vms.ToList();
 
-            _controlState.Entities = allEntities.ToList();
+            //var repo = new ContentInterfaceRepository();
+            //var allEntities = repo.Find()
+            //    .Select(x => new EntityViewModel
+            //    {
+            //        ContentTypeId = x.ContentTypeId,
+            //        DisplayName = clrLookup[x.ContentTypeId].FirstOrDefault()?.Name
+
+            //    });
+
+            //_controlState.Entities = allEntities.ToList();
         }
 
         protected override void LoadControlState(object savedState)
