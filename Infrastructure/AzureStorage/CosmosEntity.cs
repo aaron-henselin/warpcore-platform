@@ -42,7 +42,7 @@ namespace WarpCore.DbEngines.AzureStorage
         [JsonIgnore]
         public bool IsNew => RowKey == null;
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public Dictionary<string, string> CustomFieldData { get; set; } = new Dictionary<string, string>();
 
         public void SetCustomField<T>(string fieldName, T value)
@@ -91,8 +91,8 @@ namespace WarpCore.DbEngines.AzureStorage
             {
                 var propsToSerialize = this.GetType()
                     .GetProperties()
-                    .Where(x => CustomAttributeExtensions.GetCustomAttribute<StoreAsComplexDataAttribute>((MemberInfo) x) != null
-                                || CustomAttributeExtensions.GetCustomAttribute<StoreAsComplexDataAttribute>((MemberInfo) x.PropertyType) != null  
+                    .Where(x => CustomAttributeExtensions.GetCustomAttribute<SerializedComplexObjectAttribute>((MemberInfo) x) != null
+                                || CustomAttributeExtensions.GetCustomAttribute<SerializedComplexObjectAttribute>((MemberInfo) x.PropertyType) != null  
                     );
                   
 
@@ -109,8 +109,8 @@ namespace WarpCore.DbEngines.AzureStorage
                 var dataDict = JsonConvert.DeserializeObject(value, this.GetType());
                 var propsToSerialize = this.GetType()
                     .GetProperties()
-                    .Where(x => x.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
-                                || x.PropertyType.GetCustomAttribute<StoreAsComplexDataAttribute>() != null
+                    .Where(x => x.GetCustomAttribute<SerializedComplexObjectAttribute>() != null
+                                || x.PropertyType.GetCustomAttribute<SerializedComplexObjectAttribute>() != null
                     );
 
                 foreach (var prop in propsToSerialize)

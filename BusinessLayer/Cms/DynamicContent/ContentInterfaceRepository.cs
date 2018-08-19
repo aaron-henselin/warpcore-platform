@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Newtonsoft.Json;
 using WarpCore.DbEngines.AzureStorage;
 
 namespace Cms.DynamicContent
@@ -23,8 +24,10 @@ namespace Cms.DynamicContent
 
         public string InterfaceName { get; set; }
 
-        public List<ContentField> InterfaceFields { get; set; } = new List<ContentField>();
+        [SerializedComplexObject]
+        public List<InterfaceField> InterfaceFields { get; set; } = new List<InterfaceField>();
     }
+
 
 
     public struct KnownTypeExtensionNames

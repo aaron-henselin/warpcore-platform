@@ -31,6 +31,12 @@ namespace DemoSite
     {
     }
 
+    public enum ContentFieldTopLevelType { Text,Choice,Number  }
+
+    public class ContentFieldConfiguration
+    {
+    }
+
     public partial class EntityBuilder : System.Web.UI.UserControl
     {
         private EntityBuilderControlState _controlState = new EntityBuilderControlState();
@@ -59,6 +65,9 @@ namespace DemoSite
             base.OnInit(e);
 
             Page.RegisterRequiresControlState(this);
+
+            PropertyTypeDropDownList.Items.Add(ContentFieldTopLevelType.Text.ToString());
+            PropertyTypeDropDownList.Items.Add(ContentFieldTopLevelType.Choice.ToString());
 
             if (Page.IsPostBack)
                 return;

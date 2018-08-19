@@ -144,12 +144,12 @@ namespace WarpCore.Web
             foreach (var entityType in entities)
             {
                 var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
-                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.TypeResolverUid == repositoryUid.TypeExtensionUid && x.Name == KnownTypeExtensionNames.CustomFields);
+                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
                     typeExtensionRepo.Save(new ContentInterface
                     {
-                        TypeResolverUid = repositoryUid.TypeExtensionUid,
-                        Name = KnownTypeExtensionNames.CustomFields
+                        ContentTypeId = repositoryUid.TypeExtensionUid,
+                        InterfaceName = KnownTypeExtensionNames.CustomFields
                     });
                 
             }

@@ -55,19 +55,19 @@ namespace DemoSite
             var mgr = new ContentInterfaceRepository();
             var ext1 = new ContentInterface
             {
-                TypeResolverUid = fullDynamicTypeId,
-                Name = KnownTypeExtensionNames.CustomFields
+                ContentTypeId = fullDynamicTypeId,
+                InterfaceName = KnownTypeExtensionNames.CustomFields
             };
             var ext2 = new ContentInterface
             {
-                TypeResolverUid = fullDynamicTypeId,
-                Name = "SomePluginInfo"
+                ContentTypeId = fullDynamicTypeId,
+                InterfaceName = "SomePluginInfo"
             };
             mgr.Save(ext1);
             mgr.Save(ext2);
 
-            var extension = mgr.GetCustomFieldsContentInterface(fullDynamicTypeId);
-            extension.DynamicProperties.Add(new DynamicPropertyDescription
+            var extension = mgr.GetCustomFieldsTypeExtension(fullDynamicTypeId);
+            extension.InterfaceFields.Add(new ChoiceInterfaceField
             {
                 PropertyName = "IsFeatured",
                 PropertyTypeName = typeof(bool).FullName
@@ -89,8 +89,8 @@ namespace DemoSite
         {
 
             var mgr = new ContentInterfaceRepository();
-            var extension = mgr.GetCustomFieldsContentInterface(new Guid(CmsPage.TypeResolverUid));
-            extension.DynamicProperties.Add(new DynamicPropertyDescription
+            var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.TypeResolverUid));
+            extension.InterfaceFields.Add(new ChoiceInterfaceField
             {
                 PropertyName = "DisplayInNav",
                 PropertyTypeName = typeof(bool).FullName

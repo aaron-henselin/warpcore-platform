@@ -15,7 +15,7 @@ namespace Cms.Forms
         [Column]
         public string Name { get; set; }
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public List<CmsPageContent> FormContent { get; set; } = new List<CmsPageContent>();
 
         public List<CmsPageContent> DesignedContent => FormContent;

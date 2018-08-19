@@ -16,7 +16,7 @@ namespace Cms.Layout
 
         public Guid? ParentLayoutId { get; set; }
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
     }
