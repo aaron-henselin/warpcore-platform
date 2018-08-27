@@ -332,6 +332,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\BackendWidgets\EntityBuilderForms\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

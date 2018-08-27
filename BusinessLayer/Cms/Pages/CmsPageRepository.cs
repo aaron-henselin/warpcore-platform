@@ -56,7 +56,7 @@ namespace WarpCore.Cms
         [Column]
         public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
         public bool IncludeInSitemap { get; set; } = true;
@@ -181,7 +181,7 @@ namespace WarpCore.Cms
         [StoreAsComplexData]
         public Dictionary<string,string> Parameters { get; set; }
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public List<CmsPageContent> AllContent { get; set; } = new List<CmsPageContent>();
 
 

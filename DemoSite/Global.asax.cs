@@ -42,29 +42,44 @@ namespace DemoSite
 
         private void SetupDynamicTypes()
         {
-            var mgr = new ContentInterfaceRepository();
+            var fullDynamicTypeId = Guid.NewGuid();
 
-            var newContentType = new DynamicContentType{ Name = "Test Type"};
-            var contentTypeRepo = new DynamicContentTypeRepository();
-            contentTypeRepo.Save(newContentType);
-
-            var newInterface = new ContentInterface{ContentTypeId = newContentType.ContentId, InterfaceName = KnownTypeExtensionNames.CustomFields};
-            mgr.Save(newInterface);
-
-            var extension = mgr.GetCustomFieldsTypeExtension(newInterface.ContentTypeId);
-            extension.InterfaceFields.Add(new ContentField
+            var repositories = new RepositoryMetadataManager();
+            repositories.Save(new RepositoryMetdata
             {
-                PropertyName = "TEST",
+                FriendlyEntityName = "Article",
+                IsDynamic = true,
+                FormInteropUid = fullDynamicTypeId.ToString()
+            });
+
+            var mgr = new ContentInterfaceRepository();
+            var ext1 = new ContentInterface
+            {
+                ContentTypeId = fullDynamicTypeId,
+                InterfaceName = KnownTypeExtensionNames.CustomFields
+            };
+            var ext2 = new ContentInterface
+            {
+                ContentTypeId = fullDynamicTypeId,
+                InterfaceName = "SomePluginInfo"
+            };
+            mgr.Save(ext1);
+            mgr.Save(ext2);
+
+            var extension = mgr.GetCustomFieldsTypeExtension(fullDynamicTypeId);
+            extension.InterfaceFields.Add(new ChoiceInterfaceField
+            {
+                PropertyName = "IsFeatured",
                 PropertyTypeName = typeof(bool).FullName
             });
 
             mgr.Save(extension);
 
-            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(newInterface.ContentTypeId);
+            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(fullDynamicTypeId);
             var repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
 
-            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.ContentTypeId);
-            repo.Save(new DynamicVersionedContent(newInterface.ContentTypeId));
+            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);
+            repo.Save(new DynamicVersionedContent(fullDynamicTypeId));
             var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
             if (!drafts.Any())
                 throw new Exception();
@@ -75,7 +90,7 @@ namespace DemoSite
 
             var mgr = new ContentInterfaceRepository();
             var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.TypeResolverUid));
-            extension.InterfaceFields.Add(new ContentField
+            extension.InterfaceFields.Add(new ChoiceInterfaceField
             {
                 PropertyName = "DisplayInNav",
                 PropertyTypeName = typeof(bool).FullName

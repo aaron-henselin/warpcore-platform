@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using JsonSubTypes;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -27,7 +28,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public class StoreAsComplexDataAttribute : Attribute
+    public class SerializedComplexObjectAttribute : Attribute
     {
     }
 
@@ -142,17 +143,71 @@ namespace WarpCore.DbEngines.AzureStorage
         }
     }
 
-    public class ContentField
+    public class KnownChoiceTypes
     {
+        public string TrueFalse = "TrueFalse";
+        public string OptionList = "OptionList";
+    }
+
+    public class ChoiceFieldOption
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class ChoiceInterfaceFieldDataSource
+    {
+        public Guid FormInteropUid { get; set; }
+        public string Filter { get; set; }
+
+        public List<ChoiceFieldOption> Options { get; set; } = new List<ChoiceFieldOption>();
+    }
+
+    public class ChoiceInterfaceField : InterfaceField
+    {
+        public const string ContentFieldTypeUid = "Choice";
+        public string ChoiceType { get; set; }
+        public bool AllowMultipleSelections { get; set; }
+        public ChoiceInterfaceFieldDataSource DataSource { get; set; }
+        public ChoiceInterfaceField() : base(ContentFieldTypeUid)
+        {
+        }
+    }
+
+    public class TextInterfaceField : InterfaceField
+    {
+        public const string ContentFieldTypeUid = "Text";
+        public bool IsHtml { get; set; }
+        public int MaxLength { get; set; }
+        public TextInterfaceField() : base(ContentFieldTypeUid)
+        {
+        }
+    }
+    
+    internal interface IContentFieldTypeResolverMetadata
+    {
+        string ContentFieldType { get; }
+    }
+
+    [JsonConverter(typeof(JsonSubtypes), nameof(ContentFieldType))]
+    [JsonSubtypes.KnownSubType(typeof(TextInterfaceField), TextInterfaceField.ContentFieldTypeUid)]
+    [JsonSubtypes.KnownSubType(typeof(ChoiceInterfaceField), ChoiceInterfaceField.ContentFieldTypeUid)]
+    public abstract class InterfaceField
+    {
+        protected InterfaceField(string contentFieldType)
+        {
+            ContentFieldType = contentFieldType;
+        }
+
         public string PropertyName { get; set; }
         public string PropertyTypeName { get; set; }
-
+        public string ContentFieldType { get; }
     }
 
     public class DynamicTypeDefinition
     {
-        public List<ContentField> DynamicProperties { get; set; } =
-            new List<ContentField>();
+        public List<InterfaceField> DynamicProperties { get; set; } =
+            new List<InterfaceField>();
     }
 
 

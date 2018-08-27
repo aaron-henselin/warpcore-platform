@@ -8,7 +8,7 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace Cms
 {
-    [StoreAsComplexData]
+    [SerializedComplexObject]
     public class MultilingualString : Dictionary<string,string>
     {
         public string this[CultureInfo x]
