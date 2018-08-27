@@ -59,6 +59,8 @@ namespace WarpCore.Cms
         [StoreAsComplexData]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
+        public bool IncludeInSitemap { get; set; } = true;
+
         //[ComplexData]
         //public List<HistoricalRoute> AlternateRoutes { get; set; } = new List<HistoricalRoute>();
 
@@ -176,7 +178,7 @@ namespace WarpCore.Cms
         [Column]
         public string WidgetTypeCode { get; set; }
 
-        [Column]
+        [StoreAsComplexData]
         public Dictionary<string,string> Parameters { get; set; }
 
         [StoreAsComplexData]

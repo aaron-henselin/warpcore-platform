@@ -57,10 +57,10 @@ namespace WarpCore.Cms.Toolbox
 
         public static Type ResolveToolboxItemClrType(ToolboxItem toolboxItem)
         {
-            if (!string.IsNullOrWhiteSpace(toolboxItem.AssemblyQualifiedTypeName))
-                return Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
+            if (!string.IsNullOrWhiteSpace(toolboxItem.AscxPath))
+                return BuildManager.GetCompiledType(toolboxItem.AscxPath);
 
-            return BuildManager.GetCompiledType(toolboxItem.AscxPath);
+            return Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
         }
     }
 }

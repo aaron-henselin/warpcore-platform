@@ -158,7 +158,9 @@ namespace WarpCore.Web
 
         public static void BuildUpToolbox()
         {
-            var allTypes = typeof(WebBootstrapper).Assembly.GetTypes();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
+
             var toIncludeInToolbox = allTypes
                                         .Select(ToolboxMetadataReader.ReadMetadata)
                                         .Where(x => x != null);
@@ -179,7 +181,10 @@ namespace WarpCore.Web
                 widget.FriendlyName = discoveredToolboxItem.FriendlyName;
                 widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
                 widget.Category = discoveredToolboxItem.Category;
+                widget.AscxPath = discoveredToolboxItem.AscxPath;
                 mgr.Save(widget);
+
+                alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
             }
 
         }

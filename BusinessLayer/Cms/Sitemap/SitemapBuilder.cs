@@ -64,7 +64,9 @@ namespace WarpCore.Cms
             var pageRepostiory = new CmsPageRepository();
             var allPages = pageRepostiory
                 .FindContentVersions(null, environment)
-                .Result.ToDictionary(x => x.ContentId);
+                .Result
+                .Where(x => x.IncludeInSitemap)
+                .ToDictionary(x => x.ContentId);
 
             var sitemap = new Sitemap();
             if (site.HomepageId != null && allPages.ContainsKey(site.HomepageId.Value))

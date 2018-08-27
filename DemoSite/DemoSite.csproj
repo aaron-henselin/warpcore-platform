@@ -87,14 +87,83 @@
     <Content Include="App_Data\Forms\DynamicForm.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityBuilder.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityList.ascx" />
+    <Content Include="css\ajax-loader.gif" />
+    <Content Include="css\animate.css" />
+    <Content Include="css\aos.css" />
+    <Content Include="css\bootstrap-datepicker.css" />
+    <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\bootstrap\bootstrap-grid.css" />
+    <Content Include="css\bootstrap\bootstrap-reboot.css" />
+    <Content Include="css\css\bootstrap-reboot.css" />
+    <Content Include="css\css\mixins\_text-hide.css" />
+    <Content Include="css\flaticon.css" />
+    <Content Include="css\icomoon.css" />
+    <Content Include="css\ionicons.min.css" />
+    <Content Include="css\jquery.timepicker.css" />
+    <Content Include="css\magnific-popup.css" />
+    <Content Include="css\open-iconic-bootstrap.min.css" />
+    <Content Include="css\owl.carousel.min.css" />
+    <Content Include="css\owl.theme.default.min.css" />
+    <Content Include="css\style.css" />
+    <Content Include="fonts\flaticon\backup.txt" />
+    <Content Include="fonts\flaticon\font\flaticon.css" />
+    <Content Include="fonts\flaticon\font\flaticon.html" />
+    <Content Include="fonts\flaticon\font\Flaticon.svg" />
+    <Content Include="fonts\icomoon\icomoon.svg" />
+    <Content Include="fonts\ionicons\css\ionicons.min.css" />
+    <Content Include="fonts\ionicons\fonts\ionicons.svg" />
+    <Content Include="fonts\open-iconic\open-iconic.svg" />
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
     <Content Include="App_Data\PageDesignerComponents\LayoutHandle.ascx" />
     <Content Include="App_Data\BackendWidgets\PageTree.ascx" />
     <Content Include="App_Data\AdminSite\NavBar.ascx" />
+    <Content Include="images\about.jpg" />
+    <Content Include="images\bg_1.jpg" />
+    <Content Include="images\bg_2.jpg" />
+    <Content Include="images\dashboard_full_1.jpg" />
+    <Content Include="images\dashboard_full_2.jpg" />
+    <Content Include="images\dashboard_full_3.jpg" />
+    <Content Include="images\image_1.jpg" />
+    <Content Include="images\image_2.jpg" />
+    <Content Include="images\image_3.jpg" />
+    <Content Include="images\image_4.jpg" />
+    <Content Include="images\image_5.jpg" />
+    <Content Include="images\image_6.jpg" />
+    <Content Include="images\loc.png" />
+    <Content Include="images\person_1.jpg" />
+    <Content Include="images\person_2.jpg" />
+    <Content Include="images\person_3.jpg" />
+    <Content Include="images\person_4.jpg" />
+    <Content Include="images\work-1.jpg" />
+    <Content Include="images\work-2.jpg" />
+    <Content Include="images\work-3.jpg" />
+    <Content Include="images\work-4.jpg" />
+    <Content Include="images\work-5.jpg" />
+    <Content Include="images\work-6.jpg" />
+    <Content Include="js\aos.js" />
+    <Content Include="js\bootstrap-datepicker.js" />
+    <Content Include="js\bootstrap.min.js" />
+    <Content Include="js\google-map.js" />
+    <Content Include="js\jquery-3.2.1.min.js" />
+    <Content Include="js\jquery-migrate-3.0.1.min.js" />
+    <Content Include="js\jquery.animateNumber.min.js" />
+    <Content Include="js\jquery.easing.1.3.js" />
+    <Content Include="js\jquery.magnific-popup.min.js" />
+    <Content Include="js\jquery.min.js" />
+    <Content Include="js\jquery.stellar.min.js" />
+    <Content Include="js\jquery.waypoints.min.js" />
+    <Content Include="js\main.js" />
+    <Content Include="js\owl.carousel.min.js" />
+    <Content Include="js\particle.js" />
+    <Content Include="js\particles.min.js" />
+    <Content Include="js\popper.min.js" />
+    <Content Include="js\scrollax.min.js" />
+    <Content Include="App_Data\BackendWidgets\ContentList.ascx" />
     <Content Include="Scripts\jquery.slidereveal.min.js" />
     <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
+    <Content Include="UserControls\CustomNavigation.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +271,13 @@
     <Compile Include="App_Data\AdminSite\NavBar.ascx.designer.cs">
       <DependentUpon>NavBar.ascx</DependentUpon>
     </Compile>
+    <Compile Include="App_Data\BackendWidgets\ContentList.ascx.cs">
+      <DependentUpon>ContentList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Data\BackendWidgets\ContentList.ascx.designer.cs">
+      <DependentUpon>ContentList.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
       <DependentUpon>Toolbox.ascx</DependentUpon>
@@ -209,12 +285,44 @@
     <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.designer.cs">
       <DependentUpon>Toolbox.ascx</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CustomNavigation.ascx.cs">
+      <DependentUpon>CustomNavigation.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\CustomNavigation.ascx.designer.cs">
+      <DependentUpon>CustomNavigation.ascx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Master\Global.Master" />
     <Content Include="Demo.Master" />
     <Content Include="App_Data\AdHocLayout.Master" />
     <Content Include="App_Data\BackendPage.Master" />
+    <Content Include="css\.DS_Store" />
+    <Content Include="css\bootstrap\.DS_Store" />
+    <Content Include="css\css\.DS_Store" />
+    <Content Include="fonts\.DS_Store" />
+    <Content Include="fonts\flaticon\.DS_Store" />
+    <Content Include="fonts\flaticon\font\Flaticon.eot" />
+    <Content Include="fonts\flaticon\font\Flaticon.ttf" />
+    <Content Include="fonts\flaticon\font\Flaticon.woff" />
+    <Content Include="fonts\flaticon\font\_flaticon.scss" />
+    <Content Include="fonts\flaticon\license\license.pdf" />
+    <Content Include="fonts\icomoon\icomoon.eot" />
+    <Content Include="fonts\icomoon\icomoon.ttf" />
+    <Content Include="fonts\icomoon\icomoon.woff" />
+    <Content Include="fonts\ionicons\css\_ionicons.scss" />
+    <Content Include="fonts\ionicons\fonts\.DS_Store" />
+    <Content Include="fonts\ionicons\fonts\ionicons.eot" />
+    <Content Include="fonts\ionicons\fonts\ionicons.ttf" />
+    <Content Include="fonts\ionicons\fonts\ionicons.woff" />
+    <Content Include="fonts\ionicons\fonts\ionicons.woff2" />
+    <Content Include="fonts\open-iconic\open-iconic.eot" />
+    <Content Include="fonts\open-iconic\open-iconic.otf" />
+    <Content Include="fonts\open-iconic\open-iconic.ttf" />
+    <Content Include="fonts\open-iconic\open-iconic.woff" />
+    <Content Include="images\.DS_Store" />
+    <Content Include="js\.DS_Store" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

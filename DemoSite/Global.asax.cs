@@ -149,7 +149,8 @@ namespace DemoSite
             {
                 Name = "Form Designer",
                 SiteId = backendSite.ContentId,
-                LayoutId = backendLayout.ContentId
+                LayoutId = backendLayout.ContentId,
+                IncludeInSitemap = false
             };
             formDesigner.SetCustomField("DisplayInNav",false);
             formDesigner.PageContent.Add(new CmsPageContent
@@ -213,7 +214,8 @@ namespace DemoSite
             {
                 Name = "Settings",
                 SiteId = backendSite.ContentId,
-                LayoutId = backendLayout.ContentId
+                LayoutId = backendLayout.ContentId,
+                IncludeInSitemap = false
             };
             pageSettings.PageContent.Add(new CmsPageContent
             {
@@ -269,6 +271,8 @@ namespace DemoSite
             {
                 MasterPagePath = "/Demo.Master"
             };
+
+            myLayout.PageContent.Add(new CmsPageContent{WidgetTypeCode = "Client-CustomNavigation",PlacementContentPlaceHolderId = "NavigationContentPlaceHolder"});
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(myLayout);
 
