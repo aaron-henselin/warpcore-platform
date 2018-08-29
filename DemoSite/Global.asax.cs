@@ -132,6 +132,12 @@ namespace DemoSite
                 WidgetUid = "wc-entity-list",
                 FriendlyName = "Entity List"
             });
+            tbx.Save(new ToolboxItem
+            {
+                AscxPath = "/App_Data/BackendWidgets/ContentList.ascx",
+                WidgetUid = "wc-content-list",
+                FriendlyName = "Content List"
+            });
 
 
 
@@ -266,6 +272,27 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { }
             });
 
+            ////////////////
+            var dynamicListTest = new CmsPage
+            {
+                Name = "Dynamic List Test",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId,
+                IncludeInSitemap = true
+            };
+            dynamicListTest.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-content-list",
+                Parameters = new Dictionary<string, string>
+                {
+                    [nameof(ContentList.RepositoryId)] = CmsPageRepository.TypeResolverUid,
+                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsPage.Name)},{nameof(CmsPage.Slug)},{nameof(CmsPage.IncludeInSitemap)},{nameof(CmsPage.Description)}",
+
+                }
+            });
+
+
 
             var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
@@ -273,6 +300,7 @@ namespace DemoSite
             pageRepo.Save(pageSettings);
             pageRepo.Save(entityBuilderPage);
             pageRepo.Save(entityListPage);
+            pageRepo.Save(dynamicListTest);
 
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);

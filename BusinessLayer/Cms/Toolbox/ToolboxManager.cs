@@ -40,9 +40,9 @@ namespace WarpCore.Cms.Toolbox
 
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {
-        public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid typeResolverUid)
+        public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid formInteropUid)
         {
-            return Find(nameof(RepositoryMetdata.FormInteropUid) + " eq '" + typeResolverUid + "'").First();
+            return Find(nameof(RepositoryMetdata.FormInteropUid) + " eq '" + formInteropUid + "'").First();
         }
     }
 

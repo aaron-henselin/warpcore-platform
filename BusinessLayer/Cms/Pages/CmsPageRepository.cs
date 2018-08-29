@@ -178,7 +178,7 @@ namespace WarpCore.Cms
         [Column]
         public string WidgetTypeCode { get; set; }
 
-        [StoreAsComplexData]
+        [SerializedComplexObject]
         public Dictionary<string,string> Parameters { get; set; }
 
         [SerializedComplexObject]

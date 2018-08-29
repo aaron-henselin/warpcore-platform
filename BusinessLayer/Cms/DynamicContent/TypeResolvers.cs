@@ -22,16 +22,38 @@ namespace Cms.DynamicContent
         {
             if (!_types.ContainsKey(id))
             {
-                var entityType = WarpCoreIlGenerator.CreateDynamicContentEntity(id);
-                Activator.CreateInstance(entityType);
+                try
+                {
+                    Type repoType = ResolveMetadataDefinedRepositoryType(id);
+                    _types.Add(id, repoType);
+                }
+                catch (Exception)
+                {
+                    var entityType = WarpCoreIlGenerator.CreateDynamicContentEntity(id);
+                    Activator.CreateInstance(entityType);
 
-                var repoType = WarpCoreIlGenerator.CreateDynamicRepository(entityType);
-                Activator.CreateInstance(repoType);
+                    Type repoType = WarpCoreIlGenerator.CreateDynamicRepository(entityType);
+                    Activator.CreateInstance(repoType);
 
-                _types.Add(id,repoType);
+                    _types.Add(id, repoType);
+                }
+              
+              
             }
 
             return _types[id];
+        }
+
+        private static Type ResolveMetadataDefinedRepositoryType(Guid id)
+        {
+            Type repoType;
+            var repositoryMetadataManager = new RepositoryMetadataManager();
+            var metadataManager = repositoryMetadataManager.GetRepositoryMetdataByTypeResolverUid(id);
+            if (!string.IsNullOrWhiteSpace(metadataManager.CustomAssemblyQualifiedTypeName))
+                repoType = Type.GetType(metadataManager.CustomAssemblyQualifiedTypeName);
+            else
+                repoType = Type.GetType(metadataManager.AssemblyQualifiedTypeName);
+            return repoType;
         }
     }
 
