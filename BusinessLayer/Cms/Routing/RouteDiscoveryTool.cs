@@ -187,7 +187,7 @@ foreach (var location in historicalPageLocations)
                         VirtualPath = new Uri(location.VirtualPath,UriKind.Relative)
                     });
 
-            var associatedSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
+            var associatedSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live,SitemapBuilderFilters.All);
 
 
 

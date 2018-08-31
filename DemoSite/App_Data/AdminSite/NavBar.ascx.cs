@@ -42,7 +42,7 @@ namespace DemoSite
             var rt = CmsPageRequestContext.Current;
             var adminSiteId = rt.Route.SiteId;
             var adminSite = siteRepository.GetById(adminSiteId);
-            var sitemap = SitemapBuilder.BuildSitemap(adminSite,ContentEnvironment.Live);
+            var sitemap = SitemapBuilder.BuildSitemap(adminSite,ContentEnvironment.Live,SitemapBuilderFilters.DisplayInNavigation);
             List<NavBarItem> navBarItems = new List<NavBarItem>();
             foreach (var node in sitemap.ChildNodes)
             {

@@ -55,9 +55,19 @@ namespace WarpCore.Cms
         public Uri VirtualPath { get; set; }
     }
 
+    public static class SitemapBuilderFilters
+    {
+        public static Func<CmsPage, bool> DisplayInNavigation => x => x.DisplayInNavigation;
+        public static Func<CmsPage, bool> All => x => true;
+    }
+
+
+
     public static class SitemapBuilder
     {
-        public static Sitemap BuildSitemap(Site site, ContentEnvironment environment)
+
+
+        public static Sitemap BuildSitemap(Site site, ContentEnvironment environment, Func<CmsPage,bool> sitemapTrim)
         {
             var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
 
@@ -65,7 +75,7 @@ namespace WarpCore.Cms
             var allPages = pageRepostiory
                 .FindContentVersions(null, environment)
                 .Result
-                .Where(x => x.IncludeInSitemap)
+                .Where(sitemapTrim)
                 .ToDictionary(x => x.ContentId);
 
             var sitemap = new Sitemap();

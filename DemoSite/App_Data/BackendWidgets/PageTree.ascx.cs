@@ -74,8 +74,8 @@ namespace DemoSite
         private void RebuildControlState(Site matchedSite)
         {
             
-            var draftSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft);
-            var liveSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Live);
+            var draftSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Draft,SitemapBuilderFilters.All);
+            var liveSitemap = SitemapBuilder.BuildSitemap(matchedSite, ContentEnvironment.Live, SitemapBuilderFilters.All);
 
             var pagesTreeItems = new List<PageTreeItem>();
             foreach (var childNode in draftSitemap.ChildNodes)

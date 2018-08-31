@@ -59,7 +59,7 @@ namespace WarpCore.Cms
         [SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
-        public bool IncludeInSitemap { get; set; } = true;
+        public bool DisplayInNavigation { get; set; } = true;
 
         //[ComplexData]
         //public List<HistoricalRoute> AlternateRoutes { get; set; } = new List<HistoricalRoute>();
@@ -363,7 +363,7 @@ namespace WarpCore.Cms
         private void AppendToRouteHistory(CmsPage page)
         {
             var site = new SiteRepository().GetById(page.SiteId);
-            var sitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live);
+            var sitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Live, SitemapBuilderFilters.All);
             var previousLivePosition = sitemap.GetSitemapNode(page);
             if (previousLivePosition != null)
             {

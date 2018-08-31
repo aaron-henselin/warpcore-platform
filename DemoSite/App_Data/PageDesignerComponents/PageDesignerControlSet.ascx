@@ -8,15 +8,17 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <script>
-    var jQueryRestore = $;
+    var warpcore = {};
+    if (typeof($) !== 'undefined')
+        warpcore.jQueryRestore = $;
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
 <script src="/Scripts/jquery.slidereveal.min.js"></script>
 <script>
-    var warpcore = {};
+
     warpcore.jQuery = jQuery.noConflict();
-    $ = jQueryRestore;
+    $ = warpcore.jQueryRestore;
 </script>
 
 <style>

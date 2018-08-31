@@ -171,7 +171,7 @@ namespace DemoSite
                 Name = "Form Designer",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                IncludeInSitemap = false
+                DisplayInNavigation = false
             };
             formDesigner.SetCustomField("DisplayInNav",false);
             formDesigner.PageContent.Add(new CmsPageContent
@@ -236,7 +236,7 @@ namespace DemoSite
                 Name = "Settings",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                IncludeInSitemap = false
+                DisplayInNavigation = false
             };
             pageSettings.PageContent.Add(new CmsPageContent
             {
@@ -278,7 +278,7 @@ namespace DemoSite
                 Name = "Dynamic List Test",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                IncludeInSitemap = true
+                DisplayInNavigation = true
             };
             dynamicListTest.PageContent.Add(new CmsPageContent
             {
@@ -287,7 +287,7 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string>
                 {
                     [nameof(ContentList.RepositoryId)] = CmsPageRepository.TypeResolverUid,
-                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsPage.Name)},{nameof(CmsPage.Slug)},{nameof(CmsPage.IncludeInSitemap)},{nameof(CmsPage.Description)}",
+                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsPage.Name)},{nameof(CmsPage.Slug)},{nameof(CmsPage.DisplayInNavigation)},{nameof(CmsPage.Description)}",
 
                 }
             });
