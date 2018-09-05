@@ -57,7 +57,7 @@ namespace DemoSite
         {
             var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
             var uriBuilder = new CmsUriBuilder(uriBuilderContext);
-            var uri = uriBuilder.CreateUri(node.Page, UriSettings.Default);
+            var uri = uriBuilder.CreateUri(node.Page, UriSettings.Default,null);
 
             var topLevel = new NavBarItem { Text = node.Page.Name, Url = uri.ToString(), ChildItems = new List<NavBarItem>() };
             foreach (var child in node.ChildNodes)

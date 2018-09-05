@@ -122,12 +122,12 @@ namespace WarpCore.Web
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
             
-            var repositories = allTypes.HavingAttribute<FormDesignerInteropAttribute>().Where(x => typeof(IContentRepository).IsAssignableFrom(x));
+            var repositories = allTypes.HavingAttribute<ExposeToWarpCoreApi>().Where(x => typeof(IContentRepository).IsAssignableFrom(x));
             var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>().Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
 
             foreach (var repoType in repositories)
             {
-                var repositoryUid = repoType.GetCustomAttribute<FormDesignerInteropAttribute>();
+                var repositoryUid = repoType.GetCustomAttribute<ExposeToWarpCoreApi>();
                 var uid = repositoryUid.TypeUid;
                 var alreadyExists = preexistingMetadata.ContainsKey(uid);
 

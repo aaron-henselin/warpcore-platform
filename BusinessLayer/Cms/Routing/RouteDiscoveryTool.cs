@@ -19,6 +19,7 @@ namespace WarpCore.Cms
     {
         public string RedirectExternalUrl { get; set; }
         public Guid? InternalRedirectPageId { get; set; }
+        public Dictionary<string,string> InternalRedirectParameters { get; set; } = new Dictionary<string, string>();
     }
 
     public class ContentPageRoute : SiteRoute
@@ -102,7 +103,8 @@ namespace WarpCore.Cms
                 primaryRoute = new RedirectPageRoute
                 {
                     RedirectExternalUrl = node.Page.RedirectExternalUrl,
-                    InternalRedirectPageId = node.Page.RedirectPageId
+                    InternalRedirectPageId = node.Page.RedirectPageId,
+                    InternalRedirectParameters = node.Page.InternalRedirectParameters
                 };
 
             if (PageType.GroupingPage == node.Page.PageType)
@@ -228,6 +230,7 @@ foreach (var location in historicalPageLocations)
 
         private static Uri MakeRelativeUri(Site site, string path, string contentRoute = null)
         {
+            
             var rawUri = "/" + site.RoutePrefix + "/" + path+"/"+contentRoute;
             var nonEmptyParts = rawUri.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 

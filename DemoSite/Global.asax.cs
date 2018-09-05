@@ -161,7 +161,8 @@ namespace DemoSite
             var backendSite = new Site
             {
                 Name = "Admin",
-                RoutePrefix = "Admin"
+                RoutePrefix = "Admin",
+                ContentId = new Guid("00000000-0000-0000-0000-000000000001"),
             };
             siteRepo.Save(backendSite);
 
@@ -192,6 +193,7 @@ namespace DemoSite
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-pagetree"
             });
+
 
 
             var form = new CmsForm
@@ -272,6 +274,8 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { }
             });
 
+            
+
             ////////////////
             var dynamicListTest = new CmsPage
             {
@@ -286,7 +290,7 @@ namespace DemoSite
                 WidgetTypeCode = "wc-content-list",
                 Parameters = new Dictionary<string, string>
                 {
-                    [nameof(ContentList.RepositoryId)] = CmsPageRepository.TypeResolverUid,
+                    [nameof(ContentList.RepositoryId)] = CmsPageRepository.ApiId,
                     [nameof(ContentList.FieldList)] = $@"{nameof(CmsPage.Name)},{nameof(CmsPage.Slug)},{nameof(CmsPage.DisplayInNavigation)},{nameof(CmsPage.Description)}",
 
                 }
@@ -301,9 +305,21 @@ namespace DemoSite
             pageRepo.Save(entityBuilderPage);
             pageRepo.Save(entityListPage);
             pageRepo.Save(dynamicListTest);
-
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);
+
+            var editBackendPageTreeLink = new CmsPage
+            {
+                Name = "Edit Backend Pages",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId,
+                PageType = PageType.RedirectPage,
+                RedirectPageId = pageTree.ContentId,
+                InternalRedirectParameters = new Dictionary<string, string> { ["SiteId"]= backendSite.ContentId.ToString()}
+            };
+
+            pageRepo.Save(editBackendPageTreeLink);
+
         }
 
         private Site SetupTestSite()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Http;
 using WarpCore.Cms.Sites;
 
 namespace WarpCore.Cms.Routing
@@ -33,7 +34,7 @@ namespace WarpCore.Cms.Routing
             _context = context;
         }
 
-        public Uri CreateUriForRoute(SiteRoute sr, UriSettings settings)
+        public Uri CreateUriForRoute(SiteRoute sr, UriSettings settings, IDictionary<string,string> parameters)
         {
             var requireSsl = false;
             if (sr is ContentPageRoute cpr)
@@ -60,19 +61,23 @@ namespace WarpCore.Cms.Routing
             if (sr.Authority == UriAuthorityFilter.Any)
                 authority = _context.Authority;
 
-            return new Uri(protocol + authority + sr.VirtualPath, UriKind.Absolute);
+            var uriBase = new Uri($"{protocol}{authority}{sr.VirtualPath}");
+            var builder = new UriBuilder(uriBase);
+            if (parameters != null && parameters.Count > 0)
+                builder.Query = new FormUrlEncodedContent(parameters).ReadAsStringAsync().Result;
+
+            return builder.Uri;
         }
 
 
-        public Uri CreateUri(CmsPage destinationPage, UriSettings settings)
+        public Uri CreateUri(CmsPage destinationPage, UriSettings settings, IDictionary<string,string> parameters)
         {
             SiteRoute sr;
             var success = CmsRoutes.Current.TryResolveRoute(destinationPage.ContentId, out sr);
             if (!success)
-                throw new Exception();
+                throw new Exception($"Could not resolve a content route for {destinationPage.Name}, id: {destinationPage.ContentId}");
 
-            var cpr = (ContentPageRoute) sr;
-            return CreateUriForRoute(cpr, settings);
+            return CreateUriForRoute(sr, settings, parameters);
         }
     }
 }

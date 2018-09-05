@@ -34,6 +34,8 @@ namespace WarpCore.Cms
     
     [Table("cms_page")]
     [SupportsCustomFields(TypeResolverUid)]
+    [GroupUnderParentRepository(CmsPageRepository.ApiId)]
+    [ContentDescription(ContentFriendlyNameSingular = "Page")]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
         public const string TypeResolverUid = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
@@ -80,6 +82,9 @@ namespace WarpCore.Cms
 
         [Column]
         public string Description { get; set; }
+
+        [SerializedComplexObject]
+        public Dictionary<string, string> InternalRedirectParameters { get; set; }
     }
 
     public enum RoutePriority
@@ -239,6 +244,22 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
     }
 
+    public class GroupUnderParentRepositoryAttribute :Attribute
+    {
+        public GroupUnderParentRepositoryAttribute(string parentRepositoryApiId)
+        {
+            ParentRepositoryId = new Guid(parentRepositoryApiId);
+        }
+
+        public Guid ParentRepositoryId { get; set; }
+    }
+
+    public class ContentDescriptionAttribute : Attribute
+    {
+        public string ContentFriendlyNameSingular { get; set; }
+        public string ContentFriendlyNamePlural { get; set; }
+    }
+
     public class SupportsCustomFieldsAttribute : Attribute
     {
         public SupportsCustomFieldsAttribute(string typeExtensionId)
@@ -249,9 +270,9 @@ namespace WarpCore.Cms
         public Guid TypeExtensionUid { get; set; }
     }
 
-    public class FormDesignerInteropAttribute : Attribute
+    public class ExposeToWarpCoreApi : Attribute
     {
-        public FormDesignerInteropAttribute(string uid)
+        public ExposeToWarpCoreApi(string uid)
         {
             TypeUid = uid;
         }
@@ -262,10 +283,10 @@ namespace WarpCore.Cms
 
 
 
-    [FormDesignerInterop(TypeResolverUid)]
+    [ExposeToWarpCoreApi(ApiId)]
     public class CmsPageRepository : VersionedContentRepository<CmsPage>
     {
-        public const string TypeResolverUid = "979fde2a-1983-480e-aca4-8caab3f762b0";
+        public const string ApiId = "979fde2a-1983-480e-aca4-8caab3f762b0";
 
         private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {

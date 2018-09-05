@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using WarpCore.Cms.Routing;
@@ -23,11 +24,11 @@ namespace WarpCore.Cms
             context.RewritePath(transferUrl,false);
         }
 
-        private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext)
+        private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext, IDictionary<string,string> parameters)
         {
             var uriBuilderContext = httpContext.ToUriBuilderContext();
             var uriBuilder = new CmsUriBuilder(uriBuilderContext);
-            return uriBuilder.CreateUriForRoute(transferRoute, UriSettings.Default).ToString();
+            return uriBuilder.CreateUriForRoute(transferRoute, UriSettings.Default, parameters).ToString();
    
         }
 
@@ -66,7 +67,7 @@ namespace WarpCore.Cms
             SiteRoute redirectToRoute;
             CmsRoutes.Current.TryResolveRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
 
-            var redirectUrl = CreateUrl(redirectToRoute, context);
+            var redirectUrl = CreateUrl(redirectToRoute, context, null);
             context.Response.Redirect(redirectUrl);
         }
 
@@ -84,7 +85,7 @@ namespace WarpCore.Cms
             SiteRoute redirectToRoute;
             CmsRoutes.Current.TryResolveRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
 
-            var redirectUrl = CreateUrl(redirectToRoute, context);
+            var redirectUrl = CreateUrl(redirectToRoute, context,redirectRoute.InternalRedirectParameters);
             context.Response.Redirect(redirectUrl);
             return;
         }

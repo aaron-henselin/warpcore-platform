@@ -7,6 +7,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Cms;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;
@@ -83,18 +84,39 @@ namespace DemoSite
                 FlattenPageTree(childNode, pagesTreeItems, 0);
             }
 
+            var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
+            var uriBuilder = new CmsUriBuilder(uriBuilderContext);
+            
+
             foreach (var pageTreeItem in pagesTreeItems)
             {
                 var liveNode = liveSitemap.GetSitemapNode(pageTreeItem.PageId);
                 pageTreeItem.IsPublished = liveNode != null;
                 pageTreeItem.IsHomePage = pageTreeItem.PageId == matchedSite.HomepageId;
-                pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=PageDesigner&wc-pg=" +
-                                         pageTreeItem.PageId;
 
-                pageTreeItem.SettingsUrl = "/admin/settings?contentId=" +
-                                         pageTreeItem.PageId;
+                var draftNode = draftSitemap.GetSitemapNode(pageTreeItem.PageId);
+                if (draftNode.Page.PageType == PageType.ContentPage)
+                {
+                    try
+                    {
+                        var uri = uriBuilder.CreateUri(draftNode.Page, UriSettings.Default, new Dictionary<string, string>
+                        {
+                            ["wc-viewmode"] = "PageDesigner",
+                        });
+                        pageTreeItem.DesignUrl = uri.ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        pageTreeItem.DesignUrl = $"/Admin/PageDesigner?wc-viewmode=PageDesigner&wc-st={draftNode.Page.SiteId}&wc-pg={pageTreeItem.PageId}";
+                    }
 
-                    
+                }
+
+                //pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=PageDesigner&wc-pg=" +
+                //                         pageTreeItem.PageId;
+
+                pageTreeItem.SettingsUrl = "/admin/settings?contentId=" + pageTreeItem.PageId;
+                   
             }
 
             _controlState.PageTreeItems = pagesTreeItems.ToList();

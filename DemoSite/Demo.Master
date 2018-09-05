@@ -249,12 +249,12 @@
               <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in</p>
               <div class="row d-flex justify-content-center mt-5">
                 <div class="col-md-6">
-                  <form action="#" class="subscribe-form">
+                  <div action="#" class="subscribe-form">
                     <div class="form-group">
                       <span class="icon icon-paper-plane"></span>
                       <input type="text" class="form-control" placeholder="Enter email address">
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -548,7 +548,7 @@
   
 
   <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+<%--  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>--%>
 
 
   <script src="js/jquery.min.js"></script>

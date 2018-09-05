@@ -31,6 +31,7 @@ namespace WarpCore.Web.Extensions
             var environmentRaw = context.Request["wc-ce"];
             var contentVersionRaw = context.Request["wc-cv"];
             var viewModeRaw = context.Request["wc-viewmode"];
+            var siteRaw = context.Request["wc-st"];
 
             PageRenderMode pageRenderMode = PageRenderMode.Readonly;
             if (!string.IsNullOrWhiteSpace(viewModeRaw))
@@ -63,7 +64,8 @@ namespace WarpCore.Web.Extensions
                 route = new ContentPageRoute
                 {
                     Authority = UriAuthorityFilter.Any,
-                    PageId = new Guid(routeRaw)
+                    PageId = new Guid(routeRaw),
+                    SiteId = new Guid(siteRaw),
                 };
             }
             else
@@ -84,14 +86,7 @@ namespace WarpCore.Web.Extensions
                 routeContext.CmsPage = cmsPageVersions.Single();
 
             return routeContext;
-            //if (PageType.ContentPage != cmsPage.PageType)
-            //    return new CmsRouteContext();
 
-            //return new CmsRouteContext
-            //{
-            //    CmsPage = cmsPage,
-            //    ViewMode = viewMode
-            //};
         }
     }
 }

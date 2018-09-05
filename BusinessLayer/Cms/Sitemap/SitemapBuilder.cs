@@ -21,17 +21,17 @@ namespace WarpCore.Cms
         public CmsPage HomePage { get; set; }
         public Uri VirtualPath => new Uri("/",UriKind.Relative);
 
-        public ISitemapNode GetSitemapNode(CmsPage cmsPage)
+        public SitemapNode GetSitemapNode(CmsPage cmsPage)
         {
             return GetSitemapNode(cmsPage.ContentId);
         }
 
-        public ISitemapNode GetSitemapNode(Guid pageId)
+        public SitemapNode GetSitemapNode(Guid pageId)
         {
             return GetSitemapNode(pageId, this);
         }
 
-        private static ISitemapNode GetSitemapNode(Guid pageId, ISitemapNode root)
+        private static SitemapNode GetSitemapNode(Guid pageId, ISitemapNode root)
         {
             foreach (var childNode in root.ChildNodes)
             {
