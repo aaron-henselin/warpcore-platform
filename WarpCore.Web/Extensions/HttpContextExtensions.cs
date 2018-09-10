@@ -9,6 +9,15 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Web.Extensions
 {
+    public static class PageDesignerUriComponents
+    {
+        public const string PageId = "wc-pg";
+        public const string SiteId = "wc-st";
+        public const string ContentEnvironment = "wc-ce";
+        public const string ViewMode = "wc-viewmode";
+        public const string ContentVersion = "wc-cv";
+    }
+
 
     public static class HttpContextExtensions
     {
@@ -27,11 +36,11 @@ namespace WarpCore.Web.Extensions
 
         public static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
         {
-            var routeRaw = context.Request["wc-pg"];
-            var environmentRaw = context.Request["wc-ce"];
-            var contentVersionRaw = context.Request["wc-cv"];
-            var viewModeRaw = context.Request["wc-viewmode"];
-            var siteRaw = context.Request["wc-st"];
+            var routeRaw = context.Request[PageDesignerUriComponents.PageId];
+            var environmentRaw = context.Request[PageDesignerUriComponents.ContentEnvironment];
+            var contentVersionRaw = context.Request[PageDesignerUriComponents.ContentVersion];
+            var viewModeRaw = context.Request[PageDesignerUriComponents.ViewMode];
+            var siteRaw = context.Request[PageDesignerUriComponents.SiteId];
 
             PageRenderMode pageRenderMode = PageRenderMode.Readonly;
             if (!string.IsNullOrWhiteSpace(viewModeRaw))

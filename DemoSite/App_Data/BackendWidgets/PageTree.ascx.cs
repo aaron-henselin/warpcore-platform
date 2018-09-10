@@ -15,6 +15,7 @@ using WarpCore.Web.Scripting;
 
 namespace DemoSite
 {
+
     [Serializable]
     public class PageTreeItem
     {
@@ -101,13 +102,13 @@ namespace DemoSite
                     {
                         var uri = uriBuilder.CreateUri(draftNode.Page, UriSettings.Default, new Dictionary<string, string>
                         {
-                            ["wc-viewmode"] = "PageDesigner",
+                            [PageDesignerUriComponents.ViewMode] = "PageDesigner",
                         });
                         pageTreeItem.DesignUrl = uri.ToString();
                     }
                     catch (Exception e)
                     {
-                        pageTreeItem.DesignUrl = $"/Admin/PageDesigner?wc-viewmode=PageDesigner&wc-st={draftNode.Page.SiteId}&wc-pg={pageTreeItem.PageId}";
+                        pageTreeItem.DesignUrl = $"/Admin/PageDesigner?{PageDesignerUriComponents.ViewMode}=PageDesigner&{PageDesignerUriComponents.SiteId}={draftNode.Page.SiteId}&{PageDesignerUriComponents.PageId}={pageTreeItem.PageId}";
                     }
 
                 }
