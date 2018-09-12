@@ -25,9 +25,13 @@ namespace Cms.Forms
         public Guid ContentTypeId { get; set; }
     }
 
+
+
+
+    [ExposeToWarpCoreApi(ApiId)]
     public class FormRepository : VersionedContentRepository<CmsForm>
     {
-
+        public const string ApiId = "d857f85b-4b44-490f-b989-1cfd11bd9960";
     }
 
 }

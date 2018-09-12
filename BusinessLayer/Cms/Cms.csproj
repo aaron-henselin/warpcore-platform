@@ -55,7 +55,7 @@
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="ContentBlock\ContentSpecification.cs" />
     <Compile Include="DynamicContent\ContentInterfaceRepository.cs" />
-    <Compile Include="DynamicContent\DynamicContentTypeRepository.cs" />
+    <Compile Include="DynamicContent\ContentTypeMetadataRepository.cs" />
     <Compile Include="DynamicContent\WarpCoreIlGenerator.cs" />
     <Compile Include="DynamicContent\DynamicUnversionedContentRepository.cs" />
     <Compile Include="DynamicContent\TypeResolvers.cs" />

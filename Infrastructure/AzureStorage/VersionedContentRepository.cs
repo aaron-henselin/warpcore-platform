@@ -98,6 +98,7 @@ namespace WarpCore.DbEngines.AzureStorage
         public Task<IReadOnlyCollection<T>> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live)
         {
+            //todo: resolve <T> from metadata.
             return Orm.FindContentVersions<T>(condition, version);
         }
 

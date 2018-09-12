@@ -108,13 +108,10 @@ namespace DemoSite
                     }
                     catch (Exception e)
                     {
-                        pageTreeItem.DesignUrl = $"/Admin/PageDesigner?{PageDesignerUriComponents.ViewMode}=PageDesigner&{PageDesignerUriComponents.SiteId}={draftNode.Page.SiteId}&{PageDesignerUriComponents.PageId}={pageTreeItem.PageId}";
+                        pageTreeItem.DesignUrl = $"/Admin/draft?{PageDesignerUriComponents.ViewMode}=PageDesigner&{PageDesignerUriComponents.SiteId}={draftNode.Page.SiteId}&{PageDesignerUriComponents.PageId}={pageTreeItem.PageId}";
                     }
 
                 }
-
-                //pageTreeItem.DesignUrl = pageTreeItem.VirtualPath + "?wc-viewmode=PageDesigner&wc-pg=" +
-                //                         pageTreeItem.PageId;
 
                 pageTreeItem.SettingsUrl = "/admin/settings?contentId=" + pageTreeItem.PageId;
                    

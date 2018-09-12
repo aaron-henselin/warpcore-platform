@@ -172,7 +172,7 @@ namespace DemoSite
                 Name = "Form Designer",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                DisplayInNavigation = false
+                DisplayInNavigation = true
             };
             formDesigner.SetCustomField("DisplayInNav",false);
             formDesigner.PageContent.Add(new CmsPageContent
@@ -297,6 +297,27 @@ namespace DemoSite
             });
 
 
+            ////////////////
+            var formsList = new CmsPage
+            {
+                Name = "Forms",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId,
+                DisplayInNavigation = true
+            };
+            formsList.PageContent.Add(new CmsPageContent
+            {
+                PlacementContentPlaceHolderId = "Body",
+                WidgetTypeCode = "wc-content-list",
+                Parameters = new Dictionary<string, string>
+                {
+                    [nameof(ContentList.RepositoryId)] = FormRepository.ApiId,
+                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsForm.Name)},{nameof(CmsForm.InternalId)},{nameof(CmsForm.ContentTypeId)}",
+
+                }
+            });
+
+
 
             var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
@@ -305,6 +326,7 @@ namespace DemoSite
             pageRepo.Save(entityBuilderPage);
             pageRepo.Save(entityListPage);
             pageRepo.Save(dynamicListTest);
+            pageRepo.Save(formsList);
             backendSite.HomepageId = pageTree.ContentId;
             siteRepo.Save(backendSite);
 

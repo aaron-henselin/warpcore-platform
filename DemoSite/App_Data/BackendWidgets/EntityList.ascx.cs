@@ -71,7 +71,7 @@ namespace DemoSite
                 //.ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
 
             List<EntityViewModel> vms = new List<EntityViewModel>();
-            var allDynamicContentTypes = new DynamicContentTypeRepository().Find();
+            var allDynamicContentTypes = new ContentTypeMetadataRepository().Find();
             foreach (var t in allDynamicContentTypes)
             {
                 vms.Add(new EntityViewModel{DisplayName = t.Name,ContentTypeId = t.ContentId});

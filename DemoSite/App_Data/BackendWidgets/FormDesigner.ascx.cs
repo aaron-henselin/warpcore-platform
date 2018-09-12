@@ -20,7 +20,7 @@ namespace DemoSite
             base.OnInit(e);
 
             var formTypeRaw = Request["formType"];
-            var contentType = new DynamicContentTypeRepository().GetById(new Guid(formTypeRaw));
+            //var contentType = new ContentTypeMetadataRepository().GetById(new Guid(formTypeRaw));
 
             
 
@@ -30,7 +30,7 @@ namespace DemoSite
                 cmsForm = new CmsForm
                 {
                     ContentId = Guid.NewGuid(),
-                    ContentTypeId = contentType.ContentId
+                    ContentTypeId = new Guid(formTypeRaw)
                     
                 };
             else

@@ -12,9 +12,12 @@ namespace Cms.DynamicContent
     public class DynamicContentType : UnversionedContentEntity
     {
         public string Name { get; set; }
+        public Guid TypeResolverId { get; set; }
+        public string CustomAssemblyQualifiedTypeName { get; set; }
+        public string AssemblyQualifiedTypeName { get; set; }
     }
 
-    public class DynamicContentTypeRepository : UnversionedContentRepository<DynamicContentType>
+    public class ContentTypeMetadataRepository : UnversionedContentRepository<DynamicContentType>
     {
     }
 }

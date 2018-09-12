@@ -13,12 +13,21 @@ namespace DemoSite {
     public partial class ContentList {
         
         /// <summary>
-        /// ContentListDataGrid control.
+        /// Data control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DataGrid ContentListDataGrid;
+        protected global::System.Web.UI.WebControls.HiddenField Data;
+        
+        /// <summary>
+        /// Fields control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField Fields;
     }
 }

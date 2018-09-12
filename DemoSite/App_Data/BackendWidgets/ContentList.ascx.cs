@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.DynamicContent;
@@ -35,6 +36,7 @@ namespace DemoSite
         public IDictionary<string, string> Values { get; set; }
     }
 
+
     public partial class ContentList : System.Web.UI.UserControl
     {
         [Setting]
@@ -55,24 +57,6 @@ namespace DemoSite
             this.DataBind();
         }
 
-        //private void FinishInit()
-        //{
-        //    this.DataBind();
-        //}
-
-
-        //protected override void LoadControlState(object savedState)
-        //{
-        //    _controlState = (ContentListControlState)savedState;
-        //    FinishInit();
-
-        //}
-
-        //protected override object SaveControlState()
-        //{
-        //    return _controlState;
-        //}
-
         protected void Page_Load(object sender, EventArgs e)
         {
           
@@ -84,15 +68,42 @@ namespace DemoSite
             var repo = (IVersionedContentRepositoryBase) Activator.CreateInstance(repoType);
             var allDrafts = repo.FindContentVersions(string.Empty, ContentEnvironment.Draft).ToList();
 
-            this.ContentListDataGrid.DataSource = allDrafts;
 
-            var fields = FieldList.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+            List<object> ds = new List<object>();
+            var fields = FieldList.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var d in allDrafts)
+            {          
+                var row = new List<string>();
+                var dict1 = d.GetPropertyValues(x => fields.Contains(x.Name));
+                foreach (var f in fields)
+                    row.Add(dict1[f]);
 
-            this.ContentListDataGrid.AutoGenerateColumns = false;
-            foreach (var field in fields)
-                this.ContentListDataGrid.Columns.Add(new BoundColumn{DataField = field,HeaderText = field});
+                ds.Add(row);
+            }
 
-            this.ContentListDataGrid.DataBind();
+            var fieldConfigurations = new List<object>();
+            foreach (var f in fields)
+            {
+                fieldConfigurations.Add(new { title = f });
+            }
+
+
+            var js = new JavaScriptSerializer();
+            Data.Value = js.Serialize(ds);
+            Fields.Value = js.Serialize(fieldConfigurations);
+            DataBind();
+
+            //this.ContentListDataGrid.DataSource = ds;
+
+            
+
+            //this.ContentListDataGrid.AutoGenerateColumns = false;
+            //foreach (var field in fields)
+            //{
+            //    this.ContentListDataGrid.Columns.Add(new BoundColumn { DataField = field, HeaderText = field });
+            //}
+
+            //this.ContentListDataGrid.DataBind();
 
             //var configFieldLookup = Configuration.Fields
             //    .Select(x => x.PropertyName)
