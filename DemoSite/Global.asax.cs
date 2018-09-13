@@ -8,6 +8,8 @@ using System.Web.UI.WebControls;
 using Cms.DynamicContent;
 using Cms.Forms;
 using Cms.Layout;
+using Cms.Toolbox;
+using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
@@ -284,16 +286,31 @@ namespace DemoSite
                 LayoutId = backendLayout.ContentId,
                 DisplayInNavigation = true
             };
+
+            var contentListControl= new ContentList()
+            {
+                RepositoryId = new Guid(CmsPageRepository.ApiId),
+                Config = new ContentListConfiguration
+                {
+                    Fields = new List<ContentListField>
+                    {
+                        new ContentListField
+                        {
+                            Header = "Name",
+                            Template = "{" + nameof(CmsPage.Name) + "}"
+                        }
+
+                    }
+                }
+            };
+            var parameters= (Dictionary<string,string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
+
+
             dynamicListTest.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-content-list",
-                Parameters = new Dictionary<string, string>
-                {
-                    [nameof(ContentList.RepositoryId)] = CmsPageRepository.ApiId,
-                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsPage.Name)},{nameof(CmsPage.Slug)},{nameof(CmsPage.DisplayInNavigation)},{nameof(CmsPage.Description)}",
-
-                }
+                Parameters = parameters
             });
 
 
@@ -305,16 +322,35 @@ namespace DemoSite
                 LayoutId = backendLayout.ContentId,
                 DisplayInNavigation = true
             };
+
+            var formList = new ContentList()
+            {
+                RepositoryId = new Guid(FormRepository.ApiId),
+                Config = new ContentListConfiguration
+                {
+                    Fields = new List<ContentListField>
+                    {
+                        new ContentListField
+                        {
+                            Header = "Name",
+                            Template =nameof(CmsForm.Name)
+                        },
+                        new ContentListField
+                        {
+                            Header = "Actions",
+                            Template ="<a href='/Admin/form-designer?formId={"+nameof(CmsForm.DesignForContentId)+"}'>Design</a>"
+                        }
+
+                    }
+                }
+            };
+            var formListParameters = (Dictionary<string, string>)formList.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
+
             formsList.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-content-list",
-                Parameters = new Dictionary<string, string>
-                {
-                    [nameof(ContentList.RepositoryId)] = FormRepository.ApiId,
-                    [nameof(ContentList.FieldList)] = $@"{nameof(CmsForm.Name)},{nameof(CmsForm.InternalId)},{nameof(CmsForm.ContentTypeId)}",
-
-                }
+                Parameters = formListParameters
             });
 
 

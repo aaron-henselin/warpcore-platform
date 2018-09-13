@@ -78,7 +78,7 @@ namespace IntegrationTests
             var newSite = SetupTestSite();
 
 
-            var liveSitemapBefore = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
+            var liveSitemapBefore = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live, SitemapBuilderFilters.All);
             Assert.AreEqual(0, liveSitemapBefore.ChildNodes.Count);
 
             PublishingShortcuts.PublishSite(newSite);
@@ -92,7 +92,7 @@ namespace IntegrationTests
             //Assert.AreEqual(subPage1.ContentId, structure.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).PageId);
 
 
-            var liveSitemap = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live);
+            var liveSitemap = SitemapBuilder.BuildSitemap(newSite, ContentEnvironment.Live, SitemapBuilderFilters.All);
             Assert.AreEqual(3, liveSitemap.ChildNodes.Count);
 
 
@@ -116,7 +116,7 @@ namespace IntegrationTests
                     }
                 );
 
-            uriBuilder.CreateUri(lastPage,UriSettings.Default);
+            uriBuilder.CreateUri(lastPage,UriSettings.Default,null);
 
         }
     }

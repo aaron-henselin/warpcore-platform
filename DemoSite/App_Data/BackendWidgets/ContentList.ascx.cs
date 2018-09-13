@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Cms;
 using Cms.DynamicContent;
 using Cms.Toolbox;
 using Framework;
@@ -15,14 +16,15 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace DemoSite
 {
-    public class ContentListConfiguration
+    public class ContentListConfiguration : IComplexDesignerSetting
     {
         public List<ContentListField> Fields { get; set; } = new List<ContentListField>();
     }
 
     public class ContentListField
     {
-        public string PropertyName { get; set; }
+        public string Template { get; set; }
+        public string Header { get; set; }
     }
 
     public class ContentListControlState
@@ -43,7 +45,7 @@ namespace DemoSite
         public Guid RepositoryId { get; set; }
 
         [Setting]
-        public string FieldList { get; set; }
+        public ContentListConfiguration Config { get; set; }
 
         //private ContentListControlState _controlState = new ContentListControlState();
 
@@ -70,13 +72,16 @@ namespace DemoSite
 
 
             List<object> ds = new List<object>();
-            var fields = FieldList.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            var fields = Config.Fields;
             foreach (var d in allDrafts)
             {          
                 var row = new List<string>();
-                var dict1 = d.GetPropertyValues(x => fields.Contains(x.Name));
+                var dict1 = d.GetPropertyValues(x => true);
                 foreach (var f in fields)
-                    row.Add(dict1[f]);
+                {
+                    var val = Templating.Interpolate(f.Template, dict1);
+                    row.Add(val);
+                }
 
                 ds.Add(row);
             }
@@ -84,7 +89,7 @@ namespace DemoSite
             var fieldConfigurations = new List<object>();
             foreach (var f in fields)
             {
-                fieldConfigurations.Add(new { title = f });
+                fieldConfigurations.Add(new { title = f.Header });
             }
 
 

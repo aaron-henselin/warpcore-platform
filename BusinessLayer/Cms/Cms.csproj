@@ -75,6 +75,7 @@
     <Compile Include="Sitemap\SitemapBuilder.cs" />
     <Compile Include="Sites\SiteRepository.cs" />
     <Compile Include="Sites\SiteStructure.cs" />
+    <Compile Include="Templating.cs" />
     <Compile Include="Toolbox\Metadata.cs" />
     <Compile Include="Toolbox\ToolboxManager.cs" />
   </ItemGroup>

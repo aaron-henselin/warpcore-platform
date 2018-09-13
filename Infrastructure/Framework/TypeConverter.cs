@@ -2,9 +2,15 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace Framework
 {
+    public interface IComplexDesignerSetting
+    {
+
+    }
+
     public static class DesignerTypeConverter
     {
         public static object ChangeType(object value, Type type)
@@ -27,6 +33,12 @@ namespace Framework
             }
             if (value is string && type == typeof(Guid)) return new Guid(value as string);
             if (value is string && type == typeof(Version)) return new Version(value as string);
+
+            if (value is string && typeof(IComplexDesignerSetting).IsAssignableFrom(type))
+                return new JavaScriptSerializer().Deserialize((string)value,type);
+
+            if (value is IComplexDesignerSetting && type == typeof(string))
+                return new JavaScriptSerializer().Serialize(value);
 
             if (type == typeof(string))
                 return value?.ToString();
