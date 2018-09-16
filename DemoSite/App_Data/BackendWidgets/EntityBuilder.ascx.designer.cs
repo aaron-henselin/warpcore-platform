@@ -76,6 +76,15 @@ namespace DemoSite {
         protected global::System.Web.UI.WebControls.PlaceHolder DataSourcePlaceHolder;
         
         /// <summary>
+        /// UseRepositoryDataSourcePlaceHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder UseRepositoryDataSourcePlaceHolder;
+        
+        /// <summary>
         /// RepositoryDataSourceDropDownList control.
         /// </summary>
         /// <remarks>
@@ -83,6 +92,24 @@ namespace DemoSite {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList RepositoryDataSourceDropDownList;
+        
+        /// <summary>
+        /// CreateCustomListLinkButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton CreateCustomListLinkButton;
+        
+        /// <summary>
+        /// UseCustomListDataSourcePlaceHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder UseCustomListDataSourcePlaceHolder;
         
         /// <summary>
         /// DescriptionTextBox control.

@@ -16,6 +16,7 @@ namespace DemoSite
     [Serializable]
     public class DynamicPropertyViewModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string FieldType { get; set; }
     }
@@ -113,6 +114,7 @@ namespace DemoSite
             var dynamicPropertyViewModels =
                 intf.InterfaceFields.Select(x => new DynamicPropertyViewModel
                 {
+                    Id=x.PropertyId,
                     Name = x.PropertyName,
                     FieldType = x.PropertyTypeName
                 }).ToList();
@@ -166,8 +168,10 @@ namespace DemoSite
         {
             var vm =new DynamicPropertyViewModel
             {
+                Id = Guid.NewGuid(),
                 FieldType = PropertyTypeDropDownList.SelectedValue,
                 Name = PropertyNameTextBox.Text
+                
             };
             _controlState.Properties.Add(vm);
             _controlState.IsAddingOrEditing = false;
@@ -183,7 +187,15 @@ namespace DemoSite
 
         protected void Finish_OnClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var interfaceId = Request["wc-interface"];
+            var intf = new ContentInterfaceRepository().GetById(new Guid(interfaceId));
+            //intf.InterfaceFields = _controlState.Properties.Select(x=> new ChoiceInterfaceField
+            //{
+                
+
+            //})
+
+            //throw new NotImplementedException();
         }
 
         protected override void OnPreRender(EventArgs e)
