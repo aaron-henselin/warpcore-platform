@@ -198,7 +198,7 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             ContentFieldType = contentFieldType;
         }
-
+        public Guid PropertyId { get; set; }
         public string PropertyName { get; set; }
         public string PropertyTypeName { get; set; }
         public string ContentFieldType { get; }

@@ -39,7 +39,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
                 yield return new ListOption
                 {
                     Text = displayName,
-                    Value = repo.FormInteropUid
+                    Value = repo.ApiId
                 };
             }
         }

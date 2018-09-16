@@ -49,9 +49,9 @@ namespace DemoSite
             var repositories = new RepositoryMetadataManager();
             repositories.Save(new RepositoryMetdata
             {
-                FriendlyRepositoryName = "Article",
+                CustomRepositoryName = "Article",
                 IsDynamic = true,
-                FormInteropUid = fullDynamicTypeId.ToString()
+                ApiId = fullDynamicTypeId.ToString()
             });
 
             var mgr = new ContentInterfaceRepository();
@@ -323,6 +323,8 @@ namespace DemoSite
                 DisplayInNavigation = true
             };
 
+                
+                
             var formList = new ContentList()
             {
                 RepositoryId = new Guid(FormRepository.ApiId),
@@ -338,7 +340,7 @@ namespace DemoSite
                         new ContentListField
                         {
                             Header = "Actions",
-                            Template ="<a href='/Admin/form-designer?formId={"+nameof(CmsForm.DesignForContentId)+"}'>Design</a>"
+                            Template =@"<a href='/Admin/form-designer?formId={"+nameof(CmsForm.DesignForContentId)+"}'><span class='glyphicon glyphicon-text-background'></span>Design</a>"
                         }
 
                     }

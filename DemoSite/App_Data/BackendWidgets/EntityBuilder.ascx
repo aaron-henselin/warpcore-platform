@@ -60,7 +60,25 @@
                     <div class="col-md-2"></div>
                     <div class="col-md-4">
                         <asp:Label runat="server" AssociatedControlID="PropertyTypeDropDownList">Property Type</asp:Label>
-                        <asp:DropDownList runat="server" ID="PropertyTypeDropDownList" CssClass="form-control"/>
+                        <asp:DropDownList AutoPostBack="true" runat="server" ID="PropertyTypeDropDownList" CssClass="form-control"/>
+                        <asp:PlaceHolder runat="server" ID="DataSourcePlaceHolder" Visible="False">
+                            <asp:PlaceHolder runat="server" ID="UseRepositoryDataSourcePlaceHolder">
+                                <asp:Label runat="server" AssociatedControlID="RepositoryDataSourceDropDownList" >
+                                    Choice List
+                                </asp:Label>
+                                <asp:DropDownList runat="server" ID="RepositoryDataSourceDropDownList" CssClass="form-control"/>
+                                <i>or</i>
+                                <asp:LinkButton runat="server" ID="CreateCustomListLinkButton">
+                                    create a custom list.
+                                </asp:LinkButton>
+                            </asp:PlaceHolder>
+                            <asp:PlaceHolder runat="server" ID="UseCustomListDataSourcePlaceHolder">
+                                
+                            </asp:PlaceHolder>
+                           
+
+                        </asp:PlaceHolder>
+
                     </div>
                     <div class="col-md-12">
                         <asp:Label runat="server" AssociatedControlID="DescriptionTextBox">Description</asp:Label>
