@@ -49,7 +49,7 @@ namespace DemoSite
             var repositories = new RepositoryMetadataManager();
             repositories.Save(new RepositoryMetdata
             {
-                FriendlyEntityName = "Article",
+                FriendlyRepositoryName = "Article",
                 IsDynamic = true,
                 FormInteropUid = fullDynamicTypeId.ToString()
             });

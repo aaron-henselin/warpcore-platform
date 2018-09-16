@@ -32,7 +32,7 @@ namespace WarpCore.Cms.Toolbox
         public string FormInteropUid { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
         public string CustomAssemblyQualifiedTypeName { get; set; }
-        public string FriendlyEntityName { get; set; }
+        public string FriendlyRepositoryName { get; set; }
         public bool IsDynamic { get; set; }
     }
 

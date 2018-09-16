@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using Cms.DynamicContent;
 using Cms.Toolbox;
 using Framework;
 using WarpCore.Cms.Toolbox;
@@ -29,8 +30,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var mgr = new RepositoryMetadataManager();
             foreach (var repo in mgr.Find())
             {
-                var t = Type.GetType(repo.AssemblyQualifiedTypeName);
-                var displayName = t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name;
+                var t=RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.FormInteropUid));
+                
+                var displayName = repo.FriendlyRepositoryName 
+                                    ?? t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName 
+                                    ?? t.Name;
+
                 yield return new ListOption
                 {
                     Text = displayName,
