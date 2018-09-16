@@ -117,7 +117,7 @@ namespace WarpCore.Web
         public static void BuildUpRepositoryMetadata()
         {
             var respositoryManager = new RepositoryMetadataManager();
-            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.FormInteropUid);
+            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.ApiId);
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
@@ -135,7 +135,7 @@ namespace WarpCore.Web
                 if (alreadyExists)
                     metadata = preexistingMetadata[uid];
 
-                metadata.FormInteropUid = uid;
+                metadata.ApiId = uid;
                 metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
                 respositoryManager.Save(metadata);
             }

@@ -67,6 +67,24 @@ namespace DemoSite {
         protected global::System.Web.UI.WebControls.DropDownList PropertyTypeDropDownList;
         
         /// <summary>
+        /// DataSourcePlaceHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder DataSourcePlaceHolder;
+        
+        /// <summary>
+        /// RepositoryDataSourceDropDownList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList RepositoryDataSourceDropDownList;
+        
+        /// <summary>
         /// DescriptionTextBox control.
         /// </summary>
         /// <remarks>

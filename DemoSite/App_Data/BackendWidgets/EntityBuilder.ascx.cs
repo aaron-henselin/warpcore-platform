@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -24,7 +26,7 @@ namespace DemoSite
         public bool IsAddingOrEditing { get; set; }
         public List<DynamicPropertyViewModel> Properties { get; set; } = new List<DynamicPropertyViewModel>();
         public string EditingId { get; set; }
-
+        public string PropertyType { get; set; }
     }
 
     public class EntityBuilderActionBarPlaceHolder : PlaceHolder
@@ -51,10 +53,13 @@ namespace DemoSite
         protected override void LoadControlState(object savedState)
         {
             _controlState = (EntityBuilderControlState)savedState;
+            PropertyTypeDropDownList.SelectedValue = _controlState.PropertyType;
+            FinishInit();
         }
 
         protected override object SaveControlState()
         {
+            _controlState.PropertyType = PropertyTypeDropDownList.SelectedValue;
             return _controlState;
         }
 
@@ -68,6 +73,24 @@ namespace DemoSite
 
             PropertyTypeDropDownList.Items.Add(ContentFieldTopLevelType.Text.ToString());
             PropertyTypeDropDownList.Items.Add(ContentFieldTopLevelType.Choice.ToString());
+
+            var mgr = new RepositoryMetadataManager();
+            var allRepos = mgr.Find();
+            foreach (var repo in allRepos)
+            {
+                var repoType =
+                RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.ApiId));
+
+                var repoName = repo.CustomRepositoryName;
+                if (string.IsNullOrWhiteSpace(repoName))
+                    repoName = repoType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
+
+                if (string.IsNullOrWhiteSpace(repoName))
+                    repoName = repoType.Name;
+
+                RepositoryDataSourceDropDownList.Items.Add(new ListItem(repoName,repo.ApiId));
+            }
+
 
             if (Page.IsPostBack)
                 return;
@@ -135,6 +158,8 @@ namespace DemoSite
             PropertyAddFormWrapper.Visible = _controlState.IsAddingOrEditing;
             FinishRow.Visible = !_controlState.IsAddingOrEditing;
 
+            DataSourcePlaceHolder.Visible = PropertyTypeDropDownList.SelectedValue == ContentFieldTopLevelType.Choice.ToString();
+
         }
 
         protected void SaveButton_OnClick(object sender, EventArgs e)
@@ -159,6 +184,11 @@ namespace DemoSite
         protected void Finish_OnClick(object sender, EventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            RefreshVisibility();
         }
     }
 }

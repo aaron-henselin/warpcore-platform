@@ -60,7 +60,12 @@
                     <div class="col-md-2"></div>
                     <div class="col-md-4">
                         <asp:Label runat="server" AssociatedControlID="PropertyTypeDropDownList">Property Type</asp:Label>
-                        <asp:DropDownList runat="server" ID="PropertyTypeDropDownList" CssClass="form-control"/>
+                        <asp:DropDownList AutoPostBack="true" runat="server" ID="PropertyTypeDropDownList" CssClass="form-control"/>
+                        <asp:PlaceHolder runat="server" ID="DataSourcePlaceHolder" Visible="False">
+                            <asp:DropDownList runat="server" ID="RepositoryDataSourceDropDownList" CssClass="form-control"/>
+                            
+                        </asp:PlaceHolder>
+
                     </div>
                     <div class="col-md-12">
                         <asp:Label runat="server" AssociatedControlID="DescriptionTextBox">Description</asp:Label>
