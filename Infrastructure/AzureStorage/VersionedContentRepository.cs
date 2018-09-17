@@ -49,15 +49,15 @@ namespace WarpCore.DbEngines.AzureStorage
             Orm = orm;
         }
 
-        public void Save(VersionedContentEntity item)
+        protected virtual void SaveImpl(VersionedContentEntity item)
         {
             Orm.Save(item);
             SaveDraftChecksum(item);
         }
 
-        public virtual void Save(T item)
+        public void Save(T item)
         {
-            Save((VersionedContentEntity)item);
+            SaveImpl((VersionedContentEntity)item);
         }
 
         private void SaveDraftChecksum(VersionedContentEntity item)
@@ -86,7 +86,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         void IContentRepository.Save(CosmosEntity item)
         {
-            this.Save((VersionedContentEntity)item);
+            this.SaveImpl((VersionedContentEntity)item);
         }
 
         IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepositoryBase.FindContentVersions(string condition, ContentEnvironment version)

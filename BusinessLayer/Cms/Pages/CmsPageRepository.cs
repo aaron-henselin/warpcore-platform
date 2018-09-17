@@ -448,14 +448,16 @@ namespace WarpCore.Cms
             else
                 AssertSlugIsNotTaken(cmsPage, newSitemapRelativePosition);
 
-            base.Save(cmsPage);
+            base.SaveImpl(cmsPage);
 
             Move(cmsPage,newSitemapRelativePosition);
         }
 
         
-        public override void Save(CmsPage cmsPage)
+        protected override void SaveImpl(VersionedContentEntity vce)
         {
+            CmsPage cmsPage = (CmsPage) vce;
+
             SitemapRelativePosition sitemapRelativePosition;
             if (cmsPage.IsNew)
                 sitemapRelativePosition = SitemapRelativePosition.Root;

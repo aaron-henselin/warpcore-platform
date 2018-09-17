@@ -23,7 +23,10 @@
     <form id="form1" runat="server">
         <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/AdminSite/NavBar.ascx"/>
         <div class="container">
-            <h1 runat="server" ID="PageHeader"><%# Page.Title %></h1>
+            <h1 runat="server" ID="PageHeader">
+                <asp:Button runat="server" ID="CreateNewPageButton" OnClick="CreateNewPageButton_OnClick" Text="Create new page" CssClass="pull-right btn btn-primary"/>
+                <%# Page.Title %>
+            </h1>
             <asp:ContentPlaceHolder ID="Body" runat="server">
             </asp:ContentPlaceHolder>
         </div>

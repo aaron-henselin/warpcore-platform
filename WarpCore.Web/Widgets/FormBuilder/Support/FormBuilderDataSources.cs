@@ -30,9 +30,9 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var mgr = new RepositoryMetadataManager();
             foreach (var repo in mgr.Find())
             {
-                var t=RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.FormInteropUid));
+                var t=RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.ApiId));
                 
-                var displayName = repo.FriendlyRepositoryName 
+                var displayName = repo.CustomRepositoryName 
                                     ?? t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName 
                                     ?? t.Name;
 

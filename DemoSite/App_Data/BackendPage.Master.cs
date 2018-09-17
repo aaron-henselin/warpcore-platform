@@ -15,5 +15,12 @@ namespace DemoSite
             base.OnInit(e);
             PageHeader.DataBind();
         }
+
+        protected void CreateNewPageButton_OnClick(object sender, EventArgs e)
+        {
+            Response.Redirect("/admin/settings");
+             //var ctd = "/admin/settings?contentId=" + pageTreeItem.PageId;
+
+        }
     }
 }
