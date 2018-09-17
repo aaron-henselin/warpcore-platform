@@ -12,6 +12,7 @@ namespace Cms.Layout
     [Table("cms_layout")]
     public class Layout : UnversionedContentEntity
     {
+        public string Name { get; set; }
         public string MasterPagePath { get; set; }
 
         public Guid? ParentLayoutId { get; set; }
@@ -19,6 +20,10 @@ namespace Cms.Layout
         [SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class LayoutNode
@@ -27,8 +32,10 @@ namespace Cms.Layout
         public Layout Layout { get; set; }
     }
 
+    [ExposeToWarpCoreApi(ApiId)]
     public class LayoutRepository : UnversionedContentRepository<Layout>
     {
+        public const string ApiId = "4e3e0fdb-5008-4239-93cc-3ac6307e2a5d";
 
         public LayoutNode GetLayoutStructure(Layout layout)
         {

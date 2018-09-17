@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Cms.DynamicContent;
 using Cms.Toolbox;
+using WarpCore.Cms;
+using WarpCore.DbEngines.AzureStorage;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
@@ -47,18 +51,63 @@ namespace WarpCore.Web.Widgets.FormBuilder
             
         }
 
+        public IEnumerable<ListOption> GetOptionsFromDataRelation(ConfiguratorEditingContext editingContext, string apiId)
+        {
+            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(apiId));
+            var repo = (IContentRepository)Activator.CreateInstance(repoType);
+
+            List<CosmosEntity> allItems=null;
+
+            if (repo is IUnversionedContentRepositoryBase unversionedRepo)
+            {
+                allItems = unversionedRepo.FindContent(string.Empty)
+                    .Cast<CosmosEntity>()
+                    .ToList();
+            }
+
+            if (repo is IVersionedContentRepositoryBase versionedRepo)
+            {
+                allItems = versionedRepo.FindContentVersions(string.Empty)
+                    .Cast<CosmosEntity>()
+                    .ToList();
+            }
+
+            if (allItems == null)
+                throw new Exception();
+
+            foreach (var entity in allItems)
+            {
+                yield return new ListOption
+                {
+                    Text = entity.ToString(),
+                    Value = entity.ContentId.ToString()
+                };
+
+            }
+        }
+
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
         {
-            var prop = editingContext.ClrType.GetProperty(PropertyName);
-            var dd = prop
-                .GetCustomAttributes(true)
-                .OfType<IListControlSource>()
-                .FirstOrDefault();
+            var propertyToEdit = editingContext.ClrType.GetProperty(PropertyName);
+            var allAttributes = propertyToEdit.GetCustomAttributes(true);
+
+            var customListSource = allAttributes.OfType<IListControlSource>().FirstOrDefault();
+            var dataRelation = allAttributes.OfType<DataRelationAttribute>().FirstOrDefault();
+
+            var options = new List<ListOption>();
+
+            if (dataRelation != null)
+                options = GetOptionsFromDataRelation(editingContext,dataRelation.ApiId).ToList();
+
+            if (customListSource != null)
+                options = customListSource.GetOptions(editingContext).ToList();
+            
+
 
             var prevValue=
                 _listControl.SelectedValue;
             _listControl.Items.Clear();
-            var options = dd.GetOptions(editingContext);
+            
             foreach (var item in options)
                 _listControl.Items.Add(new ListItem(item.Text, item.Value));
 

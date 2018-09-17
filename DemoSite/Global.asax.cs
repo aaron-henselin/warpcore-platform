@@ -91,7 +91,7 @@ namespace DemoSite
         {
 
             var mgr = new ContentInterfaceRepository();
-            var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.TypeResolverUid));
+            var extension = mgr.GetCustomFieldsTypeExtension(new Guid(CmsPage.ApiId));
             extension.InterfaceFields.Add(new ChoiceInterfaceField
             {
                 PropertyName = "DisplayInNav",
@@ -151,6 +151,7 @@ namespace DemoSite
 
             var backendLayout = new Layout
             {
+                Name = "Backend Layout",
                 MasterPagePath = "/App_Data/BackendPage.Master"
             };
 
@@ -230,6 +231,15 @@ namespace DemoSite
                     DisplayName = "Description",
                 });
             form.FormContent.Add(description);
+
+            var layoutDropDown =
+                factory.CreateToolboxItemContent(new ConfiguratorDropDownList
+                {
+                    PropertyName = nameof(CmsPage.LayoutId),
+                    DisplayName = "Layout",
+                    
+                });
+            form.FormContent.Add(layoutDropDown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);
@@ -388,7 +398,9 @@ namespace DemoSite
 
             var myLayout = new Layout
             {
-                MasterPagePath = "/Demo.Master"
+                Name = "Demo",
+                MasterPagePath = "/Demo.Master",
+
             };
 
             myLayout.PageContent.Add(new CmsPageContent{WidgetTypeCode = "Client-CustomNavigation",PlacementContentPlaceHolderId = "NavigationContentPlaceHolder"});

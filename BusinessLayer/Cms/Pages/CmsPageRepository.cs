@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using Cms;
+using Cms.Layout;
 using Cms.Toolbox;
 using DemoSite;
 using Framework;
@@ -33,12 +34,12 @@ namespace WarpCore.Cms
     }
     
     [Table("cms_page")]
-    [SupportsCustomFields(TypeResolverUid)]
+    [SupportsCustomFields(ApiId)]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
     [ContentDescription(ContentFriendlyNameSingular = "Page")]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
-        public const string TypeResolverUid = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
+        public const string ApiId = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
 
         [Column]
         public string Name { get; set; }
@@ -47,6 +48,7 @@ namespace WarpCore.Cms
         public string Slug { get; set; }
 
         [Column]
+        [DataRelation(LayoutRepository.ApiId)]
         public Guid LayoutId { get; set; }
 
         [Column]
@@ -85,6 +87,11 @@ namespace WarpCore.Cms
 
         [SerializedComplexObject]
         public Dictionary<string, string> InternalRedirectParameters { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public enum RoutePriority
@@ -259,6 +266,21 @@ namespace WarpCore.Cms
         public string ContentFriendlyNameSingular { get; set; }
         public string ContentFriendlyNamePlural { get; set; }
     }
+
+
+
+    public class DataRelationAttribute : Attribute
+    {
+        public string ApiId { get; set; }
+
+        public DataRelationAttribute(string apiId)
+        {
+            ApiId = apiId;
+        }
+
+
+    }
+
 
     public class SupportsCustomFieldsAttribute : Attribute
     {

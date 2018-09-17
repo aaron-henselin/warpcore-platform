@@ -41,5 +41,10 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             Save((T)item);
         }
+
+        IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepositoryBase.FindContent(string condition)
+        {
+            return Find(condition);
+        }
     }
 }

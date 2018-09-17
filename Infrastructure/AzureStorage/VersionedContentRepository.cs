@@ -24,8 +24,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public interface IUnversionedContentRepositoryBase : IContentRepository
     {
-        //IReadOnlyCollection<CosmosEntity> FindContentVersions(string condition,
-        //    ContentEnvironment version = ContentEnvironment.Live);
+        IReadOnlyCollection<UnversionedContentEntity> FindContent(string condition);
     }
 
 
