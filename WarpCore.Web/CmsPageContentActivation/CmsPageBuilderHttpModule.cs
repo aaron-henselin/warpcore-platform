@@ -148,7 +148,6 @@ public interface ILayoutHandle
                     layoutWidget.InitializeLayout();
                 }
 
-
                 var placementPlaceHolder = FindPlacementLocation(placementSearchContext, content);
                 if (placementPlaceHolder == null)
                     continue;

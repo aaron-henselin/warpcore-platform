@@ -61,9 +61,9 @@ namespace DemoSite
 
         }
 
-        private CosmosEntity GetDraft()
+        private WarpCoreEntity GetDraft()
         {
-            CosmosEntity draft;
+            WarpCoreEntity draft;
             if (_contentId != null)
                 draft = _repo.FindContentVersions(By.ContentId(_contentId.Value), ContentEnvironment.Draft).Single();
             else

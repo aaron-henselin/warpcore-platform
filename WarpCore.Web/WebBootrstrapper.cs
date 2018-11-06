@@ -123,7 +123,7 @@ namespace WarpCore.Web
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
             
             var repositories = allTypes.HavingAttribute<ExposeToWarpCoreApi>().Where(x => typeof(IContentRepository).IsAssignableFrom(x));
-            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>().Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
+            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>().Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x));
 
             foreach (var repoType in repositories)
             {

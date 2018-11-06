@@ -14,11 +14,11 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public abstract class CosmosEntity : TableEntity
+    public abstract class WarpCoreEntity : TableEntity
     {
         private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
 
-        public CosmosEntity(DynamicTypeDefinition definition)
+        public WarpCoreEntity(DynamicTypeDefinition definition)
         {
             InitializeCustomFields(definition);
         }
@@ -32,7 +32,7 @@ namespace WarpCore.DbEngines.AzureStorage
             }
         }
 
-        protected CosmosEntity(IDynamicTypeDefinitionResolver dynamicTypeDefinitionResolver)
+        protected WarpCoreEntity(IDynamicTypeDefinitionResolver dynamicTypeDefinitionResolver)
         {
             var def =dynamicTypeDefinitionResolver.Resolve(this.GetType());
             if (def != null)

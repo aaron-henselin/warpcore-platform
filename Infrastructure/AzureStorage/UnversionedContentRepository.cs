@@ -32,12 +32,12 @@ namespace WarpCore.DbEngines.AzureStorage
             return Orm.FindUnversionedContent<T>(condition).Result.ToList();
         }
 
-        CosmosEntity IContentRepository.New()
+        WarpCoreEntity IContentRepository.New()
         {
             return new T();
         }
 
-        void IContentRepository.Save(CosmosEntity item)
+        void IContentRepository.Save(WarpCoreEntity item)
         {
             Save((T)item);
         }

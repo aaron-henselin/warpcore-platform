@@ -17,9 +17,9 @@ namespace WarpCore.DbEngines.AzureStorage
 
     public interface IContentRepository
     {
-        CosmosEntity New();
+        WarpCoreEntity New();
 
-        void Save(CosmosEntity item);
+        void Save(WarpCoreEntity item);
     }
 
     public interface IUnversionedContentRepositoryBase : IContentRepository
@@ -78,12 +78,12 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
 
-        CosmosEntity IContentRepository.New()
+        WarpCoreEntity IContentRepository.New()
         {
             return new T();
         }
 
-        void IContentRepository.Save(CosmosEntity item)
+        void IContentRepository.Save(WarpCoreEntity item)
         {
             this.SaveImpl((VersionedContentEntity)item);
         }
