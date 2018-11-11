@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
@@ -34,7 +35,6 @@ namespace DemoSite
             var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(_cmsForm.RepositoryUid);
             var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
             _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
-            
 
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent);
 
@@ -52,8 +52,23 @@ namespace DemoSite
                 CurrentValues = d
             };
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
+            SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
             CmsFormReadWriter.FillInControlValues(surface,configuratorEditingContext);
             
+        }
+
+        private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorEditingContext configuratorEditingContext)
+        {
+            if (!Page.IsPostBack && _contentId == null)
+            {
+                var defaultValuesRaw = Request["defaultValues"];
+                if (!string.IsNullOrWhiteSpace(defaultValuesRaw))
+                {
+                    var deafultValues = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(defaultValuesRaw);
+                    foreach (var kvp in deafultValues)
+                        configuratorEditingContext.CurrentValues[kvp.Key] = kvp.Value;
+                }
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms.Sites
 {
-
+    [ExposeToWarpCoreApi(ApiId)]
     public class SiteRepository : UnversionedContentRepository<Site>
     {
+        public const string ApiId = "c1cad478-bf77-4bc6-bf5b-6031f7436e00";
+
         public IReadOnlyCollection<Site> GetFrontendSites()
         {
             return Find().Where(x => x.IsFrontendSite).ToList();

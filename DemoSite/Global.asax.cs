@@ -205,7 +205,13 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                 });
             oneColumn.AllContent.Add(description);
 
-
+            var siteIdDropdown =
+                factory.CreateToolboxItemContent(new ConfiguratorDropDownList()
+                {
+                    PropertyName = nameof(CmsPage.SiteId),
+                    DisplayName = "Site",
+                });
+            oneColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);
@@ -272,6 +278,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             var pageSettings = new CmsPage
             {
                 Name = "Settings",
+                ContentId = KnownPageIds.PageSettings,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
                 DisplayInNavigation = false
