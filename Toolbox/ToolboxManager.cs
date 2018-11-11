@@ -5,8 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.Compilation;
-using Cms.DynamicContent;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms.Toolbox
 {

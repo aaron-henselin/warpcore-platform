@@ -7,8 +7,8 @@
     <ProjectGuid>{B8D80998-FE66-409D-B451-701D7FDDA361}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Platform.Extensibility</RootNamespace>
-    <AssemblyName>Platform.Extensibility</AssemblyName>
+    <RootNamespace>WarpCore.Platform.Extensibility</RootNamespace>
+    <AssemblyName>WarpCore.Platform.Extensibility</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.DbEngines.AzureStorage
 {

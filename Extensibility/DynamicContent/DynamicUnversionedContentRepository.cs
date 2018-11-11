@@ -1,7 +1,4 @@
-﻿using Extensibility;
-using WarpCore.Cms;
-
-namespace Cms.DynamicContent
+﻿namespace WarpCore.Platform.Extensibility.DynamicContent
 {
     [ExposeToWarpCoreApi(ApiId)]
     public class DynamicUnversionedContentRepository

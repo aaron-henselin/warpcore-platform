@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using Cms.Toolbox;
-using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.Kernel;
 
 namespace Cms
 {

@@ -1,7 +1,6 @@
 ﻿using System;
-using TinyIoC;
 
-namespace WarpCore.DbEngines.AzureStorage
+namespace WarpCore.Platform.Kernel
 {
     public static class Dependency
     {

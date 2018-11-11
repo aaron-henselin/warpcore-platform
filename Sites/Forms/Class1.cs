@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Extensibility;
 using WarpCore.Cms;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Orm;
 
 namespace Cms.Forms
 {

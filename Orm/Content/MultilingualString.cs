@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WarpCore.DbEngines.AzureStorage;
 
-namespace Cms
+namespace WarpCore.Platform.Orm.Content
 {
     //[SerializedComplexObject]
     public class MultilingualString : Dictionary<string,string>

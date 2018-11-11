@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WarpCore.Platform.Kernel;
 
-namespace WarpCore.DbEngines.AzureStorage
+namespace WarpCore.Platform.Orm
 {
     public interface ICosmosOrm
     {

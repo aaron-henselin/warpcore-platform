@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using WarpCore.Platform.Kernel.Extensions;
 
-namespace Framework
+namespace WarpCore.Platform.Kernel
 {
 
 
     public static class ObjectExtensions
     {
 
-        public static IEnumerable<PropertyInfo> GetPropertiesFiltered(this Type type, Func<PropertyInfo, bool> condition)
-        {
-            foreach (var property in type.GetProperties())
-            {
-                if (condition(property))
-                    yield return property;
-            }
-        }
+
 
         public static IDictionary<string, string> GetPropertyValues(this object activated, Func<PropertyInfo,bool> condition)
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WarpCore.Cms
+namespace WarpCore.Platform.Extensibility
 {
     public class SupportsCustomFieldsAttribute : Attribute
     {

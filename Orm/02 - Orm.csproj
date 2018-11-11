@@ -7,8 +7,8 @@
     <ProjectGuid>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Orm</RootNamespace>
-    <AssemblyName>Orm</AssemblyName>
+    <RootNamespace>WarpCore.Platform.Orm</RootNamespace>
+    <AssemblyName>WarpCore.Platform.Orm</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

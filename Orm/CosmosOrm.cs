@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using JsonSubTypes;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WarpCore.Platform.Kernel;
 
-namespace WarpCore.DbEngines.AzureStorage
+namespace WarpCore.Platform.Orm
 {
     public class CosmosDbConfiguration
     {

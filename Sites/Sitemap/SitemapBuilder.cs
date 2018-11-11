@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
 using WarpCore.Cms.Sites;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms
 {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Platform.Extensibility
+namespace WarpCore.Platform.Extensibility
 {
     public interface IDomainEvent
     {
@@ -12,7 +10,7 @@ namespace Platform.Extensibility
 
     public static class DomainEvents
     {
-        private static Dictionary<Type, List<Action<IDomainEvent>>> _subscriptions = new Dictionary<Type, List<Action<IDomainEvent>>>();
+        private static readonly Dictionary<Type, List<Action<IDomainEvent>>> _subscriptions = new Dictionary<Type, List<Action<IDomainEvent>>>();
 
         public static void Raise<T>(T eventArgs) where T : IDomainEvent
         {

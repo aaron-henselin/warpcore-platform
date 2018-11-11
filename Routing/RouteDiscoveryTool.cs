@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms
 {

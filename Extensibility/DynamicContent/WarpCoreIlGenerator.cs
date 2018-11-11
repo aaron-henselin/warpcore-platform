@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 
-namespace Cms.DynamicContent
+namespace WarpCore.Platform.Extensibility.DynamicContent
 {
     public class WarpCoreIlGenerator
     {

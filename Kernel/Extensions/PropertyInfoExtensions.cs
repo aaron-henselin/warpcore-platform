@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Framework
+namespace WarpCore.Platform.Kernel.Extensions
 {
     public static class PropertyInfoExtensions
     {

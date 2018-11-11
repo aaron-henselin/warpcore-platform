@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Framework;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
+using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Kernel.Extensions;
 
-namespace WarpCore.DbEngines.AzureStorage
+namespace WarpCore.Platform.Orm
 {
 
     public abstract class WarpCoreEntity 

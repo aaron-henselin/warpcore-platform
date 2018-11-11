@@ -6,8 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
-using Framework;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Kernel.Extensions;
+using WarpCore.Platform.Orm;
 
 namespace Cms.Toolbox
 {

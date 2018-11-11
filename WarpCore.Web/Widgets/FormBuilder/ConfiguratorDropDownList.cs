@@ -4,10 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.DynamicContent;
 using Cms.Toolbox;
 using WarpCore.Cms;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility.DynamicContent;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Extensibility;
-using WarpCore.Cms;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 
-namespace Cms.DynamicContent
+namespace WarpCore.Platform.Extensibility.DynamicContent
 {
     public static class EntityTypeResolver
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{1A8EB44B-2613-499C-A07C-89442225F4C6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Platform.Kernel</RootNamespace>
-    <AssemblyName>Platform.Kernel</AssemblyName>
+    <RootNamespace>WarpCore.Platform.Kernel</RootNamespace>
+    <AssemblyName>WarpCore.Platform.Kernel</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -52,13 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dependency.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="DependencyResolverShortcuts.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfoExtensions.cs" />
+    <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="TinyIoc.cs" />
     <Compile Include="TypeConverter.cs" />
-    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
