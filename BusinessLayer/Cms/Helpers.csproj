@@ -61,21 +61,17 @@
       <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
       <Name>AzureStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Infrastructure\Framework\Framework.csproj">
-      <Project>{edffb1e1-cd8a-4634-ab34-ab857963534f}</Project>
-      <Name>Framework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Orm\02 - Orm.csproj">
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
       <Name>02 - Orm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Routing\03 - Routing.csproj">
+    <ProjectReference Include="..\..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
-      <Name>03 - Routing</Name>
+      <Name>Cms Routing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Sites\02 - Sites.csproj">
+    <ProjectReference Include="..\..\Sites\Cms Sites.csproj">
       <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
-      <Name>02 - Sites</Name>
+      <Name>Cms Sites</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

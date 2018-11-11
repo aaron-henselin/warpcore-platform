@@ -104,13 +104,13 @@
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
       <Name>02 - Orm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Sites\02 - Sites.csproj">
+    <ProjectReference Include="..\Sites\Cms Sites.csproj">
       <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
-      <Name>02 - Sites</Name>
+      <Name>Cms Sites</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Toolbox\01 - Toolbox.csproj">
+    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
       <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
-      <Name>01 - Toolbox</Name>
+      <Name>Cms Toolbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

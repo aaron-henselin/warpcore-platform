@@ -45,32 +45,7 @@ namespace WarpCore.Web
                 .Select(x => x.Location);
 
             binariesToCheck = binariesToCheck.Except(alreadyLoaded).ToList();
-
-
-            ////var assembliesDir = setup.PrivateBinPathProbe != null 
-            ////    ? setup.PrivateBinPath : setup.ApplicationBase;
-
-            //AppDomain oTempAppDomain = AppDomain.CreateDomain("tempAppDomain");
-
-            //foreach (var binaryToCheck in binariesToCheck)
-            //try
-            //{
-            //    AssemblyLoader al =
-            //        (AssemblyLoader) oTempAppDomain
-            //            .CreateInstanceAndUnwrap(typeof(AssemblyLoader).Assembly.FullName,
-            //            typeof(AssemblyLoader).FullName);
-
-            //    var isPlugin = al.IsPluginAssembly(binaryToCheck,condition);
-            //    if (isPlugin)
-            //        filesToLoad.Add(binaryToCheck);
-            //}
-            //catch (Exception ex)
-            //{
-                
-            //}
-
-            //AppDomain.Unload(oTempAppDomain);
-
+            
             foreach (var file in binariesToCheck)
             {
                 Assembly.LoadFile(file);
@@ -158,6 +133,11 @@ namespace WarpCore.Web
 
         }
 
+        public static void BuildUpDomainEvents()
+        {
+            DomainEvents.Subscribe<SiteStructureChanged>(x => CmsRoutes.RegenerateAllRoutes());
+        }
+
         public static void BuildUpToolbox()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -207,8 +187,7 @@ namespace WarpCore.Web
                 _bootingStarted = true;
                 Task.Run(() =>
                 {
-                    DomainEvents.Subscribe<SiteStructureChanged>(x => CmsRoutes.RegenerateAllRoutes());
-
+                    BuildUpDomainEvents();
                     Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
                     PreloadPlugins();

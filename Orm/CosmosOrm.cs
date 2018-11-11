@@ -210,102 +210,102 @@ namespace WarpCore.DbEngines.AzureStorage
     }
 
 
-    public class CosmosOrm : ICosmosOrm
-    {
-        private bool _offline = true;
-        private CloudTableClient _client;
+    //public class CosmosOrm : ICosmosOrm
+    //{
+    //    private bool _offline = true;
+    //    private CloudTableClient _client;
 
-        private static Dictionary<Type, Uri> _collectionUris = new Dictionary<Type, Uri>();
+    //    private static Dictionary<Type, Uri> _collectionUris = new Dictionary<Type, Uri>();
 
-        public CosmosOrm(CosmosDbConfiguration options)
-        {
-            var account = CloudStorageAccount.Parse(options.ConnectionString);
-            _client = account.CreateCloudTableClient();
-            _offline = false;
-        }
+    //    public CosmosOrm(CosmosDbConfiguration options)
+    //    {
+    //        var account = CloudStorageAccount.Parse(options.ConnectionString);
+    //        _client = account.CreateCloudTableClient();
+    //        _offline = false;
+    //    }
 
-        private void AssertIsOnline()
-        {
-            if (_offline)
-                throw new Exception("Application is not connected to storage account.");
-        }
+    //    private void AssertIsOnline()
+    //    {
+    //        if (_offline)
+    //            throw new Exception("Application is not connected to storage account.");
+    //    }
 
 
-        public async void Delete(CosmosEntity item)
-        {
-            AssertIsOnline();
+    //    public async void Delete(CosmosEntity item)
+    //    {
+    //        AssertIsOnline();
 
-            var table = GetOrCreateTable(item.GetType()).Result;
-            await table.ExecuteAsync(TableOperation.Delete(item));
-        }
+    //        var table = GetOrCreateTable(item.GetType()).Result;
+    //        await table.ExecuteAsync(TableOperation.Delete(item));
+    //    }
 
-        public async void Save(CosmosEntity item)
-        {
-            AssertIsOnline();
+    //    public async void Save(CosmosEntity item)
+    //    {
+    //        AssertIsOnline();
 
-            if (!item.IsDirty)
-                return;
+    //        if (!item.IsDirty)
+    //            return;
 
-            if (item.InternalId == null)
-                item.InternalId = Guid.NewGuid();
+    //        if (item.InternalId == null)
+    //            item.InternalId = Guid.NewGuid();
 
-            var table = GetOrCreateTable(item.GetType()).Result;
-            await table.ExecuteAsync(TableOperation.InsertOrReplace(item));
-        }
+    //        var table = GetOrCreateTable(item.GetType()).Result;
+    //        await table.ExecuteAsync(TableOperation.InsertOrReplace(item));
+    //    }
 
-        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment version)
-            where T : VersionedContentEntity, new()
-        {
+    //    public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string filter, ContentEnvironment version)
+    //        where T : VersionedContentEntity, new()
+    //    {
 
-            string partitionCondition = null;
-            if (version != ContentEnvironment.Any)
-                partitionCondition = $"PartitionKey eq '{version}'";
+    //        string partitionCondition = null;
+    //        if (version != ContentEnvironment.Any)
+    //            partitionCondition = $"PartitionKey eq '{version}'";
 
-            var allConditions = new[] {filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
-            var joinedCondition = string.Join(" and ", allConditions);
+    //        var allConditions = new[] {filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
+    //        var joinedCondition = string.Join(" and ", allConditions);
 
-            return await FindContentImpl<T>(joinedCondition);
-        }
+    //        return await FindContentImpl<T>(joinedCondition);
+    //    }
 
-        public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
-        {
-            return await FindContentImpl<T>(condition);
-        }
+    //    public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
+    //    {
+    //        return await FindContentImpl<T>(condition);
+    //    }
 
    
         
 
-        private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : CosmosEntity, new()
-        {
-            AssertIsOnline();
+    //    private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : CosmosEntity, new()
+    //    {
+    //        AssertIsOnline();
 
-            var cloudTable = GetOrCreateTable(typeof(T)).Result;
-            var query = new TableQuery<T> { FilterString = condition };
-            var items = await cloudTable.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
+    //        var cloudTable = GetOrCreateTable(typeof(T)).Result;
+    //        var query = new TableQuery<T> { FilterString = condition };
+    //        var items = await cloudTable.ExecuteQuerySegmentedAsync(query, new TableContinuationToken());
 
-            var result = items.ToList();
-            foreach (var item in result)
-                item.InitializeChangeTracking();
+    //        var result = items.ToList();
+    //        foreach (var item in result)
+    //            item.InitializeChangeTracking();
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        private async Task<CloudTable> GetOrCreateTable(Type type) 
-        {
-            var table = type.GetCustomAttribute<TableAttribute>();
-            var tableRef = _client.GetTableReference(table.Name);
-            if (!_collectionUris.ContainsKey(type))
-            {
-                await tableRef.CreateIfNotExistsAsync();
-                _collectionUris.Add(type, tableRef.Uri);
-            }
+    //    private async Task<CloudTable> GetOrCreateTable(Type type) 
+    //    {
+    //        var table = type.GetCustomAttribute<TableAttribute>();
+    //        var tableRef = _client.GetTableReference(table.Name);
+    //        if (!_collectionUris.ContainsKey(type))
+    //        {
+    //            await tableRef.CreateIfNotExistsAsync();
+    //            _collectionUris.Add(type, tableRef.Uri);
+    //        }
 
-            return tableRef;
-        }
+    //        return tableRef;
+    //    }
         
 
 
 
-    }
+    //}
 
 }

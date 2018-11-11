@@ -8,14 +8,11 @@ using Newtonsoft.Json;
 
 namespace WarpCore.DbEngines.AzureStorage
 {
-    public abstract class DynamicEntityProxy : TableEntity
-    {
-        public Dictionary<string, string> CustomFieldData { get; set; } = new Dictionary<string, string>();
 
-    }
-
-    public abstract class CosmosEntity : TableEntity
+    public abstract class CosmosEntity 
     {
+
+
         private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
 
         public CosmosEntity(DynamicTypeDefinition definition)
@@ -68,6 +65,10 @@ namespace WarpCore.DbEngines.AzureStorage
             }
             set { this.RowKey = value?.ToString(); }
         }
+
+        public string RowKey { get; set; }
+        public string PartitionKey { get; set; }
+
 
         /// <summary>
         /// An id unique to this content, but shared between master and published copies.

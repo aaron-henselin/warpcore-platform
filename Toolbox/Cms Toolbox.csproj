@@ -95,10 +95,6 @@
       <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
       <Name>AzureStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infrastructure\Framework\Framework.csproj">
-      <Project>{edffb1e1-cd8a-4634-ab34-ab857963534f}</Project>
-      <Name>Framework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
       <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
       <Name>01 - Kernel</Name>

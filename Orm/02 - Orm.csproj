@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\MultilingualString.cs" />
     <Compile Include="CosmosEntity.cs" />
     <Compile Include="CosmosOrm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
