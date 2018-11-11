@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj" />
-    <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj" />
+    <ProjectReference Include="..\Infrastructure\AzureStorage\InMemoryDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

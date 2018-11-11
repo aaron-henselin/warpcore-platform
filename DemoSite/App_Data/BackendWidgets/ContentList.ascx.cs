@@ -1,18 +1,15 @@
-﻿using System;
+﻿using Cms.Toolbox;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Cms;
-using Cms.DynamicContent;
-using Cms.Toolbox;
-using Framework;
-using WarpCore.Cms;
-using WarpCore.Cms.Toolbox;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility.DynamicContent;
+using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Orm;
 
 namespace DemoSite
 {

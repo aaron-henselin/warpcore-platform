@@ -5,10 +5,9 @@ using System.Web;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
-using Extensibility;
-using Framework;
-using WarpCore.Cms.Toolbox;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Widgets.FormBuilder;
 

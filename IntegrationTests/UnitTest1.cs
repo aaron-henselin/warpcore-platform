@@ -1,11 +1,12 @@
 using System;
 using System.Linq;
-using Cms.DynamicContent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Orm;
 
 namespace IntegrationTests
 {

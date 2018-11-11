@@ -87,17 +87,17 @@
     <Compile Include="ToolboxManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Extensibility\03 - Extensibility.csproj">
+    <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
       <Project>{b8d80998-fe66-409d-b451-701d7fdda361}</Project>
-      <Name>03 - Extensibility</Name>
+      <Name>Platform Extensibility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
       <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
-      <Name>01 - Kernel</Name>
+      <Name>Platform Kernel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Orm\02 - Orm.csproj">
+    <ProjectReference Include="..\Orm\Platform Orm.csproj">
       <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
-      <Name>02 - Orm</Name>
+      <Name>Platform Orm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

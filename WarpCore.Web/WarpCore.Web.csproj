@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WarpCore.Web</RootNamespace>
     <AssemblyName>WarpCore.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -59,20 +59,18 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -132,17 +130,17 @@
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Extensibility\03 - Extensibility.csproj">
+    <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
       <Project>{B8D80998-FE66-409D-B451-701D7FDDA361}</Project>
-      <Name>03 - Extensibility</Name>
+      <Name>Platform Extensibility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
       <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
-      <Name>01 - Kernel</Name>
+      <Name>Platform Kernel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Orm\02 - Orm.csproj">
+    <ProjectReference Include="..\Orm\Platform Orm.csproj">
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
-      <Name>02 - Orm</Name>
+      <Name>Platform Orm</Name>
     </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>

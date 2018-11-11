@@ -9,6 +9,7 @@ using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Kernel.Extensions;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {

@@ -57,9 +57,9 @@
     <Compile Include="Templating.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Orm\02 - Orm.csproj">
+    <ProjectReference Include="..\..\Orm\Platform Orm.csproj">
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
-      <Name>02 - Orm</Name>
+      <Name>Platform Orm</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>

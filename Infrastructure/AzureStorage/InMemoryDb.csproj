@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B8D80998-FE66-409D-B451-701D7FDDA361}</ProjectGuid>
+    <ProjectGuid>{029CFA15-E004-4022-A5C6-01575A2E0AA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WarpCore.Platform.Extensibility</RootNamespace>
-    <AssemblyName>WarpCore.Platform.Extensibility</AssemblyName>
+    <RootNamespace>AzureStorage</RootNamespace>
+    <AssemblyName>AzureStorage</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,14 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JsonSubTypes, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\JsonSubTypes.1.4.0\lib\net46\JsonSubTypes.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <HintPath>..\..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -52,23 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DomainEvents.cs" />
-    <Compile Include="DynamicContent\ContentInterfaceRepository.cs" />
-    <Compile Include="DynamicContent\ContentTypeMetadataRepository.cs" />
-    <Compile Include="DynamicContent\DynamicUnversionedContentRepository.cs" />
-    <Compile Include="DynamicContent\TypeResolvers.cs" />
-    <Compile Include="DynamicContent\WarpCoreIlGenerator.cs" />
-    <Compile Include="ExposeToWarpCoreApi.cs" />
+    <Compile Include="InMemoryDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SupportsCustomFieldsAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Orm\02 - Orm.csproj">
-      <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
-      <Name>02 - Orm</Name>
+    <ProjectReference Include="..\..\Orm\Platform Orm.csproj">
+      <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
+      <Name>Platform Orm</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

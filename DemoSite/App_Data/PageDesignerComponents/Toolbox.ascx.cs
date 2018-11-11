@@ -10,6 +10,7 @@ using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Orm;
 using WarpCore.Web;
 
 namespace DemoSite

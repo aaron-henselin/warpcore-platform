@@ -11,12 +11,10 @@ using System.Web.UI.HtmlControls;
 using Cms;
 using Cms.Forms;
 using Cms.Toolbox;
-using Framework;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
-using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Kernel;
 using WarpCore.Web;
-using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets;
 using WarpCore.Web.Widgets.FormBuilder;
 

@@ -5,10 +5,12 @@ using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.DynamicContent;
-using Framework;
 using WarpCore.Cms;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Extensibility.DynamicContent;
+using WarpCore.Platform.Kernel.Extensions;
+using WarpCore.Platform.Orm;
 
 namespace DemoSite
 {

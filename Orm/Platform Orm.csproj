@@ -68,9 +68,9 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
       <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
-      <Name>01 - Kernel</Name>
+      <Name>Platform Kernel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
