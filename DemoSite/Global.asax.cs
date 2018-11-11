@@ -147,6 +147,74 @@ namespace DemoSite
 
         }
 
+        private CmsForm SetupPageSettingsForm()
+        {
+            var form = new CmsForm
+            {
+                ContentId = Guid.NewGuid(),
+                Name = "Page Settings",
+                RepositoryUid = new Guid("979fde2a-1983-480e-aca4-8caab3f762b0"),
+            };
+
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+
+            var twoColumn =
+            factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            form.FormContent.Add(twoColumn);
+            
+            var textboxPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Name),
+                    DisplayName = "Page Name",
+                    
+                });
+
+            textboxPageContent.PlacementContentPlaceHolderId = "0";
+            twoColumn.AllContent.Add(textboxPageContent);
+
+
+            var layoutDropDown =
+            factory.CreateToolboxItemContent(new ConfiguratorDropDownList
+            {
+                PropertyName = nameof(CmsPage.LayoutId),
+                DisplayName = "Layout",
+            });
+            layoutDropDown.PlacementContentPlaceHolderId = "1";
+            twoColumn.AllContent.Add(layoutDropDown);
+
+            var oneColumn =
+factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
+            oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            form.FormContent.Add(oneColumn);
+
+            var keywords =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Keywords),
+                    DisplayName = "Keywords",
+                });
+            keywords.PlacementContentPlaceHolderId = "0";
+            oneColumn.AllContent.Add(keywords);
+
+            var description =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Description),
+                    DisplayName = "Description",
+                });
+            oneColumn.AllContent.Add(description);
+
+
+
+            var formRepository = new FormRepository();
+            formRepository.Save(form);
+            formRepository.Publish(By.ContentId(form.ContentId));
+
+            return form;
+        }
+
         private void SetupBackendSite()
         {
   
@@ -177,9 +245,8 @@ namespace DemoSite
                 Name = "Form Designer",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                DisplayInNavigation = true
+                DisplayInNavigation = false
             };
-            formDesigner.SetCustomField("DisplayInNav",false);
             formDesigner.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
@@ -200,52 +267,8 @@ namespace DemoSite
             });
 
 
+            var pageSettingsForm = SetupPageSettingsForm();
 
-            var form = new CmsForm
-            {
-                ContentId = Guid.NewGuid(),
-                Name = "Page Settings",
-                RepositoryUid = new Guid("979fde2a-1983-480e-aca4-8caab3f762b0"),
-            };
-
-            CmsPageContentFactory factory = new CmsPageContentFactory();
-            var textboxPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Name),
-                    DisplayName = "Page Name",
-                });
-            form.FormContent.Add(textboxPageContent);
-
-
-            var keywords =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Keywords),
-                    DisplayName = "Keywords",
-                });
-            form.FormContent.Add(keywords);
-
-            var description =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Description),
-                    DisplayName = "Description",
-                });
-            form.FormContent.Add(description);
-
-            var layoutDropDown =
-                factory.CreateToolboxItemContent(new ConfiguratorDropDownList
-                {
-                    PropertyName = nameof(CmsPage.LayoutId),
-                    DisplayName = "Layout",
-                    
-                });
-            form.FormContent.Add(layoutDropDown);
-
-            var formRepository = new FormRepository();
-            formRepository.Save(form);
-            formRepository.Publish(By.ContentId(form.ContentId));
 
             var pageSettings = new CmsPage
             {
@@ -258,7 +281,7 @@ namespace DemoSite
             {
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-dynamic-form",
-                Parameters = new Dictionary<string, string>{["FormId"]= form.ContentId.ToString()}
+                Parameters = new Dictionary<string, string>{["FormId"]= pageSettingsForm.ContentId.ToString()}
             });
 
 

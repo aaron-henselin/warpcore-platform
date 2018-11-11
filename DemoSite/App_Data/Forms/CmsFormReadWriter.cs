@@ -60,6 +60,10 @@ namespace DemoSite
             {
                 newParameters.Add(tbx.PropertyName, tbx.Text);
             }
+            foreach (var tbx in surface.GetDescendantControls<ConfiguratorDropDownList>())
+            {
+                newParameters.Add(tbx.PropertyName, tbx.SelectedValue);
+            }
             return newParameters;
         }
 

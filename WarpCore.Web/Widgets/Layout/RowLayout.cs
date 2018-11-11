@@ -11,7 +11,7 @@ namespace WarpCore.Web.Widgets
     }
 
     [IncludeInToolbox(WidgetUid = "WC/RowLayout", FriendlyName = "Row (Bootstrap)", Category = "Layout")]
-    public class RowLayout : LayoutControl
+    public class RowLayout : LayoutControl, INamingContainer
     {
         [Setting]
         public int NumColumns { get; set; } = 1;
