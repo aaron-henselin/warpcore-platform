@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web;
 using Cms.DynamicContent;
 using Cms.Toolbox;
+using Extensibility;
 using Framework;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;

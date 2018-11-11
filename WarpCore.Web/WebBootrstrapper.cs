@@ -11,8 +11,10 @@ using System.Web;
 using System.Web.UI;
 using Cms.DynamicContent;
 using Cms.Toolbox;
+using Extensibility;
 using Framework;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using Platform.Extensibility;
 using TinyIoC;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -205,6 +207,8 @@ namespace WarpCore.Web
                 _bootingStarted = true;
                 Task.Run(() =>
                 {
+                    DomainEvents.Subscribe<SiteStructureChanged>(x => CmsRoutes.RegenerateAllRoutes());
+
                     Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
                     PreloadPlugins();

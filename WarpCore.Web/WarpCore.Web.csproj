@@ -52,8 +52,8 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.9.3.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -85,6 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
+    <Compile Include="CmsPageContentActivator.cs" />
+    <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\CmsFormReadWriter.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorDropDownList.cs" />
@@ -126,9 +128,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLayer\Cms\Cms.csproj">
+    <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj">
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
-      <Name>Cms</Name>
+      <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Extensibility\03 - Extensibility.csproj">
+      <Project>{B8D80998-FE66-409D-B451-701D7FDDA361}</Project>
+      <Name>03 - Extensibility</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj">
       <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
@@ -137,6 +143,26 @@
     <ProjectReference Include="..\Infrastructure\Framework\Framework.csproj">
       <Project>{edffb1e1-cd8a-4634-ab34-ab857963534f}</Project>
       <Name>Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
+      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
+      <Name>01 - Kernel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orm\02 - Orm.csproj">
+      <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
+      <Name>02 - Orm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Routing\03 - Routing.csproj">
+      <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
+      <Name>03 - Routing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sites\02 - Sites.csproj">
+      <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
+      <Name>02 - Sites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Toolbox\01 - Toolbox.csproj">
+      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
+      <Name>01 - Toolbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

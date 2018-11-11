@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.DynamicContent;
+using Extensibility;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Web.Extensions;

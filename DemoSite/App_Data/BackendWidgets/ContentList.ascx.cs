@@ -16,7 +16,7 @@ using WarpCore.DbEngines.AzureStorage;
 
 namespace DemoSite
 {
-    public class ContentListConfiguration : IComplexDesignerSetting
+    public class ContentListConfiguration : ISupportsJsonTypeConverter
     {
         public List<ContentListField> Fields { get; set; } = new List<ContentListField>();
     }

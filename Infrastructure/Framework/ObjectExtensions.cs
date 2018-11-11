@@ -5,23 +5,7 @@ using System.Reflection;
 
 namespace Framework
 {
-    public static class TypeExtensions
-    {
-        public static IEnumerable<Type> HavingAttribute<T>(this IEnumerable<Type> types) where T : Attribute
-        {
-            return types.Where(x => x.GetCustomAttribute<T>() != null);
-        }
 
-        public static object GetDefault(this Type type)
-        {
-            if (type.IsValueType)
-            {
-                return Activator.CreateInstance(type);
-            }
-            return null;
-        }
-
-    }
 
     public static class ObjectExtensions
     {
@@ -46,7 +30,7 @@ namespace Framework
                     continue;
                 
                 var key = property.Name;
-                var val = (string)DesignerTypeConverter.ChangeType(property.GetValue(activated), typeof(string));
+                var val = (string)ExtensibleTypeConverter.ChangeType(property.GetValue(activated), typeof(string));
                 parameters.Add(key, val);
             }
             return parameters;
@@ -72,7 +56,7 @@ namespace Framework
         {
             try
             {
-                var newType = DesignerTypeConverter.ChangeType(valueToSet, propertyInfo.PropertyType);
+                var newType = ExtensibleTypeConverter.ChangeType(valueToSet, propertyInfo.PropertyType);
                 if (propertyInfo.CanWrite)
                     propertyInfo.SetValue(obj, newType);
             }
