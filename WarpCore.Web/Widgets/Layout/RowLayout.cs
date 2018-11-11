@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
@@ -13,7 +14,7 @@ namespace WarpCore.Web.Widgets
     [IncludeInToolbox(WidgetUid = "WC/RowLayout", FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : LayoutControl, INamingContainer
     {
-        [Setting]
+        [Setting][DisplayName("Number of Columns")]
         public int NumColumns { get; set; } = 1;
 
         public override void InitializeLayout()

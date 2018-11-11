@@ -16,11 +16,11 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
 
-        [Setting(SettingType = SettingType.OptionList)]
         [PropertyListControlSource]
+        [Setting(SettingType = SettingType.OptionList)][DisplayName("Property")]
         public string PropertyName { get; set; }
 
-        [Setting]
+        [Setting][DisplayName("Display Name")]
         public string DisplayName { get; set; }
 
         public string SelectedValue
@@ -44,11 +44,6 @@ namespace WarpCore.Web.Widgets.FormBuilder
             _listControl.ID = PropertyName + "_ListControl";
             this.Controls.Add(_listControl);
 
-            //var metadataManager = new RepositoryMetadataManager();
-            //var repo = metadataManager.Find().SingleOrDefault(x => x.RepositoryUid == RepositoryUid);
-            //if (repo != null)
-
-            
         }
 
         public IEnumerable<ListOption> GetOptionsFromDataRelation(ConfiguratorEditingContext editingContext, string apiId)

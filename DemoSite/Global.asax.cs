@@ -206,10 +206,9 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             oneColumn.AllContent.Add(description);
 
             var siteIdDropdown =
-                factory.CreateToolboxItemContent(new ConfiguratorDropDownList()
+                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
                 {
-                    PropertyName = nameof(CmsPage.SiteId),
-                    DisplayName = "Site",
+                    PropertyName = nameof(CmsPage.SiteId)
                 });
             oneColumn.AllContent.Add(siteIdDropdown);
 

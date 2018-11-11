@@ -35,6 +35,7 @@
      }
     .wc-configurator{ color: #fff; background-color: #fff;}
     .wc-configurator .surface{ color: #000; background-color: #fff;}
+    .wc-configurator .form-label{ color: #000000; font-weight:bold;}
 
     .configurator-embed{ width: 100%;height: 100%;}
 

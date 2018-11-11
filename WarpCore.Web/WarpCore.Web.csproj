@@ -85,7 +85,6 @@
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
-    <Compile Include="Widgets\FormBuilder\CmsFormReadWriter.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorDropDownList.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />

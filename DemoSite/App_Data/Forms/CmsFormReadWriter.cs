@@ -50,6 +50,8 @@ namespace DemoSite
             foreach (var tbx in surface.GetDescendantControls<ConfiguratorDropDownList>())
                 tbx.SelectedValue = editingContext.CurrentValues[tbx.PropertyName];
 
+            foreach (var tbx in surface.GetDescendantControls<ConfiguratorHiddenField>())
+                tbx.Value = editingContext.CurrentValues[tbx.PropertyName];
 
         }
 
@@ -63,6 +65,10 @@ namespace DemoSite
             foreach (var tbx in surface.GetDescendantControls<ConfiguratorDropDownList>())
             {
                 newParameters.Add(tbx.PropertyName, tbx.SelectedValue);
+            }
+            foreach (var tbx in surface.GetDescendantControls<ConfiguratorHiddenField>())
+            {
+                newParameters.Add(tbx.PropertyName, tbx.Value);
             }
             return newParameters;
         }
