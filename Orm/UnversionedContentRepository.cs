@@ -7,7 +7,7 @@ namespace WarpCore.DbEngines.AzureStorage
 {
     public interface ICosmosOrm
     {
-        void Save(CosmosEntity item);
+        void Save(WarpCoreEntity item);
 
         Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition,
             ContentEnvironment version = ContentEnvironment.Live)
@@ -16,7 +16,7 @@ namespace WarpCore.DbEngines.AzureStorage
         Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
             where T : UnversionedContentEntity, new();
 
-        void Delete(CosmosEntity copy);
+        void Delete(WarpCoreEntity copy);
     }
 
     public class SerializedComplexObjectAttribute : Attribute
@@ -51,12 +51,12 @@ namespace WarpCore.DbEngines.AzureStorage
             return Orm.FindUnversionedContent<T>(condition).Result.ToList();
         }
 
-        CosmosEntity IContentRepository.New()
+        WarpCoreEntity IContentRepository.New()
         {
             return new T();
         }
 
-        void IContentRepository.Save(CosmosEntity item)
+        void IContentRepository.Save(WarpCoreEntity item)
         {
             Save((T)item);
         }

@@ -56,19 +56,19 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(apiId));
             var repo = (IContentRepository)Activator.CreateInstance(repoType);
 
-            List<CosmosEntity> allItems=null;
+            List<WarpCoreEntity> allItems=null;
 
             if (repo is IUnversionedContentRepositoryBase unversionedRepo)
             {
                 allItems = unversionedRepo.FindContent(string.Empty)
-                    .Cast<CosmosEntity>()
+                    .Cast<WarpCoreEntity>()
                     .ToList();
             }
 
             if (repo is IVersionedContentRepositoryBase versionedRepo)
             {
                 allItems = versionedRepo.FindContentVersions(string.Empty)
-                    .Cast<CosmosEntity>()
+                    .Cast<WarpCoreEntity>()
                     .ToList();
             }
 

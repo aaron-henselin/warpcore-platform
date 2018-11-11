@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\MultilingualString.cs" />
-    <Compile Include="CosmosEntity.cs" />
+    <Compile Include="WarpCoreEntity.cs" />
     <Compile Include="CosmosOrm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnversionedAttribute.cs" />

@@ -84,7 +84,7 @@ namespace Cms.Toolbox
     {
         public static Func<PropertyInfo, bool> IsConfigurable => x => x.HasAttribute<SettingAttribute>() && IsNotIgnoredType(x);
         public static Func<PropertyInfo, bool> IsNotIgnoredType => x => x.DeclaringType != typeof(Control) &&
-                                                                        x.DeclaringType != typeof(CosmosEntity);
+                                                                        x.DeclaringType != typeof(WarpCoreEntity);
         
     }
 

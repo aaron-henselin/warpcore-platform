@@ -16,7 +16,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
         private object _syncroot = new object();
 
-        public void Save(CosmosEntity item)
+        public void Save(WarpCoreEntity item)
         {
             if (!item.IsDirty)
                 return;
@@ -65,7 +65,7 @@ namespace WarpCore.DbEngines.AzureStorage
             return await Task.FromResult(FindContentImpl<T>(joinedCondition));
         }
 
-        private IReadOnlyCollection<T> FindContentImpl<T>( string condition) where T : CosmosEntity, new()
+        private IReadOnlyCollection<T> FindContentImpl<T>( string condition) where T : WarpCoreEntity, new()
         {
             var tableRef = GetOrCreateTable(typeof(T));
             condition = ConvertToSql(condition);
@@ -104,7 +104,7 @@ namespace WarpCore.DbEngines.AzureStorage
             return await Task.FromResult(FindContentImpl<T>(condition));
         }
 
-        public void Delete(CosmosEntity copy) 
+        public void Delete(WarpCoreEntity copy) 
         {
             var tableRef = GetOrCreateTable(copy.GetType());
 

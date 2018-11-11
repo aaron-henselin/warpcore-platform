@@ -67,7 +67,7 @@ namespace DemoSite
 
             var extendableClrTypes = allTypes
                 .HavingAttribute<SupportsCustomFieldsAttribute>()
-                .Where(x => typeof(CosmosEntity).IsAssignableFrom(x));
+                .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x));
                 //.ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
 
             List<EntityViewModel> vms = new List<EntityViewModel>();

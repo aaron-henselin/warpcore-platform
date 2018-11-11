@@ -86,7 +86,7 @@ namespace WarpCore.DbEngines.AzureStorage
         Guid IHasRuntimeTypeExtensionDefinition.TypeExtensionUid => _uid;
     }
 
-    public abstract class VersionedContentEntity : CosmosEntity
+    public abstract class VersionedContentEntity : WarpCoreEntity
     {
 
         public VersionedContentEntity() : base(Dependency.Resolve<IDynamicTypeDefinitionResolver>())
@@ -119,7 +119,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
     }
 
-    public abstract class UnversionedContentEntity : CosmosEntity
+    public abstract class UnversionedContentEntity : WarpCoreEntity
     {
         public UnversionedContentEntity() : base(Dependency.Resolve<IDynamicTypeDefinitionResolver>())
         {
@@ -205,7 +205,7 @@ namespace WarpCore.DbEngines.AzureStorage
     {
         public static string ContentId(Guid contentId)
         {
-            return $"{nameof(CosmosEntity.ContentId)} eq '{contentId}'";
+            return $"{nameof(WarpCoreEntity.ContentId)} eq '{contentId}'";
         }
     }
 
@@ -231,7 +231,7 @@ namespace WarpCore.DbEngines.AzureStorage
     //    }
 
 
-    //    public async void Delete(CosmosEntity item)
+    //    public async void Delete(WarpCoreEntity item)
     //    {
     //        AssertIsOnline();
 
@@ -239,7 +239,7 @@ namespace WarpCore.DbEngines.AzureStorage
     //        await table.ExecuteAsync(TableOperation.Delete(item));
     //    }
 
-    //    public async void Save(CosmosEntity item)
+    //    public async void Save(WarpCoreEntity item)
     //    {
     //        AssertIsOnline();
 
@@ -275,7 +275,7 @@ namespace WarpCore.DbEngines.AzureStorage
    
         
 
-    //    private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : CosmosEntity, new()
+    //    private async Task<IReadOnlyCollection<T>> FindContentImpl<T>(string condition = null) where T : WarpCoreEntity, new()
     //    {
     //        AssertIsOnline();
 
