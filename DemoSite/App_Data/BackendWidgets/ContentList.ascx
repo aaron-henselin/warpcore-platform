@@ -20,3 +20,6 @@
 });
 
 </script>
+
+
+<asp:Button runat="server" ID="CreateNewItemButton" OnClick="CreateNewItemButton_OnClick" Text="Create new" CssClass="pull-right btn btn-primary"/>

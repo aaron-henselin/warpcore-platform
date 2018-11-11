@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using WarpCore.DbEngines.AzureStorage;
+using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
@@ -20,9 +22,28 @@ namespace DemoSite
             base.OnInit(e);
 
             var formTypeRaw = Request["formType"];
-            //var contentType = new ContentTypeMetadataRepository().GetById(new Guid(formTypeRaw));
+            ContentTypePicker.Visible = string.IsNullOrEmpty(formTypeRaw);
+            if (ContentTypePicker.Visible)
+            {
+                ContentTypeDropDownList.Items.Add(new ListItem(string.Empty, string.Empty));
+                var all  = new RepositoryMetadataManager().Find();
+                foreach (var contentType in all)
+                {
+                    var text = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(contentType.ApiId)).Name;
+                    ContentTypeDropDownList.Items.Add(new ListItem(text,contentType.ApiId));
+                }
 
-            
+                SelectContentTypeButton.Click += (sender, args) =>
+                {
+                    
+                    //todo: make this work regardless of the querystring already present.
+                    var url = HttpContext.Current.Request.RawUrl + "&formType=" + ContentTypeDropDownList.SelectedValue;
+                    
+
+                    HttpContext.Current.Response.Redirect(url);
+                };
+                return;
+            }
 
             CmsForm cmsForm;
             var formIdRaw = Request["formId"];

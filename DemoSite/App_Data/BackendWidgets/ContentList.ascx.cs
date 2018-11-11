@@ -7,15 +7,21 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using Cms;
+using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
+using WarpCore.Web.Extensions;
 
 namespace DemoSite
 {
     public class ContentListConfiguration : ISupportsJsonTypeConverter
     {
         public List<ContentListField> Fields { get; set; } = new List<ContentListField>();
+
+        public Guid EditPage { get; set; }
+        public Guid AddPage { get; set; }
     }
 
     public class ContentListField
@@ -54,6 +60,8 @@ namespace DemoSite
             Reload();
 
             this.DataBind();
+
+            CreateNewItemButton.Visible = Config.AddPage != Guid.Empty;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -119,6 +127,30 @@ namespace DemoSite
             //    };
             //    _controlState.Items.Add(li);
             //}
+        }
+
+        protected void CreateNewItemButton_OnClick(object sender, EventArgs e)
+        {
+            Guid defaultSiteId = Guid.Empty;
+            var defaultFrontendSite = SiteManagementContext.GetSiteToManage();
+            if (defaultFrontendSite != null)
+                defaultSiteId = defaultFrontendSite.ContentId;
+
+            var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
+            var uriBuilder = new CmsUriBuilder(uriBuilderContext);
+            var editPage = new CmsPageRepository()
+                .FindContentVersions(By.ContentId(Config.AddPage), ContentEnvironment.Live)
+                .Result
+                .Single();
+
+            var defaultValues = new JavaScriptSerializer().Serialize(new { SiteId = defaultSiteId });
+            var newPageUri = uriBuilder.CreateUri(editPage, UriSettings.Default, new Dictionary<string, string>
+            {
+                ["defaultValues"] = defaultValues
+            });
+            Response.Redirect(newPageUri.PathAndQuery);
+
+
         }
     }
 }

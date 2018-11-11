@@ -247,9 +247,11 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             var formDesigner = new CmsPage
             {
                 Name = "Form Designer",
+                ContentId = KnownPageIds.FormDesigner,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
-                DisplayInNavigation = false
+                DisplayInNavigation = false,
+
             };
             formDesigner.PageContent.Add(new CmsPageContent
             {
@@ -341,7 +343,9 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                         }
 
                     }
-                }
+
+                },
+                
             };
             var parameters= (Dictionary<string,string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
 
@@ -383,7 +387,8 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                             Template =@"<a href='/Admin/form-designer?formId={"+nameof(CmsForm.DesignForContentId)+"}'><span class='glyphicon glyphicon-text-background'></span>Design</a>"
                         }
 
-                    }
+                    },
+                    AddPage = KnownPageIds.FormDesigner
                 }
             };
             var formListParameters = (Dictionary<string, string>)formList.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);

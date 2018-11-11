@@ -13,6 +13,33 @@ namespace DemoSite {
     public partial class FormDesigner {
         
         /// <summary>
+        /// ContentTypePicker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder ContentTypePicker;
+        
+        /// <summary>
+        /// ContentTypeDropDownList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ContentTypeDropDownList;
+        
+        /// <summary>
+        /// SelectContentTypeButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button SelectContentTypeButton;
+        
+        /// <summary>
         /// RuntimePlaceHolder control.
         /// </summary>
         /// <remarks>
