@@ -273,7 +273,6 @@
     </Compile>
     <Compile Include="App_Data\BackendWidgets\ContentList.ascx.cs">
       <DependentUpon>ContentList.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="App_Data\BackendWidgets\ContentList.ascx.designer.cs">
       <DependentUpon>ContentList.ascx</DependentUpon>

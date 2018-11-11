@@ -57,10 +57,6 @@
     <Compile Include="Templating.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\AzureStorage\AzureStorage.csproj">
-      <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
-      <Name>AzureStorage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Orm\02 - Orm.csproj">
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
       <Name>02 - Orm</Name>

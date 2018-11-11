@@ -136,10 +136,6 @@
       <Project>{B8D80998-FE66-409D-B451-701D7FDDA361}</Project>
       <Name>03 - Extensibility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj">
-      <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
-      <Name>AzureStorage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kernel\01 - Kernel.csproj">
       <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
       <Name>01 - Kernel</Name>

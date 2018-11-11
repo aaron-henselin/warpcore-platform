@@ -66,10 +66,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\AzureStorage\AzureStorage.csproj">
-      <Project>{029CFA15-E004-4022-A5C6-01575A2E0AA0}</Project>
-      <Name>AzureStorage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Orm\02 - Orm.csproj">
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
       <Name>02 - Orm</Name>
