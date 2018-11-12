@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.UI;
 using Cms.Toolbox;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using MoreLinq;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
@@ -98,8 +99,14 @@ namespace WarpCore.Web
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
             
-            var repositories = allTypes.HavingAttribute<ExposeToWarpCoreApi>().Where(x => typeof(IContentRepository).IsAssignableFrom(x));
-            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>().Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x));
+            var repositories = allTypes
+                .HavingAttribute<ExposeToWarpCoreApi>()
+                .Where(x => typeof(IContentRepository).IsAssignableFrom(x))
+                .DistinctBy(x => x.AssemblyQualifiedName);
+
+            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>()
+                                .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x))
+                                .DistinctBy(x => x.AssemblyQualifiedName); ;
 
             foreach (var repoType in repositories)
             {

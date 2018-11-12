@@ -16,7 +16,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         private HiddenField _hiddenField = new HiddenField {  };
 
-        [PropertyListControlSource]
+        [FormControlPropertiesDataSource]
         [Setting(SettingType = SettingType.OptionList)]
         [DisplayName("Property")]
         public string PropertyName { get; set; }
@@ -49,7 +49,8 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
-        [Setting][DisplayName("Property name")]
+        [FormControlPropertiesDataSource]
+        [Setting(SettingType = SettingType.OptionList)][DisplayName("Property name")]
         public string PropertyName { get; set; }
 
         [Setting][DisplayName("Display name")]

@@ -2,10 +2,32 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Http;
+using System.Web.Script.Serialization;
 using WarpCore.Cms.Sites;
 
 namespace WarpCore.Cms.Routing
 {
+    public class DefaultValueCollection : Dictionary<string, string>
+    {
+        public override string ToString()
+        {
+            return new JavaScriptSerializer().Serialize(this);
+        }
+
+        public static DefaultValueCollection FromString(string value)
+        {
+            return new JavaScriptSerializer().Deserialize<DefaultValueCollection>(value);
+        }
+
+    }
+
+
+    public class DynamicFormRequestContext
+    {
+        public DefaultValueCollection DefaultValues { get; set; }
+        public Guid? ContentId { get; set; }
+    }
+
     public class UriBuilderContext
     {
         public bool IsSsl { get; set; }

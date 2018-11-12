@@ -6,28 +6,35 @@ using System.Web.Script.Serialization;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
+using WarpCore.Cms.Routing;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
+using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder;
 
 namespace DemoSite
 {
+    
+
     public partial class DynamicForm : System.Web.UI.UserControl
     {
         private CmsForm _cmsForm;
 
         [Setting]
         public Guid FormId { get; set; }
-
-        private Guid? _contentId;
+        
         private IVersionedContentRepositoryBase _repo;
+
+        private DynamicFormRequestContext _dynamicFormRequest;
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
+            _dynamicFormRequest = Context.ToDynamicFormRequestContext();
+            
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
@@ -38,9 +45,6 @@ namespace DemoSite
 
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent);
 
-            var contentIdRaw = Request["contentId"];
-            if (!string.IsNullOrWhiteSpace(contentIdRaw))
-                _contentId = new Guid(contentIdRaw);
 
             var draft = GetDraft();
             var d = draft.GetPropertyValues(ToolboxPropertyFilter.IsNotIgnoredType);
@@ -49,7 +53,7 @@ namespace DemoSite
             {
                 ClrType = draft.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.IsNotIgnoredType,
-                CurrentValues = d
+                CurrentValues = d,
             };
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
             SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
@@ -59,16 +63,14 @@ namespace DemoSite
 
         private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorEditingContext configuratorEditingContext)
         {
-            if (!Page.IsPostBack && _contentId == null)
-            {
-                var defaultValuesRaw = Request["defaultValues"];
-                if (!string.IsNullOrWhiteSpace(defaultValuesRaw))
-                {
-                    var deafultValues = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(defaultValuesRaw);
-                    foreach (var kvp in deafultValues)
-                        configuratorEditingContext.CurrentValues[kvp.Key] = kvp.Value;
-                }
-            }
+            var canSetDefaults = !Page.IsPostBack && _dynamicFormRequest.ContentId == null;
+            if (!canSetDefaults)
+                return;
+
+            var defaultValueCollection = _dynamicFormRequest.DefaultValues;
+            foreach (var kvp in defaultValueCollection)
+                configuratorEditingContext.CurrentValues[kvp.Key] = kvp.Value;
+
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -79,8 +81,8 @@ namespace DemoSite
         private WarpCoreEntity GetDraft()
         {
             WarpCoreEntity draft;
-            if (_contentId != null)
-                draft = _repo.FindContentVersions(By.ContentId(_contentId.Value), ContentEnvironment.Draft).Single();
+            if (_dynamicFormRequest.ContentId != null)
+                draft = _repo.FindContentVersions(By.ContentId(_dynamicFormRequest.ContentId.Value), ContentEnvironment.Draft).Single();
             else
                 draft = _repo.New();
 

@@ -21,6 +21,21 @@ namespace WarpCore.Web.Extensions
 
     public static class HttpContextExtensions
     {
+        public static DynamicFormRequestContext ToDynamicFormRequestContext(this HttpContext context)
+        {
+            Guid? guid = null;
+            var contentIdRaw = context.Request.QueryString[nameof(DynamicFormRequestContext.ContentId)];
+            if (!string.IsNullOrEmpty(contentIdRaw))
+                guid = new Guid(contentIdRaw);
+
+            return new DynamicFormRequestContext
+            {
+                ContentId = guid,
+                DefaultValues = DefaultValueCollection.FromString(context.Request.QueryString[nameof(DynamicFormRequestContext.DefaultValues)])
+            };
+        }
+
+
         public static UriBuilderContext ToUriBuilderContext(this HttpContext context)
         {
             var url = context.Request.Url;

@@ -20,9 +20,9 @@ namespace DemoSite
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-
+            var formIdRaw = Request["formId"];
             var formTypeRaw = Request["formType"];
-            ContentTypePicker.Visible = string.IsNullOrEmpty(formTypeRaw);
+            ContentTypePicker.Visible = string.IsNullOrEmpty(formTypeRaw) && string.IsNullOrEmpty(formIdRaw);
             if (ContentTypePicker.Visible)
             {
                 ContentTypeDropDownList.Items.Add(new ListItem(string.Empty, string.Empty));
@@ -38,7 +38,7 @@ namespace DemoSite
                     
                     //todo: make this work regardless of the querystring already present.
                     var url = HttpContext.Current.Request.RawUrl + "&formType=" + ContentTypeDropDownList.SelectedValue;
-                    
+                   
 
                     HttpContext.Current.Response.Redirect(url);
                 };
@@ -46,7 +46,7 @@ namespace DemoSite
             }
 
             CmsForm cmsForm;
-            var formIdRaw = Request["formId"];
+           
             if (string.IsNullOrEmpty(formIdRaw))
                 cmsForm = new CmsForm
                 {

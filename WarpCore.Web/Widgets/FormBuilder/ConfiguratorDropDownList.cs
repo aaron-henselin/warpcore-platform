@@ -16,7 +16,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
 
-        [PropertyListControlSource]
+        [FormControlPropertiesDataSource]
         [Setting(SettingType = SettingType.OptionList)][DisplayName("Property")]
         public string PropertyName { get; set; }
 
@@ -109,6 +109,22 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var prevValueStillExists = _listControl.Items.Cast<ListItem>().Any(x => x.Value == prevValue);
             if (prevValueStillExists)
                 _listControl.SelectedValue = prevValue;
+            else
+            {
+                prevValue = string.Empty;
+                prevValueStillExists = _listControl.Items.Cast<ListItem>().Any(x => x.Value == prevValue);
+                if (prevValueStillExists)
+                    _listControl.SelectedValue = prevValue;
+                else if (_listControl.Items.Count > 0)
+                    _listControl.SelectedValue = _listControl.Items[0].Value;
+            }
+
+
+        }
+
+        public override void DataBind()
+        {
+            return;
         }
     }
 }

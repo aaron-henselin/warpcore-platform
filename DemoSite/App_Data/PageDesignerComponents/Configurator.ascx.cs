@@ -146,8 +146,10 @@ namespace DemoSite
             {
                 ClrType = activatedControl.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.IsConfigurable,
-                CurrentValues = parametersAfterActivation
+                CurrentValues = parametersAfterActivation,
+                ParentEditingContext = new EditingContextManager().GetEditingContext()
             };
+            
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
             CmsFormReadWriter.FillInControlValues(surface, configuratorEditingContext);
 

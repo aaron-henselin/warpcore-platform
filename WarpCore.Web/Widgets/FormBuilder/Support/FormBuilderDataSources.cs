@@ -49,11 +49,15 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
     }
 
-    public class PropertyListControlSourceAttribute : Attribute, IListControlSource
+    public class FormControlPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
         {
-            var propertiesFilered = editingContext.ClrType.GetPropertiesFiltered(editingContext.PropertyFilter).ToList();
+            var parentEditingContext = editingContext.ParentEditingContext;
+            var propertiesFilered = Type.GetType(parentEditingContext.DesignForContentType)
+                .GetPropertiesFiltered(ToolboxPropertyFilter.IsNotIgnoredType)
+                .ToList();
+
             var propertyNames = propertiesFilered.Select(x => x.Name);
             return propertyNames.Select(x => new ListOption { Text = x, Value = x });
         }

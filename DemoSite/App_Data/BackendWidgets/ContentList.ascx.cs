@@ -143,10 +143,10 @@ namespace DemoSite
                 .Result
                 .Single();
 
-            var defaultValues = new JavaScriptSerializer().Serialize(new { SiteId = defaultSiteId });
+            var defaultValues = new DefaultValueCollection {["SiteId"] = defaultSiteId.ToString()};
             var newPageUri = uriBuilder.CreateUri(editPage, UriSettings.Default, new Dictionary<string, string>
             {
-                ["defaultValues"] = defaultValues
+                [nameof(DynamicFormRequestContext.DefaultValues)] = defaultValues.ToString()
             });
             Response.Redirect(newPageUri.PathAndQuery);
 
