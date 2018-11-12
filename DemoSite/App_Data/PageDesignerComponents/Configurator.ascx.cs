@@ -48,34 +48,78 @@ namespace DemoSite
 
             foreach (var property in configuratorSettingProperties)
             {
-                if (property.SettingType == null || property.SettingType == SettingType.Text)
-                {
-                    var textboxPageContent =
-                        factory.CreateToolboxItemContent(new ConfiguratorTextBox
-                        {
-                            PropertyName = property.PropertyInfo.Name,
-                            DisplayName = property.DisplayName
-                        });
+                var bestGuess = GetBestGuessForSettingType(property);
 
-                    textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
-                    rowLayout.AllContent.Add(textboxPageContent);
-                }
-                else
+                CmsPageContent content = null;
+                switch (bestGuess)
                 {
-                    var textboxPageContent =
-                        factory.CreateToolboxItemContent(new ConfiguratorDropDownList
-                        {
-                            PropertyName = property.PropertyInfo.Name,
-                            DisplayName = property.DisplayName,
-                                                        //RepositoryUid = defaults[property.PropertyInfo.Name] //todo: no idea how to handle this one yet.
-                        });
+                    case SettingType.Text:
+                        content = CreateConfiguratorTextBox(property);
+                        break;
 
-                    textboxPageContent.PlacementLayoutBuilderId = rowLayout.Id;
-                    rowLayout.AllContent.Add(textboxPageContent);
+                    case SettingType.OptionList:
+                        content = CreateConfiguratorDropDownList(property);
+                        break;
+
+                    case SettingType.CheckBox:
+                        content = CreateConfiguratorCheckBox(property);
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
+
+                content.PlacementLayoutBuilderId = rowLayout.Id;
+                rowLayout.AllContent.Add(content);
             }
 
             return cmsForm;
+        }
+
+        private static CmsPageContent CreateConfiguratorDropDownList(SettingProperty property)
+        {
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+            var createdPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorDropDownList
+                {
+                    PropertyName = property.PropertyInfo.Name,
+                    DisplayName = property.DisplayName,
+                });
+            return createdPageContent;
+        }
+        private static CmsPageContent CreateConfiguratorCheckBox(SettingProperty property)
+        {
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+            var createdPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorCheckBox
+                {
+                    PropertyName = property.PropertyInfo.Name,
+                    DisplayName = property.DisplayName
+                });
+            return createdPageContent;
+        }
+        private static CmsPageContent CreateConfiguratorTextBox(SettingProperty property)
+        {
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+            var createdPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = property.PropertyInfo.Name,
+                    DisplayName = property.DisplayName
+                });
+            return createdPageContent;
+        }
+        private static SettingType GetBestGuessForSettingType(SettingProperty property)
+        {
+            SettingType? bestGuess = property.SettingType;
+            if (bestGuess == null)
+            {
+                var isBoolean = property.PropertyInfo.PropertyType == typeof(bool);
+                if (isBoolean)
+                    bestGuess = SettingType.CheckBox;
+            }
+
+            return bestGuess ?? SettingType.Text;
         }
     }
 

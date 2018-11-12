@@ -8,6 +8,6 @@
     </a:RuntimeContentPlaceHolder>
 </asp:PlaceHolder>
 <div>
-    <asp:Button CssClass="btn" runat="server" ID="SaveButton" Text="Save" OnClick="SaveButton_OnClick"/>
     <asp:Button CssClass="btn" runat="server" ID="CancelButton" Text="Cancel" OnClick="CancelButton_OnClickButton_OnClick"/>
+    <asp:Button CssClass="btn btn-primary" runat="server" ID="SaveButton" Text="Save" OnClick="SaveButton_OnClick"/>
 </div>

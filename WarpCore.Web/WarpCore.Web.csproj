@@ -87,6 +87,7 @@
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorDropDownList.cs" />
+    <Compile Include="Widgets\FormBuilder\ConfiguratorHiddenField.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorTextBox.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />

@@ -23,7 +23,7 @@ namespace Cms.Forms
         public Guid DesignForContentId => ContentId;
 
         public Guid RepositoryUid { get; set; }
-        public Guid ContentTypeId { get; set; }
+        public Guid ContentTypeId => RepositoryUid;
     }
 
 

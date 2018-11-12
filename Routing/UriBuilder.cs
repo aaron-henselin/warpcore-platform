@@ -16,6 +16,9 @@ namespace WarpCore.Cms.Routing
 
         public static DefaultValueCollection FromString(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+                return new DefaultValueCollection();
+
             return new JavaScriptSerializer().Deserialize<DefaultValueCollection>(value);
         }
 

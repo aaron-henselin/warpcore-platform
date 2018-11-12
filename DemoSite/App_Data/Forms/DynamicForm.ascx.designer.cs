@@ -22,15 +22,6 @@ namespace DemoSite {
         protected global::System.Web.UI.WebControls.PlaceHolder surface;
         
         /// <summary>
-        /// SaveButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SaveButton;
-        
-        /// <summary>
         /// CancelButton control.
         /// </summary>
         /// <remarks>
@@ -38,5 +29,14 @@ namespace DemoSite {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button CancelButton;
+        
+        /// <summary>
+        /// SaveButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button SaveButton;
     }
 }
