@@ -10,6 +10,7 @@ using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
@@ -53,9 +54,15 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
         {
-            var parentEditingContext = editingContext.ParentEditingContext;
-            var propertiesFilered = Type.GetType(parentEditingContext.DesignForContentType)
-                .GetPropertiesFiltered(ToolboxPropertyFilter.IsNotIgnoredType)
+
+            var repoManager = new RepositoryMetadataManager();
+            var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.ParentEditingContext.DesignContentTypeId);
+            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
+            var repo = (IContentRepository)Activator.CreateInstance(repoType);
+            var t = repo.New().GetType();
+            
+            var propertiesFilered = 
+                t.GetPropertiesFiltered(ToolboxPropertyFilter.IsNotIgnoredType)
                 .ToList();
 
             var propertyNames = propertiesFilered.Select(x => x.Name);

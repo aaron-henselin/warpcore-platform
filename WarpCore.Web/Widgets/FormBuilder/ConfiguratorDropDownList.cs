@@ -121,10 +121,6 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
 
         }
-
-        public override void DataBind()
-        {
-            return;
-        }
+        
     }
 }

@@ -21,7 +21,7 @@ namespace WarpCore.Cms
     public interface IHasDesignedLayout
     {
         Guid DesignForContentId { get; }
-
+        Guid ContentTypeId { get; }
         List<CmsPageContent> DesignedContent { get; }
     }
 
@@ -76,6 +76,8 @@ namespace WarpCore.Cms
 
         [Column]
         public bool RequireSsl { get; set; }
+
+        public Guid ContentTypeId => new Guid(CmsPageRepository.ApiId);
 
         public List<CmsPageContent> DesignedContent => PageContent;
         public Guid DesignForContentId => ContentId;

@@ -47,8 +47,9 @@ public interface ILayoutHandle
         public List<CmsPageContent> AllContent { get; set; }
 
         public bool IsEditing => AllContent != null;
-        public Guid DesignForContentId { get; set; }
-        public string DesignForContentType { get; set; }
+        public Guid DesignedContentId { get; set; }
+        public string DesignType { get; set; }
+        public Guid DesignContentTypeId { get; set; }
     }
 
     public struct EditingContextVars
@@ -78,9 +79,10 @@ public interface ILayoutHandle
         {
             var ec = new EditingContext
             {
-                DesignForContentType = hasDesignedLayout.GetType().AssemblyQualifiedName,
-            DesignForContentId = hasDesignedLayout.DesignForContentId,
-                AllContent = hasDesignedLayout.DesignedContent
+                DesignType = hasDesignedLayout.GetType().AssemblyQualifiedName,
+                DesignedContentId = hasDesignedLayout.DesignForContentId,
+                DesignContentTypeId = hasDesignedLayout.ContentTypeId,
+                AllContent = hasDesignedLayout.DesignedContent,
             };
             var raw = _js.Serialize(ec);
             return _js.Deserialize<EditingContext>(raw);

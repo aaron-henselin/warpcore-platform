@@ -9,6 +9,7 @@ using System.Web.UI;
 using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
+using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
@@ -44,7 +45,8 @@ namespace DemoSite
 
     public partial class ContentList : System.Web.UI.UserControl
     {
-        [Setting]
+        [Setting(SettingType = SettingType.OptionList)]
+        [DataRelation(RepositoryMetadataManager.ApiId)]
         public Guid RepositoryId { get; set; }
 
         [Setting]

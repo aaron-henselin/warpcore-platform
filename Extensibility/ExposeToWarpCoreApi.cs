@@ -32,8 +32,10 @@ namespace WarpCore.Platform.Extensibility
 
 
 
+    [ExposeToWarpCoreApi(ApiId)]
     public class RepositoryMetadataManager : UnversionedContentRepository<RepositoryMetdata>
     {
+        public const string ApiId = "3a9a6f79-9564-4b51-af1c-9d926fddbc35";
         public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid formInteropUid)
         {
             return Find(nameof(RepositoryMetdata.ApiId) + " eq '" + formInteropUid + "'").First();

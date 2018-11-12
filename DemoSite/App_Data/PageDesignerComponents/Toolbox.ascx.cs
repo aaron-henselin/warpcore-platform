@@ -111,26 +111,26 @@ namespace DemoSite
                 typeof(CmsForm).AssemblyQualifiedName
             };
 
-            var editingTypeString = editingTypes.Single(x => editingContext.DesignForContentType == x);
+            var editingTypeString = editingTypes.Single(x => editingContext.DesignType == x);
             var editingType = Type.GetType(editingTypeString);
 
             
             if (editingType == typeof(CmsPage))
             {
                 var pageRepository = new CmsPageRepository();
-                var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
+                var pageToUpdate = pageRepository.FindContentVersions(By.ContentId(editingContext.DesignedContentId), ContentEnvironment.Draft)
                     .Result.Single();
                 pageToUpdate.PageContent = editingContext.AllContent;
 
                 pageRepository.Save(pageToUpdate);
                 if (publish)
-                    pageRepository.Publish(By.ContentId(editingContext.DesignForContentId));
+                    pageRepository.Publish(By.ContentId(editingContext.DesignedContentId));
             }
 
             if (editingType == typeof(CmsForm))
             {
                 var formRepository = new FormRepository();
-                var pageToUpdate = formRepository.FindContentVersions(By.ContentId(editingContext.DesignForContentId), ContentEnvironment.Draft)
+                var pageToUpdate = formRepository.FindContentVersions(By.ContentId(editingContext.DesignedContentId), ContentEnvironment.Draft)
                     .Result.SingleOrDefault();
                 if (pageToUpdate == null)
                     pageToUpdate = new CmsForm();
@@ -139,7 +139,7 @@ namespace DemoSite
 
                 formRepository.Save(pageToUpdate);
                 if (publish)
-                    formRepository.Publish(By.ContentId(editingContext.DesignForContentId));
+                    formRepository.Publish(By.ContentId(editingContext.DesignedContentId));
             }
 
         }
