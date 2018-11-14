@@ -35,7 +35,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var mgr = new RepositoryMetadataManager();
             foreach (var repo in mgr.Find())
             {
-                var t=RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.ApiId));
+                var t=RepositoryTypeResolver.ResolveTypeByApiId(repo.ApiId);
                 
                 var displayName = repo.CustomRepositoryName 
                                     ?? t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName 
@@ -44,7 +44,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
                 yield return new ListOption
                 {
                     Text = displayName,
-                    Value = repo.ApiId
+                    Value = repo.ApiId.ToString()
                 };
             }
         }

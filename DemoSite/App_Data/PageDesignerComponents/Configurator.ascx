@@ -3,9 +3,9 @@
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
 <div class="designer wc-configurator">
-    <asp:UpdatePanel runat="server">
+    <asp:UpdatePanel runat="server" ID="ConfiguratorSideBar">
         <ContentTemplate>
-            
+            <asp:Panel runat="server" Id="ConfiguratorSideBarBody">
             <h3 style="min-height: 50px;">
                 <small class="pull-right">
                     <button class="configurator-cancel btn">
@@ -30,12 +30,15 @@
                 <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
             </wc-configurator-data>
         
-            <div id="surface" runat="server">
-                <a:RuntimeContentPlaceHolder ID="ConfiguratorFormBuilderRuntimePlaceHolder" PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" runat="server">
+            <asp:Panel runat="server" ID="surface">
+                <a:RuntimeContentPlaceHolder 
+                    ID="ConfiguratorFormBuilderRuntimePlaceHolder"
+                    PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" 
+                    runat="server">
 
                 </a:RuntimeContentPlaceHolder>
-            </div>
-
+            </asp:Panel>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
 </div>    

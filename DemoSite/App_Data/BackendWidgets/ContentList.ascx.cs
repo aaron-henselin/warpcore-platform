@@ -73,7 +73,7 @@ namespace DemoSite
 
         private void Reload()
         {
-            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(RepositoryId);
+            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(RepositoryId);
             var repo = (IVersionedContentRepositoryBase) Activator.CreateInstance(repoType);
             var allDrafts = repo.FindContentVersions(string.Empty, ContentEnvironment.Draft).ToList();
 

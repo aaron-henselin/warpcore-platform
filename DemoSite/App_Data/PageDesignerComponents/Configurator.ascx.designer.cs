@@ -13,6 +13,24 @@ namespace DemoSite {
     public partial class Configurator1 {
         
         /// <summary>
+        /// ConfiguratorSideBar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel ConfiguratorSideBar;
+        
+        /// <summary>
+        /// ConfiguratorSideBarBody control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel ConfiguratorSideBarBody;
+        
+        /// <summary>
         /// SaveButton control.
         /// </summary>
         /// <remarks>
@@ -46,7 +64,7 @@ namespace DemoSite {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl surface;
+        protected global::System.Web.UI.WebControls.Panel surface;
         
         /// <summary>
         /// ConfiguratorFormBuilderRuntimePlaceHolder control.

@@ -81,7 +81,7 @@ namespace DemoSite
             foreach (var repo in allRepos)
             {
                 var repoType =
-                RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(repo.ApiId));
+                RepositoryTypeResolver.ResolveTypeByApiId(repo.ApiId);
 
                 var repoName = repo.CustomRepositoryName;
                 if (string.IsNullOrWhiteSpace(repoName))
@@ -90,7 +90,7 @@ namespace DemoSite
                 if (string.IsNullOrWhiteSpace(repoName))
                     repoName = repoType.Name;
 
-                RepositoryDataSourceDropDownList.Items.Add(new ListItem(repoName,repo.ApiId));
+                RepositoryDataSourceDropDownList.Items.Add(new ListItem(repoName,repo.ApiId.ToString()));
             }
 
 

@@ -65,20 +65,24 @@ namespace WarpCore.Web
 
     }
 
-    public static class BootEvents
+    //public static class BootEvents
+    //{
+    //    private static ConcurrentBag<Action> _afterBootActions = new ConcurrentBag<Action>();
+    //    public static void RegisterSiteBootAction(Action a)
+    //    {
+    //        _afterBootActions.Add(a);
+    //    }
+
+    //    internal static void RunSiteBootActions()
+    //    {
+    //        foreach (var action in _afterBootActions)
+    //            action();
+    //    }
+
+    //}
+
+    public class SiteBootCompleted:IDomainEvent
     {
-        private static ConcurrentBag<Action> _afterBootActions = new ConcurrentBag<Action>();
-        public static void RegisterSiteBootAction(Action a)
-        {
-            _afterBootActions.Add(a);
-        }
-
-        internal static void RunSiteBootActions()
-        {
-            foreach (var action in _afterBootActions)
-                action();
-        }
-
     }
 
 
@@ -86,58 +90,13 @@ namespace WarpCore.Web
     public static class WebBootstrapper
     {
 
-        public static void PreloadPlugins()
+        public static void PreloadPluginAssembliesFromFileSystem()
         {
             ConditionalAssemblyLoader.LoadAssemblies(asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
         }
 
-        public static void BuildUpRepositoryMetadata()
-        {
-            var respositoryManager = new RepositoryMetadataManager();
-            var preexistingMetadata = respositoryManager.Find().ToDictionary(x => x.ApiId);
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
-            
-            var repositories = allTypes
-                .HavingAttribute<ExposeToWarpCoreApi>()
-                .Where(x => typeof(IContentRepository).IsAssignableFrom(x))
-                .DistinctBy(x => x.AssemblyQualifiedName);
 
-            var entities = allTypes.HavingAttribute<SupportsCustomFieldsAttribute>()
-                                .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x))
-                                .DistinctBy(x => x.AssemblyQualifiedName); ;
-
-            foreach (var repoType in repositories)
-            {
-                var repositoryUid = repoType.GetCustomAttribute<ExposeToWarpCoreApi>();
-                var uid = repositoryUid.TypeUid;
-                var alreadyExists = preexistingMetadata.ContainsKey(uid);
-
-                RepositoryMetdata metadata = new RepositoryMetdata();
-                if (alreadyExists)
-                    metadata = preexistingMetadata[uid];
-
-                metadata.ApiId = uid;
-                metadata.AssemblyQualifiedTypeName = repoType.AssemblyQualifiedName;
-                respositoryManager.Save(metadata);
-            }
-
-            var typeExtensionRepo = new ContentInterfaceRepository();
-            foreach (var entityType in entities)
-            {
-                var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
-                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
-                if (preexisting == null)
-                    typeExtensionRepo.Save(new ContentInterface
-                    {
-                        ContentTypeId = repositoryUid.TypeExtensionUid,
-                        InterfaceName = KnownTypeExtensionNames.CustomFields
-                    });
-                
-            }
-
-        }
 
         public static void BuildUpDomainEvents()
         {
@@ -194,15 +153,19 @@ namespace WarpCore.Web
                 Task.Run(() =>
                 {
                     BuildUpDomainEvents();
+
                     Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
-                    PreloadPlugins();
-                    BuildUpRepositoryMetadata();
+                    PreloadPluginAssembliesFromFileSystem();
+                    ExtensibilityBootstrapper.RegisterExtensibleTypesWithApi(AppDomain.CurrentDomain);
                     BuildUpToolbox();
                     
                     IsBooted = true;
 
-                }).ContinueWith(x =>BootEvents.RunSiteBootActions());
+                }).ContinueWith(x =>
+                
+                    DomainEvents.Raise(new SiteBootCompleted())
+                );
             }
         }
 

@@ -28,7 +28,7 @@ namespace DemoSite
         {
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             
-            BootEvents.RegisterSiteBootAction(() =>
+            DomainEvents.Subscribe<SiteBootCompleted>(_ =>
             {
                 SetupDynamicTypes();
                 SetupCustomFields();
@@ -52,7 +52,7 @@ namespace DemoSite
             {
                 CustomRepositoryName = "Article",
                 IsDynamic = true,
-                ApiId = fullDynamicTypeId.ToString()
+                ApiId = fullDynamicTypeId
             });
 
             var mgr = new ContentInterfaceRepository();
@@ -78,7 +78,7 @@ namespace DemoSite
 
             mgr.Save(extension);
 
-            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(fullDynamicTypeId);
+            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(fullDynamicTypeId);
             var repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
 
             //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);

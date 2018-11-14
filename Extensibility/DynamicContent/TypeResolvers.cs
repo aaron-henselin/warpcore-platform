@@ -50,7 +50,7 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
         private static Dictionary<Guid, Type> _types = new Dictionary<Guid, Type>();
 
 
-        public static Type ResolveDynamicTypeByInteropId(Guid id)
+        public static Type ResolveTypeByApiId(Guid id)
         {
             if (!_types.ContainsKey(id))
             {

@@ -166,6 +166,11 @@ namespace DemoSite
             RebuildDesignSurface();
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+        }
+
         private void SaveButton_Click(object sender, EventArgs e)
         {
             var newParameters = CmsFormReadWriter.ReadValuesFromControls(surface);

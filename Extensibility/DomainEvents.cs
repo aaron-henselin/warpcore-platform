@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,31 +9,44 @@ namespace WarpCore.Platform.Extensibility
     {
     }
 
+    public class DomainEventSubscriberList : ConcurrentBag<Action<IDomainEvent>>
+    {
+        public void Add<T>(Action<T> action) where T : IDomainEvent
+        {
+            base.Add(arg => { action((T) arg); });
+        }
+    }
+
     public static class DomainEvents
     {
-        private static readonly Dictionary<Type, List<Action<IDomainEvent>>> _subscriptions = new Dictionary<Type, List<Action<IDomainEvent>>>();
+        private static readonly ConcurrentDictionary<Type, DomainEventSubscriberList> _subscriptions = new ConcurrentDictionary<Type, DomainEventSubscriberList>();
 
         public static void Raise<T>(T eventArgs) where T : IDomainEvent
         {
-            var exists = _subscriptions.ContainsKey(typeof(T));
-            if (!exists)
-                _subscriptions.Add(typeof(T), new List<Action<IDomainEvent>>());
+            var subscriberList = GetOrCreateDomainEventSubscriberList<T>();
 
-            var allActions= _subscriptions[typeof(T)].Cast < Action<IDomainEvent>>();
-
-            foreach (var action in allActions)
-            {
-                action.Invoke(eventArgs);
-            }
+            foreach (var subscriber in subscriberList)
+                subscriber.Invoke(eventArgs);
+            
         }
 
         public static void Subscribe<T>(Action<T> domainAction) where T : IDomainEvent
         {
-            var exists = _subscriptions.ContainsKey(typeof(T));
-            if (!exists)
-                _subscriptions.Add(typeof(T),new List<Action<IDomainEvent>>());
+            var list = GetOrCreateDomainEventSubscriberList<T>();
+            list.Add(domainAction);
+        }
 
-            _subscriptions[typeof(T)].Add(arg => { domainAction((T)arg); });
+        private static DomainEventSubscriberList GetOrCreateDomainEventSubscriberList<T>()
+            where T : IDomainEvent
+        {
+            var domainEventKey = typeof(T);
+
+            var exists = _subscriptions.ContainsKey(domainEventKey);
+            if (!exists)
+                _subscriptions.TryAdd(domainEventKey, new DomainEventSubscriberList());
+
+            var list = _subscriptions[domainEventKey];
+            return list;
         }
     }
 }

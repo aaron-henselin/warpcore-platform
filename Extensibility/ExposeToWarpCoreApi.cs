@@ -5,14 +5,21 @@ using WarpCore.Platform.Orm;
 
 namespace WarpCore.Platform.Extensibility
 {
+    /// <summary>
+    /// Exposes the repository to the WarpCore Api. This allows users to create forms, workflows, and custom fields for this type from the frontend.
+    /// </summary>
     public class ExposeToWarpCoreApi : Attribute
     {
-        public ExposeToWarpCoreApi(string uid)
+        public ExposeToWarpCoreApi(string uid) : this(new Guid(uid))
+        {
+        }
+
+        public ExposeToWarpCoreApi(Guid uid)
         {
             TypeUid = uid;
         }
 
-        public string TypeUid { get; set; }
+        public Guid TypeUid { get; set; }
     }
 
 
@@ -21,13 +28,11 @@ namespace WarpCore.Platform.Extensibility
     public class RepositoryMetdata : UnversionedContentEntity
     {
         public bool IsDynamic { get; set; }
-        public string ApiId { get; set; }
+        public Guid ApiId { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
 
         public string CustomAssemblyQualifiedTypeName { get; set; }
         public string CustomRepositoryName { get; set; }
-
-
     }
 
 

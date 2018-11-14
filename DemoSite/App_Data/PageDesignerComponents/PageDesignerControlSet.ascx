@@ -1,9 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PageDesignerControlSet.ascx.cs" Inherits="DemoSite.PageDesignerControlSet" %>
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
-    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/PageDesignerState.ascx"></a:AscxPlaceHolder>
-    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
-    <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
+    <a:AscxPlaceHolder UserControlId="PageDesignerState.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/PageDesignerState.ascx"></a:AscxPlaceHolder>
+    <a:AscxPlaceHolder UserControlId="Configurator.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/Configurator.ascx"/>
+    <a:AscxPlaceHolder UserControlId="Toolbox.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 

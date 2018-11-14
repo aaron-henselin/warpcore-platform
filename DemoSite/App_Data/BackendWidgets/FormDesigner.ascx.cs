@@ -29,8 +29,8 @@ namespace DemoSite
                 var all  = new RepositoryMetadataManager().Find();
                 foreach (var contentType in all)
                 {
-                    var text = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(contentType.ApiId)).Name;
-                    ContentTypeDropDownList.Items.Add(new ListItem(text,contentType.ApiId));
+                    var text = RepositoryTypeResolver.ResolveTypeByApiId(contentType.ApiId).Name;
+                    ContentTypeDropDownList.Items.Add(new ListItem(text,contentType.ApiId.ToString()));
                 }
 
                 SelectContentTypeButton.Click += (sender, args) =>
@@ -38,8 +38,6 @@ namespace DemoSite
                     
                     //todo: make this work regardless of the querystring already present.
                     var url = HttpContext.Current.Request.RawUrl + "&formType=" + ContentTypeDropDownList.SelectedValue;
-                   
-
                     HttpContext.Current.Response.Redirect(url);
                 };
                 return;

@@ -51,7 +51,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         public IEnumerable<ListOption> GetOptionsFromDataRelation(ConfiguratorEditingContext editingContext, string apiId)
         {
-            var repoType = RepositoryTypeResolver.ResolveDynamicTypeByInteropId(new Guid(apiId));
+            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(new Guid(apiId));
             var repo = (IContentRepository)Activator.CreateInstance(repoType);
 
             List<WarpCoreEntity> allItems=null;

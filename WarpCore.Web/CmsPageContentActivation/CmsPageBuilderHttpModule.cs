@@ -132,13 +132,16 @@ public interface ILayoutHandle
         {
             List<Control> activatedControls = new List<Control>();
 
+            int i = 0;
             foreach (var content in contents)
             {
+                i++;
                 var activatedWidget = CmsPageContentActivator.ActivateControl(content);
 
                 var layoutWidget = activatedWidget as LayoutControl;
                 if (layoutWidget != null)
                 {
+                    layoutWidget.ID = $"Layout{i}";
                     layoutWidget.LayoutBuilderId = content.Id;
                     layoutWidget.InitializeLayout();
                 }
