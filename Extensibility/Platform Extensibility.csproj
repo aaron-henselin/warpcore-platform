@@ -55,8 +55,10 @@
     <Compile Include="DomainEvents.cs" />
     <Compile Include="DynamicContent\ContentInterfaceRepository.cs" />
     <Compile Include="DynamicContent\ContentTypeMetadataRepository.cs" />
+    <Compile Include="DynamicContent\DynamicTypeDefinitionResolver.cs" />
     <Compile Include="DynamicContent\DynamicUnversionedContentRepository.cs" />
-    <Compile Include="DynamicContent\TypeResolvers.cs" />
+    <Compile Include="DynamicContent\RepositoryTypeResolver.cs" />
+    <Compile Include="DynamicContent\EntityTypeResolver.cs" />
     <Compile Include="DynamicContent\WarpCoreIlGenerator.cs" />
     <Compile Include="ExposeToWarpCoreApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
