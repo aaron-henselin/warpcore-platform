@@ -44,7 +44,7 @@ namespace DemoSite
            
             var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
             var defaults = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
-            var configuratorSettingProperties = ToolboxMetadataReader.ReadProperties(clrType,ToolboxPropertyFilter.IsConfigurable);
+            var configuratorSettingProperties = ToolboxMetadataReader.ReadProperties(clrType,ToolboxPropertyFilter.IsSettingProperty);
 
             foreach (var property in configuratorSettingProperties)
             {
@@ -137,7 +137,7 @@ namespace DemoSite
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
-            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
+            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
@@ -145,7 +145,7 @@ namespace DemoSite
             var configuratorEditingContext = new ConfiguratorEditingContext
             {
                 ClrType = activatedControl.GetType(),
-                PropertyFilter = ToolboxPropertyFilter.IsConfigurable,
+                PropertyFilter = ToolboxPropertyFilter.IsSettingProperty,
                 CurrentValues = parametersAfterActivation,
                 ParentEditingContext = new EditingContextManager().GetEditingContext()
             };

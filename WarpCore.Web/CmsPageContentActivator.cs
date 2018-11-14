@@ -20,7 +20,7 @@ namespace Cms
             IDictionary<string, string> settings;
 
             if (activated != null)
-                settings = activated.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
+                settings = activated.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
             else
                 settings = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
 
@@ -52,7 +52,7 @@ namespace Cms
         {
             var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
             var activatedWidget = (Control)Activator.CreateInstance(toolboxItemType);
-            activatedWidget.SetPropertyValues(parameters, ToolboxPropertyFilter.IsConfigurable);
+            activatedWidget.SetPropertyValues(parameters, ToolboxPropertyFilter.IsSettingProperty);
 
             return activatedWidget;
         }
@@ -61,7 +61,7 @@ namespace Cms
         {
             
             var activated = ActivateControl(toolboxItem, new Dictionary<string, string>());
-            return activated.GetPropertyValues(ToolboxPropertyFilter.IsConfigurable);
+            return activated.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
         }
 
         
