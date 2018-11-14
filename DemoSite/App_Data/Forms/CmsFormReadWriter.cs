@@ -20,56 +20,20 @@ namespace DemoSite
             {
                 configuratorControl.InitializeEditingContext(editingContext);
             }
-
-            //var configuratorWidget = activatedWidget as IConfiguratorControl;
-            //if (configuratorWidget != null)
-            //{
-            //    var editingContext = new ConfiguratorEditingContext();
-            //    editingContext.CmsPageContent = content;
-            //    editingContext.
-            //        configuratorWidget.InitializeEditingContext();
-            //}
-
         }
 
         public static void FillInControlValues(Control surface,ConfiguratorEditingContext editingContext)
         {
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-                tbx.Text = editingContext.CurrentValues[tbx.PropertyName];
-
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorCheckBox>())
-            {
-                var rawValue = editingContext.CurrentValues[tbx.PropertyName];
-
-                bool outValue;
-                var success = Boolean.TryParse(rawValue, out outValue);
-                if (success)
-                    tbx.Checked = outValue;
-            }
-
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorDropDownList>())
-                tbx.SelectedValue = editingContext.CurrentValues[tbx.PropertyName];
-
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorHiddenField>())
-                tbx.Value = editingContext.CurrentValues[tbx.PropertyName];
-
+            foreach (var control in surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>())
+                control.SetValue(editingContext.CurrentValues[control.PropertyName]);
         }
 
         public static IDictionary<string, string> ReadValuesFromControls(Control surface)
         {
             Dictionary<string, string> newParameters = new Dictionary<string, string>();
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorTextBox>())
-            {
-                newParameters.Add(tbx.PropertyName, tbx.Text);
-            }
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorDropDownList>())
-            {
-                newParameters.Add(tbx.PropertyName, tbx.SelectedValue);
-            }
-            foreach (var tbx in surface.GetDescendantControls<ConfiguratorHiddenField>())
-            {
-                newParameters.Add(tbx.PropertyName, tbx.Value);
-            }
+            foreach (var control in surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>())
+                newParameters.Add(control.PropertyName, control.GetValue());
+
             return newParameters;
         }
 

@@ -13,6 +13,23 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [Setting]
         public string PropertyName { get; set; }
 
+        public void SetValue(string newValue)
+        {
+
+             
+
+                bool outValue;
+                var success = Boolean.TryParse(newValue, out outValue);
+                if (success)
+                    _checkbox.Checked = outValue;
+            
+        }
+
+        public string GetValue()
+        {
+            return _checkbox.Checked.ToString();
+        }
+
         [Setting]
         public string DisplayName { get; set; }
 
@@ -38,6 +55,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             _checkbox.ID = PropertyName + "_CheckBox";
             this.Controls.Add(_checkbox);
         }
+
 
     }
 }

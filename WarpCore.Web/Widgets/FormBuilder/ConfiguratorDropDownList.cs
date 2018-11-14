@@ -20,17 +20,22 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [Setting(SettingType = SettingType.OptionList)][DisplayName("Property")]
         public string PropertyName { get; set; }
 
+        public void SetValue(string newValue)
+        {
+            _listControl.SelectedValue = newValue;
+        }
+
+        public string GetValue()
+        {
+            return _listControl.SelectedValue;
+        }
+
         [Setting][DisplayName("Display Name")]
         public string DisplayName { get; set; }
 
         [Setting(SettingType = SettingType.CheckBox)][DisplayName("Required")]
         public bool IsRequired { get; set; }
 
-        public string SelectedValue
-        {
-            get { return _listControl.SelectedValue; }
-            set { _listControl.SelectedValue = value; }
-        }
 
 
         [Setting(SettingType = SettingType.OptionList)]

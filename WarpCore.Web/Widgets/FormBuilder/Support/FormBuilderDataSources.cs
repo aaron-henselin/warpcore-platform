@@ -22,6 +22,11 @@ namespace WarpCore.Web.Widgets.FormBuilder
     public interface IConfiguratorControl
     {
         void InitializeEditingContext(ConfiguratorEditingContext editingContext);
+
+        string PropertyName { get; }
+
+        void SetValue(string newValue);
+        string GetValue();
     }
 
 

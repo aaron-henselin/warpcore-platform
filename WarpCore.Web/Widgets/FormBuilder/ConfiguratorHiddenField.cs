@@ -16,12 +16,17 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [DisplayName("Property")]
         public string PropertyName { get; set; }
 
-
-        public string Value
+        public void SetValue(string newValue)
         {
-            get { return _hiddenField.Value; }
-            set { _hiddenField.Value = value; }
+            _hiddenField.Value = newValue;
         }
+
+        public string GetValue()
+        {
+            return _hiddenField.Value;
+        }
+
+
 
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
         {

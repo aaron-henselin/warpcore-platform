@@ -23,15 +23,19 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [Setting][DisplayName("Display name")]
         public string DisplayName { get; set; }
 
-        public string Text
-        {
-            get { return _tbx.Text; }
-            set { _tbx.Text = value; }
-        }
-
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
         {
             //throw new NotImplementedException();
+        }
+
+        public void SetValue(string newValue)
+        {
+            _tbx.Text = newValue;
+        }
+
+        public string GetValue()
+        {
+            return _tbx.Text;
         }
 
         protected override void OnInit(EventArgs e)
