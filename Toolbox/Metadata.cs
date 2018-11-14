@@ -25,7 +25,7 @@ namespace Cms.Toolbox
     {
     }
 
-    public enum SettingType { Text,OptionList}
+    public enum SettingType { Text,OptionList, CheckBox}
 
     public class SettingAttribute : Attribute
     {
@@ -85,8 +85,10 @@ namespace Cms.Toolbox
     {
         public static Func<PropertyInfo, bool> IsSettingProperty => x => x.HasAttribute<SettingAttribute>() && IsNotIgnoredType(x);
         public static Func<PropertyInfo, bool> IsNotIgnoredType => x => x.DeclaringType != typeof(Control) &&
-                                                                        x.DeclaringType != typeof(WarpCoreEntity);
-        
+                                                                        x.DeclaringType != typeof(WarpCoreEntity) &&
+                                                                        x.DeclaringType != typeof(VersionedContentEntity) &&
+                                                                        x.DeclaringType != typeof(UnversionedContentEntity);
+
     }
 
     public static class RepositoryMetadataReader

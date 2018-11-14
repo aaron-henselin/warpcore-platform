@@ -23,6 +23,9 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [Setting][DisplayName("Display Name")]
         public string DisplayName { get; set; }
 
+        [Setting(SettingType = SettingType.CheckBox)][DisplayName("Required")]
+        public bool IsRequired { get; set; }
+
         public string SelectedValue
         {
             get { return _listControl.SelectedValue; }

@@ -51,7 +51,7 @@ namespace DemoSite
                 cmsForm = new CmsForm
                 {
                     ContentId = Guid.NewGuid(),
-                    ContentTypeId = new Guid(formTypeRaw)
+                    RepositoryUid = new Guid(formTypeRaw)
                     
                 };
             else
