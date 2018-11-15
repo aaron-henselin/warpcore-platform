@@ -16,7 +16,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
-        [FormControlPropertiesDataSource]
+        [FormControlPropertiesDataSource(typeof(string),typeof(int),typeof(decimal))]
         [Setting(SettingType = SettingType.OptionList)][DisplayName("Property name")]
         public string PropertyName { get; set; }
 

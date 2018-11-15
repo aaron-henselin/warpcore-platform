@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Diagnostics.Tracing;
@@ -74,7 +75,7 @@ namespace WarpCore.Cms
 
         public Guid? RedirectPageId { get; set; }
 
-        [Column]
+        [Column][DisplayName("Require Ssl")]
         public bool RequireSsl { get; set; }
 
         public Guid ContentTypeId => new Guid(CmsPageRepository.ApiId);
@@ -82,7 +83,7 @@ namespace WarpCore.Cms
         public List<CmsPageContent> DesignedContent => PageContent;
         public Guid DesignForContentId => ContentId;
 
-        [Column]
+        [Column][DisplayName("Enable ViewState")]
         public bool EnableViewState { get; set; }
 
         [Column]

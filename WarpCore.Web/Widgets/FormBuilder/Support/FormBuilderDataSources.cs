@@ -28,7 +28,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         void SetValue(string newValue);
         string GetValue();
     }
-
+    
 
 
     public class RepositoryListControlSourceAttribute : Attribute, IListControlSource
@@ -57,6 +57,19 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
     public class FormControlPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
+        private readonly Type[] _propertyTypes;
+
+        public FormControlPropertiesDataSourceAttribute()
+        {
+            _propertyTypes = null;
+        }
+
+
+        public FormControlPropertiesDataSourceAttribute(params Type[] propertyTypes)
+        {
+            _propertyTypes = propertyTypes;
+        }
+
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
         {
 
@@ -69,6 +82,9 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var propertiesFilered = 
                 t.GetPropertiesFiltered(ToolboxPropertyFilter.IsNotIgnoredType)
                 .ToList();
+
+            if (_propertyTypes != null)
+                propertiesFilered=propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();
 
             var propertyNames = propertiesFilered.Select(x => x.Name);
             return propertyNames.Select(x => new ListOption { Text = x, Value = x });

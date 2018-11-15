@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
+    <Compile Include="CmsPageContentActivation\CmsPageLayoutEngine.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
     <Compile Include="Widgets\Layout\LayoutControl.cs" />
     <Compile Include="Widgets\Layout\RowLayout.cs" />
+    <Compile Include="Widgets\Layout\RuntimeContentPlaceHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
