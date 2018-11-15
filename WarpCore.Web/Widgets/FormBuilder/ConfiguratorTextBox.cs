@@ -11,17 +11,39 @@ using WarpCore.Cms.Toolbox;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
+
     [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl
     {
         private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
+        /// <summary>
+        /// Sets which Property of the object should be configured using this textbox,
+        /// when a value is submitted by an end user.
+        /// </summary>
         [FormControlPropertiesDataSource(typeof(string),typeof(int),typeof(decimal))]
         [Setting(SettingType = SettingType.OptionList)][DisplayName("Property name")]
         public string PropertyName { get; set; }
 
+        /// <summary>
+        /// Sets a custom label for the textbox when presented to the end user.
+        /// </summary>
         [Setting][DisplayName("Display name")]
         public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Determines whether or not entry of the textbox must be supplied by an end user.
+        /// </summary>
+        [Setting(SettingType = SettingType.CheckBox)]
+        [DisplayName("Required")]
+        public bool IsRequired { get; set; }
+
+        public void SetConfiguration(SettingProperty settingProperty)
+        {
+            PropertyName = settingProperty.PropertyInfo.Name;
+            DisplayName = settingProperty.DisplayName;
+        }
+
 
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
         {

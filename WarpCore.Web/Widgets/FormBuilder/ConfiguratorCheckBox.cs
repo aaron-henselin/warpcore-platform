@@ -30,6 +30,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
             return _checkbox.Checked.ToString();
         }
 
+        public void SetConfiguration(SettingProperty settingProperty)
+        {
+            PropertyName = settingProperty.PropertyInfo.Name;
+            DisplayName = settingProperty.DisplayName;
+        }
+
         [Setting]
         public string DisplayName { get; set; }
 

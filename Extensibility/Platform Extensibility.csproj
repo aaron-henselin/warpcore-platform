@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyLoader.cs" />
     <Compile Include="DomainEvents.cs" />
     <Compile Include="DynamicContent\ContentInterfaceRepository.cs" />
     <Compile Include="DynamicContent\ContentTypeMetadataRepository.cs" />

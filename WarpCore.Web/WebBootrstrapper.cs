@@ -28,42 +28,7 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
 {
-    public static class ConditionalAssemblyLoader
-    {
 
-
-        public static void LoadAssemblies(Func<Assembly,bool> condition)
-        {
-            List<string> filesToLoad = new List<string>();
-
-            var setup = AppDomain.CurrentDomain.SetupInformation;
-            var binariesToCheck =Directory.GetFiles(setup.PrivateBinPath, "*.dll").ToList();
-
-            var alreadyLoaded = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .Where(x => !x.IsDynamic)
-                .Select(x => x.Location);
-
-            binariesToCheck = binariesToCheck.Except(alreadyLoaded).ToList();
-            
-            foreach (var file in binariesToCheck)
-            {
-                Assembly.LoadFile(file);
-            }
-        }
-
-
-        public class AssemblyLoader : MarshalByRefObject
-        {
-            public bool IsPluginAssembly(string assembly, Func<Assembly, bool> condition)
-            {
-                Assembly a = Assembly.ReflectionOnlyLoadFrom(assembly);
-                return condition(a);
-            }
-        }
-
-
-    }
 
     //public static class BootEvents
     //{
@@ -89,51 +54,9 @@ namespace WarpCore.Web
 
     public static class WebBootstrapper
     {
-
-        public static void PreloadPluginAssembliesFromFileSystem()
-        {
-            ConditionalAssemblyLoader.LoadAssemblies(asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
-        }
-
-
-
-
         public static void BuildUpDomainEvents()
         {
             DomainEvents.Subscribe<SiteStructureChanged>(x => CmsRoutes.RegenerateAllRoutes());
-        }
-
-        public static void BuildUpToolbox()
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
-
-            var toIncludeInToolbox = allTypes
-                                        .Select(ToolboxMetadataReader.ReadMetadata)
-                                        .Where(x => x != null);
-
-            var mgr = new ToolboxManager();
-            var alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
-            foreach (var discoveredToolboxItem in toIncludeInToolbox)
-            {
-                //var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
-
-                ToolboxItem widget;
-                if (alreadyInToolbox.ContainsKey(discoveredToolboxItem.WidgetUid))
-                    widget = alreadyInToolbox[discoveredToolboxItem.WidgetUid];
-                else
-                    widget = new ToolboxItem();
-
-                widget.WidgetUid = discoveredToolboxItem.WidgetUid;
-                widget.FriendlyName = discoveredToolboxItem.FriendlyName;
-                widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
-                widget.Category = discoveredToolboxItem.Category;
-                widget.AscxPath = discoveredToolboxItem.AscxPath;
-                mgr.Save(widget);
-
-                alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
-            }
-
         }
 
         public static bool IsBooted { get; private set; }
@@ -156,9 +79,10 @@ namespace WarpCore.Web
 
                     Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
-                    PreloadPluginAssembliesFromFileSystem();
+                    ExtensibilityBootstrapper.PreloadPluginAssembliesFromFileSystem(AppDomain.CurrentDomain);
                     ExtensibilityBootstrapper.RegisterExtensibleTypesWithApi(AppDomain.CurrentDomain);
-                    BuildUpToolbox();
+                   
+                    ToolboxBootstrapper.RegisterToolboxItemsWithApi(AppDomain.CurrentDomain);
                     
                     IsBooted = true;
 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MoreLinq;
 using WarpCore.Platform.Extensibility.DynamicContent;
+using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
 
@@ -42,13 +43,18 @@ namespace WarpCore.Platform.Extensibility
         public Guid Uid { get; set; }
         public Type RepositoryType { get; set; }
     }
+    public class IsWarpCorePluginAssemblyAttribute : Attribute
+    {
+    }
+
 
     public class ExtensibilityBootstrapper
     {
-        public static void RegisterExtensibleTypesWithApi()
+        public static void PreloadPluginAssembliesFromFileSystem(AppDomain appDomain)
         {
-            RegisterExtensibleTypesWithApi(AppDomain.CurrentDomain);
+            AssemblyLoader.LoadAssemblies(appDomain, asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
         }
+
 
         public static void RegisterExtensibleTypesWithApi(AppDomain domain)
         {

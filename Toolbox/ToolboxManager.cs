@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.Compilation;
+using Cms.Toolbox;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms.Toolbox
@@ -23,6 +24,41 @@ namespace WarpCore.Cms.Toolbox
         public string FriendlyName { get; set; }
     }
 
+    public static class ToolboxBootstrapper
+    {
+        public static void RegisterToolboxItemsWithApi(AppDomain appDomain)
+        {
+            var assemblies = appDomain.GetAssemblies();
+            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
+
+            var toIncludeInToolbox = allTypes
+                .Select(ToolboxMetadataReader.ReadMetadata)
+                .Where(x => x != null);
+
+            var mgr = new ToolboxManager();
+            var alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
+            foreach (var discoveredToolboxItem in toIncludeInToolbox)
+            {
+                //var includeInToolboxAtr = typeToInclude.GetCustomAttribute<IncludeInToolboxAttribute>();
+
+                ToolboxItem widget;
+                if (alreadyInToolbox.ContainsKey(discoveredToolboxItem.WidgetUid))
+                    widget = alreadyInToolbox[discoveredToolboxItem.WidgetUid];
+                else
+                    widget = new ToolboxItem();
+
+                widget.WidgetUid = discoveredToolboxItem.WidgetUid;
+                widget.FriendlyName = discoveredToolboxItem.FriendlyName;
+                widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
+                widget.Category = discoveredToolboxItem.Category;
+                widget.AscxPath = discoveredToolboxItem.AscxPath;
+                mgr.Save(widget);
+
+                alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);
+            }
+
+        }
+    }
 
     public class ToolboxManager : UnversionedContentRepository<ToolboxItem>
     {

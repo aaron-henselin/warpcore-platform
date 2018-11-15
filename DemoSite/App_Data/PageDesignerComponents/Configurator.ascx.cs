@@ -48,25 +48,31 @@ namespace DemoSite
 
             foreach (var property in configuratorSettingProperties)
             {
-                var bestGuess = GetBestGuessForSettingType(property);
-
                 CmsPageContent content = null;
-                switch (bestGuess)
+                if (property.ConfiguratorType != null)
                 {
-                    case SettingType.Text:
-                        content = CreateConfiguratorTextBox(property);
-                        break;
+                    content = CreateConfiguratorPageContent(property.ConfiguratorType,property);
+                }
+                else
+                {
+                    var bestGuess = GetBestGuessForSettingType(property);
+                    switch (bestGuess)
+                    {
+                        case SettingType.Text:
+                            content = CreateConfiguratorPageContent<ConfiguratorTextBox>(property);
+                            break;
 
-                    case SettingType.OptionList:
-                        content = CreateConfiguratorDropDownList(property);
-                        break;
+                        case SettingType.OptionList:
+                            content = CreateConfiguratorPageContent<ConfiguratorDropDownList>(property);
+                            break;
 
-                    case SettingType.CheckBox:
-                        content = CreateConfiguratorCheckBox(property);
-                        break;
+                        case SettingType.CheckBox:
+                            content = CreateConfiguratorPageContent<ConfiguratorCheckBox>(property);
+                            break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
 
                 content.PlacementLayoutBuilderId = rowLayout.Id;
@@ -76,39 +82,21 @@ namespace DemoSite
             return cmsForm;
         }
 
-        private static CmsPageContent CreateConfiguratorDropDownList(SettingProperty property)
+        private static CmsPageContent CreateConfiguratorPageContent(Type type, SettingProperty property)
         {
+            IConfiguratorControl dropdownList = (IConfiguratorControl)Activator.CreateInstance(type);
+            dropdownList.SetConfiguration(property);
+
             CmsPageContentFactory factory = new CmsPageContentFactory();
-            var createdPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorDropDownList
-                {
-                    PropertyName = property.PropertyInfo.Name,
-                    DisplayName = property.DisplayName,
-                });
+            var createdPageContent = factory.CreateToolboxItemContent((Control)dropdownList);
             return createdPageContent;
         }
-        private static CmsPageContent CreateConfiguratorCheckBox(SettingProperty property)
+
+        private static CmsPageContent CreateConfiguratorPageContent<TConfiguratorType>(SettingProperty property) where TConfiguratorType : IConfiguratorControl
         {
-            CmsPageContentFactory factory = new CmsPageContentFactory();
-            var createdPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorCheckBox
-                {
-                    PropertyName = property.PropertyInfo.Name,
-                    DisplayName = property.DisplayName
-                });
-            return createdPageContent;
+            return CreateConfiguratorPageContent(typeof(TConfiguratorType), property);
         }
-        private static CmsPageContent CreateConfiguratorTextBox(SettingProperty property)
-        {
-            CmsPageContentFactory factory = new CmsPageContentFactory();
-            var createdPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
-                {
-                    PropertyName = property.PropertyInfo.Name,
-                    DisplayName = property.DisplayName
-                });
-            return createdPageContent;
-        }
+
         private static SettingType GetBestGuessForSettingType(SettingProperty property)
         {
             SettingType? bestGuess = property.SettingType;

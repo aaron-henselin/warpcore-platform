@@ -21,15 +21,15 @@ namespace Cms.Toolbox
         public string Text { get; set; }
         public string Value { get; set; }
     }
-    public class IsWarpCorePluginAssemblyAttribute : Attribute
-    {
-    }
 
     public enum SettingType { Text,OptionList, CheckBox}
 
     public class SettingAttribute : Attribute
     {
         public SettingType SettingType { get; set; }
+
+        public Type ConfiguratorType { get; set; }
+        
     }
 
     public class SettingProperty
@@ -37,6 +37,7 @@ namespace Cms.Toolbox
         public PropertyInfo PropertyInfo { get; set; }
         public string DisplayName { get; set; }
         public SettingType? SettingType { get; set; }
+        public Type ConfiguratorType { get; set; }
     }
 
     public class IncludeInToolboxAttribute : Attribute
@@ -115,14 +116,14 @@ namespace Cms.Toolbox
                 if (!include)
                     continue;
 
-                
+                var settingInfo = property.GetCustomAttributes().OfType<SettingAttribute>().FirstOrDefault();
                 var displayNameDefinition = (DisplayNameAttribute)property.GetCustomAttribute(typeof(DisplayNameAttribute));
                 properties.Add(new SettingProperty
                 {
                     PropertyInfo = property,
                     DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
-                    //DataSource = property.GetCustomAttributes().OfType<IListControlSource>().FirstOrDefault(),
-                    SettingType = property.GetCustomAttributes().OfType<SettingAttribute>().FirstOrDefault()?.SettingType
+                    ConfiguratorType = settingInfo?.ConfiguratorType,
+                    SettingType = settingInfo?.SettingType
                 });
             }
 

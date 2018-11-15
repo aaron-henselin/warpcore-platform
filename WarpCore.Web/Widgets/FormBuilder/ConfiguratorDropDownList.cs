@@ -42,6 +42,13 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [RepositoryListControlSource]
         public string RepositoryUid { get; set; }
 
+        public void SetConfiguration(SettingProperty settingProperty)
+        {
+            PropertyName = settingProperty.PropertyInfo.Name;
+            DisplayName = settingProperty.DisplayName;
+        }
+
+
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);

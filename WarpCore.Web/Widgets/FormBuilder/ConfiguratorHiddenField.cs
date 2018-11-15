@@ -26,6 +26,10 @@ namespace WarpCore.Web.Widgets.FormBuilder
             return _hiddenField.Value;
         }
 
+        public void SetConfiguration(SettingProperty settingProperty)
+        {
+            PropertyName = settingProperty.PropertyInfo.Name;
+        }
 
 
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)

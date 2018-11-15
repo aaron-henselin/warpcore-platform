@@ -12,9 +12,9 @@ namespace Cms
 {
     public class CmsPageContentFactory
     {
-        public CmsPageContent CreateToolboxItemContent<T>(T activated = null) where T : Control
+        public CmsPageContent CreateToolboxItemContent(Control activated) 
         {
-            var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(typeof(T));
+            var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(activated.GetType());
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);
 
             IDictionary<string, string> settings;
