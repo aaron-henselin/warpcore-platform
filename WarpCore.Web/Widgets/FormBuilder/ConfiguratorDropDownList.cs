@@ -11,9 +11,11 @@ using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorDropDownList", FriendlyName = "Option List", Category = "Form Controls")]
+    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Option List", Category = "Form Controls")]
     public class ConfiguratorDropDownList: PlaceHolder, INamingContainer, IConfiguratorControl
     {
+        public const string ApiId = "warpcore-formcontrol-dropdownlist";
+
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
 
         [FormControlPropertiesDataSource]

@@ -12,9 +12,11 @@ using WarpCore.Cms.Toolbox;
 namespace WarpCore.Web.Widgets.FormBuilder
 {
 
-    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorTextBox",FriendlyName = "TextBox", Category = "Form Controls")]
+    [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl
     {
+        public const string ApiId = "WC/ConfiguratorTextBox";
+
         private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
         /// <summary>

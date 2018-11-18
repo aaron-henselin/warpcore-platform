@@ -5,9 +5,11 @@ using Cms.Toolbox;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorCheckBox", FriendlyName = "CheckBox", Category = "Form Controls")]
+    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "CheckBox", Category = "Form Controls")]
     public class ConfiguratorCheckBox : PlaceHolder, INamingContainer, IConfiguratorControl
     {
+        public const string ApiId = "warpcore-formcontrol-checkBox";
+
         private CheckBox _checkbox = new CheckBox { CssClass = "form-control" };
 
         [Setting(SettingType = SettingType.OptionList)][FormControlPropertiesDataSource(typeof(bool))]
