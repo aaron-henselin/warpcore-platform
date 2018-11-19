@@ -79,7 +79,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var t = repo.New().GetType();
             
             var propertiesFilered = 
-                t.GetPropertiesFiltered(ToolboxPropertyFilter.IsNotIgnoredType)
+                t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
                 .ToList();
 
             if (_propertyTypes != null)

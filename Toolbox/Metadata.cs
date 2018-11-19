@@ -24,6 +24,10 @@ namespace Cms.Toolbox
 
     public enum SettingType { Text,OptionList, CheckBox}
 
+    public class DesignIgnoreAttribute : Attribute
+    {
+    }
+
     public class SettingAttribute : Attribute
     {
         public SettingType SettingType { get; set; }
@@ -84,11 +88,20 @@ namespace Cms.Toolbox
 
     public static class ToolboxPropertyFilter
     {
-        public static Func<PropertyInfo, bool> IsSettingProperty => x => x.HasAttribute<SettingAttribute>() && IsNotIgnoredType(x);
-        public static Func<PropertyInfo, bool> IsNotIgnoredType => x => x.DeclaringType != typeof(Control) &&
+        //x.HasAttribute<SettingAttribute>()
+        public static Func<PropertyInfo, bool> SupportsDesigner => x =>
+            !x.HasAttribute<DesignIgnoreAttribute>()
+            && SupportsOrm(x);
+
+        public static Func<PropertyInfo, bool> SupportsOrm => x =>
+            IsReadWriteable(x) && IsValidDeclaringType(x);
+
+        private static Func<PropertyInfo, bool> IsValidDeclaringType => x => x.DeclaringType != typeof(Control) &&
                                                                         x.DeclaringType != typeof(WarpCoreEntity) &&
                                                                         x.DeclaringType != typeof(VersionedContentEntity) &&
                                                                         x.DeclaringType != typeof(UnversionedContentEntity);
+
+        private static Func<PropertyInfo, bool> IsReadWriteable => x => x.CanRead && x.CanWrite;
 
     }
 
