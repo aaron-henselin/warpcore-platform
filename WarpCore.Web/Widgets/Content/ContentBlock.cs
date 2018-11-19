@@ -19,7 +19,7 @@ namespace WarpCore.Web.Widgets.Content
     {
         public const string ApiId = "warpcore-content-html";
 
-        [Setting][DisplayName("Html")]
+        [Setting(SettingType = SettingType.RichText)][DisplayName("Html")]
         public string AdHocHtml { get; set; }
 
         //public ComplexDemo ComplexDemo { get; set; }

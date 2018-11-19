@@ -23,7 +23,7 @@ namespace Cms.Toolbox
         public string Value { get; set; }
     }
 
-    public enum SettingType { Text,OptionList, CheckBox}
+    public enum SettingType { Text,RichText,OptionList, CheckBox}
 
     public class DesignIgnoreAttribute : Attribute
     {

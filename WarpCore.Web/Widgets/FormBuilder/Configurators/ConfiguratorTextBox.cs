@@ -57,6 +57,8 @@ namespace WarpCore.Web.Widgets.FormBuilder
             if (new[] { typeof(DateTime) }.Contains(settingProperty.PropertyInfo.PropertyType))
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.DateTime.ToString();
 
+            if (SettingType.RichText == settingProperty.SettingType)
+                TextBoxMode = System.Web.UI.WebControls.TextBoxMode.MultiLine.ToString();
         }
 
 
@@ -87,7 +89,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
             if (!string.IsNullOrWhiteSpace(TextBoxMode))
                 _tbx.TextMode = (TextBoxMode)Enum.Parse(typeof(TextBoxMode), TextBoxMode, true);
 
+            if (_tbx.TextMode == System.Web.UI.WebControls.TextBoxMode.MultiLine)
+                _tbx.CssClass = "rte";
+
             this.Controls.Add(_tbx);
+
+
         }
 
 

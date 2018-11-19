@@ -34,7 +34,7 @@
                 <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
             </wc-configurator-data>
         
-            <asp:Panel runat="server" ID="surface">
+            <asp:Panel runat="server" ID="surface" CssClass="wc-configurator-surface">
                 <a:RuntimeContentPlaceHolder 
                     ID="ConfiguratorFormBuilderRuntimePlaceHolder"
                     PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" 

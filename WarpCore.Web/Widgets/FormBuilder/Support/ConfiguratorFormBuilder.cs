@@ -62,6 +62,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                         var bestGuess = GetBestGuessForSettingType(property);
                         switch (bestGuess)
                         {
+                            case SettingType.RichText:
                             case SettingType.Text:
                                 content = CreateConfiguratorPageContent<ConfiguratorTextBox>(property);
                                 break;
