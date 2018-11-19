@@ -3,9 +3,11 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.Content
 {
+
     [IncludeInToolbox(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control
     {

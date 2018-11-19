@@ -20,6 +20,8 @@ using WarpCore.Web;
 using WarpCore.Web.Widgets;
 using WarpCore.Web.Widgets.Content;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Configurators;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {

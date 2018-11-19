@@ -6,6 +6,8 @@
     <a:AscxPlaceHolder UserControlId="Toolbox.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/summernote/summernote.css"/>
+<script src="/assets/summernote/summernote.min.js"></script>
 
 <script>
     var warpcore = {};

@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Web;
-using System.Web.UI.WebControls;
 using Cms.Toolbox;
-using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
-using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
 
-namespace WarpCore.Web.Widgets.FormBuilder
+namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
     public interface IListControlSource
     {
         IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext);
+    }
+
+    public class CompositeConfiguratorTypeAttribute :Attribute
+    {
     }
 
     public interface IConfiguratorControl
@@ -55,6 +55,36 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
     }
 
+    public class ConfiguratorEditingContextHelper
+    {
+        public static List<PropertyInfo> PropertiesFilered(ConfiguratorEditingContext editingContext)
+        {
+            var repoManager = new RepositoryMetadataManager();
+            var repoMetadata =
+                repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.ParentEditingContext.DesignContentTypeId);
+            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
+            var repo = (IContentRepository)Activator.CreateInstance(repoType);
+            var t = repo.New().GetType();
+
+            var propertiesFilered =
+                t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
+                    .ToList();
+            return propertiesFilered;
+        }
+    }
+
+    public class CompositeOnlyPropertiesDataSourceAttribute : Attribute, IListControlSource
+    {
+        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        {
+            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(editingContext);
+            var props = propertiesFilered.Where(x =>
+                x.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any());
+
+            var propertyNames = props.Select(x => x.Name);
+            return propertyNames.Select(x => new ListOption { Text = x, Value = x });
+        }
+    }
 
     public class FormControlPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
@@ -73,16 +103,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
         {
-
-            var repoManager = new RepositoryMetadataManager();
-            var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.ParentEditingContext.DesignContentTypeId);
-            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
-            var repo = (IContentRepository)Activator.CreateInstance(repoType);
-            var t = repo.New().GetType();
-            
-            var propertiesFilered = 
-                t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
-                .ToList();
+            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(editingContext);
 
             if (_propertyTypes != null)
                 propertiesFilered=propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();
@@ -90,6 +111,8 @@ namespace WarpCore.Web.Widgets.FormBuilder
             var propertyNames = propertiesFilered.Select(x => x.Name);
             return propertyNames.Select(x => new ListOption { Text = x, Value = x });
         }
+
+
     }
 
 }

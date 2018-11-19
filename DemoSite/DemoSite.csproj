@@ -87,6 +87,60 @@
     <Content Include="App_Data\Forms\DynamicForm.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityBuilder.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityList.ascx" />
+    <Content Include="assets\summernote\lang\summernote-ar-AR.js" />
+    <Content Include="assets\summernote\lang\summernote-bg-BG.js" />
+    <Content Include="assets\summernote\lang\summernote-ca-ES.js" />
+    <Content Include="assets\summernote\lang\summernote-cs-CZ.js" />
+    <Content Include="assets\summernote\lang\summernote-da-DK.js" />
+    <Content Include="assets\summernote\lang\summernote-de-DE.js" />
+    <Content Include="assets\summernote\lang\summernote-el-GR.js" />
+    <Content Include="assets\summernote\lang\summernote-es-ES.js" />
+    <Content Include="assets\summernote\lang\summernote-es-EU.js" />
+    <Content Include="assets\summernote\lang\summernote-fa-IR.js" />
+    <Content Include="assets\summernote\lang\summernote-fi-FI.js" />
+    <Content Include="assets\summernote\lang\summernote-fr-FR.js" />
+    <Content Include="assets\summernote\lang\summernote-gl-ES.js" />
+    <Content Include="assets\summernote\lang\summernote-he-IL.js" />
+    <Content Include="assets\summernote\lang\summernote-hr-HR.js" />
+    <Content Include="assets\summernote\lang\summernote-hu-HU.js" />
+    <Content Include="assets\summernote\lang\summernote-id-ID.js" />
+    <Content Include="assets\summernote\lang\summernote-it-IT.js" />
+    <Content Include="assets\summernote\lang\summernote-ja-JP.js" />
+    <Content Include="assets\summernote\lang\summernote-ko-KR.js" />
+    <Content Include="assets\summernote\lang\summernote-lt-LT.js" />
+    <Content Include="assets\summernote\lang\summernote-lt-LV.js" />
+    <Content Include="assets\summernote\lang\summernote-mn-MN.js" />
+    <Content Include="assets\summernote\lang\summernote-nb-NO.js" />
+    <Content Include="assets\summernote\lang\summernote-nl-NL.js" />
+    <Content Include="assets\summernote\lang\summernote-pl-PL.js" />
+    <Content Include="assets\summernote\lang\summernote-pt-BR.js" />
+    <Content Include="assets\summernote\lang\summernote-pt-PT.js" />
+    <Content Include="assets\summernote\lang\summernote-ro-RO.js" />
+    <Content Include="assets\summernote\lang\summernote-ru-RU.js" />
+    <Content Include="assets\summernote\lang\summernote-sk-SK.js" />
+    <Content Include="assets\summernote\lang\summernote-sl-SI.js" />
+    <Content Include="assets\summernote\lang\summernote-sr-RS-Latin.js" />
+    <Content Include="assets\summernote\lang\summernote-sr-RS.js" />
+    <Content Include="assets\summernote\lang\summernote-sv-SE.js" />
+    <Content Include="assets\summernote\lang\summernote-ta-IN.js" />
+    <Content Include="assets\summernote\lang\summernote-th-TH.js" />
+    <Content Include="assets\summernote\lang\summernote-tr-TR.js" />
+    <Content Include="assets\summernote\lang\summernote-uk-UA.js" />
+    <Content Include="assets\summernote\lang\summernote-vi-VN.js" />
+    <Content Include="assets\summernote\lang\summernote-zh-CN.js" />
+    <Content Include="assets\summernote\lang\summernote-zh-TW.js" />
+    <Content Include="assets\summernote\plugin\databasic\summernote-ext-databasic.css" />
+    <Content Include="assets\summernote\plugin\databasic\summernote-ext-databasic.js" />
+    <Content Include="assets\summernote\plugin\hello\summernote-ext-hello.js" />
+    <Content Include="assets\summernote\plugin\specialchars\summernote-ext-specialchars.js" />
+    <Content Include="assets\summernote\summernote-bs4.css" />
+    <Content Include="assets\summernote\summernote-bs4.js" />
+    <Content Include="assets\summernote\summernote-bs4.min.js" />
+    <Content Include="assets\summernote\summernote-lite.css" />
+    <Content Include="assets\summernote\summernote-lite.js" />
+    <Content Include="assets\summernote\summernote.css" />
+    <Content Include="assets\summernote\summernote.js" />
+    <Content Include="assets\summernote\summernote.min.js" />
     <Content Include="css\ajax-loader.gif" />
     <Content Include="css\animate.css" />
     <Content Include="css\aos.css" />
@@ -181,7 +235,6 @@
     <Compile Include="App_Data\AdHocLayout.Master.designer.cs">
       <DependentUpon>AdHocLayout.Master</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\Forms\CmsFormReadWriter.cs" />
     <Compile Include="App_Master\Global.Master.cs">
       <DependentUpon>Global.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -322,6 +375,9 @@
     <Content Include="fonts\open-iconic\open-iconic.woff" />
     <Content Include="images\.DS_Store" />
     <Content Include="js\.DS_Store" />
+    <Content Include="assets\summernote\font\summernote.eot" />
+    <Content Include="assets\summernote\font\summernote.ttf" />
+    <Content Include="assets\summernote\font\summernote.woff" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

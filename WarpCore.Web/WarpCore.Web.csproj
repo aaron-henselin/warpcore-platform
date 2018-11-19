@@ -86,11 +86,14 @@
     <Compile Include="CmsPageContentActivation\CmsPageLayoutEngine.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
-    <Compile Include="Widgets\FormBuilder\ConfiguratorCheckBox.cs" />
-    <Compile Include="Widgets\FormBuilder\ConfiguratorDropDownList.cs" />
-    <Compile Include="Widgets\FormBuilder\ConfiguratorHiddenField.cs" />
+    <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />
+    <Compile Include="Widgets\FormBuilder\Support\CmsFormReadWriter.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\CompositeConfigurator.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorCheckBox.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorDropDownList.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorHiddenField.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />
-    <Compile Include="Widgets\FormBuilder\ConfiguratorTextBox.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorTextBox.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>

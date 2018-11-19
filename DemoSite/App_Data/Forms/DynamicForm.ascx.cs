@@ -13,6 +13,7 @@ using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {

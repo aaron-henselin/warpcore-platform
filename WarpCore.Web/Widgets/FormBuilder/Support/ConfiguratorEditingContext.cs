@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace WarpCore.Web.Widgets.FormBuilder
+namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
     public class ConfiguratorEditingContext
     {

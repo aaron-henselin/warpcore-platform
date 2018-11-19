@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using Cms.Toolbox;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
@@ -15,7 +16,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl
     {
-        public const string ApiId = "WC/ConfiguratorTextBox";
+        public const string ApiId = "warpcore-formcontrol-textbox";
 
         private TextBox _tbx = new TextBox { CssClass = "form-control"};
 
