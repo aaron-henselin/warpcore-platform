@@ -6,9 +6,11 @@ using Cms.Toolbox;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = "WC/ConfiguratorHiddenField", FriendlyName = "Hidden", Category = "Form Controls")]
+    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
     public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl
     {
+        public const string ApiId = "warpcore-formcontrol-hiddenfield";
+
         private HiddenField _hiddenField = new HiddenField {  };
 
         [FormControlPropertiesDataSource]

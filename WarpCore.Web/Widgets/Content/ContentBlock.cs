@@ -6,9 +6,11 @@ using Cms.Toolbox;
 
 namespace WarpCore.Web.Widgets.Content
 {
-    [IncludeInToolbox(WidgetUid="WC/ContentBlock", FriendlyName = "Content Block", Category = "Content")]
+    [IncludeInToolbox(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control
     {
+        public const string ApiId = "warpcore-content-html";
+
         [Setting][DisplayName("Html")]
         public string AdHocHtml { get; set; }
 

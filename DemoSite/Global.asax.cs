@@ -18,6 +18,7 @@ using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Widgets;
+using WarpCore.Web.Widgets.Content;
 using WarpCore.Web.Widgets.FormBuilder;
 
 namespace DemoSite
@@ -162,6 +163,7 @@ namespace DemoSite
             twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
             form.FormContent.Add(twoColumn);
             
+
             var textboxPageContent =
                 factory.CreateToolboxItemContent(new ConfiguratorTextBox
                 {
@@ -464,7 +466,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             var row = new CmsPageContent
             {
                 Id = Guid.NewGuid(),
-                WidgetTypeCode = "WC/RowLayout",
+                WidgetTypeCode = RowLayout.ApiId,
                 PlacementContentPlaceHolderId = "Body",
                 Parameters = new Dictionary<string, string>
                 {
@@ -478,7 +480,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "0",
                 PlacementLayoutBuilderId = lbId,
-                WidgetTypeCode = "WC/ContentBlock",
+                WidgetTypeCode = ContentBlock.ApiId,
                 Parameters = new Dictionary<string, string> {["AdHocHtml"] = "Hello World (0)"}
             };
 
@@ -487,7 +489,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "1",
                 PlacementLayoutBuilderId = lbId,
-                WidgetTypeCode = "WC/ContentBlock",
+                WidgetTypeCode = ContentBlock.ApiId,
                 Parameters = new Dictionary<string, string> { ["AdHocHtml"] = "Hello World (1)" }
             };
 
