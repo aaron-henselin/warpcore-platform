@@ -26,8 +26,11 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
         public static void FillInControlValues(Control surface, IDictionary<string,string> newValues)
         {
-            foreach (var control in surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>())
+            var rt= surface.GetDescendantControls<RuntimeContentPlaceHolder>().First();
+            foreach (var control in rt.Controls.OfType<IConfiguratorControl>())
+            {
                 control.SetValue(newValues[control.PropertyName]);
+            }
         }
 
         public static Dictionary<string, string> ReadValuesFromControls(Control surface)

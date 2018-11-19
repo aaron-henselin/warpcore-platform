@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
@@ -97,6 +98,7 @@ namespace Cms.Toolbox
             IsReadWriteable(x) && IsValidDeclaringType(x);
 
         private static Func<PropertyInfo, bool> IsValidDeclaringType => x => x.DeclaringType != typeof(Control) &&
+                                                                        x.DeclaringType != typeof(WebControl) &&
                                                                         x.DeclaringType != typeof(WarpCoreEntity) &&
                                                                         x.DeclaringType != typeof(VersionedContentEntity) &&
                                                                         x.DeclaringType != typeof(UnversionedContentEntity);

@@ -7,6 +7,12 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.Content
 {
+    [CompositeConfiguratorType]
+    public class ComplexDemo
+    {
+        public string Test1 { get; set; }
+        public string Test2 { get; set; }
+    }
 
     [IncludeInToolbox(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control
@@ -15,6 +21,8 @@ namespace WarpCore.Web.Widgets.Content
 
         [Setting][DisplayName("Html")]
         public string AdHocHtml { get; set; }
+
+        //public ComplexDemo ComplexDemo { get; set; }
 
         protected override void OnInit(EventArgs e)
         {

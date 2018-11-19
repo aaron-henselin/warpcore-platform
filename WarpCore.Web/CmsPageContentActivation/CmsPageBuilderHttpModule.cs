@@ -13,7 +13,8 @@ namespace WarpCore.Web
 
 public interface ILayoutHandle
     {
-         string HandleName { get; set; }
+        string FriendlyName { get; set; }
+        string HandleName { get; set; }
          Guid PageContentId { get; set; }
     }
 

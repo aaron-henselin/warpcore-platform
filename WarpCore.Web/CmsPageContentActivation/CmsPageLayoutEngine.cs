@@ -104,7 +104,7 @@ namespace WarpCore.Web
             var uc = (ILayoutHandle)Activator.CreateInstance(ascx);
             uc.HandleName = toolboxItem.WidgetUid;
             uc.PageContentId = content.Id;
-
+            uc.FriendlyName = toolboxItem.FriendlyName;
             ph.Controls.Add((Control)uc);
         }
 

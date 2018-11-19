@@ -97,8 +97,8 @@
     }
 
     .wc-layout-handle h4{ 
-        font-size: 12px;    
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: Consolas,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
     }
     .wc-layout-handle span.configure {
         margin-left: 5px;

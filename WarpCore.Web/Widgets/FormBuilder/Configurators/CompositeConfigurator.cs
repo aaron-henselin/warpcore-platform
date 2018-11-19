@@ -31,7 +31,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
         {
             _surface = new PlaceHolder();
-            _surface.Controls.Add(new Label{Text=DisplayName});
+            _surface.Controls.Add(new Label{Text=DisplayName, CssClass = "form-label" });
+            _surface.Controls.Add(new RuntimeContentPlaceHolder{ PlaceHolderId = "FormBody" });
             this.Controls.Add(_surface);
 
             _readWriter = new CompositeFormReadWriter(CompositeType, _surface);
@@ -39,13 +40,14 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(CompositeType);
             CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent);
             CmsFormReadWriter.PopulateListControls(_surface, editingContext);
-            CmsFormReadWriter.FillInControlValues(_surface, editingContext);
+            //CmsFormReadWriter.FillInControlValues(_surface, editingContext);
         }
 
         public void SetConfiguration(SettingProperty settingProperty)
         {
             DisplayName = settingProperty.DisplayName;
             CompositeType = settingProperty.PropertyInfo.PropertyType;
+            PropertyName = settingProperty.PropertyInfo.Name;
         }
 
 
@@ -64,7 +66,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         {
             private readonly Type _compositeType;
             private readonly Control _surface;
-            JavaScriptSerializer _js = new JavaScriptSerializer();
+            readonly JavaScriptSerializer _js = new JavaScriptSerializer();
 
             public CompositeFormReadWriter(Type compositeType,Control surface)
             {
@@ -85,8 +87,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             public void SetValue(string newValue)
             {
-                var wrapper = _js.Deserialize<ConfigurationWrapper>(newValue);
-                CmsFormReadWriter.FillInControlValues(_surface, wrapper.SerializedConfiguration);
+                if (!string.IsNullOrWhiteSpace(newValue))
+                {
+                    var wrapper = _js.Deserialize<ConfigurationWrapper>(newValue);
+                    CmsFormReadWriter.FillInControlValues(_surface, wrapper.SerializedConfiguration);
+                }
+
             }
         }
 

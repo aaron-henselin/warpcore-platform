@@ -12,6 +12,7 @@ namespace DemoSite
     {
         public string HandleName { get; set; }
         public Guid PageContentId { get; set; }
+        public string FriendlyName { get; set; }
 
         protected override void OnPreRender(EventArgs e)
         {
