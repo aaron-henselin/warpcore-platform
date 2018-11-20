@@ -20,7 +20,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
 
         [FormControlPropertiesDataSource]
-        [Setting(SettingType = SettingType.OptionList)][DisplayName("Property")]
+        [UserInterfaceHint(Editor = Editor.OptionList)][DisplayName("Property")]
         public string PropertyName { get; set; }
 
         public void SetValue(string newValue)
@@ -33,15 +33,15 @@ namespace WarpCore.Web.Widgets.FormBuilder
             return _listControl.SelectedValue;
         }
 
-        [Setting][DisplayName("Display Name")]
+        [UserInterfaceHint][DisplayName("Display Name")]
         public string DisplayName { get; set; }
 
-        [Setting(SettingType = SettingType.CheckBox)][DisplayName("Required")]
+        [UserInterfaceHint(Editor = Editor.CheckBox)][DisplayName("Required")]
         public bool IsRequired { get; set; }
 
 
 
-        [Setting(SettingType = SettingType.OptionList)]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
         [RepositoryListControlSource]
         public string RepositoryUid { get; set; }
 

@@ -13,7 +13,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         private CheckBox _checkbox = new CheckBox { CssClass = "form-control" };
 
-        [Setting(SettingType = SettingType.OptionList)][FormControlPropertiesDataSource(typeof(bool))]
+        [UserInterfaceHint(Editor = Editor.OptionList)][FormControlPropertiesDataSource(typeof(bool))]
         public string PropertyName { get; set; }
 
         public void SetValue(string newValue)
@@ -39,7 +39,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             DisplayName = settingProperty.DisplayName;
         }
 
-        [Setting]
+        [UserInterfaceHint]
         public string DisplayName { get; set; }
 
         public bool Checked

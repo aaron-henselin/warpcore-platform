@@ -45,11 +45,10 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             foreach (var property in configuratorSettingProperties)
             {
                 CmsPageContent content = null;
-                var requiresCompositedConfiguration =
-                    property.PropertyInfo.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any();
-                if (requiresCompositedConfiguration)
+
+                if (false)
                 {
-                    content = CreateConfiguratorPageContent<CompositeConfigurator>(property);
+                   
                 }
                 else
                 {
@@ -62,16 +61,20 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                         var bestGuess = GetBestGuessForSettingType(property);
                         switch (bestGuess)
                         {
-                            case SettingType.RichText:
-                            case SettingType.Text:
+                            case Editor.SubForm:
+                                content = CreateConfiguratorPageContent<CompositeConfigurator>(property);
+                                break;
+
+                            case Editor.RichText:
+                            case Editor.Text:
                                 content = CreateConfiguratorPageContent<ConfiguratorTextBox>(property);
                                 break;
 
-                            case SettingType.OptionList:
+                            case Editor.OptionList:
                                 content = CreateConfiguratorPageContent<ConfiguratorDropDownList>(property);
                                 break;
 
-                            case SettingType.CheckBox:
+                            case Editor.CheckBox:
                                 content = CreateConfiguratorPageContent<ConfiguratorCheckBox>(property);
                                 break;
 
@@ -105,36 +108,45 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             return CreateConfiguratorPageContent(typeof(TConfiguratorType), property);
         }
 
-        private static SettingType GetBestGuessForSettingType(SettingProperty property)
+        private static Editor GetBestGuessForSettingType(SettingProperty property)
         {
-            SettingType? bestGuess = property.SettingType;
+            Editor? bestGuess = property.Editor;
             if (bestGuess == null)
             {
+                var requiresCompositedConfiguration =
+                    property.PropertyInfo.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any();
+                if (requiresCompositedConfiguration)
+                    return Editor.SubForm;
+
                 var isBoolean = property.PropertyInfo.PropertyType == typeof(bool);
                 if (isBoolean)
-                    bestGuess = SettingType.CheckBox;
+                    bestGuess = Editor.CheckBox;
 
-                var isInt = property.PropertyInfo.PropertyType == typeof(int);
+                var isString = property.PropertyInfo.PropertyType == typeof(string);
+                if (isString)
+                    bestGuess = Editor.Text;
+
+                var isInt = property.PropertyInfo.PropertyType == typeof(int) || property.PropertyInfo.PropertyType == typeof(int?);
                 if (isInt)
-                    bestGuess = SettingType.Text;
+                    bestGuess = Editor.Text;
 
-                var isDecimal = property.PropertyInfo.PropertyType == typeof(decimal);
+                var isDecimal = property.PropertyInfo.PropertyType == typeof(decimal) || property.PropertyInfo.PropertyType == typeof(decimal?);
                 if (isDecimal)
-                    bestGuess = SettingType.Text;
+                    bestGuess = Editor.Text;
 
                 var hasDataRelation = property.PropertyInfo.GetCustomAttributes<DataRelationAttribute>().Any();
                 if (hasDataRelation)
-                    bestGuess = SettingType.OptionList;
+                    bestGuess = Editor.OptionList;
 
                 var hasListControlSource = property.PropertyInfo.GetCustomAttributes().OfType<IListControlSource>().Any();
                 if (hasListControlSource)
-                    bestGuess = SettingType.OptionList;
+                    bestGuess = Editor.OptionList;
 
                 
 
             }
 
-            return bestGuess ?? SettingType.Text;
+            return bestGuess ?? Editor.SubForm;
         }
     }
 }

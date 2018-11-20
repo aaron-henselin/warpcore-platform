@@ -77,7 +77,7 @@ namespace Cms
         //        if (propertyInfo == null || !propertyInfo.CanWrite)
         //            continue;
 
-        //        var isSetting = propertyInfo.GetCustomAttribute<SettingAttribute>() != null;
+        //        var isSetting = propertyInfo.GetCustomAttribute<UserInterfaceHintAttribute>() != null;
         //        if (!isSetting)
         //            continue;
 

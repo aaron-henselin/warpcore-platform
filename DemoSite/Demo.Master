@@ -6,10 +6,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head runat="server">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Snipp - Free Bootstrap 4 Template by Colorlib</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+<%--    
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,700,800" rel="stylesheet">
 
     <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
@@ -31,13 +32,43 @@
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
           <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common.min.css"/>
-
+--%>
           <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
   </head>
   <body>
     <form runat="server">
-  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+        <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">DEMO</a>
+            
+
+      
+
+          <asp:ContentPlaceHolder ID="NavigationContentPlaceHolder" runat="server">
+          </asp:ContentPlaceHolder>
+
+      
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+          
+          <asp:ContentPlaceHolder ID="Body" runat="server">
+          </asp:ContentPlaceHolder>
+
+      </div>
+
+    </div><!-- /.container -->
+    <!-- reboot -->
+        
+
+<%--  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
       <a class="navbar-brand" href="index.html">Snipp.</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,126 +100,11 @@
     <div class="bg-light container">
         <asp:ContentPlaceHolder ID="Body" runat="server">
         </asp:ContentPlaceHolder>
-    <%--<section class="ftco-section-featured ftco-animate">
-      <div class="container-fluid" data-scrollax-parent="true">
-        <div class="row no-gutters d-flex align-items-center" data-scrollax=" properties: { translateY: '-30%'}">
 
-          <div class="col-md-3 mb-3">
-            <a href="#" class="featured-img">
-              <div class="text-1 p-4 d-flex align-items-center">
-                <h3>The Verge<br><span class="tag">Website</span></h3>
-              </div>
-              <img src="images/image_1.jpg" class="img-fluid" alt="">
-              <div class="text p-4 d-flex align-items-center">
-                <div class="user d-flex align-items-center">
-                  <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                  <h3>John Bruce <br><span class="position">Designer</span></h3>
-                </div>
-              </div>
-            </a>
-          </div>
-          
-          <div class="col-md-6">
-            <div class="row no-gutters">
-              <div class="col-md-12">
-                <div class="row no-gutters d-flex align-items-end">
-
-                  <div class="col-md-8">
-                    <a href="#" class="featured-img">
-                      <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Racks<br><span class="tag">Website</span></h3>
-                      </div>
-                      <img src="images/image_5.jpg" class="img-fluid" alt="">
-                      <div class="text p-4 d-flex align-items-center">
-                        <div class="user d-flex align-items-center">
-                          <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-
-                  <div class="col-md-4">
-                    <a href="#" class="featured-img">
-                      <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Zendesk<br><span class="tag">Website</span></h3>
-                      </div>
-                      <img src="images/image_4.jpg" class="img-fluid" alt="">
-                      <div class="text p-4 d-flex align-items-center">
-                        <div class="user d-flex align-items-center">
-                          <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                  
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <div class="row no-gutters d-flex align-items-start">
-                  <div class="col-md-8">
-                    <a href="#" class="featured-img">
-                      <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Curator<br><span class="tag">Website</span></h3>
-                      </div>
-                      <img src="images/image_6.jpg" class="img-fluid" alt="">
-                      <div class="text p-4 d-flex align-items-center">
-                        <div class="user d-flex align-items-center">
-                          <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                  <div class="col-md-4">
-                    <a href="#" class="featured-img">
-                      <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Tasty<br><span class="tag">Website</span></h3>
-                      </div>
-                      <img src="images/image_3.jpg" class="img-fluid" alt="">
-                      <div class="text p-4 d-flex align-items-center">
-                        <div class="user d-flex align-items-center">
-                          <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <a href="#" class="featured-img">
-              <div class="text-1 p-4 d-flex align-items-center">
-                <h3>Voyage<br><span class="tag">Website</span></h3>
-              </div>
-              <img src="images/image_2.jpg" class="img-fluid" alt="">
-              <div class="text p-4 d-flex align-items-center">
-                <div class="user d-flex align-items-center">
-                  <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                  <h3>John Bruce <br><span class="position">Designer</span></h3>
-                </div>
-              </div>
-            </a>
-          </div>
-
-        </div>
-        <div class="row mt-5 d-flex justify-content-center">
-          <div class="col-md-8 text-center heading-section ftco-animate">
-            <h2 class="h1">UI/UX, visual, <strong class="px-3">Web designer</strong> with more than 12 years of experience in designing websites and mobile apps.</h2>
-            <p><a href="#" class="btn btn-primary mt-3 py-3 px-5">Get in touch</a></p>
-          </div>
-        </div>
-      </div>
-    </section>--%>
-    </div>
+    </div>--%>
 
 
-  
+<%--  
     <section class="ftco-section">
       <div class="container">
         <div class="row justify-content-center mb-5 pb-5">
@@ -543,7 +459,8 @@
           </div>
         </div>
       </div>
-    </footer>
+    </footer>--%>
+
     </form>
   
 
@@ -551,7 +468,7 @@
 <%--  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>--%>
 
 
-  <script src="js/jquery.min.js"></script>
+<%--  <script src="js/jquery.min.js"></script>
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
@@ -569,7 +486,9 @@
   <script src="js/scrollax.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
-  <script src="js/main.js"></script>
-    
+  <script src="js/main.js"></script>--%>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>

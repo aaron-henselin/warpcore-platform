@@ -25,24 +25,24 @@ namespace WarpCore.Web.Widgets.FormBuilder
         /// when a value is submitted by an end user.
         /// </summary>
         [FormControlPropertiesDataSource(typeof(string),typeof(int),typeof(decimal))]
-        [Setting(SettingType = SettingType.OptionList)][DisplayName("Property name")]
+        [UserInterfaceHint(Editor = Editor.OptionList)][DisplayName("Property name")]
         public string PropertyName { get; set; }
 
         [DisplayName("TextBox Type")]
-        [Setting(SettingType = SettingType.OptionList)]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
         [TextBoxModesDataSource]
         public string TextBoxMode { get; set; }
 
         /// <summary>
         /// Sets a custom label for the textbox when presented to the end user.
         /// </summary>
-        [Setting][DisplayName("Display name")]
+        [UserInterfaceHint][DisplayName("Display name")]
         public string DisplayName { get; set; }
 
         /// <summary>
         /// Determines whether or not entry of the textbox must be supplied by an end user.
         /// </summary>
-        [Setting(SettingType = SettingType.CheckBox)]
+        [UserInterfaceHint(Editor = Editor.CheckBox)]
         [DisplayName("Required")]
         public bool IsRequired { get; set; }
 
@@ -57,7 +57,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             if (new[] { typeof(DateTime) }.Contains(settingProperty.PropertyInfo.PropertyType))
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.DateTime.ToString();
 
-            if (SettingType.RichText == settingProperty.SettingType)
+            if (Editor.RichText == settingProperty.Editor)
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.MultiLine.ToString();
         }
 

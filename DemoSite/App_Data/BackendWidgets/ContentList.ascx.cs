@@ -45,11 +45,11 @@ namespace DemoSite
 
     public partial class ContentList : System.Web.UI.UserControl
     {
-        [Setting(SettingType = SettingType.OptionList)]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
         [DataRelation(RepositoryMetadataManager.ApiId)]
         public Guid RepositoryId { get; set; }
 
-        [Setting]
+        [UserInterfaceHint]
         public ContentListConfiguration Config { get; set; }
 
         //private ContentListControlState _controlState = new ContentListControlState();

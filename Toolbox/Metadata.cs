@@ -23,17 +23,19 @@ namespace Cms.Toolbox
         public string Value { get; set; }
     }
 
-    public enum SettingType { Text,RichText,OptionList, CheckBox}
+    public enum Editor { Text,RichText,OptionList, CheckBox,
+        SubForm
+    }
 
-    public class DesignIgnoreAttribute : Attribute
+    public class UserInterfaceIgnoreAttribute : Attribute
     {
     }
 
-    public class SettingAttribute : Attribute
+    public class UserInterfaceHintAttribute : Attribute
     {
-        public SettingType SettingType { get; set; }
+        public Editor Editor { get; set; }
 
-        public Type ConfiguratorType { get; set; }
+        public Type CustomEditorType { get; set; }
         
     }
 
@@ -41,8 +43,9 @@ namespace Cms.Toolbox
     {
         public PropertyInfo PropertyInfo { get; set; }
         public string DisplayName { get; set; }
-        public SettingType? SettingType { get; set; }
+        public Editor? Editor { get; set; }
         public Type ConfiguratorType { get; set; }
+
     }
 
     public class IncludeInToolboxAttribute : Attribute
@@ -89,9 +92,9 @@ namespace Cms.Toolbox
 
     public static class ToolboxPropertyFilter
     {
-        //x.HasAttribute<SettingAttribute>()
+        //x.HasAttribute<UserInterfaceHintAttribute>()
         public static Func<PropertyInfo, bool> SupportsDesigner => x =>
-            !x.HasAttribute<DesignIgnoreAttribute>()
+            !x.HasAttribute<UserInterfaceIgnoreAttribute>()
             && SupportsOrm(x);
 
         public static Func<PropertyInfo, bool> SupportsOrm => x =>
@@ -131,14 +134,14 @@ namespace Cms.Toolbox
                 if (!include)
                     continue;
 
-                var settingInfo = property.GetCustomAttributes().OfType<SettingAttribute>().FirstOrDefault();
+                var settingInfo = property.GetCustomAttributes().OfType<UserInterfaceHintAttribute>().FirstOrDefault();
                 var displayNameDefinition = (DisplayNameAttribute)property.GetCustomAttribute(typeof(DisplayNameAttribute));
                 properties.Add(new SettingProperty
                 {
                     PropertyInfo = property,
                     DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
-                    ConfiguratorType = settingInfo?.ConfiguratorType,
-                    SettingType = settingInfo?.SettingType
+                    ConfiguratorType = settingInfo?.CustomEditorType,
+                    Editor = settingInfo?.Editor
                 });
             }
 

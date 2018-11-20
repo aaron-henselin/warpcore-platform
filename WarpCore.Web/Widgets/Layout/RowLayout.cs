@@ -11,7 +11,7 @@ namespace WarpCore.Web.Widgets
     {
         public const string ApiId = "WC/RowLayout";
 
-        [Setting][DisplayName("Number of Columns")]
+        [UserInterfaceHint][DisplayName("Number of Columns")]
         public int NumColumns { get; set; } = 1;
 
         public override void InitializeLayout()

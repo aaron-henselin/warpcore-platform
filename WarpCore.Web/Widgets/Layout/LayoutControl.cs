@@ -8,7 +8,7 @@ namespace WarpCore.Web.Widgets
     {
         public abstract void InitializeLayout();
 
-        [DesignIgnore]
+        [UserInterfaceIgnore]
         public Guid LayoutBuilderId { get; set; }
     }
 }

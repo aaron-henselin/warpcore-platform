@@ -23,7 +23,7 @@ namespace DemoSite
     {
         private CmsForm _cmsForm;
 
-        [Setting]
+        [UserInterfaceHint]
         public Guid FormId { get; set; }
         
         private IVersionedContentRepositoryBase _repo;

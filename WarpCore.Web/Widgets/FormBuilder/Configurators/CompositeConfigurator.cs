@@ -15,9 +15,10 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
         [CompositeOnlyPropertiesDataSource]
         public string PropertyName { get; set; }
+
+        [UserInterfaceHint(Editor = Editor.Text)]
         public Type CompositeType { get; set; }
         public string DisplayName { get; set; }
-
 
         private class ConfigurationWrapper
         {
