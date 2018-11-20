@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
@@ -22,7 +23,11 @@ namespace Cms.Toolbox
         public string Value { get; set; }
     }
 
-    public enum SettingType { Text,OptionList, CheckBox}
+    public enum SettingType { Text,RichText,OptionList, CheckBox}
+
+    public class DesignIgnoreAttribute : Attribute
+    {
+    }
 
     public class SettingAttribute : Attribute
     {
@@ -84,11 +89,21 @@ namespace Cms.Toolbox
 
     public static class ToolboxPropertyFilter
     {
-        public static Func<PropertyInfo, bool> IsSettingProperty => x => x.HasAttribute<SettingAttribute>() && IsNotIgnoredType(x);
-        public static Func<PropertyInfo, bool> IsNotIgnoredType => x => x.DeclaringType != typeof(Control) &&
+        //x.HasAttribute<SettingAttribute>()
+        public static Func<PropertyInfo, bool> SupportsDesigner => x =>
+            !x.HasAttribute<DesignIgnoreAttribute>()
+            && SupportsOrm(x);
+
+        public static Func<PropertyInfo, bool> SupportsOrm => x =>
+            IsReadWriteable(x) && IsValidDeclaringType(x);
+
+        private static Func<PropertyInfo, bool> IsValidDeclaringType => x => x.DeclaringType != typeof(Control) &&
+                                                                        x.DeclaringType != typeof(WebControl) &&
                                                                         x.DeclaringType != typeof(WarpCoreEntity) &&
                                                                         x.DeclaringType != typeof(VersionedContentEntity) &&
                                                                         x.DeclaringType != typeof(UnversionedContentEntity);
+
+        private static Func<PropertyInfo, bool> IsReadWriteable => x => x.CanRead && x.CanWrite;
 
     }
 

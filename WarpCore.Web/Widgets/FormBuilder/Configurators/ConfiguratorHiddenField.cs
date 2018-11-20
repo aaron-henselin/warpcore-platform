@@ -3,8 +3,9 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
-namespace WarpCore.Web.Widgets.FormBuilder
+namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 {
     [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
     public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl

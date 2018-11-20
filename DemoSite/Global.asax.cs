@@ -20,6 +20,8 @@ using WarpCore.Web;
 using WarpCore.Web.Widgets;
 using WarpCore.Web.Widgets.Content;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Configurators;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
@@ -349,7 +351,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                 },
                 
             };
-            var parameters= (Dictionary<string,string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
+            var parameters= (Dictionary<string,string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
 
             dynamicListTest.PageContent.Add(new CmsPageContent
@@ -393,7 +395,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                     AddPage = KnownPageIds.FormDesigner
                 }
             };
-            var formListParameters = (Dictionary<string, string>)formList.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
+            var formListParameters = (Dictionary<string, string>)formList.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             formsList.PageContent.Add(new CmsPageContent
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using WarpCore.Platform.Kernel;
 
-namespace WarpCore.Web.Widgets.FormBuilder
+namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
     public static class IDictionaryExtensions
     {

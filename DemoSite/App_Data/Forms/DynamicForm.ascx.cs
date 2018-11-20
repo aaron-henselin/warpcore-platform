@@ -13,6 +13,7 @@ using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
@@ -47,12 +48,12 @@ namespace DemoSite
 
 
             var draft = GetDraft();
-            var d = draft.GetPropertyValues(ToolboxPropertyFilter.IsNotIgnoredType);
+            var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
 
             var configuratorEditingContext = new ConfiguratorEditingContext
             {
                 ClrType = draft.GetType(),
-                PropertyFilter = ToolboxPropertyFilter.IsNotIgnoredType,
+                PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
                 CurrentValues = d,
             };
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);

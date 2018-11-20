@@ -17,99 +17,12 @@ using WarpCore.Platform.Kernel;
 using WarpCore.Web;
 using WarpCore.Web.Widgets;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Configurators;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
 
-    public class ConfiguratorFormBuilder
-    {
-        public const string RuntimePlaceHolderId = "FormBody";
-
-        private static Guid ToGuid(int value)
-        {
-            byte[] bytes = new byte[16];
-            BitConverter.GetBytes(value).CopyTo(bytes, 0);
-            return new Guid(bytes);
-        }
-
-        public static CmsForm GenerateDefaultFormForWidget(ToolboxItem toolboxItem)
-        {
-            var cmsForm = new CmsForm();
-
-            var factory = new CmsPageContentFactory();
-            var rowLayout = factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1});
-            rowLayout.Id = ToGuid(1);
-            rowLayout.PlacementContentPlaceHolderId = RuntimePlaceHolderId;
-            cmsForm.FormContent.Add(rowLayout);
-           
-            var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
-            var defaults = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
-            var configuratorSettingProperties = ToolboxMetadataReader.ReadProperties(clrType,ToolboxPropertyFilter.IsSettingProperty);
-
-            foreach (var property in configuratorSettingProperties)
-            {
-                CmsPageContent content = null;
-                if (property.ConfiguratorType != null)
-                {
-                    content = CreateConfiguratorPageContent(property.ConfiguratorType,property);
-                }
-                else
-                {
-                    var bestGuess = GetBestGuessForSettingType(property);
-                    switch (bestGuess)
-                    {
-                        case SettingType.Text:
-                            content = CreateConfiguratorPageContent<ConfiguratorTextBox>(property);
-                            break;
-
-                        case SettingType.OptionList:
-                            content = CreateConfiguratorPageContent<ConfiguratorDropDownList>(property);
-                            break;
-
-                        case SettingType.CheckBox:
-                            content = CreateConfiguratorPageContent<ConfiguratorCheckBox>(property);
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-
-                content.PlacementLayoutBuilderId = rowLayout.Id;
-                rowLayout.AllContent.Add(content);
-            }
-
-            return cmsForm;
-        }
-
-        private static CmsPageContent CreateConfiguratorPageContent(Type type, SettingProperty property)
-        {
-            IConfiguratorControl dropdownList = (IConfiguratorControl)Activator.CreateInstance(type);
-            dropdownList.SetConfiguration(property);
-
-            CmsPageContentFactory factory = new CmsPageContentFactory();
-            var createdPageContent = factory.CreateToolboxItemContent((Control)dropdownList);
-            return createdPageContent;
-        }
-
-        private static CmsPageContent CreateConfiguratorPageContent<TConfiguratorType>(SettingProperty property) where TConfiguratorType : IConfiguratorControl
-        {
-            return CreateConfiguratorPageContent(typeof(TConfiguratorType), property);
-        }
-
-        private static SettingType GetBestGuessForSettingType(SettingProperty property)
-        {
-            SettingType? bestGuess = property.SettingType;
-            if (bestGuess == null)
-            {
-                var isBoolean = property.PropertyInfo.PropertyType == typeof(bool);
-                if (isBoolean)
-                    bestGuess = SettingType.CheckBox;
-            }
-
-            return bestGuess ?? SettingType.Text;
-        }
-    }
 
     public class ConfiguratorContext
     {
@@ -174,7 +87,7 @@ namespace DemoSite
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
 
             var activatedControl = CmsPageContentActivator.ActivateControl(toolboxItem,_contentToEdit.Parameters);
-            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.IsSettingProperty);
+            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
@@ -182,7 +95,7 @@ namespace DemoSite
             var configuratorEditingContext = new ConfiguratorEditingContext
             {
                 ClrType = activatedControl.GetType(),
-                PropertyFilter = ToolboxPropertyFilter.IsSettingProperty,
+                PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
                 CurrentValues = parametersAfterActivation,
                 ParentEditingContext = new EditingContextManager().GetEditingContext()
             };

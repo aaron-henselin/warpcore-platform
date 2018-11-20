@@ -6,6 +6,7 @@
     <a:AscxPlaceHolder UserControlId="Toolbox.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/summernote/summernote.css"/>
 
 <script>
     var warpcore = {};
@@ -15,6 +16,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
 <script src="/Scripts/jquery.slidereveal.min.js"></script>
+<script src="/assets/summernote/summernote.min.js"></script>
+
 <script>
 
     warpcore.jQuery = jQuery.noConflict();
@@ -33,7 +36,9 @@
          cursor: move;
          padding: 5px;
      }
+     
     .wc-configurator{ color: #fff; background-color: #fff;}
+    .wc-configurator-surface{ padding: 10px;}
     .wc-configurator .surface{ color: #000; background-color: #fff;}
     .wc-configurator .form-label{ color: #000000; font-weight:bold;}
 
@@ -95,8 +100,8 @@
     }
 
     .wc-layout-handle h4{ 
-        font-size: 12px;    
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: Consolas,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
     }
     .wc-layout-handle span.configure {
         margin-left: 5px;
@@ -173,75 +178,31 @@
     
     warpcore.page.edit = function () {
 
+        var $ = warpcore.jQuery;
+
+        $('.rte').each(function() {
+            var exists = $(this).data("wc-summernote");
+            if (exists)
+                return;
+
+            $(this).summernote();
+        });
+
         if (window.once === true)
             return;
 
         window.once = true;
 
-        var $ = warpcore.jQuery;
+
 
         //$("body > *").wrapAll("<wc-page-preview/>");
 
 
         $(".configurator-cancel").click(function() {});
-        //$(".configurator-save").click(function() {
-
-        //    //getElementById("WC_EDITING_CONTEXT_JSON").value =
-        //    //    embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value;
-
-        //    //$("#WC_EDITING_SUBMIT").click();
-
-        //    var currentContext = JSON.parse($("#WC_CONFIGURATOR_CONTEXT_JSON").val());
-        //    var newConfiguration = currentContext.NewConfiguration;
-
-        //    var applyConfiguration = JSON.stringify({
-        //        NewConfiguration: newConfiguration,
-        //        PageContentId: currentContext.PageContentId
-        //    });
-
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "/wc-api/pagedesigner/ApplyConfiguration",
-        //        // The key needs to match your method's input parameter (case-sensitive).
-        //        data: applyConfiguration,
-        //        contentType: "application/json; charset=utf-8",
-        //        dataType: "json",
-        //        success: function(data) {
-
-        //            var str = JSON.stringify(data);
-        //            $("#WC_EDITING_CONTEXT_JSON").val(str);
-        //            $("#WC_EDITING_SUBMIT").click();
-
-        //        },
-        //        failure: function(errMsg) {
-        //            alert(errMsg);
-        //        }
-        //    });
-
-        //});
-
         
-        //embed.onload = function() {
-
-        //    var editingContextJson = document.getElementById("WC_EDITING_CONTEXT_JSON").value;
-        //    if (!embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value) {
-        //        embed.contentDocument.getElementById("WC_EDITING_CONTEXT_JSON").value = editingContextJson;
-        //        embed.contentDocument.getElementById("form1").submit();
-        //    }
-
-        //};
-        //$embed.load(function() {
-
-            
-
-        //    
-        //        = 
-
-        //});
 
 
-
-        $('.wc-configurator').slideReveal({ overlay: true, speed: 0, position: "right", push: false, width: "450px"});
+        $('.wc-configurator').slideReveal({ overlay: true, speed: 0, position: "right", push: false, width: "550px"});
         $("[data-wc-editing-command-configure]").click(function() {
             var configureContentId = $(this).data("wc-editing-command-configure");
             var configureContentType = $(this).data("wc-widget-type");

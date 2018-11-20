@@ -14,7 +14,7 @@
                  data-wc-editing-command-delete="<%# PageContentId %>">
             </span>
             
-            <%# HandleName %>
+            <%# FriendlyName %>
         </h4>
         <div class="DragHandle"></div>
         <div class="Pattern Pattern--typeHalftone"></div>

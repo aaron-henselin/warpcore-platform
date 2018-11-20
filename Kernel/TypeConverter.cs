@@ -18,36 +18,40 @@ namespace WarpCore.Platform.Kernel
 
         public static object ChangeType(object value, Type type)
         {
-            if (value == null && type.IsGenericType) return Activator.CreateInstance(type);
+            if (value == null && convertToType.IsGenericType) return Activator.CreateInstance(convertToType);
             if (value == null) return null;
-            if (type == value.GetType()) return value;
-            if (type.IsEnum)
+            if (convertToType == value.GetType()) return value;
+            if (convertToType.IsEnum)
             {
                 if (value is string)
-                    return Enum.Parse(type, value as string);
+                    return Enum.Parse(convertToType, value as string);
                 else
-                    return Enum.ToObject(type, value);
+                    return Enum.ToObject(convertToType, value);
             }
-            if (!type.IsInterface && type.IsGenericType)
+            if (!convertToType.IsInterface && convertToType.IsGenericType)
             {
-                Type innerType = type.GetGenericArguments()[0];
+                Type innerType = convertToType.GetGenericArguments()[0];
                 object innerValue = ChangeType(value, innerType);
-                return Activator.CreateInstance(type, new object[] { innerValue });
+                return Activator.CreateInstance(convertToType, new object[] { innerValue });
             }
-            if (value is string && type == typeof(Guid)) return new Guid(value as string);
-            if (value is string && type == typeof(Version)) return new Version(value as string);
+            if (value is string && convertToType == typeof(Guid)) return new Guid(value as string);
+            if (value is string && convertToType == typeof(Version)) return new Version(value as string);
+            if (value is string && convertToType == typeof(Type)) return Type.GetType(value as string);
 
-            if (value is string && typeof(ISupportsJsonTypeConverter).IsAssignableFrom(type))
-                return new JavaScriptSerializer().Deserialize((string)value,type);
+            if (value is Type && convertToType == typeof(string)) return ((Type) value).AssemblyQualifiedName;
 
-            if (value is ISupportsJsonTypeConverter && type == typeof(string))
+
+            if (value is string && typeof(ISupportsJsonTypeConverter).IsAssignableFrom(convertToType))
+                return new JavaScriptSerializer().Deserialize((string)value,convertToType);
+
+            if (value is ISupportsJsonTypeConverter && convertToType == typeof(string))
                 return new JavaScriptSerializer().Serialize(value);
 
-            if (type == typeof(string))
+            if (convertToType == typeof(string))
                 return value?.ToString();
 
             if (!(value is IConvertible)) return value;
-            return Convert.ChangeType(value, type);
+            return Convert.ChangeType(value, convertToType);
         }
     }
 }

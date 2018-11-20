@@ -1,6 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Configurator.ascx.cs" Inherits="DemoSite.Configurator1" %>
 <%@ Import Namespace="DemoSite" %>
+<%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder" %>
+<%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder.Configurators" %>
+<%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder.Support" %>
 <%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
+
 
 <div class="designer wc-configurator">
     <asp:UpdatePanel runat="server" ID="ConfiguratorSideBar">
@@ -30,7 +34,7 @@
                 <asp:Button runat="server" ID="ConfiguratorInitButton" OnClick="ConfiguratorInitButton_OnClick" Text="Refresh" CssClass="wc-configurator-init-button"/>
             </wc-configurator-data>
         
-            <asp:Panel runat="server" ID="surface">
+            <asp:Panel runat="server" ID="surface" CssClass="wc-configurator-surface">
                 <a:RuntimeContentPlaceHolder 
                     ID="ConfiguratorFormBuilderRuntimePlaceHolder"
                     PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" 
