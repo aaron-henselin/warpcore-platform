@@ -10,7 +10,13 @@ namespace WarpCore.Platform.Kernel
 
     public static class ExtensibleTypeConverter
     {
-        public static object ChangeType(object value, Type convertToType)
+
+        public static TChangeType ChangeType<TChangeType>(object value)
+        {
+            return (TChangeType)ChangeType(value, typeof(TChangeType));
+        }
+
+        public static object ChangeType(object value, Type type)
         {
             if (value == null && convertToType.IsGenericType) return Activator.CreateInstance(convertToType);
             if (value == null) return null;
