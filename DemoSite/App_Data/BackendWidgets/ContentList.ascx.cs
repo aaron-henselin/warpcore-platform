@@ -16,6 +16,7 @@ using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder;
+using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
@@ -111,7 +112,7 @@ namespace DemoSite
         {
             var currentRepositoryValue = editingContext.CurrentValues.Get<Guid>(nameof(ContentList.RepositoryId));
             var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
-            _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.IsNotIgnoredType);
+            _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.SupportsOrm);
 
             
 
@@ -181,7 +182,7 @@ namespace DemoSite
 
         public string GetValue()
         {
-
+            throw new NotImplementedException();
         }
 
     }

@@ -16,7 +16,7 @@ namespace WarpCore.Platform.Kernel
             return (TChangeType)ChangeType(value, typeof(TChangeType));
         }
 
-        public static object ChangeType(object value, Type type)
+        public static object ChangeType(object value, Type convertToType)
         {
             if (value == null && convertToType.IsGenericType) return Activator.CreateInstance(convertToType);
             if (value == null) return null;
