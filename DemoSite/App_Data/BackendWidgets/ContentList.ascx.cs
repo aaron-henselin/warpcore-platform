@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -14,6 +15,7 @@ using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Extensions;
+using WarpCore.Web.Widgets.FormBuilder;
 
 namespace DemoSite
 {
@@ -42,6 +44,147 @@ namespace DemoSite
         public IDictionary<string, string> Values { get; set; }
     }
 
+    public class ContentListConfiguratorSubForm : PlaceHolder
+    {
+        private Label _headerLabel;
+        private Label _templateLabel;
+        private Button _saveButton;
+
+        public event EventHandler Saved;
+        public string HeaderText { get; set; }
+        public string TemplateText { get; set; }
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+
+            _headerLabel = new Label{Text = "Header"};
+            this.Controls.Add(_headerLabel);
+            this.Controls.Add(new TextBox());
+
+            _templateLabel = new Label{Text="Template"};
+            this.Controls.Add(_templateLabel);
+            this.Controls.Add(new TextBox());
+
+            _saveButton = new Button { Text = "Save" };
+            _saveButton.Click += OnSave;
+            this.Controls.Add(_saveButton);
+
+        }
+
+        private void OnSave(object sender, EventArgs e)
+        {
+            Saved?.Invoke(sender,e);
+        }
+    }
+
+    public class ContentListConfigurator : PlaceHolder, IConfiguratorControl
+    {
+        private IReadOnlyCollection<SettingProperty> _allProperties;
+
+        private ContentListConfiguratorSubForm _subForm;
+        private ContentListConfiguration _config;
+
+        private HiddenField _editingField;
+        private PlaceHolder _existingFieldsPlaceHolder;
+        private PlaceHolder _subFormPlaceHolder;
+        private Button _addButton;
+
+        public string PropertyName { get; set; }
+
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+
+            _existingFieldsPlaceHolder = new PlaceHolder();
+            this.Controls.Add(_existingFieldsPlaceHolder);
+
+            _subFormPlaceHolder = new PlaceHolder();
+            this.Controls.Add(_subFormPlaceHolder);
+
+            _editingField = new HiddenField();
+            this.Controls.Add(_editingField);
+        }
+
+        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        {
+            var currentRepositoryValue = editingContext.CurrentValues.Get<Guid>(nameof(ContentList.RepositoryId));
+            var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
+            _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.IsNotIgnoredType);
+
+            
+
+        }
+
+        private void SetupEditForm()
+        {
+            _subFormPlaceHolder.Controls.Clear();
+
+            var isEditing = !string.IsNullOrEmpty(_editingField.Value);
+            if (isEditing)
+            {
+                var subForm = new ContentListConfiguratorSubForm();
+                _subFormPlaceHolder.Controls.Add(subForm);
+
+                if ("Add" != _editingField.Value)
+                {
+                    var editNum = Convert.ToInt32(_editingField.Value);
+                    var field = _config.Fields[editNum];
+
+                    subForm.HeaderText = field.Header;
+                    subForm.TemplateText = field.Template;
+                }
+
+            }
+
+            _addButton.Visible = !isEditing;
+        }
+
+        public override void DataBind()
+        {
+            base.DataBind();
+
+            _existingFieldsPlaceHolder.Controls.Clear();
+
+            for (var index = 0; index < _config.Fields.Count; index++)
+            {
+                var field = _config.Fields[index];
+                var readonlyLabel = new Label {Text = field.Header};
+                _existingFieldsPlaceHolder.Controls.Add(readonlyLabel);
+
+                var editButton = new Button {Text = "Edit", CommandArgument = index.ToString()};
+                _existingFieldsPlaceHolder.Controls.Add(editButton);
+            }
+
+            _addButton = new Button {Text = "Add", CommandArgument = "Add"};
+            _addButton.Click += (sender, args) =>
+            {
+                _editingField.Value = ((Button) sender).CommandArgument; 
+                SetupEditForm();
+            };
+            this.Controls.Add(_addButton);
+            SetupEditForm();
+            
+        }
+
+        public void SetConfiguration(SettingProperty settingProperty)
+        {
+
+        }
+
+        public void SetValue(string newValue)
+        {
+            _config = ExtensibleTypeConverter.ChangeType<ContentListConfiguration>(newValue);
+           
+        }
+
+        public string GetValue()
+        {
+
+        }
+
+    }
 
     public partial class ContentList : System.Web.UI.UserControl
     {
