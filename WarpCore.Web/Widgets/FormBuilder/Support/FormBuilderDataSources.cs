@@ -6,6 +6,7 @@ using System.Reflection;
 using Cms.Toolbox;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
+using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
 
@@ -20,6 +21,20 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
     }
 
+    public interface IUserInterfaceBehavior
+    {
+        void RegisterBehavior(IConfiguratorControl control, ConfiguratorEditingContext editingContext);
+    }
+
+    public interface ILabeledConfiguratorControl : IConfiguratorControl
+    {
+        string DisplayName { get; }
+    }
+
+    public class ConfiguratorBehaviorCollection : List<string>, ISupportsJsonTypeConverter
+    {
+    }
+
     public interface IConfiguratorControl
     {
         void InitializeEditingContext(ConfiguratorEditingContext editingContext);
@@ -27,8 +42,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         void SetValue(string newValue);
         string GetValue();
         void SetConfiguration(SettingProperty settingProperty);
+        ConfiguratorBehaviorCollection Behaviors { get; }
     }
-    
 
 
     public class RepositoryListControlSourceAttribute : Attribute, IListControlSource
@@ -57,15 +72,20 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
     public class ConfiguratorEditingContextHelper
     {
-        public static List<PropertyInfo> PropertiesFilered(ConfiguratorEditingContext editingContext)
+        public static Type GetClrType(EditingContext editingContext)
         {
             var repoManager = new RepositoryMetadataManager();
             var repoMetadata =
-                repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.ParentEditingContext.DesignContentTypeId);
+                repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.DesignContentTypeId);
             var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
             var repo = (IContentRepository)Activator.CreateInstance(repoType);
-            var t = repo.New().GetType();
+            return repo.New().GetType();
+            
+        }
 
+        public static List<PropertyInfo> PropertiesFilered(ConfiguratorEditingContext editingContext)
+        {
+            var t = GetClrType(editingContext.ParentEditingContext);
             var propertiesFilered =
                 t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
                     .ToList();

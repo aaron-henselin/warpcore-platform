@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
@@ -7,7 +9,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 namespace WarpCore.Web.Widgets.FormBuilder
 {
     [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "CheckBox", Category = "Form Controls")]
-    public class ConfiguratorCheckBox : PlaceHolder, INamingContainer, IConfiguratorControl
+    public class ConfiguratorCheckBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-checkBox";
 
@@ -18,14 +20,11 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         public void SetValue(string newValue)
         {
-
-             
-
-                bool outValue;
-                var success = Boolean.TryParse(newValue, out outValue);
-                if (success)
-                    _checkbox.Checked = outValue;
-            
+            bool outValue;
+            var success = Boolean.TryParse(newValue, out outValue);
+            if (success)
+                _checkbox.Checked = outValue;
+        
         }
 
         public string GetValue()
@@ -37,10 +36,14 @@ namespace WarpCore.Web.Widgets.FormBuilder
         {
             PropertyName = settingProperty.PropertyInfo.Name;
             DisplayName = settingProperty.DisplayName;
+            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
         }
 
         [UserInterfaceHint]
         public string DisplayName { get; set; }
+
+        [UserInterfaceHint(Editor = Editor.Hidden)]
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
         public bool Checked
         {

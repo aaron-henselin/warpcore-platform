@@ -24,11 +24,33 @@ namespace Cms.Toolbox
     }
 
     public enum Editor { Text,RichText,OptionList, CheckBox,
-        SubForm
+        SubForm,Hidden
     }
 
     public class UserInterfaceIgnoreAttribute : Attribute
     {
+    }
+
+    public class DependsOnPropertyAttribute : Attribute
+    {
+        public string PropertyName { get; }
+
+        public DependsOnPropertyAttribute(string propertyName)
+        {
+            PropertyName = propertyName;
+        }
+    }
+
+
+
+    public class UserInterfaceBehaviorAttribute : Attribute
+    {
+        public Type BehaviorType { get; }
+
+        public UserInterfaceBehaviorAttribute(Type behaviorType)
+        {
+            BehaviorType = behaviorType;
+        }
     }
 
     public class UserInterfaceHintAttribute : Attribute
@@ -45,7 +67,7 @@ namespace Cms.Toolbox
         public string DisplayName { get; set; }
         public Editor? Editor { get; set; }
         public Type ConfiguratorType { get; set; }
-
+        public List<Type> Behaviors { get; set; }
     }
 
     public class IncludeInToolboxAttribute : Attribute
@@ -134,20 +156,35 @@ namespace Cms.Toolbox
                 if (!include)
                     continue;
 
-                var settingInfo = property.GetCustomAttributes().OfType<UserInterfaceHintAttribute>().FirstOrDefault();
-                var displayNameDefinition = (DisplayNameAttribute)property.GetCustomAttribute(typeof(DisplayNameAttribute));
-                properties.Add(new SettingProperty
-                {
-                    PropertyInfo = property,
-                    DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
-                    ConfiguratorType = settingInfo?.CustomEditorType,
-                    Editor = settingInfo?.Editor
-                });
+                var propInfo = GetPropertyMetadata(property);
+
+                properties.Add(propInfo);
             }
 
             return properties;
         }
 
+        public static SettingProperty GetPropertyMetadata(Type type, string name)
+        {
+            return ReadProperties(type, x => x.Name == name).Single();
+        }
+
+        public static SettingProperty GetPropertyMetadata(PropertyInfo property)
+        {
+            var settingInfo = property.GetCustomAttributes().OfType<UserInterfaceHintAttribute>().FirstOrDefault();
+            var displayNameDefinition = (DisplayNameAttribute) property.GetCustomAttribute(typeof(DisplayNameAttribute));
+            var behaviors = property.GetCustomAttributes().OfType<UserInterfaceBehaviorAttribute>();
+
+            var propInfo = new SettingProperty
+            {
+                PropertyInfo = property,
+                DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
+                ConfiguratorType = settingInfo?.CustomEditorType,
+                Editor = settingInfo?.Editor,
+                Behaviors = behaviors.Select(x=> x.BehaviorType).ToList()
+            };
+            return propInfo;
+        }
     }
 
 }

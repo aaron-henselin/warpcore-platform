@@ -8,13 +8,39 @@ using System.Web.UI.WebControls;
 using Cms.Toolbox;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.Orm;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
+    public class ResetDisplayNameWhenPropertyChanged : IUserInterfaceBehavior
+    {
+        private ILabeledConfiguratorControl _control;
+        private Type _clrType;
+
+        public void RegisterBehavior(IConfiguratorControl control, ConfiguratorEditingContext editingContext)
+        {
+            _control = (ILabeledConfiguratorControl)control;
+            editingContext.Events.ValueChanged += EventsOnValueChanged;
+
+            _clrType = ConfiguratorEditingContextHelper.GetClrType(editingContext.ParentEditingContext);
+        }
+
+        private void EventsOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            var wasPropertyNameChanged = nameof(IConfiguratorControl.PropertyName) == e.PropertyName;
+            if (!wasPropertyNameChanged)
+                return;
+
+            var propertyMetadata =
+            ToolboxMetadataReader.GetPropertyMetadata(_clrType,e.NewValue);
+
+            _control.SetValue(propertyMetadata.DisplayName);
+        }
+    }
 
     [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
-    public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl
+    public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-textbox";
 
@@ -37,7 +63,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
         /// Sets a custom label for the textbox when presented to the end user.
         /// </summary>
         [UserInterfaceHint][DisplayName("Display name")]
+        [UserInterfaceBehavior(typeof(ResetDisplayNameWhenPropertyChanged))]
         public string DisplayName { get; set; }
+
+
+        [UserInterfaceHint(Editor = Editor.Hidden)]
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
         /// <summary>
         /// Determines whether or not entry of the textbox must be supplied by an end user.
@@ -51,14 +82,16 @@ namespace WarpCore.Web.Widgets.FormBuilder
             PropertyName = settingProperty.PropertyInfo.Name;
             DisplayName = settingProperty.DisplayName;
 
-            if (new[]{typeof(int),typeof(decimal)}.Contains(settingProperty.PropertyInfo.PropertyType))
+            if (new[] {typeof(int), typeof(decimal)}.Contains(settingProperty.PropertyInfo.PropertyType))
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.Number.ToString();
 
-            if (new[] { typeof(DateTime) }.Contains(settingProperty.PropertyInfo.PropertyType))
+            if (new[] {typeof(DateTime)}.Contains(settingProperty.PropertyInfo.PropertyType))
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.DateTime.ToString();
 
             if (Editor.RichText == settingProperty.Editor)
                 TextBoxMode = System.Web.UI.WebControls.TextBoxMode.MultiLine.ToString();
+
+            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
         }
 
 

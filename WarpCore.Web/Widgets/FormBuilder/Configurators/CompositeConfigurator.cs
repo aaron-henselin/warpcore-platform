@@ -12,12 +12,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
     public class CompositeConfigurator : PlaceHolder, IConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-compositeconfigurator";
-
+        
+        
         [CompositeOnlyPropertiesDataSource]
         public string PropertyName { get; set; }
 
-        [UserInterfaceHint(Editor = Editor.Text)]
-        public Type CompositeType { get; set; }
+        //[UserInterfaceBehavior()]
         public string DisplayName { get; set; }
 
         private class ConfigurationWrapper
@@ -36,9 +36,11 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
             _surface.Controls.Add(new RuntimeContentPlaceHolder{ PlaceHolderId = "FormBody" });
             this.Controls.Add(_surface);
 
-            _readWriter = new CompositeFormReadWriter(CompositeType, _surface);
+            var configType = ConfiguratorEditingContextHelper.GetClrType(editingContext.ParentEditingContext);
 
-            var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(CompositeType);
+            _readWriter = new CompositeFormReadWriter(configType, _surface);
+
+            var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
             CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent);
             CmsFormReadWriter.PopulateListControls(_surface, editingContext);
             //CmsFormReadWriter.FillInControlValues(_surface, editingContext);
@@ -47,11 +49,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         public void SetConfiguration(SettingProperty settingProperty)
         {
             DisplayName = settingProperty.DisplayName;
-            CompositeType = settingProperty.PropertyInfo.PropertyType;
             PropertyName = settingProperty.PropertyInfo.Name;
         }
 
 
+        [UserInterfaceHint(Editor = Editor.Hidden)]
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
         public string GetValue()
         {

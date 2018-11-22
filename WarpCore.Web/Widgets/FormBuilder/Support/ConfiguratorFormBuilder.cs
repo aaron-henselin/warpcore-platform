@@ -78,13 +78,17 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                                 content = CreateConfiguratorPageContent<ConfiguratorCheckBox>(property);
                                 break;
 
+                            case Editor.Hidden:
+                                content = CreateConfiguratorPageContent<ConfiguratorHiddenField>(property);
+                                break;
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
 
                 }
-
+                
 
                 content.PlacementLayoutBuilderId = rowLayout.Id;
                 rowLayout.AllContent.Add(content);
@@ -97,7 +101,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         {
             IConfiguratorControl dropdownList = (IConfiguratorControl)Activator.CreateInstance(type);
             dropdownList.SetConfiguration(property);
-
+            
             CmsPageContentFactory factory = new CmsPageContentFactory();
             var createdPageContent = factory.CreateToolboxItemContent((Control)dropdownList);
             return createdPageContent;

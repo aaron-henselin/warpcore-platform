@@ -48,7 +48,7 @@ namespace WarpCore.Cms
         [Column]
         public string Slug { get; set; }
 
-        [Column]
+        [Column][DisplayName("Layout")]
         [DataRelation(LayoutRepository.ApiId)]
         public Guid LayoutId { get; set; }
 
@@ -56,10 +56,12 @@ namespace WarpCore.Cms
         public string Keywords { get; set; }
 
         [Column]
+        [DisplayName("Site")]
         [DataRelation(SiteRepository.ApiId)]
         public Guid SiteId { get; set; }
 
         [Column]
+        [DisplayName("Page Type")]
         public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
         [SerializedComplexObject]
@@ -70,7 +72,10 @@ namespace WarpCore.Cms
         //[ComplexData]
         //public List<HistoricalRoute> AlternateRoutes { get; set; } = new List<HistoricalRoute>();
 
+        [DisplayName("Physical File")]
         public string PhysicalFile { get; set; }
+
+        [DisplayName("External Redirect Url")]
         public string RedirectExternalUrl { get; set; }
 
         public Guid? RedirectPageId { get; set; }

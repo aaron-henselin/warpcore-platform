@@ -29,13 +29,15 @@ namespace DemoSite
         private IVersionedContentRepositoryBase _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
+        private ConfiguratorEvents _configuratorEvents;
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
             _dynamicFormRequest = Context.ToDynamicFormRequestContext();
-            
+            _configuratorEvents = new ConfiguratorEvents();
+
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
@@ -55,12 +57,14 @@ namespace DemoSite
                 ClrType = draft.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
                 CurrentValues = d,
+                Events = _configuratorEvents
             };
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
             SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
             CmsFormReadWriter.FillInControlValues(surface,configuratorEditingContext);
-            
+            CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext);
         }
+
 
         private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorEditingContext configuratorEditingContext)
         {
@@ -76,7 +80,9 @@ namespace DemoSite
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            var values = CmsFormReadWriter.GetChangedValues(surface);
+            foreach (var value in values)
+                _configuratorEvents.RaiseValueChanged(value);
         }
 
         private WarpCoreEntity GetDraft()

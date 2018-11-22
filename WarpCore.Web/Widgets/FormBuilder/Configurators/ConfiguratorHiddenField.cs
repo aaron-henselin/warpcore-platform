@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
@@ -32,6 +34,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         public void SetConfiguration(SettingProperty settingProperty)
         {
             PropertyName = settingProperty.PropertyInfo.Name;
+            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
+
         }
 
 
@@ -40,6 +44,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
            
         }
 
+        [UserInterfaceHint(Editor = Editor.Hidden)]
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);

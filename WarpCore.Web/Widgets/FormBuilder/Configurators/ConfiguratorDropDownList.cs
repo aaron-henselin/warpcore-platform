@@ -36,10 +36,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [UserInterfaceHint][DisplayName("Display Name")]
         public string DisplayName { get; set; }
 
+
         [UserInterfaceHint(Editor = Editor.CheckBox)][DisplayName("Required")]
         public bool IsRequired { get; set; }
 
-
+        [UserInterfaceHint(Editor = Editor.Hidden)]
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [RepositoryListControlSource]
@@ -60,6 +62,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             
             this.Controls.Add(new Label { Text = DisplayName, CssClass = "form-label" });
             _listControl.ID = PropertyName + "_ListControl";
+            _listControl.AutoPostBack = true; //todo, dependency.
             this.Controls.Add(_listControl);
 
         }

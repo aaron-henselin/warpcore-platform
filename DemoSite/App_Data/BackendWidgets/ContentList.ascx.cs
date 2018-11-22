@@ -93,6 +93,8 @@ namespace DemoSite
 
         public string PropertyName { get; set; }
 
+        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
+    
 
         protected override void OnInit(EventArgs e)
         {
@@ -114,8 +116,8 @@ namespace DemoSite
             var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
             _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.SupportsOrm);
 
-            
 
+         
         }
 
         private void SetupEditForm()
@@ -171,7 +173,7 @@ namespace DemoSite
 
         public void SetConfiguration(SettingProperty settingProperty)
         {
-
+            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
         }
 
         public void SetValue(string newValue)

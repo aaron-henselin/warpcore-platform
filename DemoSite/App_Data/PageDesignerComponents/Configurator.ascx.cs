@@ -24,18 +24,19 @@ namespace DemoSite
 {
 
 
-    public class ConfiguratorContext
+    public class ConfiguratorControlState
     {
         public Guid PageContentId { get; set; }
         public bool IsOpening { get; set; }
-
-        public Dictionary<string,string> NewConfiguration { get; set; }
+        
     }
 
     public partial class Configurator1 : System.Web.UI.UserControl
     {
         private CmsPageContent _contentToEdit;
-        private ConfiguratorContext _configuratorContext;
+        private ConfiguratorControlState _configuratorControlState;
+        private ConfiguratorEvents _events;
+
         public string WC_CONFIGURATOR_CONTEXT_JSON { get; set; }
 
 
@@ -49,12 +50,12 @@ namespace DemoSite
             if (string.IsNullOrWhiteSpace(configuratorContextJson))
                 return;
 
-            _configuratorContext = new JavaScriptSerializer().Deserialize<ConfiguratorContext>(configuratorContextJson);
+            _configuratorControlState = new JavaScriptSerializer().Deserialize<ConfiguratorControlState>(configuratorContextJson);
             var editingContextManager = new EditingContextManager();
             try
             {
                 var editingContext = editingContextManager.GetEditingContext();
-                _contentToEdit = editingContext.FindSubContentReursive(x => x.Id == _configuratorContext.PageContentId).Single().LocatedContent;
+                _contentToEdit = editingContext.FindSubContentReursive(x => x.Id == _configuratorControlState.PageContentId).Single().LocatedContent;
             }
             catch (Exception)
             {
@@ -63,14 +64,10 @@ namespace DemoSite
           
             
 
-            //WC_EDITING_CONTEXT_JSON
+            _events = new ConfiguratorEvents();
             RebuildDesignSurface();
         }
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-        }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
@@ -94,28 +91,54 @@ namespace DemoSite
 
             var configuratorEditingContext = new ConfiguratorEditingContext
             {
+                PageContentId = _configuratorControlState.PageContentId,
                 ClrType = activatedControl.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
                 CurrentValues = parametersAfterActivation,
-                ParentEditingContext = new EditingContextManager().GetEditingContext()
+                ParentEditingContext = new EditingContextManager().GetEditingContext(),
+                Events = _events
             };
-            
+           
+
             CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
             CmsFormReadWriter.FillInControlValues(surface, configuratorEditingContext);
+            CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext);
+        }
+
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (_configuratorControlState != null)
+            {
+
+                var values = CmsFormReadWriter.GetChangedValues(surface);
+                foreach (var value in values)
+                    _events.RaiseValueChanged(value);
+
+                CmsFormReadWriter.GetEventTracking(surface).PreviousControlValues =
+                    CmsFormReadWriter.ReadValuesFromControls(surface);
+
+            }
 
 
         }
+
+
+
+
 
         protected override void OnPreRender(EventArgs e)
         {
             base.OnPreRender(e);
 
-            if (_configuratorContext != null)
+            if (_configuratorControlState != null)
             {
-                _configuratorContext.IsOpening = false;
+                _configuratorControlState.IsOpening = false;
                 
                 WC_CONFIGURATOR_CONTEXT_JSON =
-                    Server.HtmlEncode(new JavaScriptSerializer().Serialize(_configuratorContext));
+                    Server.HtmlEncode(new JavaScriptSerializer().Serialize(_configuratorControlState));
 
                 DataBoundElements.DataBind();
             }
@@ -125,6 +148,7 @@ namespace DemoSite
         protected void ConfiguratorInitButton_OnClick(object sender, EventArgs e)
         {
             RebuildDesignSurface();
+
         }
     }
 }
