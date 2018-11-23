@@ -112,14 +112,27 @@ namespace DemoSite
 
             if (_configuratorControlState != null)
             {
+                var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).Data.PageContentId;
+                var newConfiguredContentId = _configuratorControlState.PageContentId;
+                var isSameForm = previousConfiguredContentId == newConfiguredContentId;
+                if (isSameForm)
+                {
+                    var values = CmsFormReadWriter.GetChangedValues(surface);
+                    foreach (var value in values)
+                        _events.RaiseValueChanged(value);
 
-                var values = CmsFormReadWriter.GetChangedValues(surface);
-                foreach (var value in values)
-                    _events.RaiseValueChanged(value);
+                }
 
-                CmsFormReadWriter.GetEventTracking(surface).PreviousControlValues =
-                    CmsFormReadWriter.ReadValuesFromControls(surface);
 
+                var eventrcking=
+                CmsFormReadWriter.GetEventTracking(surface);
+                eventrcking.Data = new CmsFormEventsDataHiddenField.CmsFormEventsData
+                    {
+                        PreviousControlValues =
+                            CmsFormReadWriter.ReadValuesFromControls(surface),
+                        PageContentId = _configuratorControlState.PageContentId
+
+                };
             }
 
 

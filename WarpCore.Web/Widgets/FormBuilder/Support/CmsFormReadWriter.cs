@@ -9,19 +9,23 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
-    public class CmsFormEventsData : HiddenField
+    public class CmsFormEventsDataHiddenField : HiddenField
     {
+        public class CmsFormEventsData
+        {
+            public Dictionary<string, string> PreviousControlValues { get; set; }
+            public Guid PageContentId { get; set; }
+        }
 
-        public IDictionary<string,string> PreviousControlValues {
-            get
-            {
-                return new JavaScriptSerializer().Deserialize<Dictionary<string,string>>(Value);
-            }
+        public CmsFormEventsData Data {
+            get { return new JavaScriptSerializer().Deserialize<CmsFormEventsData>(Value); }
             set
             {
                 this.Value = new JavaScriptSerializer().Serialize(value);
             }
-        } 
+        }
+
+
     }
 
     public static class CmsFormReadWriter
@@ -33,33 +37,37 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
             foreach (var key in newValues.Keys)
             {
-                var isNewValue = !string.Equals(newValues[key], eventTracking.PreviousControlValues[key]);
+                var isNewValue = !string.Equals(newValues[key], eventTracking.Data.PreviousControlValues[key]);
                 if (isNewValue)
                 {
                     yield return new ValueChangedEventArgs
                     {
                         NewValue = newValues[key],
-                        OldValue = eventTracking.PreviousControlValues[key],
+                        OldValue = eventTracking.Data.PreviousControlValues[key],
                         PropertyName = key
                     };
                 }
             }
         }
-        public static CmsFormEventsData GetEventTracking(Control surface)
+        public static CmsFormEventsDataHiddenField GetEventTracking(Control surface)
         {
-            return surface.Controls.OfType<CmsFormEventsData>().FirstOrDefault();
+            return surface.Controls.OfType<CmsFormEventsDataHiddenField>().FirstOrDefault();
             
         }
 
-        public static CmsFormEventsData AddEventTracking(Control surface, ConfiguratorEditingContext editingContext)
+        public static CmsFormEventsDataHiddenField AddEventTracking(Control surface, ConfiguratorEditingContext editingContext)
         {
             var formData = GetEventTracking(surface);
             if (formData != null)
                 return formData;
-            
 
-            formData = new CmsFormEventsData();
-            formData.PreviousControlValues = editingContext.CurrentValues;
+            var previousControlValues = editingContext.CurrentValues.ToDictionary(x => x.Key, x => x.Value);
+            var pageContentId = editingContext.PageContentId;
+            formData = new CmsFormEventsDataHiddenField
+            {
+                
+                Data = new CmsFormEventsDataHiddenField.CmsFormEventsData {PreviousControlValues = previousControlValues,PageContentId =  pageContentId}
+            };
             surface.Controls.Add(formData);
 
             return formData;
