@@ -112,7 +112,7 @@ namespace DemoSite
 
             if (_configuratorControlState != null)
             {
-                var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).Data.PageContentId;
+                var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).PageContentId;
                 var newConfiguredContentId = _configuratorControlState.PageContentId;
                 var isSameForm = previousConfiguredContentId == newConfiguredContentId;
                 if (isSameForm)
@@ -126,13 +126,11 @@ namespace DemoSite
 
                 var eventrcking=
                 CmsFormReadWriter.GetEventTracking(surface);
-                eventrcking.Data = new CmsFormEventsDataHiddenField.CmsFormEventsData
-                    {
-                        PreviousControlValues =
-                            CmsFormReadWriter.ReadValuesFromControls(surface),
-                        PageContentId = _configuratorControlState.PageContentId
+                eventrcking.PreviousControlValues =
+                    CmsFormReadWriter.ReadValuesFromControls(surface);
+                eventrcking.PageContentId = _configuratorControlState.PageContentId;
 
-                };
+
             }
 
 

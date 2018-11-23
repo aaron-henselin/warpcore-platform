@@ -11,18 +11,43 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
     public class CmsFormEventsDataHiddenField : HiddenField
     {
-        public class CmsFormEventsData
+        private class CmsFormEventsData
         {
             public Dictionary<string, string> PreviousControlValues { get; set; }
             public Guid PageContentId { get; set; }
         }
 
-        public CmsFormEventsData Data {
-            get { return new JavaScriptSerializer().Deserialize<CmsFormEventsData>(Value); }
+        public Dictionary<string, string> PreviousControlValues
+        {
+            get
+            {
+                return GetFieldValue().PreviousControlValues;
+            }
             set
             {
-                this.Value = new JavaScriptSerializer().Serialize(value);
+                var obj = GetFieldValue();
+                obj.PreviousControlValues = value;
+                this.Value = new JavaScriptSerializer().Serialize(obj);
             }
+        }
+
+        public Guid PageContentId
+        {
+            get { return GetFieldValue().PageContentId; }
+            set
+            {
+                var obj = GetFieldValue();
+                obj.PageContentId = value;
+                this.Value = new JavaScriptSerializer().Serialize(obj);
+            }
+        }
+
+        private CmsFormEventsData GetFieldValue()
+        {
+            if (string.IsNullOrWhiteSpace(Value))
+                return new CmsFormEventsData();
+
+            return new JavaScriptSerializer().Deserialize<CmsFormEventsData>(Value);
         }
 
 
@@ -37,13 +62,13 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
             foreach (var key in newValues.Keys)
             {
-                var isNewValue = !string.Equals(newValues[key], eventTracking.Data.PreviousControlValues[key]);
+                var isNewValue = !string.Equals(newValues[key], eventTracking.PreviousControlValues[key]);
                 if (isNewValue)
                 {
                     yield return new ValueChangedEventArgs
                     {
                         NewValue = newValues[key],
-                        OldValue = eventTracking.Data.PreviousControlValues[key],
+                        OldValue = eventTracking.PreviousControlValues[key],
                         PropertyName = key
                     };
                 }
@@ -63,11 +88,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
             var previousControlValues = editingContext.CurrentValues.ToDictionary(x => x.Key, x => x.Value);
             var pageContentId = editingContext.PageContentId;
-            formData = new CmsFormEventsDataHiddenField
-            {
-                
-                Data = new CmsFormEventsDataHiddenField.CmsFormEventsData {PreviousControlValues = previousControlValues,PageContentId =  pageContentId}
-            };
+            formData = new CmsFormEventsDataHiddenField();
+            formData.PageContentId = pageContentId;
+            formData.PreviousControlValues = previousControlValues;
             surface.Controls.Add(formData);
 
             return formData;

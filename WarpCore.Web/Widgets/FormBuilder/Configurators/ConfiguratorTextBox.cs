@@ -40,7 +40,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     }
 
     [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
-    public class ConfiguratorTextBox : PlaceHolder, INamingContainer, IConfiguratorControl, ILabeledConfiguratorControl
+    public class ConfiguratorTextBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-textbox";
 
