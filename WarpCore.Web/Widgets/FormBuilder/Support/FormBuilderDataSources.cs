@@ -93,6 +93,19 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
     }
 
+    public static class PropertyDataSourceHelper
+    {
+        public static string CreateListOptionLabel(SettingProperty metadata)
+        {
+            var hasCustomDisplayName = !string.Equals(metadata.DisplayName, metadata.PropertyInfo.Name);
+
+            string label = metadata.PropertyInfo.Name;
+            if (hasCustomDisplayName)
+                label = $"{metadata.DisplayName} ({metadata.PropertyInfo.Name})";
+            return label;
+        }
+    }
+
     public class CompositeOnlyPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
         public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
@@ -101,11 +114,45 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var props = propertiesFilered.Where(x =>
                 x.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any());
 
-            var propertyNames = props.Select(x => x.Name);
-            return propertyNames.Select(x => new ListOption { Text = x, Value = x });
+            foreach (var prop in props)
+            {
+                var metadata = ToolboxMetadataReader.GetPropertyMetadata(prop);
+                var label = PropertyDataSourceHelper.CreateListOptionLabel(metadata);
+
+                yield return new ListOption
+                {
+                    Text=label,
+                    Value = prop.Name
+                };
+            }
         }
+
+
     }
 
+
+    public class FixedOptionListDataSourceAttribute : Attribute, IListControlSource
+    {
+        private readonly string[] _options;
+
+        public FixedOptionListDataSourceAttribute(params string[] options)
+        {
+            _options = options;
+        }
+
+        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        {
+            foreach (var option in _options)
+            {
+
+                yield return new ListOption
+                {
+                    Text = option,
+                    Value = option
+                };
+            }
+        }
+    }
     public class FormControlPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
         private readonly Type[] _propertyTypes;
@@ -128,8 +175,17 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (_propertyTypes != null)
                 propertiesFilered=propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();
 
-            var propertyNames = propertiesFilered.Select(x => x.Name);
-            return propertyNames.Select(x => new ListOption { Text = x, Value = x });
+            foreach (var prop in propertiesFilered)
+            {
+                var metadata = ToolboxMetadataReader.GetPropertyMetadata(prop);
+                var label = PropertyDataSourceHelper.CreateListOptionLabel(metadata);
+
+                yield return new ListOption
+                {
+                    Text = label,
+                    Value = prop.Name
+                };
+            }
         }
 
 

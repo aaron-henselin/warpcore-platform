@@ -62,6 +62,7 @@ namespace WarpCore.Cms
 
         [Column]
         [DisplayName("Page Type")]
+        [FixedOptionListDataSourceAttribute()]
         public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
         [SerializedComplexObject]

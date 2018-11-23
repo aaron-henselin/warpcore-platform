@@ -44,6 +44,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [UserInterfaceHint(Editor = Editor.Hidden)]
         public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
+        [DisplayName("Values From Repository")]
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [RepositoryListControlSource]
         public string RepositoryUid { get; set; }
