@@ -52,21 +52,21 @@ namespace DemoSite
             var draft = GetDraft();
             var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
 
-            var configuratorEditingContext = new ConfiguratorEditingContext
+            var configuratorEditingContext = new ConfiguratorBuildArguments
             {
                 ClrType = draft.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
-                CurrentValues = d,
+                DefaultValues = d,
                 Events = _configuratorEvents
             };
-            CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
+            CmsFormReadWriter.InitializeEditing(surface, configuratorEditingContext);
             SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
             CmsFormReadWriter.FillInControlValues(surface,configuratorEditingContext);
             CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext);
         }
 
 
-        private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorEditingContext configuratorEditingContext)
+        private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorBuildArguments configuratorBuildArguments)
         {
             var canSetDefaults = !Page.IsPostBack && _dynamicFormRequest.ContentId == null;
             if (!canSetDefaults)
@@ -74,7 +74,7 @@ namespace DemoSite
 
             var defaultValueCollection = _dynamicFormRequest.DefaultValues;
             foreach (var kvp in defaultValueCollection)
-                configuratorEditingContext.CurrentValues[kvp.Key] = kvp.Value;
+                configuratorBuildArguments.DefaultValues[kvp.Key] = kvp.Value;
 
         }
 

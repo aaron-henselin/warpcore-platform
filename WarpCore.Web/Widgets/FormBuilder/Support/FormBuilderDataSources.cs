@@ -14,16 +14,23 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
     public interface IListControlSource
     {
-        IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext);
+        IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model);
     }
 
-    public class CompositeConfiguratorTypeAttribute :Attribute
+    public class ListSourceDependency
+    {
+        public string PropertyName { get; set; }
+        public string Value { get; set; }
+    }
+
+
+    public class CompositeConfiguratorTypeAttribute : Attribute
     {
     }
 
     public interface IUserInterfaceBehavior
     {
-        void RegisterBehavior(IConfiguratorControl control, ConfiguratorEditingContext editingContext);
+        void RegisterBehavior(IConfiguratorControl control, ConfiguratorBuildArguments buildArguments);
     }
 
     public interface ILabeledConfiguratorControl : IConfiguratorControl
@@ -37,7 +44,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
     public interface IConfiguratorControl
     {
-        void InitializeEditingContext(ConfiguratorEditingContext editingContext);
+        void InitializeEditingContext(ConfiguratorBuildArguments buildArguments);
         string PropertyName { get; }
         void SetValue(string newValue);
         string GetValue();
@@ -45,21 +52,45 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         ConfiguratorBehaviorCollection Behaviors { get; }
     }
 
+    public class EntitiesControlSourceAttribute : Attribute, IListControlSource
+    {
+        private readonly string _repositoryUidProperty;
+
+        public EntitiesControlSourceAttribute(string repositoryUidProperty)
+        {
+            _repositoryUidProperty = repositoryUidProperty;
+        }
+
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
+        {
+            var repositoryUid = model.Get<Guid?>(_repositoryUidProperty);
+            if (repositoryUid == null)
+                yield break;
+
+            var mgr = new RepositoryMetadataManager();
+            var repoMetadata = mgr.GetRepositoryMetdataByTypeResolverUid(repositoryUid.Value);
+            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(repoMetadata.ApiId);
+            var repo = (IContentRepository)Activator.CreateInstance(repoType);
+            var entityType = repo.New().GetType();
+            var apiAttr = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+                yield return new ListOption
+               {
+                   Text = entityType.GetDisplayName(),
+                   Value = apiAttr?.TypeExtensionUid.ToString()
+                };
+        }
+    }
 
     public class RepositoryListControlSourceAttribute : Attribute, IListControlSource
     {
-        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
         {
-            
-
             var mgr = new RepositoryMetadataManager();
             foreach (var repo in mgr.Find())
             {
                 var t=RepositoryTypeResolver.ResolveTypeByApiId(repo.ApiId);
-                
-                var displayName = repo.CustomRepositoryName 
-                                    ?? t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName 
-                                    ?? t.Name;
+
+                var displayName = repo.CustomRepositoryName ?? t.GetDisplayName();
 
                 yield return new ListOption
                 {
@@ -83,9 +114,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             
         }
 
-        public static List<PropertyInfo> PropertiesFilered(ConfiguratorEditingContext editingContext)
+        public static List<PropertyInfo> PropertiesFilered(ConfiguratorBuildArguments buildArguments)
         {
-            var t = GetClrType(editingContext.ParentEditingContext);
+            var t = GetClrType(buildArguments.ParentEditingContext);
             var propertiesFilered =
                 t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
                     .ToList();
@@ -108,9 +139,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
     public class CompositeOnlyPropertiesDataSourceAttribute : Attribute, IListControlSource
     {
-        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
         {
-            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(editingContext);
+            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
             var props = propertiesFilered.Where(x =>
                 x.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any());
 
@@ -140,7 +171,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             _options = options;
         }
 
-        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
         {
             foreach (var option in _options)
             {
@@ -168,9 +199,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             _propertyTypes = propertyTypes;
         }
 
-        public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
         {
-            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(editingContext);
+            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
 
             if (_propertyTypes != null)
                 propertiesFilered=propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();

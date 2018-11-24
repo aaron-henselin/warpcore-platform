@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -7,6 +8,12 @@ namespace WarpCore.Platform.Kernel.Extensions
 {
     public static class TypeExtensions
     {
+        public static string GetDisplayName(this Type type)
+        {
+            return type.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
+                              ?? type.Name;
+        }
+
         public static IEnumerable<PropertyInfo> GetPropertiesFiltered(this Type type, Func<PropertyInfo, bool> condition)
         {
             foreach (var property in type.GetProperties())

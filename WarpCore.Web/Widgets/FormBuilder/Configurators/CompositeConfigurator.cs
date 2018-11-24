@@ -29,21 +29,21 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         private PlaceHolder _surface;
         private CompositeFormReadWriter _readWriter;
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
             _surface = new PlaceHolder();
             _surface.Controls.Add(new Label{Text=DisplayName, CssClass = "form-label" });
             _surface.Controls.Add(new RuntimeContentPlaceHolder{ PlaceHolderId = "FormBody" });
             this.Controls.Add(_surface);
 
-            var configType = ConfiguratorEditingContextHelper.GetClrType(editingContext.ParentEditingContext);
+            var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
             _readWriter = new CompositeFormReadWriter(configType, _surface);
 
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
             CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent);
-            CmsFormReadWriter.PopulateListControls(_surface, editingContext);
-            //CmsFormReadWriter.FillInControlValues(_surface, editingContext);
+            CmsFormReadWriter.InitializeEditing(_surface, buildArguments);
+            //CmsFormReadWriter.FillInControlValues(_surface, buildArguments);
         }
 
         public void SetConfiguration(SettingProperty settingProperty)

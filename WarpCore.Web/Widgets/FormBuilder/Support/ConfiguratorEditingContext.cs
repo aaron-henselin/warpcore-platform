@@ -22,15 +22,15 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
     }
 
-    public class ConfiguratorEditingContext
+    public class ConfiguratorBuildArguments
     {
-        public IDictionary<string, string> CurrentValues { get; set; }
+        public IDictionary<string, string> DefaultValues { get; set; }
         public Type ClrType { get; set; }
         public Func<PropertyInfo, bool> PropertyFilter { get; set; }
         public EditingContext ParentEditingContext { get; set; }
-     
         public ConfiguratorEvents Events { get; set; }
         public Guid PageContentId { get; set; }
+
     }
 
     public class ConfiguratorEvents
@@ -47,7 +47,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
         public string PropertyName { get; set; }
         public string NewValue { get; set; }
-
         public string OldValue { get; set; }
+        public IDictionary<string, string> Model { get; set; }
     }
 }

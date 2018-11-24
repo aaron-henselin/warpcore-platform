@@ -16,7 +16,7 @@ namespace Cms.Toolbox
 
 
 
-
+    [Serializable]
     public class ListOption
     {
         public string Text { get; set; }

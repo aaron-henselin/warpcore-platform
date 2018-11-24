@@ -110,9 +110,9 @@ namespace DemoSite
             this.Controls.Add(_editingField);
         }
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
-            var currentRepositoryValue = editingContext.CurrentValues.Get<Guid>(nameof(ContentList.RepositoryId));
+            var currentRepositoryValue = buildArguments.DefaultValues.Get<Guid>(nameof(ContentList.RepositoryId));
             var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
             _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.SupportsOrm);
 

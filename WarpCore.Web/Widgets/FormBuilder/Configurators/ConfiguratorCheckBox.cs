@@ -52,7 +52,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
             set { _checkbox.Checked = value; }
         }
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
             //throw new NotImplementedException();
         }

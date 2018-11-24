@@ -6,11 +6,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Cms.Toolbox;
 using WarpCore.Web.Scripting;
 using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.Extensions
 {
+
     public static class ControlExtensions
     {
         //public static void Add(this ControlCollection controlCollection, IFrontendComponent frontendComponent)

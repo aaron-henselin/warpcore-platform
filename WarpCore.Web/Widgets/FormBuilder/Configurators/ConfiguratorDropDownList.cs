@@ -18,6 +18,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         public const string ApiId = "warpcore-formcontrol-dropdownlist";
 
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
+        private ConfiguratorBuildArguments _buildArguments;
 
         [FormControlPropertiesDataSource]
         [UserInterfaceHint(Editor = Editor.OptionList)][DisplayName("Property")]
@@ -47,7 +48,14 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [DisplayName("Values From Repository")]
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [RepositoryListControlSource]
-        public string RepositoryUid { get; set; }
+        public string RepositoryApiId { get; set; }
+
+        [DisplayName("Values From Entity")]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [EntitiesControlSource(nameof(RepositoryApiId))]
+        public string EntityApiId { get; set; }
+
+
 
         public void SetConfiguration(SettingProperty settingProperty)
         {
@@ -65,11 +73,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
             this.Controls.Add(new Label { Text = DisplayName, CssClass = "form-label" });
             _listControl.ID = PropertyName + "_ListControl";
             _listControl.AutoPostBack = true; //todo, dependency.
+            Page.RegisterRequiresControlState(_listControl);
             this.Controls.Add(_listControl);
 
         }
 
-        public IEnumerable<ListOption> GetOptionsFromDataRelation(ConfiguratorEditingContext editingContext, string apiId)
+        public IEnumerable<ListOption> GetOptionsFromDataRelation(ConfiguratorBuildArguments buildArguments, string apiId)
         {
             var repoType = RepositoryTypeResolver.ResolveTypeByApiId(new Guid(apiId));
             var repo = (IContentRepository)Activator.CreateInstance(repoType);
@@ -104,28 +113,31 @@ namespace WarpCore.Web.Widgets.FormBuilder
             }
         }
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void ReloadListOptions(IDictionary<string,string> model)
         {
-            var propertyToEdit = editingContext.ClrType.GetProperty(PropertyName);
-            var allAttributes = propertyToEdit.GetCustomAttributes(true);
+            var options = GetListOptions(_buildArguments,model);
+            LoadNewOptions(options);
 
-            var customListSource = allAttributes.OfType<IListControlSource>().FirstOrDefault();
-            var dataRelation = allAttributes.OfType<DataRelationAttribute>().FirstOrDefault();
+        }
 
-            var options = new List<ListOption>();
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
+        {
+            _buildArguments = buildArguments;
+            ReloadListOptions(buildArguments.DefaultValues);
 
-            if (dataRelation != null)
-                options = GetOptionsFromDataRelation(editingContext,dataRelation.ApiId).ToList();
-
-            if (customListSource != null)
-                options = customListSource.GetOptions(editingContext).ToList();
-            
+            buildArguments.Events.ValueChanged += (sender, args) => {
+                ReloadListOptions(args.Model);
+            };
+        }
 
 
-            var prevValue=
+
+        private void LoadNewOptions(IReadOnlyCollection<ListOption> options)
+        {
+            var prevValue =
                 _listControl.SelectedValue;
+
             _listControl.Items.Clear();
-            
             foreach (var item in options)
                 _listControl.Items.Add(new ListItem(item.Text, item.Value));
 
@@ -141,9 +153,52 @@ namespace WarpCore.Web.Widgets.FormBuilder
                 else if (_listControl.Items.Count > 0)
                     _listControl.SelectedValue = _listControl.Items[0].Value;
             }
-
-
         }
-        
+
+        private List<ListOption> GetListOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
+        {
+            var propertyToEdit = buildArguments.ClrType.GetProperty(PropertyName);
+            var allAttributes = propertyToEdit.GetCustomAttributes(true);
+
+            var customListSource = allAttributes.OfType<IListControlSource>().FirstOrDefault();
+            var dataRelation = allAttributes.OfType<DataRelationAttribute>().FirstOrDefault();
+
+            var options = new List<ListOption>();
+
+            if (dataRelation != null)
+                options = GetOptionsFromDataRelation(buildArguments, dataRelation.ApiId).ToList();
+
+            if (customListSource != null)
+                options = customListSource.GetOptions(buildArguments, model).ToList();
+            return options;
+        }
+
+
+        protected override void LoadControlState(object savedState)
+        {
+            var savedOptions = (List<ListOption>) savedState;
+            _listControl.Items.Clear();
+            _listControl.Items.AddRange(savedOptions.Select(ListItemHelper.BuildListItem).ToArray());
+        }
+
+        protected override object SaveControlState()
+        {
+            var listOptions =
+            _listControl.Items
+                .Cast<ListItem>()
+                .Select(x => new ListOption {Text = x.Text, Value = x.Value})
+                .ToList();
+
+            return listOptions;
+        }
     }
+
+    public static class ListItemHelper
+    {
+        public static ListItem BuildListItem(ListOption option)
+        {
+            return new ListItem(option.Text, option.Value);
+        }
+    }
+
 }

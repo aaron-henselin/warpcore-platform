@@ -89,27 +89,28 @@ namespace DemoSite
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
             CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
 
-            var configuratorEditingContext = new ConfiguratorEditingContext
+            var buildArguments = new ConfiguratorBuildArguments
             {
                 PageContentId = _configuratorControlState.PageContentId,
                 ClrType = activatedControl.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
-                CurrentValues = parametersAfterActivation,
+                DefaultValues = parametersAfterActivation,
                 ParentEditingContext = new EditingContextManager().GetEditingContext(),
                 Events = _events
             };
            
 
-            CmsFormReadWriter.PopulateListControls(surface, configuratorEditingContext);
-            CmsFormReadWriter.FillInControlValues(surface, configuratorEditingContext);
-            CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext);
+            CmsFormReadWriter.InitializeEditing(surface, buildArguments);
+            CmsFormReadWriter.FillInControlValues(surface, buildArguments);
+            CmsFormReadWriter.AddEventTracking(surface, buildArguments);
+            
         }
 
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
+            
             if (_configuratorControlState != null)
             {
                 var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).PageContentId;
@@ -124,10 +125,8 @@ namespace DemoSite
                 }
 
 
-                var eventrcking=
-                CmsFormReadWriter.GetEventTracking(surface);
-                eventrcking.PreviousControlValues =
-                    CmsFormReadWriter.ReadValuesFromControls(surface);
+                var eventrcking= CmsFormReadWriter.GetEventTracking(surface);
+                eventrcking.PreviousControlValues = CmsFormReadWriter.ReadValuesFromControls(surface);
                 eventrcking.PageContentId = _configuratorControlState.PageContentId;
 
 

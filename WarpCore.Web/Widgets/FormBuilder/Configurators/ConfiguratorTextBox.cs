@@ -18,12 +18,12 @@ namespace WarpCore.Web.Widgets.FormBuilder
         private ILabeledConfiguratorControl _control;
         private Type _clrType;
 
-        public void RegisterBehavior(IConfiguratorControl control, ConfiguratorEditingContext editingContext)
+        public void RegisterBehavior(IConfiguratorControl control, ConfiguratorBuildArguments buildArguments)
         {
             _control = (ILabeledConfiguratorControl)control;
-            editingContext.Events.ValueChanged += EventsOnValueChanged;
+            buildArguments.Events.ValueChanged += EventsOnValueChanged;
 
-            _clrType = ConfiguratorEditingContextHelper.GetClrType(editingContext.ParentEditingContext);
+            _clrType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
         }
 
         private void EventsOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -95,7 +95,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
 
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
             //throw new NotImplementedException();
         }
@@ -133,7 +133,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         private class TextBoxModesDataSourceAttribute : Attribute, IListControlSource
         {
-            public IEnumerable<ListOption> GetOptions(ConfiguratorEditingContext editingContext)
+            public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
             {
                 return Enum.GetNames(typeof(TextBoxMode)).Select(x => new ListOption { Text = x, Value = x }).ToList();
             }

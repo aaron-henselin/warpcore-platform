@@ -39,7 +39,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         }
 
 
-        public void InitializeEditingContext(ConfiguratorEditingContext editingContext)
+        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
            
         }

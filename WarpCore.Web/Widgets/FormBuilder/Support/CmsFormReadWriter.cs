@@ -57,6 +57,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
         public static IEnumerable<ValueChangedEventArgs> GetChangedValues(Control surface)
         {
+
+
             var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
 
             var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
@@ -69,7 +71,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                     {
                         NewValue = newValues[key],
                         OldValue = eventTracking.PreviousControlValues[key],
-                        PropertyName = key
+                        PropertyName = key,
+                        Model = newValues
                     };
                 }
             }
@@ -80,14 +83,14 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             
         }
 
-        public static CmsFormEventsDataHiddenField AddEventTracking(Control surface, ConfiguratorEditingContext editingContext)
+        public static CmsFormEventsDataHiddenField AddEventTracking(Control surface, ConfiguratorBuildArguments buildArguments)
         {
             var formData = GetEventTracking(surface);
             if (formData != null)
                 return formData;
 
-            var previousControlValues = editingContext.CurrentValues.ToDictionary(x => x.Key, x => x.Value);
-            var pageContentId = editingContext.PageContentId;
+            var previousControlValues = buildArguments.DefaultValues.ToDictionary(x => x.Key, x => x.Value);
+            var pageContentId = buildArguments.PageContentId;
             formData = new CmsFormEventsDataHiddenField();
             formData.PageContentId = pageContentId;
             formData.PreviousControlValues = previousControlValues;
@@ -98,7 +101,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
 
 
-        public static void PopulateListControls(Control surface, ConfiguratorEditingContext editingContext)
+        public static void InitializeEditing(Control surface, ConfiguratorBuildArguments buildArguments)
         {
             var configuratorControls = surface.GetDescendantControls<Control>()
                 .OfType<IConfiguratorControl>()
@@ -106,7 +109,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
             foreach (var configuratorControl in configuratorControls)
             {
-                configuratorControl.InitializeEditingContext(editingContext);
+                configuratorControl.InitializeEditingContext(buildArguments);
 
                 var behaviors = configuratorControl.Behaviors
                     .Select(Type.GetType)
@@ -115,16 +118,16 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                     .ToList();
                 
                 foreach (var behavior in behaviors)
-                    behavior.RegisterBehavior(configuratorControl,editingContext);
+                    behavior.RegisterBehavior(configuratorControl,buildArguments);
             }
 
             
 
         }
 
-        public static void FillInControlValues(Control surface, ConfiguratorEditingContext editingContext)
+        public static void FillInControlValues(Control surface, ConfiguratorBuildArguments buildArguments)
         {
-            FillInControlValues(surface,editingContext.CurrentValues);
+            FillInControlValues(surface,buildArguments.DefaultValues);
         }
 
         public static void FillInControlValues(Control surface, IDictionary<string,string> newValues)
