@@ -157,8 +157,16 @@ namespace WarpCore.Cms
 
     public static class KnownPageIds
     {
-        public static Guid PageSettings => new Guid("f7f2332e-d2eb-4202-8e9f-99e0b1644386");
+        public static Guid ContentPageSettings => new Guid("f7f2332e-d2eb-4202-8e9f-99e0b1644386");
+        public static Guid GroupingPageSettings => new Guid("e35ac840-0bf5-47ad-b067-0ce096efa9d5");
+        public static Guid RedirectPageSettings => new Guid("aeaaa389-b57a-4885-ba74-50daf1411973");
+
+        
+
+
         public static Guid FormDesigner => new Guid("f6677c22-249a-4fe0-8027-6153c3bf7356");
+
+
 
     }
 

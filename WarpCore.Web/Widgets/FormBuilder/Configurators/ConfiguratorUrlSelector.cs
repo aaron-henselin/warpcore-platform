@@ -17,7 +17,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         private TextBox _externalUrlTextBox = new TextBox { CssClass = "form-control" };
         private DropDownList _internalUrlDropDownList = new DropDownList { CssClass = "form-control" };
-        private CheckBox _selectExternalUrlCheckbox = new CheckBox { CssClass = "form-control", AutoPostBack = true, Text = "Reference a url or website outside of the content management system" };
+        private CheckBox _selectExternalUrlCheckbox = new CheckBox { CssClass = "form-control", AutoPostBack = true, Text = "Reference a url outside of the content management system" };
 
 
         /// <summary>

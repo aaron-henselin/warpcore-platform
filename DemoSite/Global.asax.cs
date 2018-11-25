@@ -150,14 +150,114 @@ namespace DemoSite
 
         }
 
-        private CmsForm SetupPageSettingsForm()
+        private CmsForm SetupRedirectPageSettingsForm()
         {
             var form = new CmsForm
             {
                 ContentId = Guid.NewGuid(),
-                Name = "Page Settings",
-                RepositoryUid = new Guid("979fde2a-1983-480e-aca4-8caab3f762b0"),
+                Name = "Redirect Page Settings",
+                RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
+
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+
+            var twoColumn =
+                factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            form.FormContent.Add(twoColumn);
+
+
+            var textboxPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Name),
+                    DisplayName = "Page Name",
+
+                });
+
+            textboxPageContent.PlacementContentPlaceHolderId = "0";
+
+            var urlSelector =
+                factory.CreateToolboxItemContent(new ConfiguratorUrlSelector()
+                {
+                    PropertyName = nameof(CmsPage.RedirectUri),
+                    DisplayName = "Redirect To",
+
+                });
+
+            textboxPageContent.PlacementContentPlaceHolderId = "0";
+
+            twoColumn.AllContent.Add(urlSelector);
+
+
+            var siteIdDropdown =
+                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
+                {
+                    PropertyName = nameof(CmsPage.SiteId)
+                });
+            twoColumn.AllContent.Add(siteIdDropdown);
+
+            var formRepository = new FormRepository();
+            formRepository.Save(form);
+            formRepository.Publish(By.ContentId(form.ContentId));
+
+            return form;
+        }
+
+        private CmsForm SetupGroupingPageSettingsForm()
+        {
+            var form = new CmsForm
+            {
+                ContentId = Guid.NewGuid(),
+                Name = "Grouping Page Settings",
+                RepositoryUid = new Guid(CmsPageRepository.ApiId),
+            };
+
+            CmsPageContentFactory factory = new CmsPageContentFactory();
+
+            var twoColumn =
+                factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            form.FormContent.Add(twoColumn);
+
+
+            var textboxPageContent =
+                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                {
+                    PropertyName = nameof(CmsPage.Name),
+                    DisplayName = "Page Name",
+
+                });
+
+            textboxPageContent.PlacementContentPlaceHolderId = "0";
+            twoColumn.AllContent.Add(textboxPageContent);
+
+
+            var siteIdDropdown =
+                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
+                {
+                    PropertyName = nameof(CmsPage.SiteId)
+                });
+            twoColumn.AllContent.Add(siteIdDropdown);
+
+            var formRepository = new FormRepository();
+            formRepository.Save(form);
+            formRepository.Publish(By.ContentId(form.ContentId));
+
+            return form;
+        }
+
+        private CmsForm SetupPageSettingsForm()
+        {
+
+            var form = new CmsForm
+            {
+                ContentId = Guid.NewGuid(),
+                Name = "Content Page Settings",
+                RepositoryUid = new Guid(CmsPageRepository.ApiId),
+            };
+
+            
 
             CmsPageContentFactory factory = new CmsPageContentFactory();
 
@@ -278,23 +378,42 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             });
 
 
+            var redirectPageSettingsForm = SetupRedirectPageSettingsForm();
+            var groupingPageSettingsForm = SetupGroupingPageSettingsForm();
             var pageSettingsForm = SetupPageSettingsForm();
 
 
-            var pageSettings = new CmsPage
+            var contentPageSettings = new CmsPage
             {
                 Name = "Settings",
-                ContentId = KnownPageIds.PageSettings,
+                ContentId = KnownPageIds.ContentPageSettings,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
                 DisplayInNavigation = false
             };
-            pageSettings.PageContent.Add(new CmsPageContent
+            contentPageSettings.PageContent.AddDynamicFormToBody(pageSettingsForm);
+
+
+            var groupingPageSettings = new CmsPage
             {
-                PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = "wc-dynamic-form",
-                Parameters = new Dictionary<string, string>{["FormId"]= pageSettingsForm.ContentId.ToString()}
-            });
+                Name = "Settings",
+                ContentId = KnownPageIds.GroupingPageSettings,
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId,
+                DisplayInNavigation = false
+            };
+            groupingPageSettings.PageContent.AddDynamicFormToBody(groupingPageSettingsForm);
+
+            var redirectPageSettings = new CmsPage
+            {
+                Name = "Settings",
+                ContentId = KnownPageIds.RedirectPageSettings,
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId,
+                DisplayInNavigation = false
+            };
+            redirectPageSettings.PageContent.AddDynamicFormToBody(redirectPageSettingsForm);
+
 
 
             var entityBuilderPage = new CmsPage
@@ -410,7 +529,10 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             var pageRepo = new CmsPageRepository();
             pageRepo.Save(pageTree);
             pageRepo.Save(formDesigner);
-            pageRepo.Save(pageSettings);
+            pageRepo.Save(contentPageSettings);
+            pageRepo.Save(groupingPageSettings);
+            pageRepo.Save(redirectPageSettings);
+
             pageRepo.Save(entityBuilderPage);
             pageRepo.Save(entityListPage);
             pageRepo.Save(dynamicListTest);
