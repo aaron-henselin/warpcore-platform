@@ -20,7 +20,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
-    public class ContentListConfiguration : ISupportsJsonTypeConverter
+    public class ContentListConfiguration : ISupportsJavaScriptSerializer
     {
         public List<ContentListField> Fields { get; set; } = new List<ContentListField>();
 

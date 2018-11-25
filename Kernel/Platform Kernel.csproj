@@ -96,6 +96,7 @@
     <Compile Include="TinyIoc.cs" />
     <Compile Include="TypeConverter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Uri.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

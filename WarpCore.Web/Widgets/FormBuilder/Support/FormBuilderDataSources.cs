@@ -38,7 +38,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         string DisplayName { get; }
     }
 
-    public class ConfiguratorBehaviorCollection : List<string>, ISupportsJsonTypeConverter
+    public class ConfiguratorBehaviorCollection : List<string>, ISupportsJavaScriptSerializer
     {
     }
 
@@ -184,17 +184,17 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             }
         }
     }
-    public class FormControlPropertiesDataSourceAttribute : Attribute, IListControlSource
+    public class PropertiesAsOptionListSource : Attribute, IListControlSource
     {
         private readonly Type[] _propertyTypes;
 
-        public FormControlPropertiesDataSourceAttribute()
+        public PropertiesAsOptionListSource()
         {
             _propertyTypes = null;
         }
 
 
-        public FormControlPropertiesDataSourceAttribute(params Type[] propertyTypes)
+        public PropertiesAsOptionListSource(params Type[] propertyTypes)
         {
             _propertyTypes = propertyTypes;
         }

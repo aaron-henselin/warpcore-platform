@@ -20,7 +20,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         private ListControl _listControl = new DropDownList { CssClass = "form-control" };
         private ConfiguratorBuildArguments _buildArguments;
 
-        [FormControlPropertiesDataSource]
+        [PropertiesAsOptionListSource]
         [UserInterfaceHint(Editor = Editor.OptionList)][DisplayName("Property")]
         public string PropertyName { get; set; }
 
@@ -35,7 +35,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
 
         [UserInterfaceHint][DisplayName("Display Name")]
-        [UserInterfaceBehavior(typeof(ResetDisplayNameWhenPropertyChanged))]
+        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
 

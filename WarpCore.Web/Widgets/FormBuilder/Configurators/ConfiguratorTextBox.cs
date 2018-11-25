@@ -6,17 +6,16 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
-using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
-using WarpCore.Platform.Orm;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    public class ResetDisplayNameWhenPropertyChanged : IUserInterfaceBehavior
+    public class WhenPropertyNameChangedResetDisplayName : IUserInterfaceBehavior
     {
         private ILabeledConfiguratorControl _control;
         private Type _clrType;
+        
 
         public void RegisterBehavior(IConfiguratorControl control, ConfiguratorBuildArguments buildArguments)
         {
@@ -39,6 +38,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
     }
 
+
     [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
@@ -50,7 +50,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         /// Sets which Property of the object should be configured using this textbox,
         /// when a value is submitted by an end user.
         /// </summary>
-        [FormControlPropertiesDataSource(typeof(string),typeof(int),typeof(decimal))]
+        [PropertiesAsOptionListSource(typeof(string),typeof(int),typeof(decimal))]
         [UserInterfaceHint(Editor = Editor.OptionList)][DisplayName("Property name")]
         public string PropertyName { get; set; }
 
@@ -63,7 +63,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         /// Sets a custom label for the textbox when presented to the end user.
         /// </summary>
         [UserInterfaceHint][DisplayName("Display name")]
-        [UserInterfaceBehavior(typeof(ResetDisplayNameWhenPropertyChanged))]
+        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
 

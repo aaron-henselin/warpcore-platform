@@ -79,11 +79,15 @@ namespace WarpCore.Web
 
                     Dependency.Register<IDynamicTypeDefinitionResolver>(typeof(DynamicTypeDefinitionResolver));
                     
+                    ExtensibleTypeConverter.TypeConverters.Add(new WarpCorePageUriTypeConverter());
+
                     ExtensibilityBootstrapper.PreloadPluginAssembliesFromFileSystem(AppDomain.CurrentDomain);
                     ExtensibilityBootstrapper.RegisterExtensibleTypesWithApi(AppDomain.CurrentDomain);
                    
                     ToolboxBootstrapper.RegisterToolboxItemsWithApi(AppDomain.CurrentDomain);
                     
+
+
                     IsBooted = true;
 
                 }).ContinueWith(x =>
@@ -102,7 +106,7 @@ namespace WarpCore.Web
 
             Dependency.Register<CmsPageRequestContext>(() => HttpContext.Current.ToCmsRouteContext());
             Dependency.Register<UriBuilderContext>(() => HttpContext.Current.ToUriBuilderContext());
-
+            
             CmsRouteRegistrar.RegisterDynamicRoutes();
         }
     }

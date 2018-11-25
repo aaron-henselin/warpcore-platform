@@ -9,6 +9,7 @@ using Cms.Forms;
 using Cms.Layout;
 using Cms.Toolbox;
 using WarpCore.Cms;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
 using WarpCore.DbEngines.AzureStorage;
@@ -423,7 +424,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
                 PageType = PageType.RedirectPage,
-                RedirectPageId = pageTree.ContentId,
+                RedirectUri = new WarpCorePageUri(pageTree),
                 InternalRedirectParameters = new Dictionary<string, string> { ["SiteId"]= backendSite.ContentId.ToString()}
             };
 

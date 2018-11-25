@@ -11,6 +11,7 @@ using Cms;
 using Cms.Layout;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms
@@ -33,7 +34,11 @@ namespace WarpCore.Cms
         public const string GroupingPage = "GroupingPage";
         public const string RedirectPage = "RedirectPage";
     }
+
+
     
+ 
+
     [Table("cms_page")]
     [SupportsCustomFields(ApiId)]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
@@ -75,10 +80,8 @@ namespace WarpCore.Cms
         [DisplayName("Physical File")]
         public string PhysicalFile { get; set; }
 
-        [DisplayName("External Redirect Url")]
-        public string RedirectExternalUrl { get; set; }
-
-        public Guid? RedirectPageId { get; set; }
+        [DisplayName("Redirect Url")]
+        public Uri RedirectUri { get; set; }
 
         [Column][DisplayName("Require Ssl")]
         public bool RequireSsl { get; set; }

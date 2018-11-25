@@ -24,7 +24,8 @@ namespace Cms.Toolbox
     }
 
     public enum Editor { Text,RichText,OptionList, CheckBox,
-        SubForm,Hidden
+        SubForm,Hidden,
+        Url
     }
 
     public class UserInterfaceIgnoreAttribute : Attribute

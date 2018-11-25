@@ -82,6 +82,10 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                                 content = CreateConfiguratorPageContent<ConfiguratorHiddenField>(property);
                                 break;
 
+                            case Editor.Url:
+                                content = CreateConfiguratorPageContent<ConfiguratorUrlSelector>(property);
+                                break;
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -137,6 +141,11 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                 var isDecimal = property.PropertyInfo.PropertyType == typeof(decimal) || property.PropertyInfo.PropertyType == typeof(decimal?);
                 if (isDecimal)
                     bestGuess = Editor.Text;
+
+                var isUri = property.PropertyInfo.PropertyType == typeof(Uri);
+                if (isUri)
+                    bestGuess = Editor.Url;
+
 
                 var hasDataRelation = property.PropertyInfo.GetCustomAttributes<DataRelationAttribute>().Any();
                 if (hasDataRelation)

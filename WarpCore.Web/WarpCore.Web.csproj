@@ -86,6 +86,7 @@
     <Compile Include="CmsPageContentActivation\CmsPageLayoutEngine.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
+    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />
     <Compile Include="Widgets\FormBuilder\Support\CmsFormReadWriter.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\CompositeConfigurator.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Http;
 using System.Web.Script.Serialization;
 using WarpCore.Cms.Sites;
@@ -106,5 +105,13 @@ namespace WarpCore.Cms.Routing
         }
 
 
+    }
+
+    public static class UriExtensions
+    {
+        public static bool IsWarpCoreDataScheme(this Uri uri)
+        {
+            return uri.IsAbsoluteUri && uri.Scheme == WarpCorePageUri.UriSchemeWarpCorePage;
+        }
     }
 }

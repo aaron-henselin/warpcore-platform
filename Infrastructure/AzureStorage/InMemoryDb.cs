@@ -151,7 +151,7 @@ namespace WarpCore.DbEngines.AzureStorage
 
                 foreach (var prop in publicProperties)
                 {
-                    bool allowNull = prop.PropertyType == typeof(string);
+                    bool allowNull = prop.PropertyType == typeof(string) || !prop.PropertyType.IsPrimitive;
 
                     Type actualPropertyType = prop.PropertyType;
                     var isConstructedGeneric = prop.PropertyType.IsConstructedGenericType;

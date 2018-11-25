@@ -55,7 +55,6 @@ namespace WarpCore.Platform.Extensibility
             AssemblyLoader.LoadAssemblies(appDomain, asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);
         }
 
-
         public static void RegisterExtensibleTypesWithApi(AppDomain domain)
         {
             var assemblies = domain.GetAssemblies();

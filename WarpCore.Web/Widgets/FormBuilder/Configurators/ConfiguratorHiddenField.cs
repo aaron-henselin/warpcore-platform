@@ -16,7 +16,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
         private HiddenField _hiddenField = new HiddenField {  };
 
-        [FormControlPropertiesDataSource]
+        [PropertiesAsOptionListSource]
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [DisplayName("Property")]
         public string PropertyName { get; set; }

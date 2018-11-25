@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Orm;
@@ -101,12 +102,20 @@ namespace WarpCore.Cms
             SiteRoute primaryRoute = null;
 
             if (PageType.RedirectPage == node.Page.PageType)
+            {
+                var redirectUri = node.Page.RedirectUri;
+                if (redirectUri.IsWarpCoreDataScheme())
                 primaryRoute = new RedirectPageRoute
                 {
-                    RedirectExternalUrl = node.Page.RedirectExternalUrl,
-                    InternalRedirectPageId = node.Page.RedirectPageId,
+                    InternalRedirectPageId = new WarpCorePageUri(node.Page.RedirectUri.OriginalString).ContentId,
                     InternalRedirectParameters = node.Page.InternalRedirectParameters
                 };
+                else
+                    primaryRoute = new RedirectPageRoute
+                    {
+                        RedirectExternalUrl = node.Page.RedirectUri.ToString()
+                    };
+            }
 
             if (PageType.GroupingPage == node.Page.PageType)
             {

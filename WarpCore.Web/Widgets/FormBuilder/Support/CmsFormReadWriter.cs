@@ -111,14 +111,18 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             {
                 configuratorControl.InitializeEditingContext(buildArguments);
 
-                var behaviors = configuratorControl.Behaviors
-                    .Select(Type.GetType)
-                    .Select(x => Activator.CreateInstance(x))
-                    .Cast<IUserInterfaceBehavior>()
-                    .ToList();
-                
-                foreach (var behavior in behaviors)
-                    behavior.RegisterBehavior(configuratorControl,buildArguments);
+                if (configuratorControl.Behaviors != null)
+                {
+
+                    var behaviors = configuratorControl.Behaviors
+                        .Select(Type.GetType)
+                        .Select(x => Activator.CreateInstance(x))
+                        .Cast<IUserInterfaceBehavior>()
+                        .ToList();
+
+                    foreach (var behavior in behaviors)
+                        behavior.RegisterBehavior(configuratorControl, buildArguments);
+                }
             }
 
             
