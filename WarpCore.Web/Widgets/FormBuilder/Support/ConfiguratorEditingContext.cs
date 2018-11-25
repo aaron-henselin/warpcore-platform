@@ -28,9 +28,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         public Type ClrType { get; set; }
         public Func<PropertyInfo, bool> PropertyFilter { get; set; }
         public EditingContext ParentEditingContext { get; set; }
-        public ConfiguratorEvents Events { get; set; }
-        public Guid PageContentId { get; set; }
 
+        public Guid PageContentId { get; set; }
+        public ConfiguratorEvents Events { get; set; }
     }
 
     public class ConfiguratorEvents

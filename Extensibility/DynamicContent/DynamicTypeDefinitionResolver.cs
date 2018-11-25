@@ -29,7 +29,7 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
 
         public DynamicTypeDefinition Resolve(Type type)
         {
-            var cosmosEntityAttribute = type.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+            var cosmosEntityAttribute = type.GetCustomAttribute<WarpCoreEntityAttribute>();
             if (cosmosEntityAttribute != null)
                 return Resolve(cosmosEntityAttribute.TypeExtensionUid);
 

@@ -18,25 +18,23 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 namespace DemoSite
 {
     
-
     public partial class DynamicForm : System.Web.UI.UserControl
     {
         private CmsForm _cmsForm;
 
-        [UserInterfaceHint]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [ContentControlSourceAttribute(FormRepository.ApiId)]
         public Guid FormId { get; set; }
         
         private IVersionedContentRepositoryBase _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
-        private ConfiguratorEvents _configuratorEvents;
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
             _dynamicFormRequest = Context.ToDynamicFormRequestContext();
-            _configuratorEvents = new ConfiguratorEvents();
 
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
@@ -56,13 +54,14 @@ namespace DemoSite
             {
                 ClrType = draft.GetType(),
                 PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
-                DefaultValues = d,
-                Events = _configuratorEvents
+                DefaultValues = d
             };
+            configuratorEditingContext.Events=CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext).Events;
+            
             CmsFormReadWriter.InitializeEditing(surface, configuratorEditingContext);
             SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
-            CmsFormReadWriter.FillInControlValues(surface,configuratorEditingContext);
-            CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext);
+            CmsFormReadWriter.SetDefaultValues(surface,configuratorEditingContext);
+            
         }
 
 
@@ -80,9 +79,9 @@ namespace DemoSite
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var values = CmsFormReadWriter.GetChangedValues(surface);
-            foreach (var value in values)
-                _configuratorEvents.RaiseValueChanged(value);
+            var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
+            eventTracking.RaiseEvents();
+            eventTracking.UpdateEventData();
         }
 
         private WarpCoreEntity GetDraft()

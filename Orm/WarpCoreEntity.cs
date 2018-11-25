@@ -87,7 +87,6 @@ namespace WarpCore.Platform.Orm
         public bool IsDirty => InternalId == null || !string.Equals(ChangeTracking, JsonConvert.SerializeObject(this));
 
 
-
         public string ComplexData
         {
             get

@@ -52,6 +52,46 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         ConfiguratorBehaviorCollection Behaviors { get; }
     }
 
+    public class ContentControlSourceAttribute : Attribute, IListControlSource
+    {
+        private readonly string _repositoryUid;
+
+        public ContentControlSourceAttribute(string repositoryUid)
+        {
+            _repositoryUid = repositoryUid;
+        }
+
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string, string> model)
+        {
+            var repositoryUid = model.Get<Guid?>(_repositoryUid);
+            if (repositoryUid == null)
+                yield break;
+
+
+            var t = RepositoryTypeResolver.ResolveTypeByApiId(new Guid(_repositoryUid));
+            var repo = (IContentRepository)Activator.CreateInstance(t);
+
+            IReadOnlyCollection<WarpCoreEntity> foundEntities;
+            var versioned = repo as IVersionedContentRepositoryBase;
+            var unversioned = repo as IUnversionedContentRepositoryBase;
+            if (versioned != null)
+            {
+                foundEntities =versioned.FindContentVersions(null, ContentEnvironment.Draft);
+            }
+            else
+            {
+                foundEntities =unversioned.FindContent(null);
+            }
+
+            foreach (var foundEntity in foundEntities)
+                yield return new ListOption
+                {
+                    Text = foundEntity.GetTitle(),
+                    Value = foundEntity.ContentId.ToString()
+                };
+        }
+    }
+
     public class EntitiesControlSourceAttribute : Attribute, IListControlSource
     {
         private readonly string _repositoryUidProperty;
@@ -72,7 +112,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var repoType = RepositoryTypeResolver.ResolveTypeByApiId(repoMetadata.ApiId);
             var repo = (IContentRepository)Activator.CreateInstance(repoType);
             var entityType = repo.New().GetType();
-            var apiAttr = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+            var apiAttr = entityType.GetCustomAttribute<WarpCoreEntityAttribute>();
                 yield return new ListOption
                {
                    Text = entityType.GetDisplayName(),

@@ -43,7 +43,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
             CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent);
             CmsFormReadWriter.InitializeEditing(_surface, buildArguments);
-            //CmsFormReadWriter.FillInControlValues(_surface, buildArguments);
+            //CmsFormReadWriter.SetDefaultValues(_surface, buildArguments);
         }
 
         public void SetConfiguration(SettingProperty settingProperty)

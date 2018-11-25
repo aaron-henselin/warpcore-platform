@@ -35,7 +35,7 @@ namespace DemoSite
     {
         private CmsPageContent _contentToEdit;
         private ConfiguratorControlState _configuratorControlState;
-        private ConfiguratorEvents _events;
+
 
         public string WC_CONFIGURATOR_CONTEXT_JSON { get; set; }
 
@@ -63,8 +63,7 @@ namespace DemoSite
             }
           
             
-
-            _events = new ConfiguratorEvents();
+            
             RebuildDesignSurface();
         }
 
@@ -96,14 +95,12 @@ namespace DemoSite
                 PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
                 DefaultValues = parametersAfterActivation,
                 ParentEditingContext = new EditingContextManager().GetEditingContext(),
-                Events = _events
             };
-           
+            buildArguments.Events = CmsFormReadWriter.AddEventTracking(surface, buildArguments).Events;
 
             CmsFormReadWriter.InitializeEditing(surface, buildArguments);
-            CmsFormReadWriter.FillInControlValues(surface, buildArguments);
-            CmsFormReadWriter.AddEventTracking(surface, buildArguments);
-            
+            CmsFormReadWriter.SetDefaultValues(surface, buildArguments);
+
         }
 
 
@@ -113,23 +110,9 @@ namespace DemoSite
             
             if (_configuratorControlState != null)
             {
-                var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).PageContentId;
-                var newConfiguredContentId = _configuratorControlState.PageContentId;
-                var isSameForm = previousConfiguredContentId == newConfiguredContentId;
-                if (isSameForm)
-                {
-                    var values = CmsFormReadWriter.GetChangedValues(surface);
-                    foreach (var value in values)
-                        _events.RaiseValueChanged(value);
-
-                }
-
-
-                var eventrcking= CmsFormReadWriter.GetEventTracking(surface);
-                eventrcking.PreviousControlValues = CmsFormReadWriter.ReadValuesFromControls(surface);
-                eventrcking.PageContentId = _configuratorControlState.PageContentId;
-
-
+                var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
+                eventTracking.RaiseEvents();
+                eventTracking.UpdateEventData();
             }
 
 

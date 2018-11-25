@@ -31,7 +31,7 @@ namespace WarpCore.Platform.Extensibility
 
         public static IReadOnlyCollection<Type> FilterToExtensibleEntityTypes(IReadOnlyCollection<Type> allTypes)
         {
-            return allTypes.HavingAttribute<SupportsCustomFieldsAttribute>()
+            return allTypes.HavingAttribute<WarpCoreEntityAttribute>()
                 .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x))
                 .DistinctBy(x => x.AssemblyQualifiedName)
                 .ToList();
@@ -72,7 +72,7 @@ namespace WarpCore.Platform.Extensibility
             var typeExtensionRepo = new ContentInterfaceRepository();
             foreach (var entityType in entities)
             {
-                var repositoryUid = entityType.GetCustomAttribute<SupportsCustomFieldsAttribute>();
+                var repositoryUid = entityType.GetCustomAttribute<WarpCoreEntityAttribute>();
                 var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
                     typeExtensionRepo.Save(new ContentInterface

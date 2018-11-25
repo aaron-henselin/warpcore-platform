@@ -68,9 +68,9 @@ namespace DemoSite
 
 
             var extendableClrTypes = allTypes
-                .HavingAttribute<SupportsCustomFieldsAttribute>()
+                .HavingAttribute<WarpCoreEntityAttribute>()
                 .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x));
-                //.ToLookup(x => x.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid);
+                //.ToLookup(x => x.GetCustomAttribute<WarpCoreEntityAttribute>().TypeExtensionUid);
 
             List<EntityViewModel> vms = new List<EntityViewModel>();
             var allDynamicContentTypes = new ContentTypeMetadataRepository().Find();
@@ -81,7 +81,7 @@ namespace DemoSite
 
             foreach (var t in extendableClrTypes)
             {
-                var contentTypeId = t.GetCustomAttribute<SupportsCustomFieldsAttribute>().TypeExtensionUid;
+                var contentTypeId = t.GetCustomAttribute<WarpCoreEntityAttribute>().TypeExtensionUid;
                 vms.Add(new EntityViewModel { DisplayName = t.Name, ContentTypeId = contentTypeId });
             }
 

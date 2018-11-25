@@ -40,7 +40,7 @@ namespace WarpCore.Cms
  
 
     [Table("cms_page")]
-    [SupportsCustomFields(ApiId)]
+    [WarpCoreEntity(ApiId,Title =nameof(CmsPage.Name))]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
     [ContentDescription(ContentFriendlyNameSingular = "Page")]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout

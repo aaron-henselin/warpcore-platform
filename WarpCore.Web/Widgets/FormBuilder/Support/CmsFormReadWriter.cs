@@ -14,7 +14,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         private class CmsFormEventsData
         {
             public Dictionary<string, string> PreviousControlValues { get; set; }
-            public Guid PageContentId { get; set; }
+            public Guid PreviousPageContentId { get; set; }
+
+            
         }
 
         public Dictionary<string, string> PreviousControlValues
@@ -31,13 +33,15 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             }
         }
 
-        public Guid PageContentId
+        public Guid PageContentId { get; set; }
+
+        public Guid PreviousPageContentId
         {
-            get { return GetFieldValue().PageContentId; }
+            get { return GetFieldValue().PreviousPageContentId; }
             set
             {
                 var obj = GetFieldValue();
-                obj.PageContentId = value;
+                obj.PreviousPageContentId = value;
                 this.Value = new JavaScriptSerializer().Serialize(obj);
             }
         }
@@ -50,7 +54,29 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             return new JavaScriptSerializer().Deserialize<CmsFormEventsData>(Value);
         }
 
+        public ConfiguratorEvents Events { get;  }= new ConfiguratorEvents();
 
+        public void RaiseEvents()
+        {
+            var surface = this.Parent;
+            var previousConfiguredContentId = CmsFormReadWriter.GetEventTracking(surface).PreviousPageContentId;
+            var newConfiguredContentId = PageContentId;
+            var isSameForm = previousConfiguredContentId == newConfiguredContentId;
+            if (isSameForm)
+            {
+                var values = CmsFormReadWriter.GetChangedValues(surface);
+                foreach (var value in values)
+                    Events.RaiseValueChanged(value);
+
+            }
+        }
+
+        public void UpdateEventData()
+        {
+            PreviousControlValues = CmsFormReadWriter.ReadValuesFromControls(this.Parent);
+            PreviousPageContentId = PageContentId;
+
+        }
     }
 
     public static class CmsFormReadWriter
@@ -92,7 +118,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var previousControlValues = buildArguments.DefaultValues.ToDictionary(x => x.Key, x => x.Value);
             var pageContentId = buildArguments.PageContentId;
             formData = new CmsFormEventsDataHiddenField();
-            formData.PageContentId = pageContentId;
+            formData.PageContentId =pageContentId;
+            formData.PreviousPageContentId = pageContentId;
             formData.PreviousControlValues = previousControlValues;
             surface.Controls.Add(formData);
 
@@ -129,7 +156,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
         }
 
-        public static void FillInControlValues(Control surface, ConfiguratorBuildArguments buildArguments)
+        public static void SetDefaultValues(Control surface, ConfiguratorBuildArguments buildArguments)
         {
             FillInControlValues(surface,buildArguments.DefaultValues);
         }
