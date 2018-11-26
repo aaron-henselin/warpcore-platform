@@ -155,8 +155,19 @@ namespace WarpCore.Cms
         }
     }
 
+    public static class KnownFormIds
+    {
+        public static Guid ContentPageSettingsForm => new Guid("7f85cee1-9ce8-463d-b0a2-9ca93e09608d");
+        public static Guid GroupingPageSettingsForm => new Guid("ac9151e9-febf-4787-8291-5c0bfa2f0b0f");
+        public static Guid RedirectPageSettingsForm => new Guid("922f3485-3b5b-4087-ab4d-29765e638042");
+    }
+
+
+
     public static class KnownPageIds
     {
+
+        public static Guid AddPageWizard => new Guid("f05448d0-bb10-4de7-a5db-a1d85bbb459f");
         public static Guid ContentPageSettings => new Guid("f7f2332e-d2eb-4202-8e9f-99e0b1644386");
         public static Guid GroupingPageSettings => new Guid("e35ac840-0bf5-47ad-b067-0ce096efa9d5");
         public static Guid RedirectPageSettings => new Guid("aeaaa389-b57a-4885-ba74-50daf1411973");

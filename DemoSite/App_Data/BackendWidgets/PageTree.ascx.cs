@@ -80,7 +80,7 @@ namespace DemoSite
             var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
             var uriBuilder = new CmsUriBuilder(uriBuilderContext);
             var editPage = new CmsPageRepository()
-                .FindContentVersions(By.ContentId(KnownPageIds.ContentPageSettings), ContentEnvironment.Live)
+                .FindContentVersions(By.ContentId(KnownPageIds.AddPageWizard), ContentEnvironment.Live)
                 .Result
                 .Single();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Web.Script.Serialization;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Cms.Routing
 {
@@ -53,6 +54,10 @@ namespace WarpCore.Cms.Routing
     {
         private readonly UriBuilderContext _context;
 
+        public CmsUriBuilder():this(Dependency.Resolve<UriBuilderContext>())
+        {
+        }
+
         public CmsUriBuilder(UriBuilderContext context)
         {
             _context = context;
@@ -96,6 +101,9 @@ namespace WarpCore.Cms.Routing
 
         public Uri CreateUri(CmsPage destinationPage, UriSettings settings, IDictionary<string,string> parameters)
         {
+            if (destinationPage == null)
+                throw new ArgumentNullException(nameof(destinationPage));
+
             SiteRoute sr;
             var success = CmsRoutes.Current.TryResolveRoute(destinationPage.ContentId, out sr);
             if (!success)

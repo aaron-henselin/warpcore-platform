@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -28,6 +30,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
         private PlaceHolder _surface;
         private CompositeFormReadWriter _readWriter;
+        private List<IConfiguratorControl> _activatedConfigurators;
 
         public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
@@ -38,11 +41,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
-            _readWriter = new CompositeFormReadWriter(configType, _surface);
+            
 
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
-            CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent);
-            CmsFormReadWriter.InitializeEditing(_surface, buildArguments);
+            _activatedConfigurators =CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
+            _readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
+            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
             //CmsFormReadWriter.SetDefaultValues(_surface, buildArguments);
         }
 
@@ -69,10 +73,10 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         private class CompositeFormReadWriter
         {
             private readonly Type _compositeType;
-            private readonly Control _surface;
+            private readonly IReadOnlyCollection<IConfiguratorControl> _surface;
             readonly JavaScriptSerializer _js = new JavaScriptSerializer();
 
-            public CompositeFormReadWriter(Type compositeType,Control surface)
+            public CompositeFormReadWriter(Type compositeType, IReadOnlyCollection<IConfiguratorControl> surface)
             {
                 _compositeType = compositeType;
                 _surface = surface;

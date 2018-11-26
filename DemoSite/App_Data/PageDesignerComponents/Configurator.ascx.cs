@@ -35,6 +35,7 @@ namespace DemoSite
     {
         private CmsPageContent _contentToEdit;
         private ConfiguratorControlState _configuratorControlState;
+        private List<IConfiguratorControl> _activatedConfigurators;
 
 
         public string WC_CONFIGURATOR_CONTEXT_JSON { get; set; }
@@ -70,7 +71,7 @@ namespace DemoSite
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            var newParameters = CmsFormReadWriter.ReadValuesFromControls(surface);
+            var newParameters = CmsFormReadWriter.ReadValuesFromControls(_activatedConfigurators);
             _contentToEdit.Parameters = newParameters.ToDictionary(x => x.Key,x => x.Value);
             ScriptManager.RegisterClientScriptBlock(this.Page,typeof(Configurator1),"submit", "configurator_submit();",true);
         }
@@ -86,7 +87,7 @@ namespace DemoSite
             var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent);
+            _activatedConfigurators =CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
             var buildArguments = new ConfiguratorBuildArguments
             {
@@ -96,10 +97,10 @@ namespace DemoSite
                 DefaultValues = parametersAfterActivation,
                 ParentEditingContext = new EditingContextManager().GetEditingContext(),
             };
-            buildArguments.Events = CmsFormReadWriter.AddEventTracking(surface, buildArguments).Events;
+            buildArguments.Events = CmsFormReadWriter.AddEventTracking(surface, buildArguments,_activatedConfigurators).Events;
 
-            CmsFormReadWriter.InitializeEditing(surface, buildArguments);
-            CmsFormReadWriter.SetDefaultValues(surface, buildArguments);
+            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
+            CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, buildArguments);
 
         }
 

@@ -7,21 +7,26 @@ namespace WarpCore.Cms.Routing
 {
     public static class CmsRoutes
     {
+        private static object _syncRoot = new object();
         private static CmsRouteTable _current;
 
         public static void RegenerateAllRoutes()
         {
-            _current = null;
+            lock (_syncRoot)
+                _current = null;
         }
 
         public static CmsRouteTable Current
         {
             get
             {
-                if (_current == null)
-                    _current = CreateRouteTable();
+                lock (_syncRoot)
+                {
+                    if (_current == null)
+                        _current = CreateRouteTable();
 
-                return _current;
+                    return _current;
+                }
             }
         }
 

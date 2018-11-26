@@ -7,7 +7,7 @@ namespace Cms
 {
     public static class ListExtensions
     {
-        public static void AddDynamicFormToBody(this ICollection<CmsPageContent> allContent, CmsForm form, string contentPageHolderId ="Body")
+        public static void AddDynamicForm(this ICollection<CmsPageContent> allContent, CmsForm form, string contentPageHolderId ="Body")
         {
             allContent.Add(new CmsPageContent
             {
@@ -16,5 +16,7 @@ namespace Cms
                 Parameters = new Dictionary<string, string> { ["FormId"] = form.ContentId.ToString() }
             });
         }
+
+
     }
 }

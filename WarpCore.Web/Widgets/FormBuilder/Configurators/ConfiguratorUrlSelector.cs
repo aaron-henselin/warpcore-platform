@@ -69,9 +69,16 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         public void SetValue(string newValue)
         {
-            var uri = new Uri(newValue, UriKind.RelativeOrAbsolute);
-            _selectExternalUrlCheckbox.Checked = uri.IsWarpCoreDataScheme();
-            
+            if (string.IsNullOrWhiteSpace(newValue))
+            {
+                _selectExternalUrlCheckbox.Checked = false;
+            }
+            else
+            {
+                var uri = new Uri(newValue, UriKind.RelativeOrAbsolute);
+                _selectExternalUrlCheckbox.Checked = uri.IsWarpCoreDataScheme();
+            }
+
             RefreshVisibility();
         }
 
@@ -96,7 +103,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         private void RefreshVisibility()
         {
             _externalUrlTextBox.Visible = _selectExternalUrlCheckbox.Checked;
-            _internalUrlDropDownList.Visible = _selectExternalUrlCheckbox.Checked;
+            _internalUrlDropDownList.Visible = !_selectExternalUrlCheckbox.Checked;
         }
     }
 }

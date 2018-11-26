@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
@@ -20,8 +21,10 @@ namespace DemoSite
     
     public partial class DynamicForm : System.Web.UI.UserControl
     {
-        private CmsForm _cmsForm;
+        public const string ApiId = "wc-dynamic-form";
 
+        private CmsForm _cmsForm;
+        
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [ContentControlSourceAttribute(FormRepository.ApiId)]
         public Guid FormId { get; set; }
@@ -29,6 +32,7 @@ namespace DemoSite
         private IVersionedContentRepositoryBase _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
+        private IReadOnlyCollection<IConfiguratorControl> _activatedConfigurators;
 
         protected override void OnInit(EventArgs e)
         {
@@ -44,7 +48,7 @@ namespace DemoSite
             var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
             _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
 
-            CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent);
+            _activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
 
             var draft = GetDraft();
@@ -56,20 +60,20 @@ namespace DemoSite
                 PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
                 DefaultValues = d
             };
-            configuratorEditingContext.Events=CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext).Events;
+            configuratorEditingContext.Events=CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext,_activatedConfigurators).Events;
             
-            CmsFormReadWriter.InitializeEditing(surface, configuratorEditingContext);
+            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, configuratorEditingContext);
             SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
-            CmsFormReadWriter.SetDefaultValues(surface,configuratorEditingContext);
+            CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, configuratorEditingContext);
             
         }
 
 
         private void SetConfiguratorEditingContextDefaultValuesFromUrl(ConfiguratorBuildArguments configuratorBuildArguments)
         {
-            var canSetDefaults = !Page.IsPostBack && _dynamicFormRequest.ContentId == null;
-            if (!canSetDefaults)
-                return;
+            //var canSetDefaults = !Page.IsPostBack && _dynamicFormRequest.ContentId == null;
+            //if (!canSetDefaults)
+            //    return;
 
             var defaultValueCollection = _dynamicFormRequest.DefaultValues;
             foreach (var kvp in defaultValueCollection)
@@ -99,7 +103,7 @@ namespace DemoSite
         {
             var draft = GetDraft();
 
-            var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
+            var newValues = CmsFormReadWriter.ReadValuesFromControls(_activatedConfigurators);
             draft.SetPropertyValues(newValues, x => true);
 
             _repo.Save(draft);

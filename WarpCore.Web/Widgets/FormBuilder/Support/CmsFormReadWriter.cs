@@ -55,6 +55,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
 
         public ConfiguratorEvents Events { get;  }= new ConfiguratorEvents();
+        public IReadOnlyCollection<IConfiguratorControl> MonitoredConfigurators { get; set; }
 
         public void RaiseEvents()
         {
@@ -64,7 +65,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var isSameForm = previousConfiguredContentId == newConfiguredContentId;
             if (isSameForm)
             {
-                var values = CmsFormReadWriter.GetChangedValues(surface);
+                var values = CmsFormReadWriter.GetChangedValues(surface,MonitoredConfigurators);
                 foreach (var value in values)
                     Events.RaiseValueChanged(value);
 
@@ -73,7 +74,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
         public void UpdateEventData()
         {
-            PreviousControlValues = CmsFormReadWriter.ReadValuesFromControls(this.Parent);
+            PreviousControlValues = CmsFormReadWriter.ReadValuesFromControls(MonitoredConfigurators);
             PreviousPageContentId = PageContentId;
 
         }
@@ -81,13 +82,13 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
     public static class CmsFormReadWriter
     {
-        public static IEnumerable<ValueChangedEventArgs> GetChangedValues(Control surface)
+        public static IEnumerable<ValueChangedEventArgs> GetChangedValues(Control surface, IReadOnlyCollection<IConfiguratorControl> monitoredConfigurators)
         {
 
 
             var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
 
-            var newValues = CmsFormReadWriter.ReadValuesFromControls(surface);
+            var newValues = CmsFormReadWriter.ReadValuesFromControls(monitoredConfigurators);
             foreach (var key in newValues.Keys)
             {
                 var isNewValue = !string.Equals(newValues[key], eventTracking.PreviousControlValues[key]);
@@ -109,7 +110,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             
         }
 
-        public static CmsFormEventsDataHiddenField AddEventTracking(Control surface, ConfiguratorBuildArguments buildArguments)
+        public static CmsFormEventsDataHiddenField AddEventTracking(Control surface, ConfiguratorBuildArguments buildArguments, IReadOnlyCollection<IConfiguratorControl> monitoredConfigurators)
         {
             var formData = GetEventTracking(surface);
             if (formData != null)
@@ -121,6 +122,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             formData.PageContentId =pageContentId;
             formData.PreviousPageContentId = pageContentId;
             formData.PreviousControlValues = previousControlValues;
+            formData.MonitoredConfigurators = monitoredConfigurators;
             surface.Controls.Add(formData);
 
             return formData;
@@ -128,13 +130,11 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
 
 
-        public static void InitializeEditing(Control surface, ConfiguratorBuildArguments buildArguments)
+        public static void InitializeEditing(IReadOnlyCollection<IConfiguratorControl> controls, ConfiguratorBuildArguments buildArguments)
         {
-            var configuratorControls = surface.GetDescendantControls<Control>()
-                .OfType<IConfiguratorControl>()
-                .ToList();
 
-            foreach (var configuratorControl in configuratorControls)
+
+            foreach (var configuratorControl in controls)
             {
                 configuratorControl.InitializeEditingContext(buildArguments);
 
@@ -156,24 +156,23 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
         }
 
-        public static void SetDefaultValues(Control surface, ConfiguratorBuildArguments buildArguments)
+        public static void SetDefaultValues(IReadOnlyCollection<IConfiguratorControl> controls, ConfiguratorBuildArguments buildArguments)
         {
-            FillInControlValues(surface,buildArguments.DefaultValues);
+            FillInControlValues(controls,buildArguments.DefaultValues);
         }
 
-        public static void FillInControlValues(Control surface, IDictionary<string,string> newValues)
+        public static void FillInControlValues(IReadOnlyCollection<IConfiguratorControl> controls, IDictionary<string,string> newValues)
         {
-            var rt= surface.GetDescendantControls<RuntimeContentPlaceHolder>().First();
-            foreach (var control in rt.Controls.OfType<IConfiguratorControl>())
+            foreach (var control in controls)
             {
                 control.SetValue(newValues[control.PropertyName]);
             }
         }
 
-        public static Dictionary<string, string> ReadValuesFromControls(Control surface)
+        public static Dictionary<string, string> ReadValuesFromControls(IReadOnlyCollection<IConfiguratorControl> controls)
         {
             Dictionary<string, string> newParameters = new Dictionary<string, string>();
-            foreach (var control in surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>())
+            foreach (var control in controls)
                 newParameters.Add(control.PropertyName, control.GetValue());
 
             return newParameters;
