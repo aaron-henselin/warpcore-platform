@@ -408,7 +408,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
 
             var contentPageSettings = new CmsPage
             {
-                Name = "Settings",
+                Name = "Content Page Settings",
                 ContentId = KnownPageIds.ContentPageSettings,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
@@ -419,7 +419,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
 
             var groupingPageSettings = new CmsPage
             {
-                Name = "Settings",
+                Name = "Group Page Settings",
                 ContentId = KnownPageIds.GroupingPageSettings,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
@@ -429,7 +429,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
 
             var redirectPageSettings = new CmsPage
             {
-                Name = "Settings",
+                Name = "Redirect Page Settings",
                 ContentId = KnownPageIds.RedirectPageSettings,
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,

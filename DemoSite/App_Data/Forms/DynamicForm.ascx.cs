@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
 using WarpCore.Cms.Routing;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;

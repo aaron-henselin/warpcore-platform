@@ -148,6 +148,10 @@
       <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
       <Name>Platform Orm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
       <Name>Cms Routing</Name>

@@ -7,6 +7,7 @@ using Cms.Forms;
 using Cms.Toolbox;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Widgets.FormBuilder.Configurators;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Support

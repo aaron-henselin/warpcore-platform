@@ -99,6 +99,10 @@
       <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
       <Name>Platform Orm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

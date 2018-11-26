@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using Cms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;

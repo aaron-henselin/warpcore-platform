@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
 {

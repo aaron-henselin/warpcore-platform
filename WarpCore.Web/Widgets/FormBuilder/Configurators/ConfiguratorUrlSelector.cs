@@ -3,8 +3,11 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using DemoSite;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
+using WarpCore.Cms.Sites;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
@@ -37,6 +40,13 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
+
+        //[DisplayName("Site Filter")]
+        //[UserInterfaceHint(Editor = Editor.OptionList)]
+        //[DataRelation(SiteRepository.ApiId)]
+        //public Guid? SiteId { get; set; }
+
+
         [UserInterfaceHint(Editor = Editor.Hidden)]
         public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
@@ -50,14 +60,19 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
+            
+
             var cmsPageRepository = new CmsPageRepository();
             var allDrafts = cmsPageRepository.FindContentVersions(null, ContentEnvironment.Draft).Result;
 
             _internalUrlDropDownList.Items.Clear();
             foreach (var draft in allDrafts)
             {
-                var dataUri = new WarpCorePageUri(draft).ToDataUriString();
-                _internalUrlDropDownList.Items.Add(new ListItem {Text=draft.Name,Value=dataUri});
+                //if (SiteId == null || draft.SiteId == SiteId.Value)
+                //{
+                    var dataUri = new WarpCorePageUri(draft).ToDataUriString();
+                    _internalUrlDropDownList.Items.Add(new ListItem {Text = draft.Name, Value = dataUri});
+                //}
             }
         }
 

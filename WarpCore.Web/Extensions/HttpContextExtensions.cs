@@ -49,7 +49,7 @@ namespace WarpCore.Web.Extensions
 
         
 
-        public static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
+        internal static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
         {
             var routeRaw = context.Request[PageDesignerUriComponents.PageId];
             var environmentRaw = context.Request[PageDesignerUriComponents.ContentEnvironment];

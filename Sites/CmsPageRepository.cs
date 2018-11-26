@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Cms;
 using Cms.Layout;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
@@ -79,6 +80,7 @@ namespace WarpCore.Cms
 
         [DisplayName("Physical File")]
         public string PhysicalFile { get; set; }
+
 
         [DisplayName("Redirect Url")]
         public Uri RedirectUri { get; set; }

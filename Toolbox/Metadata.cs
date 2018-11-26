@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
@@ -23,44 +24,7 @@ namespace Cms.Toolbox
         public string Value { get; set; }
     }
 
-    public enum Editor { Text,RichText,OptionList, CheckBox,
-        SubForm,Hidden,
-        Url
-    }
 
-    public class UserInterfaceIgnoreAttribute : Attribute
-    {
-    }
-
-    public class DependsOnPropertyAttribute : Attribute
-    {
-        public string PropertyName { get; }
-
-        public DependsOnPropertyAttribute(string propertyName)
-        {
-            PropertyName = propertyName;
-        }
-    }
-
-
-
-    public class UserInterfaceBehaviorAttribute : Attribute
-    {
-        public Type BehaviorType { get; }
-
-        public UserInterfaceBehaviorAttribute(Type behaviorType)
-        {
-            BehaviorType = behaviorType;
-        }
-    }
-
-    public class UserInterfaceHintAttribute : Attribute
-    {
-        public Editor Editor { get; set; }
-
-        public Type CustomEditorType { get; set; }
-        
-    }
 
     public class SettingProperty
     {
