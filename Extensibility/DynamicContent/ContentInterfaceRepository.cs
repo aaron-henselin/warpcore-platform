@@ -16,6 +16,8 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
         }
     }
 
+
+
     [Table("cms_content_type_interface")]
     public class ContentInterface : UnversionedContentEntity
     {

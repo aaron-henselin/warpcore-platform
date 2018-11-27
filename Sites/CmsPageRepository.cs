@@ -41,9 +41,8 @@ namespace WarpCore.Cms
  
 
     [Table("cms_page")]
-    [WarpCoreEntity(ApiId,Title =nameof(CmsPage.Name))]
+    [WarpCoreEntity(ApiId,Title =nameof(CmsPage.Name),ContentNameSingular = "Page")]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
-    [ContentDescription(ContentFriendlyNameSingular = "Page")]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
         public const string ApiId = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
@@ -277,11 +276,6 @@ namespace WarpCore.Cms
         public Guid ParentRepositoryId { get; set; }
     }
 
-    public class ContentDescriptionAttribute : Attribute
-    {
-        public string ContentFriendlyNameSingular { get; set; }
-        public string ContentFriendlyNamePlural { get; set; }
-    }
 
 
 

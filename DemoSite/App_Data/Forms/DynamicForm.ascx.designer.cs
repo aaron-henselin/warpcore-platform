@@ -13,6 +13,33 @@ namespace DemoSite {
     public partial class DynamicForm {
         
         /// <summary>
+        /// FormTitleAdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl FormTitleAdd;
+        
+        /// <summary>
+        /// FormTitleEdit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl FormTitleEdit;
+        
+        /// <summary>
+        /// FormTitleEditName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl FormTitleEditName;
+        
+        /// <summary>
         /// surface control.
         /// </summary>
         /// <remarks>

@@ -30,7 +30,6 @@ namespace WarpCore.Platform.Extensibility
         public bool IsDynamic { get; set; }
         public Guid ApiId { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
-
         public string CustomAssemblyQualifiedTypeName { get; set; }
         public string CustomRepositoryName { get; set; }
     }

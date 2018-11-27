@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Design.PluralizationServices;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -69,10 +71,38 @@ namespace WarpCore.Platform.Extensibility
 
             //Break this one out later.
             var entities = TypeSearcher.FilterToExtensibleEntityTypes(allTypes);
+
+            var contentTypeMetadataRepository = new ContentTypeMetadataRepository();
+
             var typeExtensionRepo = new ContentInterfaceRepository();
             foreach (var entityType in entities)
             {
                 var repositoryUid = entityType.GetCustomAttribute<WarpCoreEntityAttribute>();
+
+                var preexistingContentType = contentTypeMetadataRepository.Find().SingleOrDefault(x => x.TypeResolverId == repositoryUid.TypeExtensionUid);
+                if (preexistingContentType == null)
+                    preexistingContentType = new DynamicContentType
+                    {
+                        TypeResolverId = repositoryUid.TypeExtensionUid,
+                    };
+
+                preexistingContentType.ContentNameSingular = repositoryUid.ContentNameSingular;
+                preexistingContentType.ContentNamePlural = repositoryUid.ContentNamePlural;
+
+                if (string.IsNullOrWhiteSpace(preexistingContentType.ContentNameSingular))
+                    preexistingContentType.ContentNameSingular = entityType.Name;
+
+                if (string.IsNullOrWhiteSpace(preexistingContentType.ContentNamePlural))
+                {
+                    preexistingContentType.ContentNamePlural = 
+                    PluralizationService.CreateService(CultureInfo.CurrentCulture)
+                        .Pluralize(preexistingContentType.ContentNameSingular);
+                }
+
+
+                contentTypeMetadataRepository.Save(preexistingContentType);
+                    
+
                 var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
                 if (preexisting == null)
                     typeExtensionRepo.Save(new ContentInterface

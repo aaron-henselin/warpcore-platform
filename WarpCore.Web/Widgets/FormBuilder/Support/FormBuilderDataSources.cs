@@ -67,9 +67,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (repositoryUid == null)
                 yield break;
 
-
-            var t = RepositoryTypeResolver.ResolveTypeByApiId(new Guid(_repositoryUid));
-            var repo = (IContentRepository)Activator.CreateInstance(t);
+            var repo = RepositoryActivator.ActivateRepository(new Guid(_repositoryUid));
 
             IReadOnlyCollection<WarpCoreEntity> foundEntities;
             var versioned = repo as IVersionedContentRepositoryBase;
@@ -107,10 +105,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (repositoryUid == null)
                 yield break;
 
-            var mgr = new RepositoryMetadataManager();
-            var repoMetadata = mgr.GetRepositoryMetdataByTypeResolverUid(repositoryUid.Value);
-            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(repoMetadata.ApiId);
-            var repo = (IContentRepository)Activator.CreateInstance(repoType);
+            var repo = RepositoryActivator.ActivateRepository(repositoryUid.Value);
             var entityType = repo.New().GetType();
             var apiAttr = entityType.GetCustomAttribute<WarpCoreEntityAttribute>();
                 yield return new ListOption
@@ -145,13 +140,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
         public static Type GetClrType(EditingContext editingContext)
         {
-            var repoManager = new RepositoryMetadataManager();
-            var repoMetadata =
-                repoManager.GetRepositoryMetdataByTypeResolverUid(editingContext.DesignContentTypeId);
-            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
-            var repo = (IContentRepository)Activator.CreateInstance(repoType);
-            return repo.New().GetType();
-            
+            return RepositoryActivator.ActivateRepository(editingContext.DesignContentTypeId).New().GetType();
         }
 
         public static List<PropertyInfo> PropertiesFilered(ConfiguratorBuildArguments buildArguments)

@@ -193,6 +193,7 @@ namespace DemoSite
 
             textboxPageContent.PlacementContentPlaceHolderId = "0";
 
+            twoColumn.AllContent.Add(textboxPageContent);
             twoColumn.AllContent.Add(urlSelector);
 
 

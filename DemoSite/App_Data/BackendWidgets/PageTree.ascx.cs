@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -129,6 +130,8 @@ namespace DemoSite
                 pageTreeItem.IsPublished = liveNode != null;
                 pageTreeItem.IsHomePage = pageTreeItem.PageId == matchedSite.HomepageId;
 
+
+                Guid settingsPageId= Guid.Empty;
                 var draftNode = draftSitemap.GetSitemapNode(pageTreeItem.PageId);
                 if (draftNode.Page.PageType == PageType.ContentPage)
                 {
@@ -145,10 +148,19 @@ namespace DemoSite
                         pageTreeItem.DesignUrl = $"/Admin/draft?{PageDesignerUriComponents.ViewMode}=PageDesigner&{PageDesignerUriComponents.SiteId}={draftNode.Page.SiteId}&{PageDesignerUriComponents.PageId}={pageTreeItem.PageId}";
                     }
 
+                    settingsPageId = KnownPageIds.ContentPageSettings;
                 }
+                if (draftNode.Page.PageType == PageType.GroupingPage)
+                    settingsPageId = KnownPageIds.GroupingPageSettings;
 
-                pageTreeItem.SettingsUrl = "/admin/settings?contentId=" + pageTreeItem.PageId;
-                   
+                if (draftNode.Page.PageType == PageType.RedirectPage)
+                    settingsPageId = KnownPageIds.RedirectPageSettings;
+
+
+                var success = CmsRoutes.Current.TryResolveRoute(settingsPageId, out var sr);
+                if (success)
+                    pageTreeItem.SettingsUrl = uriBuilder.CreateUriForRoute(sr, UriSettings.Default,new Dictionary<string, string> {["contentId"] = pageTreeItem.PageId.ToString()}).ToString();
+
             }
 
             _controlState.PageTreeItems = pagesTreeItems.ToList();

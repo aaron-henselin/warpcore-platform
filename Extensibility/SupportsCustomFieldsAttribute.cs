@@ -13,6 +13,8 @@ namespace WarpCore.Platform.Extensibility
 
         public Guid TypeExtensionUid { get; set; }
         public string Title { get; set; }
+        public string ContentNameSingular { get; set; }
+        public string ContentNamePlural { get; set; }
     }
 
     public static class WarpCoreEntityExtensions

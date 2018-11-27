@@ -44,9 +44,22 @@ namespace WarpCore.Cms.Routing
         public const string UriSchemeWarpCorePage = "warpcore";
 
 
-        public Guid RepositoryApiId => new Guid(this.Segments[1]);
-        public Guid EntityApiId => new Guid(this.Segments[3]);
-        public Guid ContentId => new Guid(this.Segments[4]);
+        public Guid RepositoryApiId => ExtractSegment(1);
+        public Guid EntityApiId => ExtractSegment(3);
+        public Guid ContentId => ExtractSegment(4);
+
+        private Guid ExtractSegment(int i)
+        {
+            try
+            {
+                var segment = this.Segments[i].Trim('/');
+                return new Guid(segment);
+            }
+            catch (Exception e)
+            {
+                throw new FormatException(base.ToString() + " is an invalid data uri. Expected format warpcore://repository/{apiId}/type/{apiId}/{contentId}.");
+            }
+        }
 
         public override string ToString()
         {

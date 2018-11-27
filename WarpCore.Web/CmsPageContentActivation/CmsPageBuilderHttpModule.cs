@@ -127,6 +127,7 @@ public interface ILayoutHandle
                 }
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
+
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);
 
                 if (routingContext.Route != null)

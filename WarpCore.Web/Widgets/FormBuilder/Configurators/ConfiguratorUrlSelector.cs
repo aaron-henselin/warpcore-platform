@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
@@ -9,6 +10,7 @@ using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
+using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
@@ -18,6 +20,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     {
         public const string ApiId = "warpcore-formcontrol-urlselector";
 
+        private Label _controlLabel = new Label { CssClass = "form-label" };
         private TextBox _externalUrlTextBox = new TextBox { CssClass = "form-control" };
         private DropDownList _internalUrlDropDownList = new DropDownList { CssClass = "form-control" };
         private CheckBox _selectExternalUrlCheckbox = new CheckBox { CssClass = "form-control", AutoPostBack = true, Text = "Reference a url outside of the content management system" };
@@ -58,21 +61,28 @@ namespace WarpCore.Web.Widgets.FormBuilder
             return _internalUrlDropDownList.SelectedValue;
         }
 
+
         public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
+            //todo: rethink this.
+            //////////////////////////////////////////////////
+            Guid? SiteId=null;
+            var dfr = HttpContext.Current.ToDynamicFormRequestContext();
+            if (dfr.DefaultValues.ContainsKey(nameof(CmsPage.SiteId)))
+                SiteId = new Guid(dfr.DefaultValues[nameof(CmsPage.SiteId)]);
+            //////////////////////////////////////////////////
             
-
             var cmsPageRepository = new CmsPageRepository();
             var allDrafts = cmsPageRepository.FindContentVersions(null, ContentEnvironment.Draft).Result;
 
             _internalUrlDropDownList.Items.Clear();
             foreach (var draft in allDrafts)
             {
-                //if (SiteId == null || draft.SiteId == SiteId.Value)
-                //{
+                if (SiteId == null || draft.SiteId == SiteId.Value)
+                {
                     var dataUri = new WarpCorePageUri(draft).ToDataUriString();
                     _internalUrlDropDownList.Items.Add(new ListItem {Text = draft.Name, Value = dataUri});
-                //}
+                }
             }
         }
 
@@ -101,11 +111,13 @@ namespace WarpCore.Web.Widgets.FormBuilder
         {
             base.OnInit(e);
             
+            this.Controls.Add(_controlLabel);
             this.Controls.Add(_internalUrlDropDownList);
 
             this.Controls.Add(_selectExternalUrlCheckbox);
             this.Controls.Add(_externalUrlTextBox);
-           
+
+            _controlLabel.Text = DisplayName;
         }
 
         protected override void OnPreRender(EventArgs e)

@@ -1,8 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Platform.Extensibility.DynamicContent
 {
+    public static class RepositoryActivator
+    {
+        public static IContentRepository ActivateRepository(Guid apiId)
+        {
+            var t = RepositoryTypeResolver.ResolveTypeByApiId(apiId);
+            return (IContentRepository) Activator.CreateInstance(t);
+        }
+    }
+
     public static class RepositoryTypeResolver
     {
         private static Dictionary<Guid, Type> _types = new Dictionary<Guid, Type>();

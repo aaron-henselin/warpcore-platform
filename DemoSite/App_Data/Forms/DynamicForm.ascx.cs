@@ -10,6 +10,7 @@ using Cms.Toolbox;
 using WarpCore.Cms.Routing;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
+using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
@@ -25,9 +26,8 @@ namespace DemoSite
         public const string ApiId = "wc-dynamic-form";
 
         private CmsForm _cmsForm;
-        
-        [UserInterfaceHint(Editor = Editor.OptionList)]
-        [ContentControlSourceAttribute(FormRepository.ApiId)]
+
+        [UserInterfaceHint(Editor = Editor.OptionList), ContentControlSource(FormRepository.ApiId)]
         public Guid FormId { get; set; }
         
         private IVersionedContentRepositoryBase _repo;
@@ -53,6 +53,19 @@ namespace DemoSite
 
 
             var draft = GetDraft();
+            if (draft.IsNew)
+            {
+                var metadataRepo = new ContentTypeMetadataRepository();
+                var metadata = metadataRepo.GetContentType(draft.GetType());
+                FormTitleAdd.InnerText = $"Add {metadata.ContentNameSingular}";
+                FormTitleEdit.Visible = false;
+            }
+            else
+            {
+                FormTitleAdd.Visible = false;
+                FormTitleEditName.InnerText = draft.GetTitle();
+            }
+            
             var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
 
             var configuratorEditingContext = new ConfiguratorBuildArguments

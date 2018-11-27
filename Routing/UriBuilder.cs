@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Web;
 using System.Web.Script.Serialization;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.Kernel;
@@ -36,6 +37,7 @@ namespace WarpCore.Cms.Routing
         public bool IsSsl { get; set; }
         public string Authority { get; set; }
         public Uri AbsolutePath { get; set; }
+
     }
 
     public enum UriKinds
