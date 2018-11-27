@@ -41,7 +41,7 @@ namespace WarpCore.Cms
  
 
     [Table("cms_page")]
-    [WarpCoreEntity(ApiId,Title =nameof(CmsPage.Name),ContentNameSingular = "Page")]
+    [WarpCoreEntity(ApiId,Title =nameof(Name),ContentNameSingular = "Page")]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {

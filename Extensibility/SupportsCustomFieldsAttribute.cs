@@ -11,6 +11,7 @@ namespace WarpCore.Platform.Extensibility
             TypeExtensionUid = new Guid(typeExtensionId);
         }
 
+        public bool SupportsCustomFields { get; set; } = true;
         public Guid TypeExtensionUid { get; set; }
         public string Title { get; set; }
         public string ContentNameSingular { get; set; }

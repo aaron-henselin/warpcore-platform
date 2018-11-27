@@ -89,6 +89,7 @@ namespace Cms.Toolbox
 
         private static Func<PropertyInfo, bool> IsValidDeclaringType => x => x.DeclaringType != typeof(Control) &&
                                                                         x.DeclaringType != typeof(WebControl) &&
+                                                                        x.DeclaringType != typeof(PlaceHolder) && //todo: we need this right now because the configurators are (incorrectly) basing off of PH
                                                                         x.DeclaringType != typeof(WarpCoreEntity) &&
                                                                         x.DeclaringType != typeof(VersionedContentEntity) &&
                                                                         x.DeclaringType != typeof(UnversionedContentEntity);

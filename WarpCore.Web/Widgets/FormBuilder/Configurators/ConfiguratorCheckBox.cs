@@ -47,12 +47,6 @@ namespace WarpCore.Web.Widgets.FormBuilder
         [UserInterfaceHint(Editor = Editor.Hidden)]
         public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
-        public bool Checked
-        {
-            get { return _checkbox.Checked; }
-            set { _checkbox.Checked = value; }
-        }
-
         public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
         {
             //throw new NotImplementedException();

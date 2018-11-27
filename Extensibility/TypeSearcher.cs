@@ -98,18 +98,22 @@ namespace WarpCore.Platform.Extensibility
                     PluralizationService.CreateService(CultureInfo.CurrentCulture)
                         .Pluralize(preexistingContentType.ContentNameSingular);
                 }
-
+                preexistingContentType.SupportsCustomFields = repositoryUid.SupportsCustomFields;
 
                 contentTypeMetadataRepository.Save(preexistingContentType);
-                    
 
-                var preexisting = typeExtensionRepo.Find().SingleOrDefault(x => x.ContentTypeId == repositoryUid.TypeExtensionUid && x.InterfaceName == KnownTypeExtensionNames.CustomFields);
-                if (preexisting == null)
-                    typeExtensionRepo.Save(new ContentInterface
-                    {
-                        ContentTypeId = repositoryUid.TypeExtensionUid,
-                        InterfaceName = KnownTypeExtensionNames.CustomFields
-                    });
+                if (preexistingContentType.SupportsCustomFields)
+                {
+                    var preexisting = typeExtensionRepo.Find().SingleOrDefault(x =>
+                        x.ContentTypeId == repositoryUid.TypeExtensionUid &&
+                        x.InterfaceName == KnownTypeExtensionNames.CustomFields);
+                    if (preexisting == null)
+                        typeExtensionRepo.Save(new ContentInterface
+                        {
+                            ContentTypeId = repositoryUid.TypeExtensionUid,
+                            InterfaceName = KnownTypeExtensionNames.CustomFields
+                        });
+                }
 
             }
         }
