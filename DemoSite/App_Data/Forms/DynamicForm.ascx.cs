@@ -30,7 +30,7 @@ namespace DemoSite
         [UserInterfaceHint(Editor = Editor.OptionList), ContentControlSource(FormRepository.ApiId)]
         public Guid FormId { get; set; }
         
-        private IVersionedContentRepositoryBase _repo;
+        private IContentRepository _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
         private IReadOnlyCollection<IConfiguratorControl> _activatedConfigurators;
@@ -44,10 +44,11 @@ namespace DemoSite
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
 
-            var repoManager = new RepositoryMetadataManager();
-            var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(_cmsForm.RepositoryUid);
-            var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
-            _repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
+            //var repoManager = new RepositoryMetadataManager();
+            //var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(_cmsForm.RepositoryUid);
+            //var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
+            //_repo = (IVersionedContentRepository)Activator.CreateInstance(repoType);
+            _repo = RepositoryActivator.ActivateRepository(_cmsForm.RepositoryUid);
 
             _activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
@@ -104,13 +105,13 @@ namespace DemoSite
 
         private WarpCoreEntity GetDraft()
         {
-            WarpCoreEntity draft;
             if (_dynamicFormRequest.ContentId != null)
-                draft = _repo.FindContentVersions(By.ContentId(_dynamicFormRequest.ContentId.Value), ContentEnvironment.Draft).Single();
+            {
+                return _repo.FindContent(By.ContentId(_dynamicFormRequest.ContentId.Value), ContentEnvironment.Draft).Single();
+            }
             else
-                draft = _repo.New();
+                return _repo.New();
 
-            return draft;
         }
 
         protected void SaveButton_OnClick(object sender, EventArgs e)

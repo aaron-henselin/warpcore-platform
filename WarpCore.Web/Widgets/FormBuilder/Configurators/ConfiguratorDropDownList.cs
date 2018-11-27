@@ -86,14 +86,14 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
             List<WarpCoreEntity> allItems=null;
 
-            if (repo is IUnversionedContentRepositoryBase unversionedRepo)
+            if (repo is IUnversionedContentRepository unversionedRepo)
             {
                 allItems = unversionedRepo.FindContent(string.Empty)
                     .Cast<WarpCoreEntity>()
                     .ToList();
             }
 
-            if (repo is IVersionedContentRepositoryBase versionedRepo)
+            if (repo is IVersionedContentRepository versionedRepo)
             {
                 allItems = versionedRepo.FindContentVersions(string.Empty)
                     .Cast<WarpCoreEntity>()

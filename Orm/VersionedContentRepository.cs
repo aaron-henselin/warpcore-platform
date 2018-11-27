@@ -16,29 +16,23 @@ namespace WarpCore.Platform.Orm
 
     }
 
-    public interface IContentRepository
-    {
-        WarpCoreEntity New();
-
-        void Save(WarpCoreEntity item);
-    }
 
 
 
-    public interface IUnversionedContentRepositoryBase : IContentRepository
+    public interface IUnversionedContentRepository : IContentRepository
     {
         IReadOnlyCollection<UnversionedContentEntity> FindContent(string condition);
     }
 
 
-    public interface IVersionedContentRepositoryBase : IContentRepository
+    public interface IVersionedContentRepository : IContentRepository
     {
         IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
     }
     
 
-    public abstract class VersionedContentRepository<T> : IContentRepository, IVersionedContentRepositoryBase where T : VersionedContentEntity, new()
+    public abstract class VersionedContentRepository<T> : IVersionedContentRepository where T : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -91,7 +85,7 @@ namespace WarpCore.Platform.Orm
             this.SaveImpl((VersionedContentEntity)item);
         }
 
-        IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepositoryBase.FindContentVersions(string condition, ContentEnvironment version)
+        IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepository.FindContentVersions(string condition, ContentEnvironment version)
         {
             return this.FindContentVersions(condition, version).Result.Cast<VersionedContentEntity>().ToList();
             

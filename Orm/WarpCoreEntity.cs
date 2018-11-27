@@ -10,6 +10,7 @@ using WarpCore.Platform.Kernel.Extensions;
 namespace WarpCore.Platform.Orm
 {
 
+
     public abstract class WarpCoreEntity 
     {
 

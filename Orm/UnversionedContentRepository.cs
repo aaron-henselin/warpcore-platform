@@ -24,7 +24,7 @@ namespace WarpCore.Platform.Orm
     {
     }
 
-    public abstract class UnversionedContentRepository<T> : IUnversionedContentRepositoryBase where T : UnversionedContentEntity, new()
+    public abstract class UnversionedContentRepository<T> : IUnversionedContentRepository where T : UnversionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -62,7 +62,7 @@ namespace WarpCore.Platform.Orm
             Save((T)item);
         }
 
-        IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepositoryBase.FindContent(string condition)
+        IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepository.FindContent(string condition)
         {
             return Find(condition);
         }

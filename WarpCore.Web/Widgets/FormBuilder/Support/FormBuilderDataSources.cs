@@ -70,8 +70,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var repo = RepositoryActivator.ActivateRepository(new Guid(_repositoryUid));
 
             IReadOnlyCollection<WarpCoreEntity> foundEntities;
-            var versioned = repo as IVersionedContentRepositoryBase;
-            var unversioned = repo as IUnversionedContentRepositoryBase;
+            var versioned = repo as IVersionedContentRepository;
+            var unversioned = repo as IUnversionedContentRepository;
             if (versioned != null)
             {
                 foundEntities =versioned.FindContentVersions(null, ContentEnvironment.Draft);

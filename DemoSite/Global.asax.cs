@@ -83,7 +83,7 @@ namespace DemoSite
             mgr.Save(extension);
 
             var repoType = RepositoryTypeResolver.ResolveTypeByApiId(fullDynamicTypeId);
-            var repo = (IVersionedContentRepositoryBase)Activator.CreateInstance(repoType);
+            var repo = (IVersionedContentRepository)Activator.CreateInstance(repoType);
 
             //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);
             repo.Save(new DynamicVersionedContent(fullDynamicTypeId));
