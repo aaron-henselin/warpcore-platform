@@ -6,7 +6,6 @@
     <a:AscxPlaceHolder UserControlId="Toolbox.ascx" runat="server" VirtualPath="/App_Data/PageDesignerComponents/Toolbox.ascx"/>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="/assets/summernote/summernote.css"/>
 
 <script>
     var warpcore = {};
@@ -16,7 +15,14 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
 <script src="/Scripts/jquery.slidereveal.min.js"></script>
-<script src="/assets/summernote/summernote.min.js"></script>
+
+<!-- Main Quill library -->
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+<script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+<!-- Theme included stylesheets -->
+<link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
 
 <script>
 
@@ -37,7 +43,7 @@
          padding: 5px;
      }
      
-    .wc-configurator{ color: #fff; background-color: #fff;}
+    .wc-configurator{ background-color: #fff;}
     .wc-configurator-surface{ padding: 10px;}
     .wc-configurator .surface{ color: #000; background-color: #fff;}
     .wc-configurator .form-label{ color: #000000; font-weight:bold;}
@@ -71,8 +77,11 @@
         right: 0;
     }
 
+    .edit-with-rte{display:none;}
     
-
+    .wc-configurator h3 {
+        color: #fff;
+    }
     .tbx h3,.wc-configurator h3 {
         background-color: #2E2E2E;
         font-size: 1.9em;
@@ -180,12 +189,51 @@
 
         var $ = warpcore.jQuery;
 
-        $('.rte').each(function() {
-            var exists = $(this).data("wc-summernote");
-            if (exists)
-                return;
+        $('.edit-with-rte').each(function() {
 
-            $(this).summernote();
+            var $this = $(this);
+            var rteInputId = $this.attr("id");
+            var $rteSurface = $("[data-rte-for='" + rteInputId + "']");
+
+            if (!$rteSurface.hasClass("data-rte-initialized")) {
+                $rteSurface.addClass("data-rte-initialized");
+
+                var toolbarOptions = [
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    ['clean']                                         // remove formatting button
+                ];
+
+               
+
+                var quill = new Quill("[data-rte-for='" + rteInputId + "']",
+                    {
+                        modules: {
+                            toolbar: toolbarOptions
+                        },
+                        theme: 'snow'
+                    });
+                quill.setContents($this.val());
+                quill.on('text-change', function(delta, oldDelta, source) {
+                    $this.val(quill.getText());
+                });
+            }
+              
+
         });
 
         if (window.once === true)

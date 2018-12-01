@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
 using WarpCore.Cms.Toolbox;
@@ -124,10 +125,13 @@ namespace WarpCore.Web.Widgets.FormBuilder
                 _tbx.TextMode = (TextBoxMode)Enum.Parse(typeof(TextBoxMode), TextBoxMode, true);
 
             if (_tbx.TextMode == System.Web.UI.WebControls.TextBoxMode.MultiLine)
-                _tbx.CssClass = "rte";
+                _tbx.CssClass = "edit-with-rte";
 
             this.Controls.Add(_tbx);
 
+            var rtePanel = new Panel {CssClass = "rte-surface"};
+            rtePanel.Attributes.Add("data-rte-for",_tbx.ClientID);
+            this.Controls.Add(rtePanel);
 
         }
 
