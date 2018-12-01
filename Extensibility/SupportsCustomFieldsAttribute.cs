@@ -20,14 +20,21 @@ namespace WarpCore.Platform.Extensibility
 
     public static class WarpCoreEntityExtensions
     {
-        public static string GetTitle(this WarpCoreEntity entity)
+
+        public static WarpCoreEntityAttribute GetEntityAttribute(this WarpCoreEntity entity)
         {
             var entityType = entity.GetType();
             var atr = (WarpCoreEntityAttribute)entityType.GetCustomAttribute(typeof(WarpCoreEntityAttribute));
+            return atr;
+        }
+
+        public static string GetTitle(this WarpCoreEntity entity)
+        {
+            var atr = GetEntityAttribute(entity);
             if (atr?.Title == null)
                 return entity.ContentId.ToString();
 
-            var val = entityType.GetProperty(atr.Title).GetValue(entity)?.ToString();
+            var val = entity.GetType().GetProperty(atr.Title).GetValue(entity)?.ToString();
             return val;
         }
     }

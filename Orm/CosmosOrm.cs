@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 using JsonSubTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +9,21 @@ using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm
 {
+
+    public interface ICosmosOrm
+    {
+        void Save(WarpCoreEntity item);
+
+        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition,
+            ContentEnvironment version = ContentEnvironment.Live)
+            where T : VersionedContentEntity, new();
+
+        Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
+            where T : UnversionedContentEntity, new();
+
+        void Delete(WarpCoreEntity copy);
+    }
+
     public class CosmosDbConfiguration
     {
 

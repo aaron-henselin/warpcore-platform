@@ -6,19 +6,7 @@ using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm
 {
-    public interface ICosmosOrm
-    {
-        void Save(WarpCoreEntity item);
 
-        Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition,
-            ContentEnvironment version = ContentEnvironment.Live)
-            where T : VersionedContentEntity, new();
-
-        Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition)
-            where T : UnversionedContentEntity, new();
-
-        void Delete(WarpCoreEntity copy);
-    }
 
     public class SerializedComplexObjectAttribute : Attribute
     {

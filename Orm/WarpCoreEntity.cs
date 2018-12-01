@@ -11,9 +11,8 @@ namespace WarpCore.Platform.Orm
 {
 
 
-    public abstract class WarpCoreEntity 
+    public abstract class WarpCoreEntity
     {
-
 
         private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
 
@@ -37,6 +36,7 @@ namespace WarpCore.Platform.Orm
             if (def != null)
                 InitializeCustomFields(def);
         }
+
 
         [JsonIgnore]
         public bool IsNew => RowKey == null;
@@ -122,5 +122,6 @@ namespace WarpCore.Platform.Orm
                 }
             }
         }
+
     }
 }

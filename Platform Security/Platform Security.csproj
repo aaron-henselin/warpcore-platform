@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</ProjectGuid>
+    <ProjectGuid>{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WarpCore.Platform.Orm</RootNamespace>
-    <AssemblyName>WarpCore.Platform.Orm</AssemblyName>
+    <RootNamespace>WarpCore.Platform.Security</RootNamespace>
+    <AssemblyName>WarpCore.Platform.Security</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,18 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JsonSubTypes, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\JsonSubTypes.1.4.0\lib\net46\JsonSubTypes.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -55,23 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\MultilingualString.cs" />
-    <Compile Include="CosmosOrm.cs" />
-    <Compile Include="IContentRepository.cs" />
-    <Compile Include="WarpCoreEntity.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnversionedAttribute.cs" />
-    <Compile Include="UnversionedContentRepository.cs" />
-    <Compile Include="VersionedContentRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
+      <Project>{b8d80998-fe66-409d-b451-701d7fdda361}</Project>
+      <Name>Platform Extensibility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
       <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
       <Name>Platform Kernel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orm\Platform Orm.csproj">
+      <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
+      <Name>Platform Orm</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
       <Project>{ef917aee-6a91-47f9-a45e-e45650f9436a}</Project>
