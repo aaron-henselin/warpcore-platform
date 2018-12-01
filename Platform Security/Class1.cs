@@ -10,32 +10,22 @@ using WarpCore.Platform.Orm;
 
 namespace Platform_Security
 {
-    public interface ISupportsInheritedSecurity
-    {
-    }
 
-    public class Security
-    {
-        protected readonly ICosmosOrm Orm;
-
-        protected Security() : this(Dependency.Resolve<ICosmosOrm>())
-        {
-        }
-
-        protected Security(ICosmosOrm orm)
-        {
-            Orm = orm;
-        }
-    }
 
 
     [Table("platform_permission_rule")]
-    public class Permission : UnversionedContentEntity
+    public class PermissionRule : UnversionedContentEntity, IPermissionRule
     {
+        public Guid SecuredResourceId { get; set; }
+        public string AppliesToRoleName { get; set; }
+
+        public PermissionType PermissionType { get; set; }
+
+        public string PrivilegeName { get; set; }
 
     }
 
-    public class PermissionRepository : UnversionedContentRepository<Permission>
+    public class PermissionRepository : UnversionedContentRepository<PermissionRule>
     {
     }
     

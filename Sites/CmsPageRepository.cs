@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Cms;
 using Cms.Layout;
+using Platform_Security;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
@@ -37,8 +38,8 @@ namespace WarpCore.Cms
     }
 
 
-    
- 
+
+
 
     [Table("cms_page")]
     [WarpCoreEntity(ApiId,Title =nameof(Name),ContentNameSingular = "Page")]
@@ -293,7 +294,147 @@ namespace WarpCore.Cms
 
 
 
+    public class SitemapSecurityModel : IRepositorySecurityModel
+    {
 
+        private static Dictionary<Guid, PermissionRuleSet> CalculatePermissionsForAllSites()
+        {
+            Dictionary<Guid, PermissionRuleSet> newRules = new Dictionary<Guid, PermissionRuleSet>();
+            var allPermissions = new PermissionRepository().Find().ToLookup(x => x.SecuredResourceId);
+
+            var siteRepository = new SiteRepository();
+            foreach (var site in siteRepository.Find())
+            {
+                var subDict = CalculatePermissionsForSite(site, allPermissions);
+                foreach (var kvp in subDict)
+                    newRules.Add(kvp.Key,kvp.Value);
+            }
+
+            return newRules;
+        }
+
+        private static Dictionary<Guid, PermissionRuleSet> CalculatePermissionsForSite(Site site, ILookup<Guid, PermissionRule> allPermissions)
+        {
+            PermissionRuleSet defaultPermissions;
+            if (site.IsFrontendSite)
+            {
+                defaultPermissions = new PermissionRuleSet();
+                var readRule = new PermissionRule
+                {
+                    AppliesToRoleName = "Everyone",
+                    PermissionType = PermissionType.Grant,
+                    PrivilegeName = KnownPrivilegeNames.Read
+                };
+                var createRule = new PermissionRule
+                {
+                    AppliesToRoleName = "Everyone",
+                    PermissionType = PermissionType.Deny,
+                    PrivilegeName = KnownPrivilegeNames.Create
+                };
+                var updateRule = new PermissionRule
+                {
+                    AppliesToRoleName = "Everyone",
+                    PermissionType = PermissionType.Deny,
+                    PrivilegeName = KnownPrivilegeNames.Update
+                };
+                var deleteRule = new PermissionRule
+                {
+                    AppliesToRoleName = "Everyone",
+                    PermissionType = PermissionType.Deny,
+                    PrivilegeName = KnownPrivilegeNames.Delete
+                };
+
+                defaultPermissions.Add(readRule);
+                defaultPermissions.Add(createRule);
+                defaultPermissions.Add(updateRule);
+                defaultPermissions.Add(deleteRule);
+            }
+            else
+            {
+                defaultPermissions = new PermissionRuleSet();
+                var readRule = new PermissionRule
+                {
+                    AppliesToRoleName = "BackendUsers",
+                    PermissionType = PermissionType.Grant,
+                    PrivilegeName = KnownPrivilegeNames.Read
+                };
+                var createRule = new PermissionRule
+                {
+                    AppliesToRoleName = "BackendUsers",
+                    PermissionType = PermissionType.Grant,
+                    PrivilegeName = KnownPrivilegeNames.Create
+                };
+                var updateRule = new PermissionRule
+                {
+                    AppliesToRoleName = "BackendUsers",
+                    PermissionType = PermissionType.Grant,
+                    PrivilegeName = KnownPrivilegeNames.Update
+                };
+                var deleteRule = new PermissionRule
+                {
+                    AppliesToRoleName = "BackendUsers",
+                    PermissionType = PermissionType.Grant,
+                    PrivilegeName = KnownPrivilegeNames.Delete
+                };
+
+
+                defaultPermissions.Add(readRule);
+                defaultPermissions.Add(createRule);
+                defaultPermissions.Add(updateRule);
+                defaultPermissions.Add(deleteRule);
+            }
+
+            var siteStructure = SiteStructureMapBuilder.BuildStructureMap(site);
+
+            Dictionary<Guid, PermissionRuleSet> newRules = new Dictionary<Guid, PermissionRuleSet>();
+            foreach (var page in siteStructure.ChildNodes)
+            {
+                var subDict = CalculatePermissions(page, allPermissions, defaultPermissions);
+                foreach (var kvp in subDict)
+                    newRules.Add(kvp.Key, kvp.Value);
+            }
+            return newRules;
+        }
+
+        private static Dictionary<Guid, PermissionRuleSet> CalculatePermissions(CmsPageLocationNode siteStructure, ILookup<Guid, PermissionRule> allPermissions, PermissionRuleSet defaultPermissions)
+        {
+            Dictionary<Guid, PermissionRuleSet> newRules = new Dictionary<Guid, PermissionRuleSet>();
+
+            var permissionsForPage = allPermissions[siteStructure.PageId].ToList();
+            if (!permissionsForPage.Any())
+                newRules.Add(siteStructure.PageId, new PermissionRuleSet(defaultPermissions));
+            else
+            {
+                newRules.Add(siteStructure.PageId, new PermissionRuleSet(permissionsForPage));
+            }
+
+            foreach (var childNode in siteStructure.ChildNodes)
+            {
+                var subDict = CalculatePermissions(childNode, allPermissions, newRules[siteStructure.PageId]);
+                foreach (var kvp in subDict)
+                    newRules.Add(kvp.Key, kvp.Value);
+            }
+            return newRules;
+        }
+
+        object syncRoot = new object();
+        private static Dictionary<Guid, PermissionRuleSet> _allRules;
+
+
+
+        public PermissionRuleSet CalculatePermissions(Guid securedResourceId)
+        {
+            lock (syncRoot)
+            {
+                //if (_allRules == null)
+                var _allRules = CalculatePermissionsForAllSites();
+                if (!_allRules.ContainsKey(securedResourceId))
+                    throw new Exception("Security was not calculated for secured resource id: " + securedResourceId);
+
+                return _allRules[securedResourceId];
+            }
+        }
+    }
 
 
 
@@ -302,11 +443,13 @@ namespace WarpCore.Cms
     {
         public const string ApiId = "979fde2a-1983-480e-aca4-8caab3f762b0";
 
+        protected override IRepositorySecurityModel SecurityModel { get; } = new SitemapSecurityModel();
+
         private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
             ISiteStructureNode parentNode;
             if (Guid.Empty == newSitemapRelativePosition.ParentSitemapNodeId)
-                parentNode = new SiteStructure();
+                parentNode = new SiteStructure(cmsPage.SiteId);
             else
             {
                 var findParentCondition = $@"{nameof(CmsPageLocationNode.ContentId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
@@ -352,7 +495,14 @@ namespace WarpCore.Cms
             newPageLocation.ContentId = Guid.NewGuid();
             newPageLocation.PageId = page.ContentId;
             newPageLocation.SiteId = page.SiteId;
+
+            if (newSitemapRelativePosition.ParentSitemapNodeId == null ||
+                newSitemapRelativePosition.ParentSitemapNodeId == Guid.Empty)
+                newSitemapRelativePosition.ParentSitemapNodeId = page.SiteId;
+
             newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
+
+            
             //newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
 

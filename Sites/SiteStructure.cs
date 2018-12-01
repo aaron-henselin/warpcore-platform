@@ -17,9 +17,18 @@ namespace WarpCore.Cms.Sites
 
     public class SiteStructure : ISiteStructureNode
     {
-        public Guid NodeId => Guid.Empty;
+        public Guid NodeId { get; }
+
         public IReadOnlyCollection<CmsPageLocationNode> ChildNodes { get; set; } = new List<CmsPageLocationNode>();
 
+        public SiteStructure(Site site) :this(site.ContentId)
+        {
+        }
+
+        public SiteStructure(Guid siteId)
+        {
+            NodeId = siteId;
+        }
 
         public ISiteStructureNode GetStructureNode(CmsPage cmsPage)
         {
@@ -73,7 +82,7 @@ namespace WarpCore.Cms.Sites
             var sitemapLookup = $"{nameof(CmsPageLocationNode.SiteId)} eq '{site.ContentId}'";
             var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<CmsPageLocationNode>(sitemapLookup).Result.ToList();
 
-            var sitemap = new SiteStructure();
+            var sitemap = new SiteStructure(site);
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
             PopulateChildNodes(sitemap, parentNodeLookup);
 

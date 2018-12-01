@@ -10,6 +10,7 @@ using WarpCore.Platform.Kernel;
 namespace WarpCore.Platform.Orm
 {
 
+
     public interface ICosmosOrm
     {
         void Save(WarpCoreEntity item);

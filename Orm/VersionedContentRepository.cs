@@ -30,11 +30,17 @@ namespace WarpCore.Platform.Orm
         IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
     }
-    
 
-    public abstract class VersionedContentRepository<T> : IVersionedContentRepository where T : VersionedContentEntity, new()
+    public interface IRepositorySecurityModel
+    {
+        PermissionRuleSet CalculatePermissions(Guid securedResourceId);
+
+    }
+
+    public abstract class VersionedContentRepository<TVersionedContentEntity> : IVersionedContentRepository where TVersionedContentEntity : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
+        protected virtual IRepositorySecurityModel SecurityModel { get; }
 
         protected VersionedContentRepository():this(Dependency.Resolve<ICosmosOrm>())
         {
@@ -51,8 +57,9 @@ namespace WarpCore.Platform.Orm
             SaveDraftChecksum(item);
         }
 
-        public void Save(T item)
+        public void Save(TVersionedContentEntity item)
         {
+            
             SaveImpl((VersionedContentEntity)item);
         }
 
@@ -77,7 +84,7 @@ namespace WarpCore.Platform.Orm
 
         WarpCoreEntity IContentRepository.New()
         {
-            return new T();
+            return new TVersionedContentEntity();
         }
 
         void IContentRepository.Save(WarpCoreEntity item)
@@ -91,11 +98,20 @@ namespace WarpCore.Platform.Orm
             
         }
 
-        public Task<IReadOnlyCollection<T>> FindContentVersions(string condition,
+        public async Task<IReadOnlyCollection<TVersionedContentEntity>> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live)
         {
             //todo: resolve <T> from metadata.
-            return Orm.FindContentVersions<T>(condition, version);
+            var contentItems = await Orm.FindContentVersions<TVersionedContentEntity>(condition, version);
+
+            if (SecurityModel != null)
+                foreach (var contentItem in contentItems)
+                {
+                    var permissionSet = SecurityModel.CalculatePermissions(contentItem.ContentId);
+                    PermissionSetEvaluator.Assert(permissionSet, KnownPrivilegeNames.Read);
+                }
+
+            return contentItems;
         }
 
 
@@ -113,7 +129,7 @@ namespace WarpCore.Platform.Orm
             return results;
         }
 
-        private PublishResult Publish(IReadOnlyCollection<T> contentVersions)
+        private PublishResult Publish(IReadOnlyCollection<TVersionedContentEntity> contentVersions)
         {
             PublishResult publishResult = new PublishResult();
 

@@ -86,8 +86,6 @@ namespace WarpCore.Web
                    
                     ToolboxBootstrapper.RegisterToolboxItemsWithApi(AppDomain.CurrentDomain);
                     
-
-
                     IsBooted = true;
 
                 }).ContinueWith(x =>

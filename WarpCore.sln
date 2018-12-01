@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform DataAnnotations", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Security", "Platform Security\Platform Security.csproj", "{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Security Model", "Cms Security Model\Cms Security Model.csproj", "{479132F0-854E-49C4-9079-DC548EC039E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479132F0-854E-49C4-9079-DC548EC039E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479132F0-854E-49C4-9079-DC548EC039E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479132F0-854E-49C4-9079-DC548EC039E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479132F0-854E-49C4-9079-DC548EC039E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{029CFA15-E004-4022-A5C6-01575A2E0AA0} = {2DD1F258-70CE-4F6B-8475-512CFF19E7A4}
 		{EF917AEE-6A91-47F9-A45E-E45650F9436A} = {B71D8DF2-A32F-459B-B167-5F406180C548}
 		{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688} = {B71D8DF2-A32F-459B-B167-5F406180C548}
+		{479132F0-854E-49C4-9079-DC548EC039E3} = {9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF7B26DB-ECC6-49E0-B2C9-CB53A94E08E9}

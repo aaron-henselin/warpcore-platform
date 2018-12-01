@@ -106,6 +106,10 @@
       <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
       <Name>Platform DataAnnotations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform Security\Platform Security.csproj">
+      <Project>{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}</Project>
+      <Name>Platform Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
