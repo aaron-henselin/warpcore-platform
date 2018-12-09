@@ -30,7 +30,7 @@ namespace DemoSite
         [UserInterfaceHint(Editor = Editor.OptionList), ContentControlSource(FormRepository.ApiId)]
         public Guid FormId { get; set; }
         
-        private IContentRepository _repo;
+        private ISupportsCmsForms _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
         private IReadOnlyCollection<IConfiguratorControl> _activatedConfigurators;
@@ -107,7 +107,7 @@ namespace DemoSite
         {
             if (_dynamicFormRequest.ContentId != null)
             {
-                return _repo.FindContent(By.ContentId(_dynamicFormRequest.ContentId.Value), ContentEnvironment.Draft).Single();
+                return _repo.GetById(_dynamicFormRequest.ContentId.Value);//FindContent(By.ContentId(_dynamicFormRequest.ContentId.Value), ContentEnvironment.Draft).Single();
             }
             else
                 return _repo.New();

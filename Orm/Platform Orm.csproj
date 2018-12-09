@@ -60,7 +60,7 @@
   <ItemGroup>
     <Compile Include="Content\MultilingualString.cs" />
     <Compile Include="CosmosOrm.cs" />
-    <Compile Include="IContentRepository.cs" />
+    <Compile Include="ISupportsCmsForms.cs" />
     <Compile Include="WarpCoreEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnversionedAttribute.cs" />

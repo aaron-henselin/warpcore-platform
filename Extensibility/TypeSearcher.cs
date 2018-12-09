@@ -19,11 +19,11 @@ namespace WarpCore.Platform.Extensibility
 
     internal static class TypeSearcher
     {
-        public static IReadOnlyCollection<ExtensibleRepositoryDescription> FindExtensibleRepositoryTypes(IReadOnlyCollection<Type> allTypes)
+        public static IReadOnlyCollection<ExtensibleRepositoryDescription> FindRepositoriesKnownToWarpCore(IReadOnlyCollection<Type> allTypes)
         {
             return allTypes
                 .HavingAttribute<ExposeToWarpCoreApi>()
-                .Where(x => typeof(IContentRepository).IsAssignableFrom(x))
+                .Where(x => typeof(ISupportsCmsForms).IsAssignableFrom(x))
                 .DistinctBy(x => x.AssemblyQualifiedName)
                 .Select(x => new ExtensibleRepositoryDescription
                 {
@@ -33,7 +33,7 @@ namespace WarpCore.Platform.Extensibility
                 .ToList();           
         }
 
-        public static IReadOnlyCollection<Type> FilterToExtensibleEntityTypes(IReadOnlyCollection<Type> allTypes)
+        public static IReadOnlyCollection<Type> FindEntitiesKnownToWarpCore(IReadOnlyCollection<Type> allTypes)
         {
             return allTypes.HavingAttribute<WarpCoreEntityAttribute>()
                 .Where(x => typeof(WarpCoreEntity).IsAssignableFrom(x))
@@ -64,15 +64,13 @@ namespace WarpCore.Platform.Extensibility
             var assemblies = domain.GetAssemblies();
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
 
-            var repositoryDescriptions = TypeSearcher.FindExtensibleRepositoryTypes(allTypes);
-
-
+            var repositoryDescriptions = TypeSearcher.FindRepositoriesKnownToWarpCore(allTypes);
 
             foreach (var repositoryDescription in repositoryDescriptions)
                 BuildUpRepositoryMetadata(repositoryDescription);
 
             //Break this one out later.
-            var entities = TypeSearcher.FilterToExtensibleEntityTypes(allTypes);
+            var entities = TypeSearcher.FindEntitiesKnownToWarpCore(allTypes);
 
             var contentTypeMetadataRepository = new ContentTypeMetadataRepository();
 

@@ -12,7 +12,7 @@ namespace WarpCore.Platform.Orm
     {
     }
 
-    public abstract class UnversionedContentRepository<T> : IUnversionedContentRepository where T : UnversionedContentEntity, new()
+    public abstract class UnversionedContentRepository<T> : IUnversionedContentRepository, ISupportsCmsForms where T : UnversionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
 
@@ -40,19 +40,25 @@ namespace WarpCore.Platform.Orm
             return Orm.FindUnversionedContent<T>(condition).Result.ToList();
         }
 
-        WarpCoreEntity IContentRepository.New()
+        WarpCoreEntity ISupportsCmsForms.New()
         {
             return new T();
         }
 
-        void IContentRepository.Save(WarpCoreEntity item)
+        void ISupportsCmsForms.Save(WarpCoreEntity item)
         {
             Save((T)item);
+        }
+
+        WarpCoreEntity ISupportsCmsForms.GetById(Guid id)
+        {
+            return this.GetById(id);
         }
 
         IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepository.FindContent(string condition)
         {
             return Find(condition);
         }
+
     }
 }

@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Cms
 {
+    public class TemplatingException : Exception
+    {
+        public TemplatingException(string message):base(message)
+        {
+        }
+    }
+
     public static class Templating
     {
         public static string CreateToStringExpression(string variableName)
@@ -24,6 +31,10 @@ namespace Cms
                 foreach (Capture capture in match.Captures)
                 {
                     var expression = capture.Value.Substring(1, capture.Value.Length - 2);
+
+                    if (!dataContext.ContainsKey(expression))
+                        throw new TemplatingException("Data context does not contain a value for '"+expression+"'");
+
                     html = html.Replace(capture.Value, dataContext[expression]);
                 }
             }

@@ -20,13 +20,13 @@ namespace WarpCore.Platform.Orm
 
 
 
-    public interface IUnversionedContentRepository : IContentRepository
+    public interface IUnversionedContentRepository 
     {
         IReadOnlyCollection<UnversionedContentEntity> FindContent(string condition);
     }
 
 
-    public interface IVersionedContentRepository : IContentRepository
+    public interface IVersionedContentRepository 
     {
         IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
@@ -46,7 +46,7 @@ namespace WarpCore.Platform.Orm
 
     public static class RepositoryExtensions
     {
-        public static ExposeToWarpCoreApi GetRepositoryAttribute(this IContentRepository entity)
+        public static ExposeToWarpCoreApi GetRepositoryAttribute(this ISupportsCmsForms entity)
         {
             var entityType = entity.GetType();
             var atr = (ExposeToWarpCoreApi)entityType.GetCustomAttribute(typeof(ExposeToWarpCoreApi));
@@ -100,12 +100,12 @@ namespace WarpCore.Platform.Orm
         }
 
 
-        WarpCoreEntity IContentRepository.New()
+        WarpCoreEntity ISupportsCmsForms.New()
         {
             return new TVersionedContentEntity();
         }
 
-        void IContentRepository.Save(WarpCoreEntity item)
+        void ISupportsCmsForms.Save(WarpCoreEntity item)
         {
             this.SaveImpl((VersionedContentEntity)item);
         }

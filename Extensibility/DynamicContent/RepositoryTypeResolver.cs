@@ -6,10 +6,10 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
 {
     public static class RepositoryActivator
     {
-        public static IContentRepository ActivateRepository(Guid apiId)
+        public static ISupportsCmsForms ActivateRepository(Guid apiId)
         {
             var t = RepositoryTypeResolver.ResolveTypeByApiId(apiId);
-            return (IContentRepository) Activator.CreateInstance(t);
+            return (ISupportsCmsForms) Activator.CreateInstance(t);
         }
     }
 
