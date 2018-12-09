@@ -15,7 +15,7 @@ namespace WarpCore.Web.Widgets.Content
         public string Test2 { get; set; }
     }
 
-    [IncludeInToolbox(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
+    [global::Cms.Toolbox.ToolboxItem(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control
     {
         public const string ApiId = "warpcore-content-html";

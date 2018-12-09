@@ -9,7 +9,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "CheckBox", Category = "Form Controls")]
+    [ToolboxItem(WidgetUid = ApiId, FriendlyName = "CheckBox", Category = "Form Controls")]
     public class ConfiguratorCheckBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-checkBox";

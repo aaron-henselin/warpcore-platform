@@ -41,7 +41,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     }
 
 
-    [IncludeInToolbox(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
+    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-textbox";

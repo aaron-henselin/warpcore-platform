@@ -35,10 +35,9 @@ namespace Cms.Toolbox
         public List<Type> Behaviors { get; set; }
     }
 
-    public class IncludeInToolboxAttribute : Attribute
+    public class ToolboxItemAttribute : Attribute
     {
         public string WidgetUid { get; set; }
-
         public string FriendlyName { get; set; }
         public string Category { get; set; }
         public string AscxPath { get; set; }
@@ -57,7 +56,7 @@ namespace Cms.Toolbox
 
         public ToolboxMetadata ReadMetadata(Type type)
         {
-            var includeInToolboxAtr = type.GetCustomAttribute<IncludeInToolboxAttribute>();
+            var includeInToolboxAtr = type.GetCustomAttribute<ToolboxItemAttribute>();
             if (includeInToolboxAtr == null)
                 return null;
 

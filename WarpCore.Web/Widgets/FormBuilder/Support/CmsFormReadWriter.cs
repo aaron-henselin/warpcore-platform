@@ -165,6 +165,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         {
             foreach (var control in controls)
             {
+                if (string.IsNullOrWhiteSpace(control.PropertyName))
+                    throw new Exception("Control "+control.GetType().Name+" is not mapped to a property.");
+
                 control.SetValue(newValues[control.PropertyName]);
             }
         }

@@ -105,7 +105,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (repositoryUid == null)
                 yield break;
 
-            var repo = RepositoryActivator.ActivateRepository(repositoryUid.Value);
+            var repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(repositoryUid.Value);
             var entityType = repo.New().GetType();
             var apiAttr = entityType.GetCustomAttribute<WarpCoreEntityAttribute>();
                 yield return new ListOption
@@ -140,7 +140,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
         public static Type GetClrType(EditingContext editingContext)
         {
-            return RepositoryActivator.ActivateRepository(editingContext.DesignContentTypeId).New().GetType();
+            return RepositoryActivator.ActivateRepository<ISupportsCmsForms>(editingContext.DesignContentTypeId).New().GetType();
         }
 
         public static List<PropertyInfo> PropertiesFilered(ConfiguratorBuildArguments buildArguments)

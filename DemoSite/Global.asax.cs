@@ -82,14 +82,12 @@ namespace DemoSite
 
             mgr.Save(extension);
 
-            var repoType = RepositoryTypeResolver.ResolveTypeByApiId(fullDynamicTypeId);
-            var repo = (IVersionedContentRepository)Activator.CreateInstance(repoType);
-
-            //var repo = DynamicContentManager.ActivateDynamicRepository(newType.TypeResolverUid);
+            var repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(fullDynamicTypeId);
+            
             repo.Save(new DynamicVersionedContent(fullDynamicTypeId));
-            var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
-            if (!drafts.Any())
-                throw new Exception();
+            //var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
+            //if (!drafts.Any())
+            //    throw new Exception();
         }
 
         private void SetupCustomFields()
@@ -139,12 +137,7 @@ namespace DemoSite
                 WidgetUid = "wc-entity-list",
                 FriendlyName = "Entity List"
             });
-            tbx.Save(new ToolboxItem
-            {
-                AscxPath = "/App_Data/BackendWidgets/ContentList.ascx",
-                WidgetUid = "wc-content-list",
-                FriendlyName = "Content List"
-            });
+
 
             //
             tbx.Save(new ToolboxItem
@@ -501,7 +494,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             dynamicListTest.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = "wc-content-list",
+                WidgetTypeCode = ContentList.ApiId,
                 Parameters = parameters
             });
 
@@ -544,7 +537,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             formsList.PageContent.Add(new CmsPageContent
             {
                 PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = "wc-content-list",
+                WidgetTypeCode = ContentList.ApiId,
                 Parameters = formListParameters
             });
 

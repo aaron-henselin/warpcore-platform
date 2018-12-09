@@ -81,6 +81,7 @@ namespace DemoSite
         }
     }
 
+    [ToolboxItem(WidgetUid = "wc-content-list-configurator", FriendlyName ="Content List Configurator")]
     public class ContentListConfigurator : PlaceHolder, IConfiguratorControl
     {
         private IReadOnlyCollection<SettingProperty> _allProperties;
@@ -175,29 +176,33 @@ namespace DemoSite
 
         public void SetConfiguration(SettingProperty settingProperty)
         {
+            this.PropertyName = settingProperty.PropertyInfo.Name;
             Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
         }
 
         public void SetValue(string newValue)
         {
             _config = ExtensibleTypeConverter.ChangeType<ContentListConfiguration>(newValue);
-           
+            DataBind();
         }
 
         public string GetValue()
         {
-            throw new NotImplementedException();
+            return ExtensibleTypeConverter.ChangeType<string>(_config);
         }
 
     }
 
+    [ToolboxItem(AscxPath = "/App_Data/BackendWidgets/ContentList.ascx", WidgetUid = "wc-content-list", FriendlyName = "Content List")]
     public partial class ContentList : System.Web.UI.UserControl
     {
+        public const string ApiId = "wc-content-list";
+
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [DataRelation(RepositoryMetadataManager.ApiId)]
         public Guid RepositoryId { get; set; }
 
-        [UserInterfaceHint]
+        [UserInterfaceHint(CustomEditorType = typeof(ContentListConfigurator))]
         public ContentListConfiguration Config { get; set; }
 
         //private ContentListControlState _controlState = new ContentListControlState();

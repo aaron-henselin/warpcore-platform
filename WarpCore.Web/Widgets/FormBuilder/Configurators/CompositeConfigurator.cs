@@ -11,7 +11,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 {
-    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Composite Configurator", Category = "Form Controls")]
+    [ToolboxItem(WidgetUid = ApiId, FriendlyName = "Composite Configurator", Category = "Form Controls")]
     public class CompositeConfigurator : PlaceHolder, IConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-compositeconfigurator";

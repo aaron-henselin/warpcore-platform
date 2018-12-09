@@ -8,7 +8,7 @@ using Cms.Toolbox;
 
 namespace DemoSite.UserControls
 {
-    [IncludeInToolbox(AscxPath = "/UserControls/CustomNavigation.ascx",
+    [ToolboxItem(AscxPath = "/UserControls/CustomNavigation.ascx",
         FriendlyName = "Navigation Bar",
         Category = "Navigation",
         WidgetUid = "Client-CustomNavigation")]

@@ -15,7 +15,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Url", Category = "Form Controls")]
+    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Url", Category = "Form Controls")]
     public class ConfiguratorUrlSelector : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-urlselector";

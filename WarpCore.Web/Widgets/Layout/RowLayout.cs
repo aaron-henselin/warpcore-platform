@@ -7,7 +7,7 @@ using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
 {
-    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
+    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : LayoutControl, INamingContainer
     {
         public const string ApiId = "WC/RowLayout";

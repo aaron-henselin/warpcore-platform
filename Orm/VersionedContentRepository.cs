@@ -17,16 +17,18 @@ namespace WarpCore.Platform.Orm
 
     }
 
+    public interface IContentRepository
+    {
+    }
 
 
-
-    public interface IUnversionedContentRepository 
+    public interface IUnversionedContentRepository : IContentRepository
     {
         IReadOnlyCollection<UnversionedContentEntity> FindContent(string condition);
     }
 
 
-    public interface IVersionedContentRepository 
+    public interface IVersionedContentRepository  : IContentRepository
     {
         IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
             ContentEnvironment version = ContentEnvironment.Live);
@@ -55,9 +57,10 @@ namespace WarpCore.Platform.Orm
     }
 
 
-    public abstract class VersionedContentRepository<TVersionedContentEntity> : IVersionedContentRepository where TVersionedContentEntity : VersionedContentEntity, new()
+    public abstract class VersionedContentRepository<TVersionedContentEntity> : IVersionedContentRepository, ISupportsCmsForms where TVersionedContentEntity : VersionedContentEntity, new()
     {
         protected readonly ICosmosOrm Orm;
+        private ISupportsCmsForms _supportsCmsFormsImplementation;
         protected virtual IRepositorySecurityModel SecurityModel { get; }
 
         protected VersionedContentRepository():this(Dependency.Resolve<ICosmosOrm>())
@@ -81,6 +84,8 @@ namespace WarpCore.Platform.Orm
             SaveImpl((VersionedContentEntity)item);
         }
 
+
+
         private void SaveDraftChecksum(VersionedContentEntity item)
         {
             var contentType = item.GetType().GetCustomAttribute<TableAttribute>().Name;
@@ -99,16 +104,6 @@ namespace WarpCore.Platform.Orm
             }
         }
 
-
-        WarpCoreEntity ISupportsCmsForms.New()
-        {
-            return new TVersionedContentEntity();
-        }
-
-        void ISupportsCmsForms.Save(WarpCoreEntity item)
-        {
-            this.SaveImpl((VersionedContentEntity)item);
-        }
 
         IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepository.FindContentVersions(string condition, ContentEnvironment version)
         {
@@ -204,6 +199,23 @@ namespace WarpCore.Platform.Orm
 
         }
 
+
+        #region ISupportsCmsForms
+        WarpCoreEntity ISupportsCmsForms.New()
+        {
+            return new TVersionedContentEntity();
+        }
+
+        void ISupportsCmsForms.Save(WarpCoreEntity item)
+        {
+            this.SaveImpl((VersionedContentEntity)item);
+        }
+
+        WarpCoreEntity ISupportsCmsForms.GetById(Guid id)
+        {
+            return this.FindContentVersions(By.ContentId(id), ContentEnvironment.Draft).Result.Single();
+        }
+        #endregion
 
     }
 }

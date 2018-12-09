@@ -14,7 +14,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [IncludeInToolbox(WidgetUid = ApiId, FriendlyName = "Option List", Category = "Form Controls")]
+    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Option List", Category = "Form Controls")]
     public class ConfiguratorDropDownList: PlaceHolder, INamingContainer, IConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-dropdownlist";

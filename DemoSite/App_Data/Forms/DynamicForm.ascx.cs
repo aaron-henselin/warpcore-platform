@@ -43,12 +43,8 @@ namespace DemoSite
 
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
-
-            //var repoManager = new RepositoryMetadataManager();
-            //var repoMetadata = repoManager.GetRepositoryMetdataByTypeResolverUid(_cmsForm.RepositoryUid);
-            //var repoType = Type.GetType(repoMetadata.AssemblyQualifiedTypeName);
-            //_repo = (IVersionedContentRepository)Activator.CreateInstance(repoType);
-            _repo = RepositoryActivator.ActivateRepository(_cmsForm.RepositoryUid);
+            
+            _repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(_cmsForm.RepositoryUid);
 
             _activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
