@@ -201,6 +201,8 @@ namespace WarpCore.Platform.Orm
     {
         public List<InterfaceField> DynamicProperties { get; set; } =
             new List<InterfaceField>();
+
+        public string TitleProperty { get; set; }
     }
 
 

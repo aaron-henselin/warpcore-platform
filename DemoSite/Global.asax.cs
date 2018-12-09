@@ -526,8 +526,8 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
                     {
                         new ContentListField
                         {
-                            Header = "Name",
-                            Template =nameof(CmsForm.Name)
+                            Header = "Title",
+                            Template ="{"+nameof(CmsForm.Title)+"}"
                         },
                         new ContentListField
                         {

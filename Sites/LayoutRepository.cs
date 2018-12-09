@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,12 @@ using WarpCore.Platform.Orm;
 
 namespace Cms.Layout
 {
-    [Table("cms_layout")]
+    [Table("cms_page_layout")]
+    [WarpCoreEntity(ApiId, TitleProperty = nameof(Name), ContentNameSingular = "Page Layout")]
     public class Layout : UnversionedContentEntity
     {
+        private const string ApiId = "4b6a87ff-002e-4897-82e9-e37b7b42a497";
+
         public string Name { get; set; }
         public string MasterPagePath { get; set; }
 
@@ -21,10 +25,7 @@ namespace Cms.Layout
         [SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+
     }
 
     public class LayoutNode

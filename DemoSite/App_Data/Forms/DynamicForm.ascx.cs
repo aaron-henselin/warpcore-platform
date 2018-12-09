@@ -64,7 +64,7 @@ namespace DemoSite
             else
             {
                 FormTitleAdd.Visible = false;
-                FormTitleEditName.InnerText = draft.GetTitle();
+                FormTitleEditName.InnerText = draft.Title;
             }
             
             var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);

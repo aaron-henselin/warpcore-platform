@@ -8,6 +8,7 @@ using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms;
+using Cms.Forms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Platform.DataAnnotations;
@@ -227,6 +228,19 @@ namespace DemoSite
 
             List<object> ds = new List<object>();
             var fields = Config.Fields;
+
+            if (!Config.Fields.Any())
+            {
+                Config.Fields = new List<ContentListField>();
+
+                var titleField = new ContentListField
+                {
+                    Header = "Title",
+                    Template = Templating.CreateToStringExpression(nameof(WarpCoreEntity.Title))
+                };
+                Config.Fields.Add(titleField);
+            }
+
             foreach (var d in allDrafts)
             {          
                 var row = new List<string>();

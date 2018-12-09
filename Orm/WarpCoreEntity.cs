@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -10,16 +11,12 @@ using WarpCore.Platform.Kernel.Extensions;
 namespace WarpCore.Platform.Orm
 {
 
-
+    [DebuggerDisplay("Title = {" + nameof(Title) + "}")]
     public abstract class WarpCoreEntity
     {
+        
+        private readonly string _titleProperty;
 
-        private IDynamicTypeDefinitionResolver _dynamicTypeDefinitionResolver;
-
-        public WarpCoreEntity(DynamicTypeDefinition definition)
-        {
-            InitializeCustomFields(definition);
-        }
 
         private void InitializeCustomFields(DynamicTypeDefinition definition)
         {
@@ -34,7 +31,10 @@ namespace WarpCore.Platform.Orm
         {
             var def =dynamicTypeDefinitionResolver.Resolve(this.GetType());
             if (def != null)
+            {
                 InitializeCustomFields(def);
+                _titleProperty = def.TitleProperty;
+            }
         }
 
 
@@ -123,5 +123,24 @@ namespace WarpCore.Platform.Orm
             }
         }
 
+        [IgnoreProperty]
+        public virtual string Title
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_titleProperty))
+                    return ContentId.ToString();
+
+                var val = this.GetType().GetProperty(_titleProperty).GetValue(this)?.ToString();
+                return val;
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(_titleProperty))
+                    throw new Exception("A title property is not defined.");
+
+                this.GetType().GetProperty(_titleProperty).SetValue(this, value);
+            }
+        }
     }
 }

@@ -98,13 +98,7 @@ namespace Cms.Toolbox
 
     }
 
-    public static class RepositoryMetadataReader
-    {
-        public static void X()
-        {
-            
-        }
-    }
+
 
     public static class ToolboxMetadataReader
     {

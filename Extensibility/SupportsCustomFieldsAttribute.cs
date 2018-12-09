@@ -13,7 +13,7 @@ namespace WarpCore.Platform.Extensibility
 
         public bool SupportsCustomFields { get; set; } = true;
         public Guid TypeExtensionUid { get; set; }
-        public string Title { get; set; }
+        public string TitleProperty { get; set; }
         public string ContentNameSingular { get; set; }
         public string ContentNamePlural { get; set; }
     }
@@ -28,15 +28,7 @@ namespace WarpCore.Platform.Extensibility
             return atr;
         }
 
-        public static string GetTitle(this WarpCoreEntity entity)
-        {
-            var atr = GetEntityAttribute(entity);
-            if (atr?.Title == null)
-                return entity.ContentId.ToString();
 
-            var val = entity.GetType().GetProperty(atr.Title).GetValue(entity)?.ToString();
-            return val;
-        }
     }
 
 }

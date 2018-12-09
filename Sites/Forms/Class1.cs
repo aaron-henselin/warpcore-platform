@@ -11,8 +11,11 @@ using WarpCore.Platform.Orm;
 namespace Cms.Forms
 {
     [Table("cms_form")]
+    [WarpCoreEntity(ApiId, TitleProperty = nameof(Name), ContentNameSingular = "Form")]
     public class CmsForm : VersionedContentEntity, IHasDesignedLayout
     {
+        public const string ApiId = "fb446b6d-3899-4ae1-8cf8-120044d6aa67";
+        
         [Column]
         public string Name { get; set; }
 

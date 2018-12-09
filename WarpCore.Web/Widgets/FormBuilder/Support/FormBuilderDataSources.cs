@@ -84,7 +84,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             foreach (var foundEntity in foundEntities)
                 yield return new ListOption
                 {
-                    Text = foundEntity.GetTitle(),
+                    Text = foundEntity.Title,
                     Value = foundEntity.ContentId.ToString()
                 };
         }

@@ -8,7 +8,7 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
 {
 
     [Table("cms_content_type")]
-    [WarpCoreEntity(ApiId, Title = nameof(ContentNamePlural), ContentNameSingular = "Content Type", SupportsCustomFields = false)]
+    [WarpCoreEntity(ApiId, TitleProperty = nameof(ContentNamePlural), ContentNameSingular = "Content Type", SupportsCustomFields = false)]
     public class DynamicContentType : UnversionedContentEntity
     {
         public const string ApiId = "d90385d7-6f23-48a2-a4e4-fa1f75163724";
@@ -20,6 +20,7 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
         public string ContentNameSingular { get; set; }
         public string ContentNamePlural { get; set; }
         public bool SupportsCustomFields { get; set; }
+        public string TitleProperty { get; set; }
     }
 
     [ExposeToWarpCoreApi(ApiId)]

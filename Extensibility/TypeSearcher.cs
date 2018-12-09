@@ -15,6 +15,8 @@ using WarpCore.Platform.Orm;
 
 namespace WarpCore.Platform.Extensibility
 {
+
+
     internal static class TypeSearcher
     {
         public static IReadOnlyCollection<ExtensibleRepositoryDescription> FindExtensibleRepositoryTypes(IReadOnlyCollection<Type> allTypes)
@@ -99,6 +101,7 @@ namespace WarpCore.Platform.Extensibility
                         .Pluralize(preexistingContentType.ContentNameSingular);
                 }
                 preexistingContentType.SupportsCustomFields = repositoryUid.SupportsCustomFields;
+                preexistingContentType.TitleProperty = repositoryUid.TitleProperty;
 
                 contentTypeMetadataRepository.Save(preexistingContentType);
 

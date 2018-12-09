@@ -25,6 +25,7 @@ namespace WarpCore.Platform.Extensibility
 
 
     [Table("cms_repository_metadata")]
+    [WarpCoreEntity("204b8498-b8b7-489e-87ed-ddb1fcfb6608",SupportsCustomFields = false)]
     public class RepositoryMetdata : UnversionedContentEntity
     {
         public bool IsDynamic { get; set; }

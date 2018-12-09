@@ -9,6 +9,10 @@ namespace Cms
 {
     public static class Templating
     {
+        public static string CreateToStringExpression(string variableName)
+        {
+            return "{" + variableName + "}";
+        }
 
         public static string Interpolate(string template, IDictionary<string,string> dataContext)
         {

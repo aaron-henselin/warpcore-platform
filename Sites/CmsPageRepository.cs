@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +43,7 @@ namespace WarpCore.Cms
 
 
     [Table("cms_page")]
-    [WarpCoreEntity(ApiId,Title =nameof(Name),ContentNameSingular = "Page")]
+    [WarpCoreEntity(ApiId,TitleProperty =nameof(Name),ContentNameSingular = "Page")]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
     public class CmsPage : VersionedContentEntity, IHasDesignedLayout
     {
@@ -294,13 +295,26 @@ namespace WarpCore.Cms
 
 
 
+    //public class ContentSecurityModel : IRepositorySecurityModel
+    //{
+    //    public const string ModelName = "Content";
+
+    //    public PermissionRuleSet CalculatePermissions(SecurityQuery securedResourceId)
+    //    {
+    //        var allPermissions = new PermissionRepository().Find().Where(x => x.SecurityModel == ModelName).ToLookup(x => x.SecuredResourceId);
+
+    //        securedResourceId.RepositoryApiId
+    //    }
+    //}
+
     public class SitemapSecurityModel : IRepositorySecurityModel
     {
+        public const string ModelName = "Sitemap";
 
         private static Dictionary<Guid, PermissionRuleSet> CalculatePermissionsForAllSites()
         {
             Dictionary<Guid, PermissionRuleSet> newRules = new Dictionary<Guid, PermissionRuleSet>();
-            var allPermissions = new PermissionRepository().Find().ToLookup(x => x.SecuredResourceId);
+            var allPermissions = new PermissionRepository().Find().Where(x => x.SecurityModel == ModelName).ToLookup(x => x.SecuredResourceId);
 
             var siteRepository = new SiteRepository();
             foreach (var site in siteRepository.Find())
@@ -422,16 +436,16 @@ namespace WarpCore.Cms
 
 
 
-        public PermissionRuleSet CalculatePermissions(Guid securedResourceId)
+        public PermissionRuleSet CalculatePermissions(SecurityQuery query)
         {
             lock (syncRoot)
             {
                 //if (_allRules == null)
                 var _allRules = CalculatePermissionsForAllSites();
-                if (!_allRules.ContainsKey(securedResourceId))
-                    throw new Exception("Security was not calculated for secured resource id: " + securedResourceId);
+                if (!_allRules.ContainsKey(query.ItemId))
+                    throw new Exception("Security was not calculated for secured resource id: " + query.ItemId);
 
-                return _allRules[securedResourceId];
+                return _allRules[query.ItemId];
             }
         }
     }

@@ -16,8 +16,9 @@ namespace WarpCore.Platform.Extensibility.DynamicContent
                 return _definitions[uid];
 
             var typeExtensions = new ContentInterfaceRepository().Find().Where(x => x.ContentTypeId == uid);
-
+            var metadata = new ContentTypeMetadataRepository().Find().Where(x => x.TypeResolverId == uid).SingleOrDefault();
             var dtd = new DynamicTypeDefinition();
+            dtd.TitleProperty = metadata?.TitleProperty;
             foreach (var extension in typeExtensions)
             {
                 dtd.DynamicProperties.AddRange(extension.InterfaceFields);

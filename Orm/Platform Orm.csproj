@@ -53,6 +53,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WarpCore.Platform.Extensibility">
+      <HintPath>..\Sites\bin\Debug\WarpCore.Platform.Extensibility.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\MultilingualString.cs" />
