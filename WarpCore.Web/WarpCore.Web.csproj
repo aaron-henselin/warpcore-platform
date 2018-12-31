@@ -84,6 +84,8 @@
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
     <Compile Include="CmsPageContentActivation\CmsPageLayoutEngine.cs" />
+    <Compile Include="PageCompositor\PageCompositor.cs" />
+    <Compile Include="RenderingEngines\WebForms\WebFormsRenderEngine.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
