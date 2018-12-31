@@ -12,7 +12,7 @@ namespace Cms.Forms
 {
     [Table("cms_form")]
     [WarpCoreEntity(ApiId, TitleProperty = nameof(Name), ContentNameSingular = "Form")]
-    public class CmsForm : VersionedContentEntity, IHasDesignedLayout
+    public class CmsForm : VersionedContentEntity, IHasSubRenderingPlans
     {
         public const string ApiId = "fb446b6d-3899-4ae1-8cf8-120044d6aa67";
         

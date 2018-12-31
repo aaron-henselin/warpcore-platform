@@ -87,7 +87,7 @@ namespace DemoSite
             var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            _activatedConfigurators =CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
+            _activatedConfigurators = new List<IConfiguratorControl>();// =CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
             var buildArguments = new ConfiguratorBuildArguments
             {

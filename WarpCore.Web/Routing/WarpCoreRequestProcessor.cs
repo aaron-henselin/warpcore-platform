@@ -6,9 +6,62 @@ using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
+using WarpCore.Web.Widgets;
 
 namespace WarpCore.Cms
 {
+    public class ContentPageHandler : IHttpHandler
+    {
+        public ContentPageHandler()
+        {
+        }
+
+        public void ProcessRequest(HttpContext context)
+        {
+            var rq = CmsPageRequestContext.Current;
+
+            RenderContentPage(rq);
+        }
+
+
+        private static void RenderContentPage(CmsPageRequestContext rt)
+        {
+            var pageBuilder = new CmsPageLayoutEngine(rt);
+
+            var page = new PageRendering();
+
+            pageBuilder.ActivateAndPlaceLayoutContent(page);
+
+            var pageSpecificContent = rt.CmsPage.PageContent;
+            if (rt.PageRenderMode == PageRenderMode.PageDesigner)
+            {
+                var editing = new EditingContextManager();
+                var context = editing.GetOrCreateEditingContext(rt.CmsPage);
+                pageSpecificContent = context.AllContent;
+            }
+
+            var d = page.GetPartialPageRenderingByLayoutBuilderId();
+
+            foreach (var contentItem in pageSpecificContent)
+            {
+                var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? Guid.Empty;
+                var root = d[placementLayoutBuilderId];
+                pageBuilder.ActivateAndPlaceAdHocPageContent(root, contentItem);
+
+            }
+
+            var cre = new CompositeRenderingEngine();
+            var batch = cre.Execute(page,
+                rt.PageRenderMode);
+
+            HttpContext.Current.Response.Write(batch.Html);
+        }
+
+
+
+        public bool IsReusable { get; } = false;
+    }
+
     public  class WarpCoreRequestProcessor
     {
         private static void ProcessRequestForContentPage(HttpContext context, CmsPage cmsPage)
@@ -16,12 +69,19 @@ namespace WarpCore.Cms
             string transferUrl;
 
             if (!string.IsNullOrWhiteSpace(cmsPage.PhysicalFile))
+            {
                 transferUrl = cmsPage.PhysicalFile;
+                context.RewritePath(transferUrl, false);
+            }
             else
-                transferUrl = "/App_Data/DynamicPage.aspx";
+            {
+           
+                
+            }
+            
 
-            context.RewritePath(transferUrl,false);
         }
+
 
         private string CreateUrl(SiteRoute transferRoute, HttpContext httpContext, IDictionary<string,string> parameters)
         {

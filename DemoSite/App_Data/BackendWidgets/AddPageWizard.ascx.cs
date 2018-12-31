@@ -46,7 +46,7 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { ["FormId"] = PageTypeSelector.SelectedValue }
             };
 
-            CmsPageLayoutEngine.ActivateAndPlaceContent(this, new[] {pgContent});
+            //CmsPageLayoutEngine.ActivateAndPlaceContent(this, new[] {pgContent});
         }
 
         private void PageTypeSelector_TextChanged(object sender, EventArgs e)

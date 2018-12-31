@@ -46,8 +46,8 @@ namespace DemoSite
             
             _repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(_cmsForm.RepositoryUid);
 
-            _activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
-
+            //_activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
+           
 
             var draft = GetDraft();
             if (draft.IsNew)

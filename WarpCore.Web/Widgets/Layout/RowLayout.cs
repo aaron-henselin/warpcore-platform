@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -8,15 +9,21 @@ using WarpCore.Platform.DataAnnotations;
 namespace WarpCore.Web.Widgets
 {
     [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
-    public class RowLayout : LayoutControl, INamingContainer
+    public class RowLayout : Control, ILayoutControl, INamingContainer
     {
         public const string ApiId = "WC/RowLayout";
 
         [UserInterfaceHint][DisplayName("Number of Columns")]
         public int NumColumns { get; set; } = 1;
 
-        public override void InitializeLayout()
+        [UserInterfaceIgnore]
+        public Guid LayoutBuilderId { get; set; }
+
+
+        public IReadOnlyCollection<RenderingsPlaceHolder> InitializeLayout()
         {
+            List<RenderingsPlaceHolder> subLayouts = new List<RenderingsPlaceHolder>();
+
             var width = 12 / Math.Max(1,NumColumns);
             var row = new Panel { CssClass = "row", ID="Row" };
             for (var i = 0; i < NumColumns; i++)
@@ -28,14 +35,28 @@ namespace WarpCore.Web.Widgets
                 };
                 p.Controls.Add(new LayoutBuilderContentPlaceHolder { ID = i.ToString(),LayoutBuilderId = LayoutBuilderId });
                 row.Controls.Add(p);
+
+                
+                subLayouts.Add(new RenderingsPlaceHolder{Id = ID});
             }
 
             this.Controls.Add(row);
+
+            return subLayouts;
         }
+
+
     }
 
     public class LayoutBuilderContentPlaceHolder : ContentPlaceHolder
     {
         public Guid LayoutBuilderId { get; set; }
+    }
+
+    public class RenderingsPlaceHolder
+    {
+        public string Id { get; set; }
+
+        public List<PartialPageRendering> Renderings { get; set; } = new List<PartialPageRendering>();
     }
 }

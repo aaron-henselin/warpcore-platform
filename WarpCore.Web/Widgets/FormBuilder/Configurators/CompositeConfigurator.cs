@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Configurators
@@ -42,10 +43,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
-            
+            var rendering = new WebFormsWidget(_surface,Guid.Empty);
+            rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
 
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
-            _activatedConfigurators =CmsPageLayoutEngine.ActivateAndPlaceContent(_surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
+            CmsPageLayoutEngine.ActivateAndPlaceContent(rendering, cmsForm.DesignedContent,true);
+            _activatedConfigurators = _surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>().ToList();
             _readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
             CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
             //CmsFormReadWriter.SetDefaultValues(_surface, buildArguments);

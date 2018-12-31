@@ -360,6 +360,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             };
             formDesigner.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-formdesigner"
             });
@@ -373,6 +374,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             };
             pageTree.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-pagetree"
             });
@@ -393,6 +395,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             };
             addPageWizard.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = AddPageWizard.ApiId,
 
@@ -441,6 +444,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             };
             entityBuilderPage.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-entitybuilder",
                 Parameters = new Dictionary<string, string> { }
@@ -454,6 +458,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             };
             entityListPage.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = "wc-entity-list",
                 Parameters = new Dictionary<string, string> { }
@@ -493,6 +498,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
 
             dynamicListTest.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = ContentList.ApiId,
                 Parameters = parameters
@@ -536,6 +542,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
 
             formsList.PageContent.Add(new CmsPageContent
             {
+                Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = ContentList.ApiId,
                 Parameters = formListParameters

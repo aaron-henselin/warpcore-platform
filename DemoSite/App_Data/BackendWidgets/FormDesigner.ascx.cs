@@ -61,10 +61,10 @@ namespace DemoSite
             var mgr = new EditingContextManager();
             var ec = mgr.GetOrCreateEditingContext(cmsForm);
             
-            CmsPageLayoutEngine.ActivateAndPlaceContent(RuntimePlaceHolder, ec.AllContent,PageRenderMode.PageDesigner);
+            //CmsPageLayoutEngine.ActivateAndPlaceContent(RuntimePlaceHolder, ec.AllContent,PageRenderMode.PageDesigner);
 
-            RuntimePlaceHolder.Controls.AddAt(0, new DropTarget(RuntimePlaceHolder, DropTargetDirective.Begin));
-            RuntimePlaceHolder.Controls.Add(new DropTarget(RuntimePlaceHolder, DropTargetDirective.End));
+            //RuntimePlaceHolder.Controls.AddAt(0, new DropTarget(RuntimePlaceHolder, DropTargetDirective.Begin));
+            //RuntimePlaceHolder.Controls.Add(new DropTarget(RuntimePlaceHolder, DropTargetDirective.End));
 
             this.Page.Init += (x,y) => this.Page.EnableDesignerDependencies();
         }

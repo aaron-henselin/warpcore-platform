@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
 {
-    public abstract class LayoutControl :Control
+    public interface ILayoutControl
     {
-        public abstract void InitializeLayout();
+        IReadOnlyCollection<RenderingsPlaceHolder> InitializeLayout();
 
         [UserInterfaceIgnore]
-        public Guid LayoutBuilderId { get; set; }
+        Guid LayoutBuilderId { get; set; }
     }
+
+
 }

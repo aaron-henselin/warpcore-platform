@@ -69,7 +69,7 @@ public interface ILayoutHandle
 
 
 
-        private EditingContext CreateEditingContext(IHasDesignedLayout hasDesignedLayout)
+        private EditingContext CreateEditingContext(IHasSubRenderingPlans hasDesignedLayout)
         {
             var ec = new EditingContext
             {
@@ -82,7 +82,7 @@ public interface ILayoutHandle
             return _js.Deserialize<EditingContext>(raw);
         }
 
-        public EditingContext GetOrCreateEditingContext(IHasDesignedLayout hasDesignedLayout)
+        public EditingContext GetOrCreateEditingContext(IHasSubRenderingPlans hasDesignedLayout)
         {
 
             var pageDesignHasNotStarted =
@@ -114,7 +114,12 @@ public interface ILayoutHandle
     {
         void IHttpModule.Init(HttpApplication application)
         {
+            application.PostMapRequestHandler += (sender, args) =>
+            {
+                if (CmsPageRequestContext.Current?.CmsPage != null)
+                    HttpContext.Current.Handler = new ContentPageHandler();
 
+            };
             application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
             application.BeginRequest += delegate(object sender, EventArgs args)
             {
@@ -149,43 +154,53 @@ public interface ILayoutHandle
 
         private static void WireUpPreInit()
         {
-            if (HttpContext.Current.Handler.GetType().ToString().EndsWith("_aspx"))
-            { // Register PreRender handler only on aspx pages.
-                Page handlerPage = (Page)HttpContext.Current.Handler;
-                handlerPage.PreInit += (sender, args) =>
-                {
-                    var rt = CmsPageRequestContext.Current;
-                    var isUnmanagedAspxPage = rt == null || rt.CmsPage == null;
-                    if (isUnmanagedAspxPage)
-                        return;
+            //if (HttpContext.Current.Handler.GetType().ToString().EndsWith("_aspx"))
+            //{ // Register PreRender handler only on aspx pages.
+            //    Page handlerPage = (Page)HttpContext.Current.Handler;
+            //    handlerPage.PreInit += (sender, args) =>
+            //    {
+            //        var rt = CmsPageRequestContext.Current;
+            //        var isUnmanagedAspxPage = rt == null || rt.CmsPage == null;
+            //        if (isUnmanagedAspxPage)
+            //            return;
+                    
 
-                    var localPage = (Page)sender;
-                    localPage.EnableViewState = rt.CmsPage.EnableViewState;
-                    localPage.Title = rt.CmsPage.Name;
-                    localPage.MetaKeywords = rt.CmsPage.Keywords;
-                    localPage.MetaDescription = rt.CmsPage.Description;
-                    var pageBuilder = new CmsPageLayoutEngine(rt);
-                    pageBuilder.ActivateAndPlaceLayoutContent(localPage);
+            //        var localPage = (Page)sender;
+            //        localPage.EnableViewState = rt.CmsPage.EnableViewState;
+            //        localPage.Title = rt.CmsPage.Name;
+            //        localPage.MetaKeywords = rt.CmsPage.Keywords;
+            //        localPage.MetaDescription = rt.CmsPage.Description;
+            //        var pageBuilder = new CmsPageLayoutEngine(rt);
 
-                    var allContent = rt.CmsPage.PageContent;
-                    if (rt.PageRenderMode == PageRenderMode.PageDesigner)
-                    {
-                        var editing = new EditingContextManager();
-                        var context = editing.GetOrCreateEditingContext(rt.CmsPage);
-                        allContent = context.AllContent;
-                    }
+            //        var page = new PageRendering();
 
-                    pageBuilder.ActivateAndPlaceAdHocPageContent(localPage, allContent);
+            //        pageBuilder.ActivateAndPlaceLayoutContent(page);
 
-                    if (rt.PageRenderMode == PageRenderMode.PageDesigner)
-                        localPage.Init += (x, y) => localPage.EnableDesignerDependencies();
+            //        var allContent = rt.CmsPage.PageContent;
+            //        if (rt.PageRenderMode == PageRenderMode.PageDesigner)
+            //        {
+            //            var editing = new EditingContextManager();
+            //            var context = editing.GetOrCreateEditingContext(rt.CmsPage);
+            //            allContent = context.AllContent;
+            //        }
 
-                };
-                handlerPage.Init += (sender, args) =>
-                {
-                    handlerPage.Form.Action = HttpContext.Current.Request.RawUrl;
-                };
-            }
+            //        var d = page.GetPartialPageRenderingByLayoutBuilderId();
+            //        foreach (var contentItem in allContent)
+            //        {
+            //            var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? Guid.Empty;
+            //            var root = d[placementLayoutBuilderId];
+            //            pageBuilder.ActivateAndPlaceAdHocPageContent(root, contentItem );
+            //        }
+
+            //        if (rt.PageRenderMode == PageRenderMode.PageDesigner)
+            //            localPage.Init += (x, y) => localPage.EnableDesignerDependencies();
+
+            //    };
+            //    handlerPage.Init += (sender, args) =>
+            //    {
+            //        handlerPage.Form.Action = HttpContext.Current.Request.RawUrl;
+            //    };
+            //}
         }
 
 
