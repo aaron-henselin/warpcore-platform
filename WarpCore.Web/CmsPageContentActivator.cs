@@ -70,7 +70,7 @@ namespace Cms
             var subLayoutPositions = (baseObject as ILayoutControl)?.InitializeLayout();
 
             if (baseObject is Control)
-            return new WebFormsWidget((Control)baseObject, pageContent.Id)
+            return new WebFormsControlPartialPageRendering((Control)baseObject, pageContent.Id)
             {
                 FriendlyName = toolboxItem.FriendlyName,
                 LocalId = $"Layout{pageContent.Id}",

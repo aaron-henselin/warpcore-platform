@@ -28,7 +28,7 @@ namespace WarpCore.Cms
         {
             var pageBuilder = new CmsPageLayoutEngine(rt);
 
-            var page = new PageRendering();
+            var page = new PageRenderingDirective();
 
             pageBuilder.ActivateAndPlaceLayoutContent(page);
 

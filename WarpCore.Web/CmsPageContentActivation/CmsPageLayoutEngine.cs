@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web.Compilation;
@@ -17,7 +18,7 @@ using StringBuilder = System.Text.StringBuilder;
 
 namespace WarpCore.Web
 {
-    public class PageRendering
+    public class PageRenderingDirective
     {
         public PartialPageRendering Rendering { get; set; }
         public List<string> Scripts { get; set; }
@@ -95,98 +96,37 @@ namespace WarpCore.Web
     }
 
 
-
-    public class WebFormsPageRendering : PartialPageRendering, IHandledByWebFormsRenderingEngine
+    public class RenderingFragmentCollection
     {
-        private readonly Page _masterPage;
-
-        public WebFormsPageRendering(Page masterPage)
-        {
-            _masterPage = masterPage;
-            var placeHolders = _masterPage.GetRootControl().GetDescendantControls<ContentPlaceHolder>();
-            foreach (var nativePlaceHolder in placeHolders)
-                this.PlaceHolders.Add(nativePlaceHolder.ID,new RenderingsPlaceHolder {Id = nativePlaceHolder.ID});
-
-            this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Head);
-            this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Scripts);
-
-            IsFromLayout = true;
-        }
-
-        public Page GetPage()
-        {
-            return _masterPage;
-        }
-    }
-
-    public interface IHandledByWebFormsRenderingEngine
-    {
-    }
-
-    public class WebFormsWidget : PartialPageRendering, IHandledByWebFormsRenderingEngine
-    {
-        private Control activatedWidget;
-
-        public WebFormsWidget(Control activatedWidget, Guid contentId)
-        {
-            ContentId = contentId;
-            this.activatedWidget = activatedWidget;
-
-            this.LocalId = activatedWidget.ID;
-            var layout = this.activatedWidget as ILayoutControl;
-            if (layout != null)
-                this.LayoutBuilderId = layout.LayoutBuilderId;
-        }
-        
-
-        public Control GetControl()
-        {
-            return activatedWidget;
-        }
-    }
-
-    public class CompositableContent
-    {
-        
-        public Dictionary<Guid,List<ITransformOutput>> WidgetContent { get; set; } = new Dictionary<Guid, List<ITransformOutput>>();
+        public Dictionary<Guid,List<IRenderingFragment>> WidgetContent { get; set; } = new Dictionary<Guid, List<IRenderingFragment>>();
         public Dictionary<string, List<string>> GlobalContent { get; set; } = new Dictionary<string, List<string>>();
     }
 
-    public class GlobalSubstitutionOutput : ITransformOutput
+    [DebuggerDisplay("GlobalPlaceHolder = {" + nameof(Id) + "}")]
+    public class GlobalSubstitutionOutput : IRenderingFragment
     {
         public string Id { get; set; }
     }
 
-    public class LayoutSubstitutionOutput : ITransformOutput
+    [DebuggerDisplay("LayoutPlaceHolder = {" + nameof(Id) + "}")]
+    public class LayoutSubstitutionOutput : IRenderingFragment
     {
         public string Id { get; set; }
     }
 
-    public class HtmlOutput : ITransformOutput
+    [DebuggerDisplay("Html = {" + nameof(Html) + "}")]
+    public class HtmlOutput : IRenderingFragment
     {
-        public string sb;
+        public string Html;
 
         public HtmlOutput(StringBuilder sb)
         {
-            this.sb = sb.ToString();
+            this.Html = sb.ToString();
         }
     }
+    
 
-    public class BeginWidgetHtmlOutput : HtmlOutput
-    {
-        public BeginWidgetHtmlOutput(StringBuilder sb) : base(sb)
-        {
-        }
-    }
-
-    public class EndWidgetHtmlOutput : HtmlOutput
-    {
-        public EndWidgetHtmlOutput(StringBuilder sb) : base(sb)
-        {
-        }
-    }
-
-    public interface ITransformOutput
+    public interface IRenderingFragment
     {
     }
 
@@ -199,9 +139,9 @@ namespace WarpCore.Web
 
     public class CompositeRenderingEngine
     {
-        public CompositedPage Execute(PageRendering pageRendering,PageRenderMode renderMode)
+        public CompositedPage Execute(PageRenderingDirective pageRendering,PageRenderMode renderMode)
         {
-            var transformationResult = new CompositableContent();
+            var transformationResult = new RenderingFragmentCollection();
 
             var webForms = new WebFormsRenderEngine();
 
@@ -214,7 +154,7 @@ namespace WarpCore.Web
             foreach (var literal in literals)
             {
                 var htmlOutput = new HtmlOutput(new StringBuilder(literal.Text));
-                batch.WidgetContent.Add(literal.ContentId,new List<ITransformOutput> {htmlOutput});
+                batch.WidgetContent.Add(literal.ContentId,new List<IRenderingFragment> {htmlOutput});
             }
 
             
@@ -234,7 +174,7 @@ namespace WarpCore.Web
     {
         public const string Head = "__HEAD";
         public const string Scripts = "__SCRIPTS";
-
+        public const string InternalStateTracking = "__FORMDESIGNER";
     }
 
     public class CmsPageLayoutEngine
@@ -286,7 +226,7 @@ namespace WarpCore.Web
             uc.FriendlyName = toolboxItem.FriendlyName;
 
             var fake = Guid.NewGuid();
-            ph.Renderings.Add(new WebFormsWidget((Control)uc,fake));
+            ph.Renderings.Add(new WebFormsControlPartialPageRendering((Control)uc,fake));
         }
 
         private static RenderingsPlaceHolder FindPlacementLocation(PartialPageRendering searchContext, CmsPageContent content)
@@ -342,7 +282,7 @@ namespace WarpCore.Web
             //}
         }
 
-        public void ActivateAndPlaceLayoutContent(PageRendering page)
+        public void ActivateAndPlaceLayoutContent(PageRenderingDirective page)
         {
             page.Rendering = new UndefinedLayoutPartialPageRendering();
             if (_context.CmsPage.LayoutId == Guid.Empty)

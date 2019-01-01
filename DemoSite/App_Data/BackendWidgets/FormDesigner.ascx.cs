@@ -66,7 +66,7 @@ namespace DemoSite
             //RuntimePlaceHolder.Controls.AddAt(0, new DropTarget(RuntimePlaceHolder, DropTargetDirective.Begin));
             //RuntimePlaceHolder.Controls.Add(new DropTarget(RuntimePlaceHolder, DropTargetDirective.End));
 
-            this.Page.Init += (x,y) => this.Page.EnableDesignerDependencies();
+            //this.Page.Init += (x,y) => this.Page.EnableDesignerDependencies();
         }
 
         protected void Page_Load(object sender, EventArgs e)

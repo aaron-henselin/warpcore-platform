@@ -88,6 +88,9 @@
     <Content Include="App_Data\Forms\DynamicForm.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityBuilder.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityList.ascx" />
+    <Content Include="App_Data\PageDesignerComponents\Resources\pagedesigner-head.htm" />
+    <Content Include="App_Data\PageDesignerComponents\Resources\pagedesigner.css" />
+    <Content Include="App_Data\PageDesignerComponents\Resources\pagedesigner.js" />
     <Content Include="assets\summernote\lang\summernote-ar-AR.js" />
     <Content Include="assets\summernote\lang\summernote-bg-BG.js" />
     <Content Include="assets\summernote\lang\summernote-ca-ES.js" />
@@ -301,7 +304,6 @@
     </Compile>
     <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.cs">
       <DependentUpon>PageDesignerState.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.designer.cs">
       <DependentUpon>PageDesignerState.ascx</DependentUpon>

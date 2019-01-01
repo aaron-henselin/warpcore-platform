@@ -84,18 +84,18 @@ namespace WarpCore.Web.Extensions
                 }
         }
 
-        public static void EnableDesignerDependencies(this Page localPage)
-        {
-            var htmlForm = localPage.GetRootControl().GetDescendantControls<HtmlForm>().Single();
-            htmlForm.Controls.Add(new ProxiedScriptManager());
-            var bundle = new AscxPlaceHolder { VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx" };
-            htmlForm.Controls.Add(bundle);
+        //public static void EnableDesignerDependencies(this Page localPage)
+        //{
+        //    var htmlForm = localPage.GetRootControl().GetDescendantControls<HtmlForm>().Single();
+        //    htmlForm.Controls.Add(new ProxiedScriptManager());
+        //    var bundle = new AscxPlaceHolder { VirtualPath = "/App_Data/PageDesignerComponents/PageDesignerControlSet.ascx" };
+        //    htmlForm.Controls.Add(bundle);
 
-            //localPage.PreLoad += (o, eventArgs) =>
-            //{
-                ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(localPage, "warpcore.page.edit();");
-            //};
-        }
+        //    //localPage.PreLoad += (o, eventArgs) =>
+        //    //{
+        //        ScriptManagerExtensions.RegisterScriptToRunEachFullOrPartialPostback(localPage, "warpcore.page.edit();");
+        //    //};
+        //}
 
         public static Control GetRootControl(this Page pageActual)
         {

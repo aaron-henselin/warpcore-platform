@@ -43,7 +43,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
-            var rendering = new WebFormsWidget(_surface,Guid.Empty);
+            var rendering = new WebFormsControlPartialPageRendering(_surface,Guid.Empty);
             rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
 
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);

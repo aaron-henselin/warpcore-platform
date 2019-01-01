@@ -17,7 +17,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
         {
             private readonly Stack<Guid> _idStack = new Stack<Guid>();
 
-            public readonly Dictionary<Guid,List<ITransformOutput>> output = new Dictionary<Guid, List<ITransformOutput>>();
+            public readonly Dictionary<Guid,List<IRenderingFragment>> output = new Dictionary<Guid, List<IRenderingFragment>>();
 
             
 
@@ -27,15 +27,13 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 {
                     var sb = this.GetStringBuilder();
                     if (!output[_idStack.Peek()].Any())
-                        output[_idStack.Peek()].Add(new BeginWidgetHtmlOutput(sb));
-                    else
                         output[_idStack.Peek()].Add(new HtmlOutput(sb));
 
                     sb.Clear();
                 }
 
                 _idStack.Push(id);
-                output.Add(id, new List<ITransformOutput>());
+                output.Add(id, new List<IRenderingFragment>());
 
             }
 
@@ -62,7 +60,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 var id = _idStack.Pop();
 
                 var sb = this.GetStringBuilder();
-                output[id].Add(new EndWidgetHtmlOutput(sb));
+                output[id].Add(new HtmlOutput(sb));
                 sb.Clear();
               
             }
@@ -109,7 +107,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
         {
             private readonly Guid _id;
 
-            public RenderingEngineComponent(WebFormsWidget pp)
+            public RenderingEngineComponent(WebFormsControlPartialPageRendering pp)
             {
                 _id = pp.ContentId;
 
@@ -152,11 +150,11 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
                 foreach (var placedRendering in placeHolder.Renderings)
                 {
-                    if (placedRendering is WebFormsWidget)
+                    if (placedRendering is WebFormsControlPartialPageRendering)
                     {
-                        WebFormsWidget webFormsRendering = ((WebFormsWidget) placedRendering);
+                        WebFormsControlPartialPageRendering webFormsRendering = ((WebFormsControlPartialPageRendering) placedRendering);
                         var control = webFormsRendering.GetControl();
-                        contentPlaceHolder.Controls.Add(new RenderingEngineComponent((WebFormsWidget)placedRendering));
+                        contentPlaceHolder.Controls.Add(new RenderingEngineComponent((WebFormsControlPartialPageRendering)placedRendering));
 
                         BuildServerSidePage(control, placedRendering);
                     }
@@ -180,7 +178,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
         }
 
 
-        public CompositableContent Execute(PartialPageRendering pp)
+        public RenderingFragmentCollection Execute(PartialPageRendering pp)
         {
 
             SwitchingHtmlWriter _writer = new SwitchingHtmlWriter();
@@ -208,14 +206,15 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 nativePage.InitComplete += (sender, args) =>
                 {
                     if (nativePage.Header == null)
-                        throw new Exception("Add a <head runat=server> tag in order to use this master page as a layout.");
+                        throw new Exception("Add a <head runat='server'> tag in order to use this master page as a layout.");
 
                     if (nativePage.Form == null)
-                        throw new Exception("Add a <form runat=server> tag in order to use this master page as a layout.");
+                        throw new Exception("Add a <form runat='server'> tag in order to use this master page as a layout.");
 
 
                     nativePage.Header.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Head ));
                     nativePage.Form.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Scripts ));
+                    nativePage.Form.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.InternalStateTracking));
 
                 };
               
@@ -230,7 +229,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 var form = new HtmlGenericControl("form");
 
 
-                var wrapper = new RenderingEngineComponent(new WebFormsWidget(body,LayoutBuilderIds.WebFormsInterop));
+                var wrapper = new RenderingEngineComponent(new WebFormsControlPartialPageRendering(body,LayoutBuilderIds.WebFormsInterop));
                 wrapper.Controls.Add(body);
                 body.Controls.Add(form);
                 nativeRoot.Controls.Add(wrapper);
@@ -245,7 +244,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
             
             
 
-            return new CompositableContent
+            return new RenderingFragmentCollection
             {
                 WidgetContent = _writer.output,
 
