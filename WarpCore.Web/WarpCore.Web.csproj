@@ -105,11 +105,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Site.css" />
     <Content Include="DynamicPage.aspx" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -138,7 +134,7 @@
     <Compile Include="RenderingEngines\WebForms\WebFormsControlPartialPageRendering.cs" />
     <Compile Include="RenderingEngines\WebForms\WebFormsPageRendering.cs" />
     <Compile Include="PageCompositor\PageCompositor.cs" />
-    <Compile Include="PageCompositor\PageDesignerDependencies.cs" />
+    <Compile Include="PageCompositor\PageDesignerHtmlFactory.cs" />
     <Compile Include="RenderingEngines\WebForms\WebFormsRenderEngine.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
@@ -179,9 +175,6 @@
     <Compile Include="Widgets\Layout\RuntimeContentPlaceHolder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -231,7 +224,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Design\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Default\" />

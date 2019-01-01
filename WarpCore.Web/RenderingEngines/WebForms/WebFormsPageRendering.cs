@@ -1,4 +1,5 @@
-﻿using System.Web.UI;
+﻿using System.Web.Compilation;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets;
@@ -14,12 +15,13 @@ namespace WarpCore.Web
     {
         private readonly Page _masterPage;
 
-        public WebFormsPageRendering(Page masterPage)
+        public WebFormsPageRendering(Page page)
         {
-            _masterPage = masterPage;
+            _masterPage = page;
+
             var placeHolders = _masterPage.GetRootControl().GetDescendantControls<ContentPlaceHolder>();
             foreach (var nativePlaceHolder in placeHolders)
-                this.PlaceHolders.Add(nativePlaceHolder.ID,new RenderingsPlaceHolder {Id = nativePlaceHolder.ID});
+                this.PlaceHolders.Add(nativePlaceHolder.ID, new RenderingsPlaceHolder { Id = nativePlaceHolder.ID });
 
             this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Head);
             this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Scripts);
@@ -27,6 +29,7 @@ namespace WarpCore.Web
 
             IsFromLayout = true;
         }
+
 
         public Page GetPage()
         {

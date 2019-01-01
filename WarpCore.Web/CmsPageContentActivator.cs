@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -11,6 +12,7 @@ using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;
 using WarpCore.Web;
 using WarpCore.Web.Widgets;
+using File = System.IO.File;
 
 namespace Cms
 {
@@ -42,46 +44,85 @@ namespace Cms
 
     }
 
+
     public class CmsPageContentActivator
     {
-        public static PartialPageRendering ActivateLayout(string layoutPath)
+        private Dictionary<string, IPartialPageRenderingFactory> _extensionLookup;
+        private Dictionary<Type, IPartialPageRenderingFactory> _baseTypeLookup;
+
+
+        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPartialPageRenderingFactory>())
         {
-            if (layoutPath.EndsWith(".master", StringComparison.OrdinalIgnoreCase))
+        }
+
+        public CmsPageContentActivator(IEnumerable<IPartialPageRenderingFactory> renderingFactories)
+        {
+            _extensionLookup = new Dictionary<string, IPartialPageRenderingFactory>(StringComparer.OrdinalIgnoreCase);
+            _baseTypeLookup = new Dictionary<Type, IPartialPageRenderingFactory>();
+            foreach (var fac in renderingFactories)
             {
-                
-                
+                var extensions = fac.GetHandledFileExtensions();
+                foreach (var extension in extensions)
+                {
+                    if (_extensionLookup.ContainsKey(extension))
+                        throw new Exception(
+                            $"Extension {extension} is already handled by {_extensionLookup[extension].GetType().Name}");
 
-                var vPath = "/App_Data/DynamicPage.aspx";
-                Page page = BuildManager.CreateInstanceFromVirtualPath("/App_Data/DynamicPage.aspx", typeof(Page)) as Page;
-                page.MasterPageFile = layoutPath;
+                    _extensionLookup.Add(extension,fac);
+                }
 
-                return new WebFormsPageRendering(page);
+                var baseTypes = fac.GetHandledBaseTypes();
+                foreach (var baseType in baseTypes)
+                {
+                    if (_baseTypeLookup.ContainsKey(baseType))
+                        throw new Exception(
+                            $"Base type {baseType.Name} is already handled by {_baseTypeLookup[baseType].GetType().Name}");
+
+                    _baseTypeLookup.Add(baseType, fac);
+                }
             }
 
-            throw new ArgumentException();
+
         }
 
-        public static PartialPageRendering ActivateControl(CmsPageContent pageContent)
+        public  PartialPageRendering ActivateLayoutByExtension(string virtualPath)
+        {
+
+            if (!virtualPath.Contains("."))
+                throw new Exception($"Layout file does not have an extension, so the rendering engine cannot be determined.");
+
+            var last = virtualPath.Split('.').Last();
+
+            if (!_extensionLookup.ContainsKey(last))
+                throw new Exception("No rendering engine is registered that handles file extension: " + virtualPath);
+
+            return _extensionLookup[last].CreateRenderingForPhysicalFile(virtualPath);
+
+        }
+
+        public PartialPageRendering ActivateCmsPageContent(CmsPageContent pageContent)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var baseObject =  ActivateControl(toolboxItem, pageContent.Parameters);
-            
+            var activatedObject =  ActivateToolboxItemType(toolboxItem, pageContent.Parameters);
             //this is necessary, because the configuration (not the constructor) is allowed to dictate how many placeholders to create.
-            var subLayoutPositions = (baseObject as ILayoutControl)?.InitializeLayout();
+            //todo: move this into the partial page rendering??
+            (activatedObject as ILayoutControl)?.InitializeLayout();
 
-            if (baseObject is Control)
-            return new WebFormsControlPartialPageRendering((Control)baseObject, pageContent.Id)
-            {
-                FriendlyName = toolboxItem.FriendlyName,
-                LocalId = $"Layout{pageContent.Id}",
-                LayoutBuilderId = pageContent.Id,
-                
-            };
+            var handler = _baseTypeLookup.Keys.SingleOrDefault(x => x.IsInstanceOfType(activatedObject));
 
-            throw new ArgumentException();
+            if (handler == null)
+                throw new Exception($"Rendering engine able to handle {activatedObject.GetType().Name} was not found.");
+
+            var pp = _baseTypeLookup[handler].CreateRenderingForObject(activatedObject);
+            pp.ContentId = pageContent.Id;
+            pp.FriendlyName = toolboxItem.FriendlyName;
+            pp.LocalId = $"Layout{pageContent.Id}";
+            pp.LayoutBuilderId = pageContent.Id;
+
+            return pp;
         }
 
-        public static object ActivateControl(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
+        public static object ActivateToolboxItemType(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
         {
             var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
             var activatedWidget = (object)Activator.CreateInstance(toolboxItemType);
@@ -93,7 +134,7 @@ namespace Cms
         public static IDictionary<string, string> GetDefaultContentParameterValues(ToolboxItem toolboxItem)
         {
             
-            var activated = ActivateControl(toolboxItem, new Dictionary<string, string>());
+            var activated = ActivateToolboxItemType(toolboxItem, new Dictionary<string, string>());
             return activated.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
         }
 

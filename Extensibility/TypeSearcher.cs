@@ -19,6 +19,8 @@ namespace WarpCore.Platform.Extensibility
 
     internal static class TypeSearcher
     {
+
+
         public static IReadOnlyCollection<ExtensibleRepositoryDescription> FindRepositoriesKnownToWarpCore(IReadOnlyCollection<Type> allTypes)
         {
             return allTypes

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Web;
@@ -19,14 +20,14 @@ namespace WarpCore.Cms
         public void ProcessRequest(HttpContext context)
         {
             var rq = CmsPageRequestContext.Current;
-
-            RenderContentPage(rq);
+            var activator = new CmsPageContentActivator();
+            RenderContentPage(rq,activator);
         }
 
 
-        private static void RenderContentPage(CmsPageRequestContext rt)
+        private static void RenderContentPage(CmsPageRequestContext rt, CmsPageContentActivator activator)
         {
-            var pageBuilder = new CmsPageLayoutEngine(rt);
+            var pageBuilder = new CmsPageLayoutEngine(rt, activator);
 
             var page = new PageRenderingDirective();
 
@@ -44,9 +45,9 @@ namespace WarpCore.Cms
 
             foreach (var contentItem in pageSpecificContent)
             {
-                var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? Guid.Empty;
+                var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? SpecialRenderingFragmentContentIds.PageRoot;
                 var root = d[placementLayoutBuilderId];
-                pageBuilder.ActivateAndPlaceAdHocPageContent(root, contentItem);
+                pageBuilder.ActivateAndPlaceAdHocPageContent(contentItem, root);
 
             }
 

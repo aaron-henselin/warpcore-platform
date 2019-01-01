@@ -75,21 +75,29 @@ namespace WarpCore.Web.PageCompositor
                     {
                         if (global.Id == GlobalLayoutPlaceHolderIds.Head)
                         {
-                            var head = _pageDesignerHtmlFactory.LoadPageDesignerHead();
-                            var style = _pageDesignerHtmlFactory.LoadPageDesignerStyle();
-                            local.Append(head);
-                            local.Append(style);
+                            //todo: add back in the head where possible.
+                            //var head = _pageDesignerHtmlFactory.LoadPageDesignerHead();
+                            //var style = _pageDesignerHtmlFactory.LoadPageDesignerStyle();
+                            //local.Append(head);
+                            //local.Append(style);
 
                         }
 
                         if (global.Id == GlobalLayoutPlaceHolderIds.Scripts)
                         {
+                            var head = _pageDesignerHtmlFactory.LoadPageDesignerHead();
+                            var style = _pageDesignerHtmlFactory.LoadPageDesignerStyle();
+                            local.Append(head);
+                            local.Append(style);
+
                             var scripts = _pageDesignerHtmlFactory.LoadPageDesignerScripts();
                             local.Append(scripts);
                         }
 
                         if (global.Id == GlobalLayoutPlaceHolderIds.InternalStateTracking)
                         {
+
+
                             var tags = _pageDesignerHtmlFactory.CreatePageDesignerStateTags();
                             local.Append(string.Join(string.Empty,tags));
                         }

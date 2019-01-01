@@ -8,9 +8,8 @@ namespace WarpCore.Web
     {
         private Control activatedWidget;
 
-        public WebFormsControlPartialPageRendering(Control activatedWidget, Guid contentId)
+        public WebFormsControlPartialPageRendering(Control activatedWidget)
         {
-            ContentId = contentId;
             this.activatedWidget = activatedWidget;
 
             this.LocalId = activatedWidget.ID;

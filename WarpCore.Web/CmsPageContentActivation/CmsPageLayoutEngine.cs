@@ -11,6 +11,7 @@ using Cms;
 using Cms.Layout;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.Kernel;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.RenderingEngines.WebForms;
 using WarpCore.Web.Widgets;
@@ -29,7 +30,7 @@ namespace WarpCore.Web
             Dictionary<Guid,PartialPageRendering> d = new Dictionary<Guid, PartialPageRendering>();
             
             d = Rendering.GetAllDescendents().Where(x => x.LayoutBuilderId != Guid.Empty).ToDictionary(x => x.LayoutBuilderId);
-            d.Add(WebFormsRenderEngine.LayoutBuilderIds.PageRoot, Rendering);
+            d.Add(SpecialRenderingFragmentContentIds.PageRoot, Rendering);
 
             return d;
         }
@@ -45,6 +46,24 @@ namespace WarpCore.Web
             PlaceHolders.Add("Body",new RenderingsPlaceHolder {Id="Body"});
         }
     }
+
+    public static class KnownPhysicalFileExtensions
+    {
+        public static string MasterPage = "master";
+        public static string Razor = "cshtml";
+    }
+
+    public interface IPartialPageRenderingFactory
+    {
+        IReadOnlyCollection<Type> GetHandledBaseTypes();
+
+        IReadOnlyCollection<string> GetHandledFileExtensions();
+
+        PartialPageRendering CreateRenderingForObject(object nativeWidgetObject);
+
+        PartialPageRendering CreateRenderingForPhysicalFile(string physicalFilePath);
+    }
+
 
     public class PartialPageRendering 
     {
@@ -137,6 +156,12 @@ namespace WarpCore.Web
         public string Html { get; set; }
     }
 
+    public static class SpecialRenderingFragmentContentIds
+    {
+        public static Guid PageRoot = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+        public static Guid WebFormsInterop = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+    }
+
     public class CompositeRenderingEngine
     {
         public CompositedPage Execute(PageRenderingDirective pageRendering,PageRenderMode renderMode)
@@ -181,24 +206,32 @@ namespace WarpCore.Web
     {
         private readonly CmsPageRequestContext _context;
         private readonly LayoutRepository layoutRepository = new LayoutRepository();
-        public CmsPageLayoutEngine(CmsPageRequestContext context)
+        private CmsPageContentActivator _contentActivator;
+
+        public CmsPageLayoutEngine(): this(Dependency.Resolve<CmsPageRequestContext>(),Dependency.Resolve<CmsPageContentActivator>())
         {
-            _context = context;
+           
         }
 
 
-        public static void ActivateAndPlaceContent(PartialPageRendering parentRendering,
+        public CmsPageLayoutEngine(CmsPageRequestContext context, CmsPageContentActivator contentActivator)
+        {
+            _context = context;
+            _contentActivator = contentActivator;
+        }
+
+
+
+
+        private void ActivateAndPlaceContent(PartialPageRendering parentRendering,
             IReadOnlyCollection<CmsPageContent> contents, bool isFromLayout)
         {
-            //List<PartialPageRendering> activatedControls = new List<PartialPageRendering>();
-
-
             int i = 0;
             foreach (var content in contents)
             {
                 i++;
 
-                var activatedWidget = CmsPageContentActivator.ActivateControl(content);
+                var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
                 activatedWidget.IsFromLayout = isFromLayout;
 
                 var placementPlaceHolder = FindPlacementLocation(parentRendering, content);
@@ -206,28 +239,25 @@ namespace WarpCore.Web
                     continue;
 
                 if (content.AllContent.Any())
-                {
                     ActivateAndPlaceContent(activatedWidget, content.AllContent, isFromLayout);
-                    //activatedControls.AddRange(subCollection);
-                }
 
                 placementPlaceHolder.Renderings.Add(activatedWidget);
             }
         }
     
 
-        private static void AddLayoutHandle(RenderingsPlaceHolder ph, CmsPageContent content)
-        {
-            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
-            var ascx = BuildManager.GetCompiledType("/App_Data/PageDesignerComponents/LayoutHandle.ascx");
-            var uc = (ILayoutHandle)Activator.CreateInstance(ascx);
-            uc.HandleName = toolboxItem.WidgetUid;
-            uc.PageContentId = content.Id;
-            uc.FriendlyName = toolboxItem.FriendlyName;
+        //private static void AddLayoutHandle(RenderingsPlaceHolder ph, CmsPageContent content)
+        //{
+        //    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(content.WidgetTypeCode);
+        //    var ascx = BuildManager.GetCompiledType("/App_Data/PageDesignerComponents/LayoutHandle.ascx");
+        //    var uc = (ILayoutHandle)Activator.CreateInstance(ascx);
+        //    uc.HandleName = toolboxItem.WidgetUid;
+        //    uc.PageContentId = content.Id;
+        //    uc.FriendlyName = toolboxItem.FriendlyName;
 
-            var fake = Guid.NewGuid();
-            ph.Renderings.Add(new WebFormsControlPartialPageRendering((Control)uc,fake));
-        }
+        //    var fake = Guid.NewGuid();
+        //    ph.Renderings.Add(new WebFormsControlPartialPageRendering((Control)uc,fake));
+        //}
 
         private static RenderingsPlaceHolder FindPlacementLocation(PartialPageRendering searchContext, CmsPageContent content)
         {
@@ -241,45 +271,32 @@ namespace WarpCore.Web
             }
             
         }
-        
-        public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Control searchRoot)
+
+        //public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Control searchRoot)
+        //{
+        //    List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
+        //    var allPhs = searchRoot.GetDescendantControls<ContentPlaceHolder>();
+
+        //    foreach (var ph in allPhs)
+        //    {
+        //        var isLeaf = !ph.GetDescendantControls<ContentPlaceHolder>().Any();
+        //        if (isLeaf)
+        //        {
+        //            phs.Add(ph);
+        //        }
+        //    }
+
+        //    return phs;
+        //}
+
+        public void ActivateAndPlaceAdHocPageContent(CmsPageContent contentToActivate, PartialPageRendering page)
         {
-            List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
-            var allPhs = searchRoot.GetDescendantControls<ContentPlaceHolder>();
-
-            foreach (var ph in allPhs)
-            {
-                var isLeaf = !ph.GetDescendantControls<ContentPlaceHolder>().Any();
-                if (isLeaf)
-                {
-                    phs.Add(ph);
-                }
-            }
-
-            return phs;
+            ActivateAndPlaceContent(page,new[]{contentToActivate},false);
         }
-        
 
-        public void ActivateAndPlaceAdHocPageContent(PartialPageRendering page, CmsPageContent item)
+        public void ActivateAndPlaceLayoutContent(IReadOnlyCollection<CmsPageContent> contentToActivate, PartialPageRendering parentRendering)
         {
-            ActivateAndPlaceContent(page,new[]{item},false);
-
-            //var leaves = IdentifyLayoutLeaves(page);
-            //var rootControl = page.GetRootControl();
-
-            //var root = new WebFormsControlRendering(rootControl){};
-            
-            //foreach (var content in allContent)
-            //    ActivateAndPlaceContent(root, allContent, _context.PageRenderMode);
-
-            //if (_context.PageRenderMode == PageRenderMode.PageDesigner)
-            //{
-            //    foreach (var leaf in leaves)
-            //        leaf.Controls.AddAt(0, new DropTarget(leaf, DropTargetDirective.Begin));
-
-            //    foreach (var leaf in leaves)
-            //        leaf.Controls.Add(new DropTarget(leaf, DropTargetDirective.End));
-            //}
+            ActivateAndPlaceContent(parentRendering, contentToActivate, true);
         }
 
         public void ActivateAndPlaceLayoutContent(PageRenderingDirective page)
@@ -293,7 +310,7 @@ namespace WarpCore.Web
            
             
             if (!string.IsNullOrWhiteSpace(layoutToApply.MasterPagePath))
-                page.Rendering = CmsPageContentActivator.ActivateLayout(layoutToApply.MasterPagePath);
+                page.Rendering = _contentActivator.ActivateLayoutByExtension(layoutToApply.MasterPagePath);
             
 
             var structure = layoutRepository.GetLayoutStructure(layoutToApply);
@@ -302,13 +319,13 @@ namespace WarpCore.Web
             if (lns.Any())
             {
                 var mpFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
-                page.Rendering = CmsPageContentActivator.ActivateLayout(mpFile);
+                page.Rendering = _contentActivator.ActivateLayoutByExtension(mpFile);
             }
             
 
             //var root = localPage.GetRootControl();
             foreach (var ln in lns)
-                ActivateAndPlaceContent(page.Rendering, ln.Layout.PageContent, true);
+                ActivateAndPlaceLayoutContent(ln.Layout.PageContent, page.Rendering);
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)

@@ -43,11 +43,11 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
-            var rendering = new WebFormsControlPartialPageRendering(_surface,Guid.Empty);
+            var rendering = new WebFormsControlPartialPageRendering(_surface);
             rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
 
             var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
-            CmsPageLayoutEngine.ActivateAndPlaceContent(rendering, cmsForm.DesignedContent,true);
+            new CmsPageLayoutEngine().ActivateAndPlaceLayoutContent(cmsForm.DesignedContent, rendering);
             _activatedConfigurators = _surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>().ToList();
             _readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
             CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);

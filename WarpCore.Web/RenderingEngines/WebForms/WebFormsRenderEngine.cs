@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -11,6 +12,33 @@ using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.RenderingEngines.WebForms
 {
+    public class WebFormsPartialPageRenderingFactory : IPartialPageRenderingFactory
+    {
+        public PartialPageRendering CreateRenderingForObject(object nativeWidgetObject)
+        {
+            return new WebFormsControlPartialPageRendering((Control) nativeWidgetObject);
+        }
+
+        public PartialPageRendering CreateRenderingForPhysicalFile(string physicalFilePath)
+        {
+            var vPath = "/App_Data/DynamicPage.aspx";
+            Page page = BuildManager.CreateInstanceFromVirtualPath("/App_Data/DynamicPage.aspx", typeof(Page)) as Page;
+            page.MasterPageFile = physicalFilePath;
+            
+            return new WebFormsPageRendering(page){ContentId = SpecialRenderingFragmentContentIds.PageRoot};
+        }
+
+        public IReadOnlyCollection<Type> GetHandledBaseTypes()
+        {
+            return new []{typeof(Control)};
+        }
+
+        public IReadOnlyCollection<string> GetHandledFileExtensions()
+        {
+            return new[] {KnownPhysicalFileExtensions.MasterPage};
+        }
+    }
+
     public class WebFormsRenderEngine : IBatchingRenderEngine
     {
         private class SwitchingHtmlWriter : StringWriter
@@ -21,8 +49,13 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
             
 
-            public void BeginWriting(Guid id)
+            public void BeginWriting(PartialPageRendering pp)
             {
+                if (pp.ContentId == Guid.Empty)
+                    throw new ArgumentException($"Invalid page content id of '{pp.ContentId}' for {pp.FriendlyName}");
+
+                var id = pp.ContentId;
+
                 if (_idStack.Count > 0)
                 {
                     var sb = this.GetStringBuilder();
@@ -33,6 +66,10 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 }
 
                 _idStack.Push(id);
+
+                if (output.ContainsKey(id))
+                    throw new Exception($"Output for CmsPageContent {id} has already been recorded.");
+
                 output.Add(id, new List<IRenderingFragment>());
 
             }
@@ -105,11 +142,11 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
         private class RenderingEngineComponent : PlaceHolder
         {
-            private readonly Guid _id;
+            private readonly WebFormsControlPartialPageRendering _pp;
 
             public RenderingEngineComponent(WebFormsControlPartialPageRendering pp)
             {
-                _id = pp.ContentId;
+                _pp = pp;
 
                 var control = pp.GetControl();
                 Controls.Add(control);
@@ -126,7 +163,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
             {
                 
                 var switching = (SwitchingHtmlWriter)writer.InnerWriter;
-                switching.BeginWriting(_id);
+                switching.BeginWriting(_pp);
                 base.Render(writer);
                 switching.EndWriting();
             }
@@ -171,11 +208,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
             }
         }
 
-        public static class LayoutBuilderIds
-        {
-            public static Guid PageRoot = Guid.Empty;
-            public static Guid WebFormsInterop = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-        }
+
 
 
         public RenderingFragmentCollection Execute(PartialPageRendering pp)
@@ -218,7 +251,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
                 };
               
-                _writer.BeginWriting(pp.ContentId);
+                _writer.BeginWriting(pp);
                 HttpContext.Current.Server.Execute(nativePage, _writer, true);
                 _writer.EndWriting();
             }
@@ -229,7 +262,8 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 var form = new HtmlGenericControl("form");
 
 
-                var wrapper = new RenderingEngineComponent(new WebFormsControlPartialPageRendering(body,LayoutBuilderIds.WebFormsInterop));
+                var wrapper = new RenderingEngineComponent(new WebFormsControlPartialPageRendering(body){ContentId = SpecialRenderingFragmentContentIds.WebFormsInterop });
+                
                 wrapper.Controls.Add(body);
                 body.Controls.Add(form);
                 nativeRoot.Controls.Add(wrapper);
