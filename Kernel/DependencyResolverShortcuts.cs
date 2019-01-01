@@ -12,6 +12,11 @@ namespace WarpCore.Platform.Kernel
             return (T)TinyIoCContainer.Current.Resolve(typeof(T));
         }
 
+        public static object Resolve(Type t)
+        {
+            return TinyIoCContainer.Current.Resolve(t);
+        }
+
         public static IEnumerable<T> ResolveMultiple<T>()
         {
             return (IEnumerable<T>)TinyIoCContainer.Current.Resolve(typeof(IEnumerable<T>));

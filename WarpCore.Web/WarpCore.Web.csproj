@@ -129,8 +129,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="RenderingEngines\Mvc\Class1.cs" />
-    <Compile Include="RenderingEngines\Mvc\DefaultController.cs" />
+    <Compile Include="RenderingEngines\Mvc\ControllerPartialPageRendering.cs" />
+    <Compile Include="RenderingEngines\Mvc\MvcRenderingEngine.cs" />
     <Compile Include="RenderingEngines\WebForms\WebFormsControlPartialPageRendering.cs" />
     <Compile Include="RenderingEngines\WebForms\WebFormsPageRendering.cs" />
     <Compile Include="PageCompositor\PageCompositor.cs" />

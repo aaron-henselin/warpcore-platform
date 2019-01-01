@@ -15,7 +15,11 @@ namespace WarpCore.Web
             this.LocalId = activatedWidget.ID;
             var layout = this.activatedWidget as ILayoutControl;
             if (layout != null)
+            {
+                layout.InitializeLayout();
                 this.LayoutBuilderId = layout.LayoutBuilderId;
+            }
+
         }
 
 

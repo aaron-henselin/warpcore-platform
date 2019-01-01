@@ -8,7 +8,7 @@ namespace WarpCore.Web.Widgets
 {
     public interface ILayoutControl
     {
-        IReadOnlyCollection<RenderingsPlaceHolder> InitializeLayout();
+        void InitializeLayout();
 
         [UserInterfaceIgnore]
         Guid LayoutBuilderId { get; set; }

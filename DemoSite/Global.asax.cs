@@ -158,16 +158,16 @@ namespace DemoSite
                 RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
 
-            CmsPageContentFactory factory = new CmsPageContentFactory();
+            CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
             var twoColumn =
-                factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+                builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
             twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
             form.FormContent.Add(twoColumn);
 
 
             var textboxPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
                 {
                     PropertyName = nameof(CmsPage.Name),
                     DisplayName = "Page Name",
@@ -177,7 +177,7 @@ namespace DemoSite
             textboxPageContent.PlacementContentPlaceHolderId = "0";
 
             var urlSelector =
-                factory.CreateToolboxItemContent(new ConfiguratorUrlSelector()
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorUrlSelector()
                 {
                     PropertyName = nameof(CmsPage.RedirectUri),
                     DisplayName = "Redirect To",
@@ -191,7 +191,7 @@ namespace DemoSite
 
 
             var siteIdDropdown =
-                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
                 {
                     PropertyName = nameof(CmsPage.SiteId)
                 });
@@ -213,16 +213,16 @@ namespace DemoSite
                 RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
 
-            CmsPageContentFactory factory = new CmsPageContentFactory();
+            CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
             var twoColumn =
-                factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+                builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
             twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
             form.FormContent.Add(twoColumn);
 
 
             var textboxPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
                 {
                     PropertyName = nameof(CmsPage.Name),
                     DisplayName = "Page Name",
@@ -234,7 +234,7 @@ namespace DemoSite
 
 
             var siteIdDropdown =
-                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
                 {
                     PropertyName = nameof(CmsPage.SiteId)
                 });
@@ -259,16 +259,16 @@ namespace DemoSite
 
             
 
-            CmsPageContentFactory factory = new CmsPageContentFactory();
+            CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
             var twoColumn =
-            factory.CreateToolboxItemContent(new RowLayout { NumColumns = 2 });
+            builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
             twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
             form.FormContent.Add(twoColumn);
             
 
             var textboxPageContent =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
                 {
                     PropertyName = nameof(CmsPage.Name),
                     DisplayName = "Page Name",
@@ -280,7 +280,7 @@ namespace DemoSite
 
 
             var layoutDropDown =
-            factory.CreateToolboxItemContent(new ConfiguratorDropDownList
+            builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorDropDownList
             {
                 PropertyName = nameof(CmsPage.LayoutId),
                 DisplayName = "Layout",
@@ -289,12 +289,12 @@ namespace DemoSite
             twoColumn.AllContent.Add(layoutDropDown);
 
             var oneColumn =
-factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
+builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
             oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
             form.FormContent.Add(oneColumn);
 
             var keywords =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
                 {
                     PropertyName = nameof(CmsPage.Keywords),
                     DisplayName = "Keywords",
@@ -303,7 +303,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             oneColumn.AllContent.Add(keywords);
 
             var description =
-                factory.CreateToolboxItemContent(new ConfiguratorTextBox
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
                 {
                     PropertyName = nameof(CmsPage.Description),
                     DisplayName = "Description",
@@ -311,7 +311,7 @@ factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
             oneColumn.AllContent.Add(description);
 
             var siteIdDropdown =
-                factory.CreateToolboxItemContent(new ConfiguratorHiddenField()
+                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
                 {
                     PropertyName = nameof(CmsPage.SiteId)
                 });

@@ -20,9 +20,8 @@ namespace WarpCore.Web.Widgets
         public Guid LayoutBuilderId { get; set; }
 
 
-        public IReadOnlyCollection<RenderingsPlaceHolder> InitializeLayout()
+        public void InitializeLayout()
         {
-            List<RenderingsPlaceHolder> subLayouts = new List<RenderingsPlaceHolder>();
 
             var width = 12 / Math.Max(1,NumColumns);
             var row = new Panel { CssClass = "row", ID="Row" };
@@ -37,12 +36,10 @@ namespace WarpCore.Web.Widgets
                 row.Controls.Add(p);
 
                 
-                subLayouts.Add(new RenderingsPlaceHolder{Id = ID});
             }
 
             this.Controls.Add(row);
-
-            return subLayouts;
+            
         }
 
 

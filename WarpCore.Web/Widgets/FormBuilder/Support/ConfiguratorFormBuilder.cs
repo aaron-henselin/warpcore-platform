@@ -34,8 +34,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         {
             var cmsForm = new CmsForm();
 
-            var factory = new CmsPageContentFactory();
-            var rowLayout = factory.CreateToolboxItemContent(new RowLayout { NumColumns = 1 });
+            var factory = new CmsPageContentBuilder();
+            var rowLayout = factory.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
             rowLayout.Id = ToGuid(1);
             rowLayout.PlacementContentPlaceHolderId = RuntimePlaceHolderId;
             cmsForm.FormContent.Add(rowLayout);
@@ -107,8 +107,8 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             IConfiguratorControl dropdownList = (IConfiguratorControl)Activator.CreateInstance(type);
             dropdownList.SetConfiguration(property);
             
-            CmsPageContentFactory factory = new CmsPageContentFactory();
-            var createdPageContent = factory.CreateToolboxItemContent((Control)dropdownList);
+            CmsPageContentBuilder builder = new CmsPageContentBuilder();
+            var createdPageContent = builder.BuildCmsPageContentFromWebFormsControl((Control)dropdownList);
             return createdPageContent;
         }
 

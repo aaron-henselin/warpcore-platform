@@ -82,8 +82,8 @@ namespace DemoSite
             ConfiguratorFormBuilderRuntimePlaceHolder.Controls.Clear();
 
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
-
-            var activatedControl = CmsPageContentActivator.ActivateToolboxItemType(toolboxItem,_contentToEdit.Parameters);
+            
+            var activatedControl = new CmsPageContentActivator().ActivateCmsPageContent(_contentToEdit);
             var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);

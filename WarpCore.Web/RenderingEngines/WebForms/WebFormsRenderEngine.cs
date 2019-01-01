@@ -7,13 +7,22 @@ using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using WarpCore.Platform.Kernel;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.RenderingEngines.WebForms
 {
+
     public class WebFormsPartialPageRenderingFactory : IPartialPageRenderingFactory
     {
+        public object ActivateType(Type type)
+        {
+            //allows us to pass in request context and such through to webforms controls.
+            //I'm not sure that it really helps me though, because we're still tied to httpcontext for everything.
+            return Dependency.Resolve(type);
+        }
+
         public PartialPageRendering CreateRenderingForObject(object nativeWidgetObject)
         {
             return new WebFormsControlPartialPageRendering((Control) nativeWidgetObject);

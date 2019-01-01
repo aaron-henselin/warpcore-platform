@@ -95,7 +95,7 @@ namespace WarpCore.Web.ServiceModel
         private void ProcessAddCommand(EditingContext editingContext, AddCommand addCommand)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(addCommand.WidgetType);
-            var defaults = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
+            var defaults = new CmsPageContentActivator().GetDefaultContentParameterValues(toolboxItem);
 
 
             var newContent = new CmsPageContent

@@ -16,9 +16,20 @@ using File = System.IO.File;
 
 namespace Cms
 {
-    public class CmsPageContentFactory
+    public class CmsPageContentBuilder
     {
-        public CmsPageContent CreateToolboxItemContent(Control activated) 
+        private readonly CmsPageContentActivator _activator;
+
+        public CmsPageContentBuilder():this(Dependency.Resolve<CmsPageContentActivator>())
+        {
+        }
+
+        public CmsPageContentBuilder(CmsPageContentActivator activator) 
+        {
+            _activator = activator;
+        }
+
+        public CmsPageContent BuildCmsPageContentFromWebFormsControl(Control activated) 
         {
             var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(activated.GetType());
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);
@@ -28,7 +39,7 @@ namespace Cms
             if (activated != null)
                 settings = activated.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
             else
-                settings = CmsPageContentActivator.GetDefaultContentParameterValues(toolboxItem);
+                settings = _activator.GetDefaultContentParameterValues(toolboxItem);
 
             return new CmsPageContent
                 {
@@ -102,18 +113,15 @@ namespace Cms
 
         public PartialPageRendering ActivateCmsPageContent(CmsPageContent pageContent)
         {
+            var parameters = pageContent.Parameters;
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var activatedObject =  ActivateToolboxItemType(toolboxItem, pageContent.Parameters);
-            //this is necessary, because the configuration (not the constructor) is allowed to dictate how many placeholders to create.
-            //todo: move this into the partial page rendering??
-            (activatedObject as ILayoutControl)?.InitializeLayout();
+            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+            var activator = GetActivator(toolboxItemType);
+            var activatedObject = activator.ActivateType(toolboxItemType);
 
-            var handler = _baseTypeLookup.Keys.SingleOrDefault(x => x.IsInstanceOfType(activatedObject));
-
-            if (handler == null)
-                throw new Exception($"Rendering engine able to handle {activatedObject.GetType().Name} was not found.");
-
-            var pp = _baseTypeLookup[handler].CreateRenderingForObject(activatedObject);
+            activatedObject.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
+            
+            var pp = activator.CreateRenderingForObject(activatedObject);
             pp.ContentId = pageContent.Id;
             pp.FriendlyName = toolboxItem.FriendlyName;
             pp.LocalId = $"Layout{pageContent.Id}";
@@ -122,20 +130,24 @@ namespace Cms
             return pp;
         }
 
-        public static object ActivateToolboxItemType(ToolboxItem toolboxItem, IDictionary<string,string> parameters)
+        private IPartialPageRenderingFactory GetActivator(Type toolboxItemType)
         {
-            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
-            var activatedWidget = (object)Activator.CreateInstance(toolboxItemType);
-            activatedWidget.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
+            var handler = _baseTypeLookup.Keys.SingleOrDefault(x => x.IsAssignableFrom(toolboxItemType));
+            if (handler == null)
+                throw new Exception($"Rendering engine able to handle {toolboxItemType.Name} was not found.");
 
-            return activatedWidget;
+            var activator = _baseTypeLookup[handler];
+            return activator;
         }
 
-        public static IDictionary<string, string> GetDefaultContentParameterValues(ToolboxItem toolboxItem)
+
+        public IDictionary<string, string> GetDefaultContentParameterValues(ToolboxItem toolboxItem)
         {
-            
-            var activated = ActivateToolboxItemType(toolboxItem, new Dictionary<string, string>());
-            return activated.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+            var activator = GetActivator(toolboxItemType);
+            var activatedObject = activator.ActivateType(toolboxItemType);
+
+            return activatedObject.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
         }
 
         
