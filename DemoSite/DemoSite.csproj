@@ -174,7 +174,6 @@
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
-    <Content Include="App_Data\PageDesignerComponents\LayoutHandle.ascx" />
     <Content Include="App_Data\BackendWidgets\PageTree.ascx" />
     <Content Include="App_Data\AdminSite\NavBar.ascx" />
     <Content Include="images\about.jpg" />
@@ -315,13 +314,6 @@
     <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.designer.cs">
       <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\LayoutHandle.ascx.cs">
-      <DependentUpon>LayoutHandle.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\LayoutHandle.ascx.designer.cs">
-      <DependentUpon>LayoutHandle.ascx</DependentUpon>
-    </Compile>
     <Compile Include="App_Data\BackendWidgets\PageTree.ascx.cs">
       <DependentUpon>PageTree.ascx</DependentUpon>
     </Compile>
@@ -404,6 +396,22 @@
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj">
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
       <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Context\Cms Context.csproj">
+      <Project>{40da81f0-fe1d-4db3-9c11-97ba4188ec34}</Project>
+      <Name>Cms Context</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
+      <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
+      <Name>Cms Page CompositionElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Compositor.csproj">
+      <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
+      <Name>Cms Page Compositor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms WebForms Rendering Engine\Cms WebForms FragmentRenderer.csproj">
+      <Project>{0E35BDA1-F55F-4A44-BC11-051C6B4715AF}</Project>
+      <Name>Cms WebForms FragmentRenderer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
       <Project>{b8d80998-fe66-409d-b451-701d7fdda361}</Project>

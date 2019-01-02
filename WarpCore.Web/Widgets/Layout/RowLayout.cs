@@ -50,10 +50,5 @@ namespace WarpCore.Web.Widgets
         public Guid LayoutBuilderId { get; set; }
     }
 
-    public class RenderingsPlaceHolder
-    {
-        public string Id { get; set; }
-
-        public List<PartialPageRendering> Renderings { get; set; } = new List<PartialPageRendering>();
-    }
+    
 }

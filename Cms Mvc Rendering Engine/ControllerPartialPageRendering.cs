@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
-    public class ControllerPartialPageRendering : PartialPageRendering
+    public class ControllerPageCompositionElement : PageCompositionElement
     {
         public IController Controller { get; }
 
-        public ControllerPartialPageRendering(IController controller)
+        public ControllerPageCompositionElement(IController controller)
         {
             Controller = controller;
 

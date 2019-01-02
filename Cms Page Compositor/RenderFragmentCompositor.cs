@@ -1,39 +1,39 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
-using WarpCore.Web.Widgets;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
-namespace WarpCore.Web.PageCompositor
+namespace Modules.Cms.Features.Presentation.PageComposition
 {
-    public class PageCompositor
+    public class RenderFragmentCompositor
     {
-        private readonly PageRenderingDirective _pageDefinition;
+        private readonly Elements.PageComposition _pageDefinition;
         private readonly RenderingFragmentCollection _contentToComposite;
         private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory = new PageDesignerHtmlFactory();
-        public PageCompositor(PageRenderingDirective pageDefinition, RenderingFragmentCollection contentToComposite)
+        public RenderFragmentCompositor(Elements.PageComposition pageDefinition, RenderingFragmentCollection contentToComposite)
         {
             _pageDefinition = pageDefinition;
             _contentToComposite = contentToComposite;
         }
 
-        public CompositedPage Composite(PageRenderMode renderMode)
+        public CompositedPage Compose(FragmentRenderMode renderMode)
         {
             var page = new CompositedPage();
             var sb = new StringBuilder();
-            Render(_pageDefinition.Rendering, new RenderAttributes {Mode=renderMode}, sb);
+            Render(_pageDefinition.RootElement, new RenderAttributes {Mode=renderMode}, sb);
             page.Html = sb.ToString();
             return page;
         }
 
         private class RenderAttributes
         {
-            public PageRenderMode Mode { get; set; }
+            public FragmentRenderMode Mode { get; set; }
             public bool IsFirstContentPart { get; set; }
             public bool IsLastContentPart { get; set; }
         }
         
 
-        private void Render(PartialPageRendering pp,RenderAttributes attributes, StringBuilder local)
+        private void Render(PageCompositionElement pp,RenderAttributes attributes, StringBuilder local)
         {
             var parts = _contentToComposite.WidgetContent[pp.ContentId];
 
@@ -71,7 +71,7 @@ namespace WarpCore.Web.PageCompositor
                     }
 
 
-                    if (attributes.Mode == PageRenderMode.PageDesigner)
+                    if (attributes.Mode == FragmentRenderMode.PageDesigner)
                     {
                         if (global.Id == GlobalLayoutPlaceHolderIds.Head)
                         {
@@ -127,9 +127,9 @@ namespace WarpCore.Web.PageCompositor
             }
         }
 
-        private void WriteSubstitution(PartialPageRendering pp, RenderAttributes renderAttributes, RenderingsPlaceHolder relevantPlaceHolder, StringBuilder local)
+        private void WriteSubstitution(PageCompositionElement pp, RenderAttributes renderAttributes, RenderingsPlaceHolder relevantPlaceHolder, StringBuilder local)
         {
-            var renderDesignElements = !pp.IsFromLayout && renderAttributes.Mode == PageRenderMode.PageDesigner;
+            var renderDesignElements = !pp.IsFromLayout && renderAttributes.Mode == FragmentRenderMode.PageDesigner;
 
             if (renderDesignElements)
             {
@@ -147,10 +147,10 @@ namespace WarpCore.Web.PageCompositor
             }
         }
 
-        private void WriteHtmlOutput(PartialPageRendering pp, HtmlOutput htmlOutput, RenderAttributes renderAttributes,
+        private void WriteHtmlOutput(PageCompositionElement pp, HtmlOutput htmlOutput, RenderAttributes renderAttributes,
             StringBuilder local)
         {
-            var renderDesignElements = !pp.IsFromLayout && renderAttributes.Mode == PageRenderMode.PageDesigner;
+            var renderDesignElements = !pp.IsFromLayout && renderAttributes.Mode == FragmentRenderMode.PageDesigner;
             if (renderDesignElements && renderAttributes.IsFirstContentPart)
             {
                 var layoutHandle = _pageDesignerHtmlFactory.CreateLayoutHandle(pp);

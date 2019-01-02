@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Web.UI;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
 using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web
 {
-    public class WebFormsControlPartialPageRendering : PartialPageRendering, IHandledByWebFormsRenderingEngine
+    public class WebFormsControlPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine
     {
         private Control activatedWidget;
 
-        public WebFormsControlPartialPageRendering(Control activatedWidget)
+        public WebFormsControlPageCompositionElement(Control activatedWidget)
         {
             this.activatedWidget = activatedWidget;
 

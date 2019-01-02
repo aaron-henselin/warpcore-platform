@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.UI;
 using Cms.Toolbox;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Context;
 using MoreLinq;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -96,18 +98,19 @@ namespace WarpCore.Web
         }
 
 
-
+       
 
         public static void PreInitialize()
         {
             DynamicModuleUtility.RegisterModule(typeof(CmsPageBuilderHttpModule));
 
-            Dependency.Register<CmsPageRequestContext>(() => HttpContext.Current.ToCmsRouteContext());
+            Dependency.Register<CmsPageRequestContext>(() => CmsPageBuilderHttpModule.RequestContext);
             Dependency.Register<UriBuilderContext>(() => HttpContext.Current.ToUriBuilderContext());
-
-           
+            
             //todo: get this moved.
             Dependency.RegisterAll<IPartialPageRenderingFactory>();
+            Dependency.RegisterAll<IBatchingRenderEngine>();
+
 
             CmsRouteRegistrar.RegisterDynamicRoutes();
         }

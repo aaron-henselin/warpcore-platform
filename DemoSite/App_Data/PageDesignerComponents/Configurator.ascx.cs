@@ -11,6 +11,8 @@ using System.Web.UI.HtmlControls;
 using Cms;
 using Cms.Forms;
 using Cms.Toolbox;
+using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;

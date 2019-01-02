@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
@@ -18,12 +20,12 @@ namespace WarpCore.Web.RenderingEngines.Mvc
             return new[] {KnownPhysicalFileExtensions.Razor};
         }
 
-        public PartialPageRendering CreateRenderingForObject(object nativeWidgetObject)
+        public PageCompositionElement CreateRenderingForObject(object nativeWidgetObject)
         {
-            return new ControllerPartialPageRendering((IController)nativeWidgetObject);
+            return new ControllerPageCompositionElement((IController)nativeWidgetObject);
         }
 
-        public PartialPageRendering CreateRenderingForPhysicalFile(string physicalFilePath)
+        public PageCompositionElement CreateRenderingForPhysicalFile(string physicalFilePath)
         {
             throw new NotImplementedException();
         }

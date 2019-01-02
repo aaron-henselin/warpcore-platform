@@ -5,6 +5,7 @@ using System.Web.UI;
 using Cms;
 using Cms.Forms;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;

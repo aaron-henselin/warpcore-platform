@@ -125,18 +125,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
-    <Compile Include="CmsPageContentActivation\CmsPageLayoutEngine.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="RenderingEngines\Mvc\ControllerPartialPageRendering.cs" />
-    <Compile Include="RenderingEngines\Mvc\MvcRenderingEngine.cs" />
-    <Compile Include="RenderingEngines\WebForms\WebFormsControlPartialPageRendering.cs" />
-    <Compile Include="RenderingEngines\WebForms\WebFormsPageRendering.cs" />
-    <Compile Include="PageCompositor\PageCompositor.cs" />
-    <Compile Include="PageCompositor\PageDesignerHtmlFactory.cs" />
-    <Compile Include="RenderingEngines\WebForms\WebFormsRenderEngine.cs" />
-    <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />
@@ -147,7 +138,6 @@
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorHiddenField.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorTextBox.cs" />
-    <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -170,7 +160,6 @@
     <Compile Include="Widgets\Layout\Column.cs" />
     <Compile Include="Widgets\Content\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
-    <Compile Include="Widgets\Layout\LayoutControl.cs" />
     <Compile Include="Widgets\Layout\RowLayout.cs" />
     <Compile Include="Widgets\Layout\RuntimeContentPlaceHolder.cs" />
   </ItemGroup>
@@ -192,6 +181,22 @@
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj">
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
       <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Context\Cms Context.csproj">
+      <Project>{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}</Project>
+      <Name>Cms Context</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
+      <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
+      <Name>Cms Page CompositionElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Compositor.csproj">
+      <Project>{7afdb16f-6b42-494b-baf4-42db78a3fabc}</Project>
+      <Name>Cms Page Compositor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
+      <Project>{18C933A1-7A6F-48EF-B086-09FFF95D6558}</Project>
+      <Name>Cms Page FragmentRendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
       <Project>{B8D80998-FE66-409D-B451-701D7FDDA361}</Project>
@@ -226,6 +231,8 @@
     <Folder Include="App_Data\" />
     <Folder Include="Design\" />
     <Folder Include="Models\" />
+    <Folder Include="PageCompositor\" />
+    <Folder Include="RenderingEngines\" />
     <Folder Include="Views\Default\" />
     <Folder Include="_EmbeddedResources\" />
   </ItemGroup>

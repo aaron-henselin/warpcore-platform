@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Cms;
+using Cms.Layout;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.PageComposition;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Web;
@@ -27,11 +32,19 @@ namespace WarpCore.Cms
 
         private static void RenderContentPage(CmsPageRequestContext rt, CmsPageContentActivator activator)
         {
-            var pageBuilder = new CmsPageLayoutEngine(rt, activator);
+            var pageBuilder = new PageCompositionBuilder(activator);
 
-            var page = new PageRenderingDirective();
+            var page = new PageComposition();
 
-            pageBuilder.ActivateAndPlaceLayoutContent(page);
+            page.RootElement = new UndefinedLayoutPageCompositionElement();
+            if (rt.CmsPage.LayoutId != Guid.Empty)
+            {
+
+                var layoutRepository = new LayoutRepository();
+                var layoutToApply = layoutRepository.GetById(rt.CmsPage.LayoutId);
+                
+                pageBuilder.ActivateAndPlaceLayoutContent(page, layoutToApply);
+            }
 
             var pageSpecificContent = rt.CmsPage.PageContent;
             if (rt.PageRenderMode == PageRenderMode.PageDesigner)
@@ -51,11 +64,18 @@ namespace WarpCore.Cms
 
             }
 
-            var cre = new CompositeRenderingEngine();
-            var batch = cre.Execute(page,
-                rt.PageRenderMode);
+            var fragmentMode = rt.PageRenderMode == PageRenderMode.PageDesigner
+                ? FragmentRenderMode.PageDesigner
+                : FragmentRenderMode.Readonly;
 
-            HttpContext.Current.Response.Write(batch.Html);
+            var cre = new BatchingFragmentRenderer();
+            var batch = cre.Execute(page,fragmentMode);
+
+
+            var compositor = new RenderFragmentCompositor(page,batch);
+            var composedPage = compositor.Compose(fragmentMode);
+
+            HttpContext.Current.Response.Write(composedPage.Html);
         }
 
 

@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
-using WarpCore.Web.Scripting;
-using WarpCore.Web.Widgets;
 
-namespace WarpCore.Web.Extensions
+namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
 
     public static class ControlExtensions

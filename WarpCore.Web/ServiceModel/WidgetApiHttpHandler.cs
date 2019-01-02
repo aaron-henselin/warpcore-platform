@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.ModelBinding;
 using System.Web.Script.Serialization;
 using Cms;
+using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Web.Widgets;

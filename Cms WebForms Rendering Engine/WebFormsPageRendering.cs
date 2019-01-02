@@ -1,21 +1,19 @@
-﻿using System.Web.Compilation;
-using System.Web.UI;
+﻿using System.Web.UI;
 using System.Web.UI.WebControls;
-using WarpCore.Web.Extensions;
-using WarpCore.Web.Widgets;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
-namespace WarpCore.Web
+namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
 
     public interface IHandledByWebFormsRenderingEngine
     {
     }
 
-    public class WebFormsPageRendering : PartialPageRendering, IHandledByWebFormsRenderingEngine
+    public class WebFormsPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine
     {
         private readonly Page _masterPage;
 
-        public WebFormsPageRendering(Page page)
+        public WebFormsPageCompositionElement(Page page)
         {
             _masterPage = page;
 

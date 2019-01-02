@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Web;
-using System.Web.Compilation;
 using System.Web.UI;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;
 using WarpCore.Web;
-using WarpCore.Web.Widgets;
-using File = System.IO.File;
 
-namespace Cms
+namespace Modules.Cms.Features.Presentation.PageComposition
 {
     public class CmsPageContentBuilder
     {
@@ -96,7 +91,7 @@ namespace Cms
 
         }
 
-        public  PartialPageRendering ActivateLayoutByExtension(string virtualPath)
+        public  PageCompositionElement ActivateLayoutByExtension(string virtualPath)
         {
 
             if (!virtualPath.Contains("."))
@@ -111,7 +106,7 @@ namespace Cms
 
         }
 
-        public PartialPageRendering ActivateCmsPageContent(CmsPageContent pageContent)
+        public PageCompositionElement ActivateCmsPageContent(CmsPageContent pageContent)
         {
             var parameters = pageContent.Parameters;
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);

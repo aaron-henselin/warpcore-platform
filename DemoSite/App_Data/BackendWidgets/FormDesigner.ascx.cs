@@ -5,13 +5,13 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Modules.Cms.Features.Context;
 using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
-using static WarpCore.Web.CmsPageLayoutEngine;
 
 namespace DemoSite
 {

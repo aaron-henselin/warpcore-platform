@@ -6,6 +6,7 @@ using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder.Support;
@@ -43,14 +44,14 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);
 
-            var rendering = new WebFormsControlPartialPageRendering(_surface);
-            rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
+            //var rendering = new WebFormsControlPartialPageRendering(_surface);
+            //rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
 
-            var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
-            new CmsPageLayoutEngine().ActivateAndPlaceLayoutContent(cmsForm.DesignedContent, rendering);
-            _activatedConfigurators = _surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>().ToList();
-            _readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
-            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
+            //var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
+            //new CmsPageLayoutEngine().ActivateAndPlaceLayoutContent(cmsForm.DesignedContent, rendering);
+            //_activatedConfigurators = _surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>().ToList();
+            //_readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
+            //CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
             //CmsFormReadWriter.SetDefaultValues(_surface, buildArguments);
         }
 

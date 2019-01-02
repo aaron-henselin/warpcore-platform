@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.UI;
-using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets

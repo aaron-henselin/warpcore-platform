@@ -8,6 +8,7 @@ using Cms;
 using Cms.Forms;
 using Cms.Layout;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;

@@ -7,11 +7,13 @@ using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.Kernel;
-using WarpCore.Web.Extensions;
+using WarpCore.Web;
 using WarpCore.Web.Widgets;
 
-namespace WarpCore.Web.RenderingEngines.WebForms
+namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
 
     public class WebFormsPartialPageRenderingFactory : IPartialPageRenderingFactory
@@ -23,18 +25,18 @@ namespace WarpCore.Web.RenderingEngines.WebForms
             return Dependency.Resolve(type);
         }
 
-        public PartialPageRendering CreateRenderingForObject(object nativeWidgetObject)
+        public PageCompositionElement CreateRenderingForObject(object nativeWidgetObject)
         {
-            return new WebFormsControlPartialPageRendering((Control) nativeWidgetObject);
+            return new WebFormsControlPageCompositionElement((Control) nativeWidgetObject);
         }
 
-        public PartialPageRendering CreateRenderingForPhysicalFile(string physicalFilePath)
+        public PageCompositionElement CreateRenderingForPhysicalFile(string physicalFilePath)
         {
             var vPath = "/App_Data/DynamicPage.aspx";
             Page page = BuildManager.CreateInstanceFromVirtualPath("/App_Data/DynamicPage.aspx", typeof(Page)) as Page;
             page.MasterPageFile = physicalFilePath;
             
-            return new WebFormsPageRendering(page){ContentId = SpecialRenderingFragmentContentIds.PageRoot};
+            return new WebFormsPageCompositionElement(page){ContentId = SpecialRenderingFragmentContentIds.PageRoot};
         }
 
         public IReadOnlyCollection<Type> GetHandledBaseTypes()
@@ -58,7 +60,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
             
 
-            public void BeginWriting(PartialPageRendering pp)
+            public void BeginWriting(PageCompositionElement pp)
             {
                 if (pp.ContentId == Guid.Empty)
                     throw new ArgumentException($"Invalid page content id of '{pp.ContentId}' for {pp.FriendlyName}");
@@ -151,9 +153,9 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
         private class RenderingEngineComponent : PlaceHolder
         {
-            private readonly WebFormsControlPartialPageRendering _pp;
+            private readonly WebFormsControlPageCompositionElement _pp;
 
-            public RenderingEngineComponent(WebFormsControlPartialPageRendering pp)
+            public RenderingEngineComponent(WebFormsControlPageCompositionElement pp)
             {
                 _pp = pp;
 
@@ -183,7 +185,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
           
         }
 
-        private static void BuildServerSidePage(Control nativeRoot, PartialPageRendering pp)
+        private static void BuildServerSidePage(Control nativeRoot, PageCompositionElement pp)
         {
             foreach (var kvp in pp.PlaceHolders)
             {
@@ -196,11 +198,11 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
                 foreach (var placedRendering in placeHolder.Renderings)
                 {
-                    if (placedRendering is WebFormsControlPartialPageRendering)
+                    if (placedRendering is WebFormsControlPageCompositionElement)
                     {
-                        WebFormsControlPartialPageRendering webFormsRendering = ((WebFormsControlPartialPageRendering) placedRendering);
-                        var control = webFormsRendering.GetControl();
-                        contentPlaceHolder.Controls.Add(new RenderingEngineComponent((WebFormsControlPartialPageRendering)placedRendering));
+                        WebFormsControlPageCompositionElement webFormsCompositionElement = ((WebFormsControlPageCompositionElement) placedRendering);
+                        var control = webFormsCompositionElement.GetControl();
+                        contentPlaceHolder.Controls.Add(new RenderingEngineComponent((WebFormsControlPageCompositionElement)placedRendering));
 
                         BuildServerSidePage(control, placedRendering);
                     }
@@ -220,16 +222,16 @@ namespace WarpCore.Web.RenderingEngines.WebForms
 
 
 
-        public RenderingFragmentCollection Execute(PartialPageRendering pp)
+        public RenderingFragmentCollection Execute(PageCompositionElement pp)
         {
 
             SwitchingHtmlWriter _writer = new SwitchingHtmlWriter();
             
             
-            var isWebFormsInChargeOfPageBase = pp is WebFormsPageRendering;
+            var isWebFormsInChargeOfPageBase = pp is WebFormsPageCompositionElement;
             if (isWebFormsInChargeOfPageBase)
             {
-                var nativePageRendering = (WebFormsPageRendering)pp;
+                var nativePageRendering = (WebFormsPageCompositionElement)pp;
                 var nativePage = nativePageRendering.GetPage();
                 var topMostControl = nativePage.GetRootControl();
                 
@@ -271,7 +273,7 @@ namespace WarpCore.Web.RenderingEngines.WebForms
                 var form = new HtmlGenericControl("form");
 
 
-                var wrapper = new RenderingEngineComponent(new WebFormsControlPartialPageRendering(body){ContentId = SpecialRenderingFragmentContentIds.WebFormsInterop });
+                var wrapper = new RenderingEngineComponent(new WebFormsControlPageCompositionElement(body){ContentId = SpecialRenderingFragmentContentIds.WebFormsInterop });
                 
                 wrapper.Controls.Add(body);
                 body.Controls.Add(form);

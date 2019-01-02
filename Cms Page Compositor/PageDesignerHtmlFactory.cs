@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
-using WarpCore.Web.Widgets;
+using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
-namespace WarpCore.Web.PageCompositor
+namespace Modules.Cms.Features.Presentation.PageComposition
 {
     public class PageDesignerHtmlFactory
     {
-        public string CreateLayoutHandle(PartialPageRendering pp)
+        public string CreateLayoutHandle(PageCompositionElement pp)
         {
             var layoutHandle = $@"
                             <li class='StackedListItem StackedListItem--isDraggable wc-layout-handle' tabindex='1'
@@ -102,17 +102,17 @@ namespace WarpCore.Web.PageCompositor
 
         //    Controls.Add(new Button { ClientIDMode = ClientIDMode.Static, ID = EditingContextVars.EditingContextSubmitKey });
         //}
-        public string CreateWidgetBeginMarker(PartialPageRendering pp)
+        public string CreateWidgetBeginMarker(PageCompositionElement pp)
         {
             return $"<wc-widget-render data-wc-layout='{pp.PlaceHolders.Any()}' data-wc-page-content-id='{pp.ContentId}'>";
         }
 
-        public string CreateWidgetEndMarker(PartialPageRendering pp)
+        public string CreateWidgetEndMarker(PageCompositionElement pp)
         {
             return "</wc-widget-render>";
         }
 
-        public string CreateDropTargetBeginMarker(PartialPageRendering pp,RenderingsPlaceHolder relevantPlaceHolder)
+        public string CreateDropTargetBeginMarker(PageCompositionElement pp,RenderingsPlaceHolder relevantPlaceHolder)
         {
             return $"<wc-droptarget data-wc-placeholder-id='{relevantPlaceHolder.Id}' data-wc-layout-builder-id='{pp.LayoutBuilderId}'>";
         }
