@@ -7,6 +7,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms.Routing;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
@@ -15,13 +17,14 @@ using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
+using WarpCore.Web.Widgets;
 using WarpCore.Web.Widgets.FormBuilder;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
 {
     
-    public partial class DynamicForm : System.Web.UI.UserControl
+    public partial class DynamicForm : System.Web.UI.UserControl, ILayoutControl
     {
         public const string ApiId = "wc-dynamic-form";
 
@@ -29,25 +32,39 @@ namespace DemoSite
 
         [UserInterfaceHint(Editor = Editor.OptionList), ContentControlSource(FormRepository.ApiId)]
         public Guid FormId { get; set; }
-        
+
+        public IReadOnlyCollection<string> InitializeLayout()
+        {
+            return new[] {nameof(surface)};
+        }
+
+        public IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId)
+        {
+            if (placeHolderId != surface.ID)
+                throw new Exception("bad placeholder id??");
+
+            var formRepository = new FormRepository();
+            _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId), ContentEnvironment.Live).Result.Single();
+
+            var contentActivator = new CmsPageContentActivator();
+            return _cmsForm.DesignedContent.Select(x => contentActivator.ActivateCmsPageContent(x)).ToList();
+        }
+
+        [UserInterfaceIgnore]
+        public Guid LayoutBuilderId => FormId;
+
         private ISupportsCmsForms _repo;
 
         private DynamicFormRequestContext _dynamicFormRequest;
         private IReadOnlyCollection<IConfiguratorControl> _activatedConfigurators;
+
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
             _dynamicFormRequest = Context.ToDynamicFormRequestContext();
-
-            var formRepository = new FormRepository();
-            _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId),ContentEnvironment.Live).Result.Single();
-            
             _repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(_cmsForm.RepositoryUid);
-
-            //_activatedConfigurators = CmsPageLayoutEngine.ActivateAndPlaceContent(surface, _cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
-           
 
             var draft = GetDraft();
             if (draft.IsNew)
@@ -126,5 +143,6 @@ namespace DemoSite
         {
             Response.Redirect("/admin");
         }
+
     }
 }

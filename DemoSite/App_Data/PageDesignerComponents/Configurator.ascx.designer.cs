@@ -73,6 +73,6 @@ namespace DemoSite {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::WarpCore.Web.Widgets.RuntimeContentPlaceHolder ConfiguratorFormBuilderRuntimePlaceHolder;
+        protected global::System.Web.UI.WebControls.PlaceHolder ConfiguratorFormBuilderRuntimePlaceHolder;
     }
 }

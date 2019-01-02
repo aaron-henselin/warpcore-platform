@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 

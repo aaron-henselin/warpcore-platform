@@ -35,12 +35,12 @@
             </wc-configurator-data>
         
             <asp:Panel runat="server" ID="surface" CssClass="wc-configurator-surface">
-                <a:RuntimeContentPlaceHolder 
+                <asp:PlaceHolder 
                     ID="ConfiguratorFormBuilderRuntimePlaceHolder"
                     PlaceHolderId="<%# ConfiguratorFormBuilder.RuntimePlaceHolderId %>" 
                     runat="server">
 
-                </a:RuntimeContentPlaceHolder>
+                </asp:PlaceHolder>
             </asp:Panel>
             </asp:Panel>
         </ContentTemplate>

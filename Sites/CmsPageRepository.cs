@@ -12,7 +12,6 @@ using Cms;
 using Cms.Layout;
 using Platform_Security;
 using WarpCore.Cms.Sites;
-using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
@@ -598,8 +597,20 @@ namespace WarpCore.Cms
 
         }
 
+        private void EnsureIdsAssigned(CmsPageContent content)
+        {
+            if (content.Id == Guid.Empty)
+                content.Id = Guid.NewGuid();
+
+            foreach (var contentItem in content.AllContent)
+                EnsureIdsAssigned(contentItem);
+        }
+
         public void Save(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
+            foreach (var content in cmsPage.DesignedContent)
+                EnsureIdsAssigned(content);
+
             if (cmsPage.SiteId == default(Guid))
             {
                 //var defaultFrontendSite = SiteManagementContext.GetSiteToManage();

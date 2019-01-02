@@ -42,7 +42,7 @@ namespace DemoSite
             
             var pgContent = new CmsPageContent
             {
-                PlacementContentPlaceHolderId = this.PageTypeSpecificSettingsPlaceHolder.PlaceHolderId,
+                PlacementContentPlaceHolderId = this.PageTypeSpecificSettingsPlaceHolder.ID,
                 WidgetTypeCode = DynamicForm.ApiId,
                 Parameters = new Dictionary<string, string> { ["FormId"] = PageTypeSelector.SelectedValue }
             };

@@ -591,7 +591,12 @@ builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 })
 
             };
 
-            myLayout.PageContent.Add(new CmsPageContent{WidgetTypeCode = "Client-CustomNavigation",PlacementContentPlaceHolderId = "NavigationContentPlaceHolder"});
+            myLayout.PageContent.Add(new CmsPageContent
+            {
+                Id = Guid.NewGuid(),
+                WidgetTypeCode = "Client-CustomNavigation",
+                PlacementContentPlaceHolderId = "NavigationContentPlaceHolder"
+            });
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(myLayout);
 

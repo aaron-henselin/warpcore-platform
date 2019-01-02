@@ -39,7 +39,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
         {
             _surface = new PlaceHolder();
             _surface.Controls.Add(new Label{Text=DisplayName, CssClass = "form-label" });
-            _surface.Controls.Add(new RuntimeContentPlaceHolder{ PlaceHolderId = "FormBody" });
+            _surface.Controls.Add(new PlaceHolder{ ID = "FormBody" });
             this.Controls.Add(_surface);
 
             var configType = ConfiguratorEditingContextHelper.GetClrType(buildArguments.ParentEditingContext);

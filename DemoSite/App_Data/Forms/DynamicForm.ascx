@@ -4,9 +4,7 @@
 <h2 runat="server" ID="FormTitleAdd"></h2>
 <h2 runat="server" ID="FormTitleEdit">Edit '<i><span runat="server" ID="FormTitleEditName"></span></i>'</h2>
 <asp:PlaceHolder runat="server" ID="surface">
-    <a:RuntimeContentPlaceHolder runat="server" PlaceHolderId="FormBody">
-        
-    </a:RuntimeContentPlaceHolder>
+
 </asp:PlaceHolder>
 <div>
     <asp:Button CssClass="btn" runat="server" ID="CancelButton" Text="Cancel" OnClick="CancelButton_OnClickButton_OnClick"/>

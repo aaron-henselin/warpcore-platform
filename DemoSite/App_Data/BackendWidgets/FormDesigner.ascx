@@ -12,6 +12,6 @@
         .wc-navbar{ display: block !important;}
     </style>
 </asp:PlaceHolder>
-    <a:RuntimeContentPlaceHolder ID="RuntimePlaceHolder" runat="server" PlaceHolderId="FormBody">
+    <asp:PlaceHolder ID="FormBody" runat="server">
         
-    </a:RuntimeContentPlaceHolder>
+    </asp:PlaceHolder>

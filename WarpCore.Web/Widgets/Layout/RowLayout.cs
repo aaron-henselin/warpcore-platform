@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
@@ -19,9 +20,14 @@ namespace WarpCore.Web.Widgets
         [UserInterfaceIgnore]
         public Guid LayoutBuilderId { get; set; }
 
-
-        public void InitializeLayout()
+        public IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId)
         {
+            return new List<PageCompositionElement>();
+        }
+
+        public IReadOnlyCollection<string> InitializeLayout()
+        {
+            List<string> generatedPlaceHolders = new List<string>();
 
             var width = 12 / Math.Max(1,NumColumns);
             var row = new Panel { CssClass = "row", ID="Row" };
@@ -35,11 +41,11 @@ namespace WarpCore.Web.Widgets
                 p.Controls.Add(new LayoutBuilderContentPlaceHolder { ID = i.ToString(),LayoutBuilderId = LayoutBuilderId });
                 row.Controls.Add(p);
 
-                
+                generatedPlaceHolders.Add(i.ToString());
             }
 
             this.Controls.Add(row);
-            
+            return generatedPlaceHolders;
         }
 
 

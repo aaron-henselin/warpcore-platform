@@ -7,11 +7,14 @@ namespace WarpCore.Web.Widgets
 {
     public interface ILayoutControl
     {
-        void InitializeLayout();
+        IReadOnlyCollection<string> InitializeLayout();
+
+        IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId);
 
         [UserInterfaceIgnore]
-        Guid LayoutBuilderId { get; set; }
+        Guid LayoutBuilderId { get;  }
     }
+
 
 
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
@@ -13,15 +14,9 @@ namespace WarpCore.Web
         public WebFormsControlPageCompositionElement(Control activatedWidget)
         {
             this.activatedWidget = activatedWidget;
-
             this.LocalId = activatedWidget.ID;
-            var layout = this.activatedWidget as ILayoutControl;
-            if (layout != null)
-            {
-                layout.InitializeLayout();
-                this.LayoutBuilderId = layout.LayoutBuilderId;
-            }
 
+            TryActivateLayout(activatedWidget as ILayoutControl);
         }
 
 
