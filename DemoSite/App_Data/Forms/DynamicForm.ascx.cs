@@ -40,7 +40,7 @@ namespace DemoSite
 
         public IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId)
         {
-            if (placeHolderId != surface.ID)
+            if (placeHolderId != nameof(surface))
                 throw new Exception("bad placeholder id??");
 
             var formRepository = new FormRepository();
