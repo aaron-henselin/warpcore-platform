@@ -4,7 +4,12 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Elements
 {
     public class RenderingsPlaceHolder
     {
-        public string Id { get; set; }
+        public RenderingsPlaceHolder(string Id)
+        {
+            this.Id = Id;
+        }
+
+        public string Id { get; }
 
         public List<PageCompositionElement> Renderings { get; set; } = new List<PageCompositionElement>();
     }

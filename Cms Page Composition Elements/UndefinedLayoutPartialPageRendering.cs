@@ -4,7 +4,7 @@
     {
         public UndefinedLayoutPageCompositionElement()
         {
-            PlaceHolders.Add("Body",new RenderingsPlaceHolder {Id="Body"});
+            PlaceHolders.Add("Body",new RenderingsPlaceHolder("Body"));
         }
     }
 }

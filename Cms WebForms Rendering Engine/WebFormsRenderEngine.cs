@@ -11,7 +11,6 @@ using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.Kernel;
 using WarpCore.Web;
-using WarpCore.Web.Widgets;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
@@ -165,6 +164,10 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                 foreach (var ph in pp.PlaceHolders.Values)
                 {
                     var contentPlaceHolder = control.FindControl(ph.Id);
+                    if (contentPlaceHolder == null)
+                        throw new Exception(
+                            $"Placeholder with id '{ph.Id}' cannot be found in the '{control.ID}' naming container.");
+
                     contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
                 }
 
@@ -202,7 +205,12 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                     {
                         WebFormsControlPageCompositionElement webFormsCompositionElement = ((WebFormsControlPageCompositionElement) placedRendering);
                         var control = webFormsCompositionElement.GetControl();
-                        contentPlaceHolder.Controls.Add(new RenderingEngineComponent((WebFormsControlPageCompositionElement)placedRendering));
+
+                        var compositionElement =(WebFormsControlPageCompositionElement) placedRendering;
+                        var wrapped = new RenderingEngineComponent(compositionElement);
+                        contentPlaceHolder.Controls.Add(wrapped);
+                        //placedRendering.TryActivateLayout(compositionElement.GetControl() as ILayoutControl);
+
 
                         BuildServerSidePage(control, placedRendering);
                     }

@@ -31,37 +31,52 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         private void ActivateAndPlaceContent(PageCompositionElement parentCompositionElement,
             IReadOnlyCollection<CmsPageContent> contents, bool isFromLayout)
         {
-            int i = 0;
             foreach (var content in contents)
             {
-                i++;
-
-                var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
-                activatedWidget.IsFromLayout = isFromLayout;
-
                 var placementPlaceHolder = FindPlacementLocation(parentCompositionElement, content);
                 if (placementPlaceHolder == null)
                     continue;
 
-                if (content.AllContent.Any())
-                    ActivateAndPlaceContent(activatedWidget, content.AllContent, isFromLayout);
-
-                placementPlaceHolder.Renderings.Add(activatedWidget);
+                ActivateAndPlaceContent(placementPlaceHolder, content, isFromLayout);
             }
         }
-    
+
+        private void ActivateAndPlaceContent(RenderingsPlaceHolder placementPlaceHolder, CmsPageContent content,
+            bool isFromLayout)
+        {
+            var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
+            activatedWidget.IsFromLayout = isFromLayout;
+            
+            var internalLayout = (activatedWidget as IHasInternalLayout)?.GetInternalLayout();
+            foreach (var placeholderId in internalLayout.PlaceHolderIds)
+                activatedWidget.PlaceHolders.Add(placeholderId, new RenderingsPlaceHolder(placeholderId));
+
+            var mergedContent = new List<CmsPageContent>();
+            var placedByUser = content.AllContent;
+            var placedByDefault = internalLayout.DefaultContent;
+
+            mergedContent.AddRange(placedByDefault);
+            mergedContent.AddRange(placedByUser);
+
+            if (mergedContent.Any())
+                ActivateAndPlaceContent(activatedWidget,mergedContent, isFromLayout);
+
+            placementPlaceHolder.Renderings.Add(activatedWidget);
+        }
+
 
         private static RenderingsPlaceHolder FindPlacementLocation(PageCompositionElement searchContext, CmsPageContent content)
         {
+            if (!string.IsNullOrWhiteSpace(content.PlacementContentPlaceHolderId))
             try
             {
                 return searchContext.PlaceHolders[content.PlacementContentPlaceHolderId];
             }
             catch (KeyNotFoundException)
             {
-                return searchContext.PlaceHolders.FirstOrDefault().Value; //should this be ordered?
+                
             }
-            
+            return searchContext.PlaceHolders.FirstOrDefault().Value; //should this be ordered?
         }
 
         //public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Control searchRoot)
@@ -80,6 +95,12 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
         //    return phs;
         //}
+
+        public void ActivateAndPlaceLayoutContent(CmsPageContent contentToActivate, RenderingsPlaceHolder page)
+        {
+            ActivateAndPlaceContent(page, contentToActivate, true);
+        }
+
 
         public void ActivateAndPlaceAdHocPageContent(CmsPageContent contentToActivate, PageCompositionElement page)
         {

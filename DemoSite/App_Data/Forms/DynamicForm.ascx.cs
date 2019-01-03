@@ -9,6 +9,7 @@ using Cms.Forms;
 using Cms.Toolbox;
 using Modules.Cms.Features.Presentation.PageComposition;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
@@ -24,7 +25,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 namespace DemoSite
 {
     
-    public partial class DynamicForm : System.Web.UI.UserControl, ILayoutControl
+    public partial class DynamicForm : System.Web.UI.UserControl, IHasInternalLayout
     {
         public const string ApiId = "wc-dynamic-form";
 
@@ -33,22 +34,23 @@ namespace DemoSite
         [UserInterfaceHint(Editor = Editor.OptionList), ContentControlSource(FormRepository.ApiId)]
         public Guid FormId { get; set; }
 
-        public IReadOnlyCollection<string> InitializeLayout()
-        {
-            return new[] {nameof(surface)};
-        }
 
-        public IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId)
+        public InternalLayout GetInternalLayout()
         {
-            if (placeHolderId != nameof(surface))
-                throw new Exception("bad placeholder id??");
+            var layout = new InternalLayout();
+            layout.PlaceHolderIds.Add(nameof(surface));
 
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId), ContentEnvironment.Live).Result.Single();
 
-            var contentActivator = new CmsPageContentActivator();
-            return _cmsForm.DesignedContent.Select(x => contentActivator.ActivateCmsPageContent(x)).ToList();
+            foreach (var item in _cmsForm.DesignedContent)              //todo: better way.
+                item.PlacementContentPlaceHolderId = nameof(surface);   
+
+            layout.DefaultContent.AddRange(_cmsForm.DesignedContent);
+            return layout;
         }
+
+        
 
         [UserInterfaceIgnore]
         public Guid LayoutBuilderId => FormId;
@@ -58,6 +60,10 @@ namespace DemoSite
         private DynamicFormRequestContext _dynamicFormRequest;
         private IReadOnlyCollection<IConfiguratorControl> _activatedConfigurators;
 
+        protected override void FrameworkInitialize()
+        {
+            base.FrameworkInitialize();
+        }
 
         protected override void OnInit(EventArgs e)
         {

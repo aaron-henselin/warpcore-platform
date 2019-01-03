@@ -19,7 +19,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 
             var placeHolders = _masterPage.GetRootControl().GetDescendantControls<ContentPlaceHolder>();
             foreach (var nativePlaceHolder in placeHolders)
-                this.PlaceHolders.Add(nativePlaceHolder.ID, new RenderingsPlaceHolder { Id = nativePlaceHolder.ID });
+                this.PlaceHolders.Add(nativePlaceHolder.ID, new RenderingsPlaceHolder(nativePlaceHolder.ID));
 
             this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Head);
             this.GlobalPlaceHolders.Add(GlobalLayoutPlaceHolderIds.Scripts);
@@ -33,5 +33,6 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
         {
             return _masterPage;
         }
+
     }
 }

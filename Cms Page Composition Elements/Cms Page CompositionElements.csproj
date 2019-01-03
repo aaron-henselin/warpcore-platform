@@ -51,6 +51,10 @@
       <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
       <Name>Platform DataAnnotations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sites\Cms Sites.csproj">
+      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
+      <Name>Cms Sites</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

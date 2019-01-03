@@ -1,28 +1,27 @@
-﻿using System;
-using System.Linq;
-using System.Web.UI;
+﻿using System.Web.UI;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
-using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
-using WarpCore.Web.Widgets;
 
-namespace WarpCore.Web
+namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
-    public class WebFormsControlPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine
+    public class WebFormsControlPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine, IHasInternalLayout
     {
-        private Control activatedWidget;
+        private readonly Control _activatedWidget;
 
         public WebFormsControlPageCompositionElement(Control activatedWidget)
         {
-            this.activatedWidget = activatedWidget;
+            this._activatedWidget = activatedWidget;
             this.LocalId = activatedWidget.ID;
 
-            TryActivateLayout(activatedWidget as ILayoutControl);
         }
-
 
         public Control GetControl()
         {
-            return activatedWidget;
+            return _activatedWidget;
+        }
+
+        public InternalLayout GetInternalLayout()
+        {
+            return (_activatedWidget as IHasInternalLayout)?.GetInternalLayout() ?? InternalLayout.Empty;
         }
     }
 }

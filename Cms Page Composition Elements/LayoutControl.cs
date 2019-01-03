@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using WarpCore.Cms;
 using WarpCore.Platform.DataAnnotations;
 
-namespace WarpCore.Web.Widgets
+namespace Modules.Cms.Features.Presentation.PageComposition.Elements
 {
-    public interface ILayoutControl
-    {
-        IReadOnlyCollection<string> InitializeLayout();
 
-        IReadOnlyCollection<PageCompositionElement> GetAutoIncludedElementsForPlaceHolder(string placeHolderId);
-
-        [UserInterfaceIgnore]
-        Guid LayoutBuilderId { get;  }
-    }
 
 
 
