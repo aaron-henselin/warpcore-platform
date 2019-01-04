@@ -294,7 +294,22 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 
              
                 _writer.BeginWriting(pp);
-                HttpContext.Current.Server.Execute(nativePage, _writer, true);
+
+
+                var originalHandler = HttpContext.Current.Handler;
+                try
+                {
+                    HttpContext.Current.Handler = nativePage; // required in order to process postbacks.
+                                                              // if aspnet thinks that another renderer is in charge of the
+                                                              // the execution, then 'GET' content is returned only.
+
+                    HttpContext.Current.Server.Execute(nativePage, _writer, true);
+                }
+                finally
+                {
+                    HttpContext.Current.Handler = originalHandler;
+                }
+                
                 _writer.EndWriting();
             }
             else
