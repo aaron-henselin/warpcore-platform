@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Compilation;
 using Cms.Toolbox;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms;

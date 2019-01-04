@@ -129,8 +129,8 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             protected override void Render(HtmlTextWriter writer)
             {
 
-                var switching = (SwitchingHtmlWriter)writer.InnerWriter;
-                switching.AddGlobalSubsitution(_id);
+                var switching = writer.InnerWriter as SwitchingHtmlWriter;
+                switching?.AddGlobalSubsitution(_id);
             }
         }
 
@@ -274,6 +274,10 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                     }
 
                     BuildServerSidePage(topMostControl, pp);
+                };
+                nativePage.Init += (sender, args) =>
+                {
+
                 };
                 nativePage.InitComplete += (sender, args) =>
                 {

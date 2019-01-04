@@ -20,7 +20,6 @@ namespace WarpCore.Cms.Toolbox
         public string AssemblyQualifiedTypeName { get; set; }
         public string AscxPath { get; set; }
         public string Category { get; set; }
-
         public string FriendlyName { get; set; }
     }
 
@@ -74,7 +73,9 @@ namespace WarpCore.Cms.Toolbox
         public static Type ResolveToolboxItemClrType(ToolboxItem toolboxItem)
         {
             if (!string.IsNullOrWhiteSpace(toolboxItem.AscxPath))
+            {
                 return BuildManager.GetCompiledType(toolboxItem.AscxPath);
+            }
 
             return Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
         }
