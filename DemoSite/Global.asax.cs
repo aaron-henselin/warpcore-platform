@@ -126,12 +126,12 @@ namespace DemoSite
                 WidgetUid = "wc-formdesigner",
                 FriendlyName = "Form Designer"
             });
-            tbx.Save(new ToolboxItem
-            {
-                AscxPath = "/App_Data/Forms/DynamicForm.ascx",
-                WidgetUid = DynamicForm.ApiId,
-                FriendlyName = "Dynamic Form"
-            });
+            //tbx.Save(new ToolboxItem
+            //{
+            //    AscxPath = "/App_Data/Forms/DynamicForm.ascx",
+            //    WidgetUid = DynamicForm.ApiId,
+            //    FriendlyName = "Dynamic Form"
+            //});
             tbx.Save(new ToolboxItem
             {
                 AscxPath = "/App_Data/BackendWidgets/EntityList.ascx",

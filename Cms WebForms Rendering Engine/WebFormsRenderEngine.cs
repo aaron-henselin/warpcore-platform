@@ -158,10 +158,16 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             {
                 _pp = pp;
 
-                var control = pp.GetControl();
+
+
+            }
+
+            public void Initialize()
+            {
+                var control = _pp.GetControl();
                 Controls.Add(control);
 
-                foreach (var ph in pp.PlaceHolders.Values)
+                foreach (var ph in _pp.PlaceHolders.Values)
                 {
                     var contentPlaceHolder = control.FindControl(ph.Id);
                     if (contentPlaceHolder == null)
@@ -170,8 +176,8 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 
                     contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
                 }
-
             }
+
 
             protected override void Render(HtmlTextWriter writer)
             {
@@ -209,7 +215,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                         var compositionElement =(WebFormsControlPageCompositionElement) placedRendering;
                         var wrapped = new RenderingEngineComponent(compositionElement);
                         contentPlaceHolder.Controls.Add(wrapped);
-                        //placedRendering.TryActivateLayout(compositionElement.GetControl() as ILayoutControl);
+                        wrapped.Initialize();
 
 
                         BuildServerSidePage(control, placedRendering);
@@ -241,18 +247,19 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             {
                 var nativePageRendering = (WebFormsPageCompositionElement)pp;
                 var nativePage = nativePageRendering.GetPage();
-                var topMostControl = nativePage.GetRootControl();
-                
-                //nativePage.Header.Controls.Add(new WebFormsWidget());
-
-                foreach (var ph in pp.PlaceHolders.Values)
+                nativePage.PreInit += (sender, args) =>
                 {
-                    var contentPlaceHolder = topMostControl.FindControl(ph.Id);
-                    contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
-                }
+                    var topMostControl = nativePage.GetRootControl();
+                    foreach (var ph in pp.PlaceHolders.Values)
+                    {
+                        var contentPlaceHolder = topMostControl.FindControl(ph.Id);
+                        contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
+                    }
 
 
-                BuildServerSidePage(topMostControl, pp);
+                    BuildServerSidePage(topMostControl, pp);
+                };
+
 
                 //allows nonwebforms controls to get access to the head and the scripts
                 nativePage.InitComplete += (sender, args) =>
