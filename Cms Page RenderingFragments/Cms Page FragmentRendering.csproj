@@ -36,14 +36,22 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BatchingFragmentRenderer.cs" />
+    <Compile Include="CompositedResponse.cs" />
+    <Compile Include="FragmentRenderMode.cs" />
     <Compile Include="IRenderingFragment.cs" />
-    <Compile Include="PageRenderMode.cs" />
+    <Compile Include="IBatchingRenderEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderFragmentCompositor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
       <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
       <Name>Cms Page CompositionElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
+      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
+      <Name>Platform Kernel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

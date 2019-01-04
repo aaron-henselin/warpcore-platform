@@ -81,7 +81,7 @@ namespace WarpCore.Web
 
             //        var page = new PageRendering();
 
-            //        pageBuilder.ActivateAndPlaceLayoutContent(page);
+            //        pageBuilder.AddLayoutContent(page);
 
             //        var allContent = rt.CmsPage.PageContent;
             //        if (rt.PageRenderMode == PageRenderMode.PageDesigner)
@@ -96,7 +96,7 @@ namespace WarpCore.Web
             //        {
             //            var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? Guid.Empty;
             //            var root = d[placementLayoutBuilderId];
-            //            pageBuilder.ActivateAndPlaceAdHocPageContent(root, contentItem );
+            //            pageBuilder.AddAdHocContent(root, contentItem );
             //        }
 
             //        if (rt.PageRenderMode == PageRenderMode.PageDesigner)

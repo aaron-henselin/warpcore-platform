@@ -180,9 +180,9 @@
       <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
       <Name>Cms Page CompositionElements</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page Compositor\Cms Page Compositor.csproj">
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7afdb16f-6b42-494b-baf4-42db78a3fabc}</Project>
-      <Name>Cms Page Compositor</Name>
+      <Name>Cms Page Composer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
       <Project>{18C933A1-7A6F-48EF-B086-09FFF95D6558}</Project>

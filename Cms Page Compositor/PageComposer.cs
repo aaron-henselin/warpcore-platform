@@ -8,27 +8,22 @@ using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
-    public class PageCompositionBuilder
+    public class PageComposer
     {
-        //private readonly CmsPageRequestContext _context;
-        private readonly LayoutRepository layoutRepository = new LayoutRepository();
-        private CmsPageContentActivator _contentActivator;
+        private readonly LayoutRepository _layoutRepository = new LayoutRepository();
+        private readonly CmsPageContentActivator _contentActivator;
 
-        public PageCompositionBuilder(): this(Dependency.Resolve<CmsPageContentActivator>())
+        public PageComposer(): this(Dependency.Resolve<CmsPageContentActivator>())
         {
            
         }
 
-
-        public PageCompositionBuilder(CmsPageContentActivator contentActivator)
+        public PageComposer(CmsPageContentActivator contentActivator)
         {
             _contentActivator = contentActivator;
         }
 
-
-
-
-        private void ActivateAndPlaceContent(PageCompositionElement parentCompositionElement,
+        private void AddContent(PageCompositionElement parentCompositionElement,
             IReadOnlyCollection<CmsPageContent> contents, bool isFromLayout)
         {
             foreach (var content in contents)
@@ -37,11 +32,11 @@ namespace Modules.Cms.Features.Presentation.PageComposition
                 if (placementPlaceHolder == null)
                     continue;
 
-                ActivateAndPlaceContent(placementPlaceHolder, content, isFromLayout);
+                AddContent(placementPlaceHolder, content, isFromLayout);
             }
         }
 
-        private void ActivateAndPlaceContent(RenderingsPlaceHolder placementPlaceHolder, CmsPageContent content,
+        private void AddContent(RenderingsPlaceHolder placementPlaceHolder, CmsPageContent content,
             bool isFromLayout)
         {
             var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
@@ -59,7 +54,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             mergedContent.AddRange(placedByUser);
 
             if (mergedContent.Any())
-                ActivateAndPlaceContent(activatedWidget,mergedContent, isFromLayout);
+                AddContent(activatedWidget,mergedContent, isFromLayout);
 
             placementPlaceHolder.Renderings.Add(activatedWidget);
         }
@@ -79,40 +74,22 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             return searchContext.PlaceHolders.FirstOrDefault().Value; //should this be ordered?
         }
 
-        //public IReadOnlyCollection<ContentPlaceHolder> IdentifyLayoutLeaves(Control searchRoot)
-        //{
-        //    List<ContentPlaceHolder> phs = new List<ContentPlaceHolder>();
-        //    var allPhs = searchRoot.GetDescendantControls<ContentPlaceHolder>();
-
-        //    foreach (var ph in allPhs)
-        //    {
-        //        var isLeaf = !ph.GetDescendantControls<ContentPlaceHolder>().Any();
-        //        if (isLeaf)
-        //        {
-        //            phs.Add(ph);
-        //        }
-        //    }
-
-        //    return phs;
-        //}
-
-        public void ActivateAndPlaceLayoutContent(CmsPageContent contentToActivate, RenderingsPlaceHolder page)
+        public void AddLayoutContent(CmsPageContent contentToActivate, RenderingsPlaceHolder page)
         {
-            ActivateAndPlaceContent(page, contentToActivate, true);
+            AddContent(page, contentToActivate, true);
         }
 
-
-        public void ActivateAndPlaceAdHocPageContent(CmsPageContent contentToActivate, PageCompositionElement page)
+        public void AddAdHocContent(CmsPageContent contentToActivate, PageCompositionElement page)
         {
-            ActivateAndPlaceContent(page,new[]{contentToActivate},false);
+            AddContent(page,new[]{contentToActivate},false);
         }
 
-        public void ActivateAndPlaceLayoutContent(IReadOnlyCollection<CmsPageContent> contentToActivate, PageCompositionElement parentCompositionElement)
+        public void AddLayoutContent(IReadOnlyCollection<CmsPageContent> contentToActivate, PageCompositionElement parentCompositionElement)
         {
-            ActivateAndPlaceContent(parentCompositionElement, contentToActivate, true);
+            AddContent(parentCompositionElement, contentToActivate, true);
         }
 
-        public void ActivateAndPlaceLayoutContent(Elements.PageComposition page, Layout layoutToApply)
+        public void AddLayoutContent(Elements.PageComposition page, Layout layoutToApply)
         {
            
             
@@ -120,7 +97,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
                 page.RootElement = _contentActivator.ActivateLayoutByExtension(layoutToApply.MasterPagePath);
             
 
-            var structure = layoutRepository.GetLayoutStructure(layoutToApply);
+            var structure = _layoutRepository.GetLayoutStructure(layoutToApply);
             var lns = FlattenLayoutTree(structure);
 
             if (lns.Any())
@@ -132,7 +109,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
             //var root = localPage.GetRootControl();
             foreach (var ln in lns)
-                ActivateAndPlaceLayoutContent(ln.Layout.PageContent, page.RootElement);
+                AddLayoutContent(ln.Layout.PageContent, page.RootElement);
         }
 
         private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)

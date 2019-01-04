@@ -48,7 +48,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Configurators
             //rendering.PlaceHolders.Add("FormBody",new RenderingsPlaceHolder {Id="FormBody"});
 
             //var cmsForm = ConfiguratorFormBuilder.GenerateDefaultForm(configType);
-            //new CmsPageLayoutEngine().ActivateAndPlaceLayoutContent(cmsForm.DesignedContent, rendering);
+            //new CmsPageLayoutEngine().AddLayoutContent(cmsForm.DesignedContent, rendering);
             //_activatedConfigurators = _surface.GetDescendantControls<Control>().OfType<IConfiguratorControl>().ToList();
             //_readWriter = new CompositeFormReadWriter(configType, _activatedConfigurators);
             //CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);

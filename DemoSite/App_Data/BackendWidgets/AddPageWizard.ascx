@@ -5,7 +5,4 @@
 <p>Add some text here to explain the differences between page types</p>
 <asp:DropDownList runat="server" ID="PageTypeSelector" AutoPostBack="true" />
 
-<asp:PlaceHolder ID="PageTypeSpecificSettingsPlaceHolder" runat="server" >
-        
-</asp:PlaceHolder>
 

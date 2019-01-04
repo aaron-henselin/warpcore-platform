@@ -32,7 +32,7 @@ namespace WarpCore.Cms
 
         private static void RenderContentPage(CmsPageRequestContext rt, CmsPageContentActivator activator)
         {
-            var pageBuilder = new PageCompositionBuilder(activator);
+            var pageBuilder = new PageComposer(activator);
 
             var page = new PageComposition();
 
@@ -43,7 +43,7 @@ namespace WarpCore.Cms
                 var layoutRepository = new LayoutRepository();
                 var layoutToApply = layoutRepository.GetById(rt.CmsPage.LayoutId);
                 
-                pageBuilder.ActivateAndPlaceLayoutContent(page, layoutToApply);
+                pageBuilder.AddLayoutContent(page, layoutToApply);
             }
 
             var pageSpecificContent = rt.CmsPage.PageContent;
@@ -60,7 +60,7 @@ namespace WarpCore.Cms
             {
                 var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? SpecialRenderingFragmentContentIds.PageRoot;
                 var root = d[placementLayoutBuilderId];
-                pageBuilder.ActivateAndPlaceAdHocPageContent(contentItem, root);
+                pageBuilder.AddAdHocContent(contentItem, root);
 
             }
 

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
 using Modules.Cms.Features.Context;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
-namespace Modules.Cms.Features.Presentation.PageComposition
+namespace Modules.Cms.Features.Presentation.PageComposition.Elements
 {
     public class PageDesignerHtmlFactory
     {

@@ -398,9 +398,9 @@
       <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
       <Name>Cms Page CompositionElements</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page Compositor\Cms Page Compositor.csproj">
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
-      <Name>Cms Page Compositor</Name>
+      <Name>Cms Page Composer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms WebForms Rendering Engine\Cms WebForms FragmentRenderer.csproj">
       <Project>{0E35BDA1-F55F-4A44-BC11-051C6B4715AF}</Project>

@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Text;
-using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.PageComposition;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
-namespace Modules.Cms.Features.Presentation.PageComposition
+namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 {
     public class RenderFragmentCompositor
     {
-        private readonly Elements.PageComposition _pageDefinition;
+        private readonly Features.Presentation.PageComposition.Elements.PageComposition _pageDefinition;
         private readonly RenderingFragmentCollection _contentToComposite;
         private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory = new PageDesignerHtmlFactory();
-        public RenderFragmentCompositor(Elements.PageComposition pageDefinition, RenderingFragmentCollection contentToComposite)
+        public RenderFragmentCompositor(Features.Presentation.PageComposition.Elements.PageComposition pageDefinition, RenderingFragmentCollection contentToComposite)
         {
             _pageDefinition = pageDefinition;
             _contentToComposite = contentToComposite;
         }
 
-        public CompositedPage Compose(FragmentRenderMode renderMode)
+        public CompositedResponse Compose(FragmentRenderMode renderMode)
         {
-            var page = new CompositedPage();
+            var page = new CompositedResponse();
             var sb = new StringBuilder();
             Render(_pageDefinition.RootElement, new RenderAttributes {Mode=renderMode}, sb);
             page.Html = sb.ToString();

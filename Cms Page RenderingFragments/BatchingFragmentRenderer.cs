@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using WarpCore.Platform.Kernel;
 
-namespace Modules.Cms.Features.Presentation.PageComposition
+namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 {
 
     public class BatchingFragmentRenderer
@@ -18,7 +17,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         }
 
 
-        public RenderingFragmentCollection Execute(Elements.PageComposition pageRendering,FragmentRenderMode renderMode)
+        public RenderingFragmentCollection Execute(Features.Presentation.PageComposition.Elements.PageComposition pageRendering,FragmentRenderMode renderMode)
         {
             var transformationResult = new RenderingFragmentCollection();
             

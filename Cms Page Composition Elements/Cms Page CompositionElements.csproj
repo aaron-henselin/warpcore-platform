@@ -34,12 +34,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalLayoutPlaceHolderIds.cs" />
     <Compile Include="IPartialPageRenderingFactory.cs" />
     <Compile Include="LayoutControl.cs" />
     <Compile Include="LiteralPartialPageRendering.cs" />
+    <Compile Include="PageDesignerHtmlFactory.cs" />
     <Compile Include="PageRenderingDirective.cs" />
     <Compile Include="PartialPageRendering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -47,6 +50,10 @@
     <Compile Include="UndefinedLayoutPartialPageRendering.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cms Context\Cms Context.csproj">
+      <Project>{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}</Project>
+      <Name>Cms Context</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
       <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
       <Name>Platform DataAnnotations</Name>

@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms WebForms FragmentRender
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Mvc FragmentRenderer", "Cms Mvc Rendering Engine\Cms Mvc FragmentRenderer.csproj", "{894FD5B8-EC87-4E29-A744-09D3513C212C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Compositor", "Cms Page Compositor\Cms Page Compositor.csproj", "{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Composer", "Cms Page Compositor\Cms Page Composer.csproj", "{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{7EC7380D-21CF-4BCD-91BE-CAB0F33F3A97}"
 EndProject

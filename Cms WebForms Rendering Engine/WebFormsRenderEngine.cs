@@ -148,9 +148,9 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 
             protected override void Render(HtmlTextWriter writer)
             {
-
-                var switching = (SwitchingHtmlWriter)writer.InnerWriter;
-                switching.AddLayoutSubsitution(_ph.Id);
+                //this is necessary because a NullTextWriter is possible when WebForms internally opts to not render something
+                var switching = writer.InnerWriter as SwitchingHtmlWriter;
+                switching?.AddLayoutSubsitution(_ph.Id);
             }
         }
 
@@ -188,11 +188,11 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 
             protected override void Render(HtmlTextWriter writer)
             {
-                
-                var switching = (SwitchingHtmlWriter)writer.InnerWriter;
-                switching.BeginWriting(_pp);
+                //this is necessary because a NullTextWriter is possible when WebForms internally opts to not render something
+                var switching = writer.InnerWriter as SwitchingHtmlWriter;
+                switching?.BeginWriting(_pp);
                 base.Render(writer);
-                switching.EndWriting();
+                switching?.EndWriting();
             }
         }
 
