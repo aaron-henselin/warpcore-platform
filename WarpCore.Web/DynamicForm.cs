@@ -58,7 +58,7 @@ namespace WarpCore.Web
 
             this.Controls.Add(FormTitleAdd);
             this.Controls.Add(FormTitleEdit);
-            this.Controls.Add(new PlaceHolder { ID = "surface" });
+            this.Controls.Add(surface);
 
             var cancelButton = new Button { CssClass = "btn", Text = "Cancel" };
             cancelButton.Click += CancelButton_OnClickButton_OnClick;
@@ -86,6 +86,22 @@ namespace WarpCore.Web
 
         private PlaceHolder surface;
 
+        private static IEnumerable<Control> GetDescendantControls(Control parentControl, Type t)
+        {
+            if (parentControl.HasControls())
+                foreach (Control control in parentControl.Controls)
+                {
+
+                    if (t.IsInstanceOfType(control))
+                        yield return control;
+
+                    foreach (var childControl in GetDescendantControls(control, t))
+                    {
+                        yield return childControl;
+                    }
+                }
+        }
+
 
         protected override void OnInit(EventArgs e)
         {
@@ -93,16 +109,7 @@ namespace WarpCore.Web
 
             EnsureLayoutInitialized();
 
-            //<h2 runat="server" ID="FormTitleAdd"></h2>
-            //<h2 runat="server" ID="FormTitleEdit">Edit '<i><span runat="server" ID="FormTitleEditName"></span></i>'</h2>
-            //<asp:PlaceHolder runat="server" ID="surface">
-
-            //</asp:PlaceHolder>
-            //<div>
-            //    <asp:Button CssClass="btn" runat="server" ID="CancelButton" Text="Cancel" OnClick="CancelButton_OnClickButton_OnClick"/>
-            //    <asp:Button CssClass="btn btn-primary" runat="server" ID="SaveButton" Text="Save" OnClick="SaveButton_OnClick"/>
-            //</div>
-
+            _activatedConfigurators = GetDescendantControls(surface, typeof(IConfiguratorControl)).Cast<IConfiguratorControl>().ToList();
 
             _dynamicFormRequest = Context.ToDynamicFormRequestContext();
             _repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(_cmsForm.RepositoryUid);
@@ -129,11 +136,11 @@ namespace WarpCore.Web
                 PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
                 DefaultValues = d
             };
-            //configuratorEditingContext.Events = CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext, _activatedConfigurators).Events;
+            configuratorEditingContext.Events = CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext, _activatedConfigurators).Events;
 
-            //CmsFormReadWriter.InitializeEditing(_activatedConfigurators, configuratorEditingContext);
-            //SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
-            //CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, configuratorEditingContext);
+            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, configuratorEditingContext);
+            SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
+            CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, configuratorEditingContext);
 
         }
 

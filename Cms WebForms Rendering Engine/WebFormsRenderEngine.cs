@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -133,13 +134,16 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             }
         }
 
-        private class LayoutSubstitutionComponent : Control
+        [DebuggerDisplay("ClientID = {" + nameof(ClientID) + ("}, Subsitution = {" + nameof(_placeholderId) + "}"))]
+        private class SubsitutionHtmlWriterDirective : Control
         {
             private readonly RenderingsPlaceHolder _ph;
+            private string _placeholderId;
 
-            public LayoutSubstitutionComponent(RenderingsPlaceHolder ph)
+            public SubsitutionHtmlWriterDirective(RenderingsPlaceHolder ph)
             {
                 _ph = ph;
+                _placeholderId = ph.Id;
             }
 
             protected override void Render(HtmlTextWriter writer)
@@ -150,21 +154,24 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             }
         }
 
-        private class RenderingEngineComponent : PlaceHolder
+        [DebuggerDisplay("ClientID = {" + nameof(ClientID) + "}, Render = {" + nameof(RenderHtmlFor) + "}")]
+        private class RenderHtmlWriterDirective : PlaceHolder
         {
             private readonly WebFormsControlPageCompositionElement _pp;
+            private string RenderHtmlFor { get; set; }
 
-            public RenderingEngineComponent(WebFormsControlPageCompositionElement pp)
+            public RenderHtmlWriterDirective(WebFormsControlPageCompositionElement pp)
             {
                 _pp = pp;
 
 
-
+                
             }
 
             public void Initialize()
             {
                 var control = _pp.GetControl();
+                RenderHtmlFor = control.GetType().Name;
                 Controls.Add(control);
 
                 foreach (var ph in _pp.PlaceHolders.Values)
@@ -174,7 +181,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                         throw new Exception(
                             $"Placeholder with id '{ph.Id}' cannot be found in the '{control.ID}' naming container.");
 
-                    contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
+                    contentPlaceHolder.Controls.Add(new SubsitutionHtmlWriterDirective(ph));
                 }
             }
 
@@ -189,7 +196,8 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             }
         }
 
-        private class NonWebFormsControl : Control
+        [DebuggerDisplay("ClientID = {" + nameof(ClientID) + "}, (DoNotRender)")]
+        private class DoNotRenderHtmlWriterDirective : Control
         {
           
         }
@@ -209,31 +217,40 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                 {
                     if (placedRendering is WebFormsControlPageCompositionElement)
                     {
-                        WebFormsControlPageCompositionElement webFormsCompositionElement = ((WebFormsControlPageCompositionElement) placedRendering);
+                        WebFormsControlPageCompositionElement webFormsCompositionElement = ((WebFormsControlPageCompositionElement)placedRendering);
+                        AddRenderHtmlDirective(webFormsCompositionElement, contentPlaceHolder);
+
                         var control = webFormsCompositionElement.GetControl();
-
-                        var compositionElement =(WebFormsControlPageCompositionElement) placedRendering;
-                        var wrapped = new RenderingEngineComponent(compositionElement);
-                        contentPlaceHolder.Controls.Add(wrapped);
-                        wrapped.Initialize();
-
-
                         BuildServerSidePage(control, placedRendering);
                     }
                     else
                     {
-                        var control = new NonWebFormsControl {ID=placedRendering.LocalId};
-                        foreach (var nonWebFormsPlaceHolder in placedRendering.PlaceHolders.Values)
-                            control.Controls.Add(new NonWebFormsControl {ID = nonWebFormsPlaceHolder.Id});
-
-                        contentPlaceHolder.Controls.Add(control);
-                        BuildServerSidePage(control, placedRendering);
+                        var directive = AddDoNotRenderDirective(placedRendering, contentPlaceHolder);
+                        BuildServerSidePage(directive, placedRendering);
                     }
                 }
             }
         }
 
+        private static DoNotRenderHtmlWriterDirective AddDoNotRenderDirective(PageCompositionElement placedRendering, Control contentPlaceHolder)
+        {
+            var control = new DoNotRenderHtmlWriterDirective {ID = placedRendering.LocalId};
+            foreach (var nonWebFormsPlaceHolder in placedRendering.PlaceHolders.Values)
+                control.Controls.Add(new DoNotRenderHtmlWriterDirective {ID = nonWebFormsPlaceHolder.Id});
 
+            contentPlaceHolder.Controls.Add(control);
+
+            return control;
+        }
+
+        private static RenderHtmlWriterDirective AddRenderHtmlDirective(WebFormsControlPageCompositionElement placedRendering, Control contentPlaceHolder)
+        {
+            var compositionElement = (WebFormsControlPageCompositionElement) placedRendering;
+            var wrapped = new RenderHtmlWriterDirective(compositionElement);
+            contentPlaceHolder.Controls.Add(wrapped);
+            wrapped.Initialize();
+            return wrapped;
+        }
 
 
         public RenderingFragmentCollection Execute(PageCompositionElement pp)
@@ -253,30 +270,29 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                     foreach (var ph in pp.PlaceHolders.Values)
                     {
                         var contentPlaceHolder = topMostControl.FindControl(ph.Id);
-                        contentPlaceHolder.Controls.Add(new LayoutSubstitutionComponent(ph));
+                        contentPlaceHolder.Controls.Add(new SubsitutionHtmlWriterDirective(ph));
                     }
-
 
                     BuildServerSidePage(topMostControl, pp);
                 };
-
-
-                //allows nonwebforms controls to get access to the head and the scripts
                 nativePage.InitComplete += (sender, args) =>
                 {
+
                     if (nativePage.Header == null)
-                        throw new Exception("Add a <head runat='server'> tag in order to use this master page as a layout.");
+                        throw new Exception(
+                            "Add a <head runat='server'> tag in order to use this master page as a layout.");
 
                     if (nativePage.Form == null)
-                        throw new Exception("Add a <form runat='server'> tag in order to use this master page as a layout.");
+                        throw new Exception(
+                            "Add a <form runat='server'> tag in order to use this master page as a layout.");
 
 
-                    nativePage.Header.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Head ));
-                    nativePage.Form.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Scripts ));
+                    nativePage.Header.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Head));
+                    nativePage.Form.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.Scripts));
                     nativePage.Form.Controls.Add(new GlobalSubstitionComponent(GlobalLayoutPlaceHolderIds.InternalStateTracking));
-
                 };
-              
+
+             
                 _writer.BeginWriting(pp);
                 HttpContext.Current.Server.Execute(nativePage, _writer, true);
                 _writer.EndWriting();
@@ -288,9 +304,10 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                 var form = new HtmlGenericControl("form");
 
 
-                var wrapper = new RenderingEngineComponent(new WebFormsControlPageCompositionElement(body){ContentId = SpecialRenderingFragmentContentIds.WebFormsInterop });
-                
+                var wrapper = new RenderHtmlWriterDirective(new WebFormsControlPageCompositionElement(body){ContentId = SpecialRenderingFragmentContentIds.WebFormsInterop });
                 wrapper.Controls.Add(body);
+                wrapper.Initialize();
+
                 body.Controls.Add(form);
                 nativeRoot.Controls.Add(wrapper);
 

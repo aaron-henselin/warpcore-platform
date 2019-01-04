@@ -4,6 +4,7 @@ using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
+
     public class BatchingFragmentRenderer
     {
         private readonly IEnumerable<IBatchingRenderEngine> _engines;
