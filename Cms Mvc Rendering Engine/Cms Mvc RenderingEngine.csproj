@@ -94,6 +94,10 @@
       <Project>{18c933a1-7a6f-48ef-b086-09fff95d6558}</Project>
       <Name>Cms Page FragmentRendering</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
+      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
+      <Name>Platform Kernel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

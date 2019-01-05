@@ -42,9 +42,11 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
             activatedWidget.IsFromLayout = isFromLayout;
             
-            var internalLayout = (activatedWidget as IHasInternalLayout)?.GetInternalLayout();
+            var internalLayout = (activatedWidget as IHasInternalLayout)?.GetInternalLayout() ?? InternalLayout.Empty;
+
             foreach (var placeholderId in internalLayout.PlaceHolderIds)
                 activatedWidget.PlaceHolders.Add(placeholderId, new RenderingsPlaceHolder(placeholderId));
+            
 
             var mergedContent = new List<CmsPageContent>();
             var placedByUser = content.AllContent;
