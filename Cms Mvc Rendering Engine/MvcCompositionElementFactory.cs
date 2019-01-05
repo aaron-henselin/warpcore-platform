@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
@@ -35,7 +36,7 @@ namespace WarpCore.Web.RenderingEngines.Mvc
             
             var activator=
                 DependencyResolver.Current.GetService<IControllerActivator>();
-            var controller = (Controller)activator.Create(null, type);
+            var controller = (Controller)activator.Create(new RequestContext(), type);
 
             //todo: eventually.
             //controller.ViewEngineCollection.Insert(0,);

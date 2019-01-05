@@ -78,6 +78,9 @@ namespace Cms.Toolbox
 
     public static class ToolboxPropertyFilter
     {
+        public static List<Assembly> BlacklistedDeclaringAssemblies = new List<Assembly>();
+        public static List<Type> BlacklistedDeclaringTypes = new List<Type>();
+
         //x.HasAttribute<UserInterfaceHintAttribute>()
         public static Func<PropertyInfo, bool> SupportsDesigner => x =>
             !x.HasAttribute<UserInterfaceIgnoreAttribute>()
@@ -86,12 +89,10 @@ namespace Cms.Toolbox
         public static Func<PropertyInfo, bool> SupportsOrm => x =>
             IsReadWriteable(x) && IsValidDeclaringType(x);
 
-        private static Func<PropertyInfo, bool> IsValidDeclaringType => x => x.DeclaringType != typeof(Control) &&
-                                                                        x.DeclaringType != typeof(WebControl) &&
-                                                                        x.DeclaringType != typeof(PlaceHolder) && //todo: we need this right now because the configurators are (incorrectly) basing off of PH
-                                                                        x.DeclaringType != typeof(WarpCoreEntity) &&
-                                                                        x.DeclaringType != typeof(VersionedContentEntity) &&
-                                                                        x.DeclaringType != typeof(UnversionedContentEntity);
+        private static Func<PropertyInfo, bool> IsValidDeclaringType =>
+            x => !BlacklistedDeclaringAssemblies.Contains(x.DeclaringType.Assembly)
+              && !BlacklistedDeclaringTypes.Contains(x.DeclaringType);
+
 
         private static Func<PropertyInfo, bool> IsReadWriteable => x => x.CanRead && x.CanWrite;
 

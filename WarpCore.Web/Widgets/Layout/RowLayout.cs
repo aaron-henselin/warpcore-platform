@@ -11,38 +11,13 @@ using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
 {
-    //[global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
-    //public class RowLayout2 : Controller, IHasInternalLayout
-    //{
-    //    public const string ApiId = "WC/RowLayout";
 
-    //    [UserInterfaceHint]
-    //    [DisplayName("Number of Columns")]
-    //    public int NumColumns { get; set; } = 1;
-
-    //    [UserInterfaceIgnore]
-    //    public Guid LayoutBuilderId { get; set; }
-
-    //    public InternalLayout GetInternalLayout()
-    //    {
-    //        var internalLayout = new InternalLayout();
-    //        for (int i = 0; i < NumColumns; i++)
-    //            internalLayout.PlaceHolderIds.Add(i.ToString());
-
-    //        return internalLayout;
-    //    }
-
-    //    public void Index()
-    //    {
-    //        return View();
-    //    }
-    //}
 
 
     [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
-    public class RowLayout : Control, INamingContainer, IHasInternalLayout
+    public class RowLayout2 : Control, INamingContainer, IHasInternalLayout
     {
-        public const string ApiId = "WC/RowLayout";
+        public const string ApiId = "WC/RowLayout_WebForms";
 
         [UserInterfaceHint][DisplayName("Number of Columns")]
         public int NumColumns { get; set; } = 1;

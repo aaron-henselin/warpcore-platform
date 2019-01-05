@@ -36,7 +36,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var cmsForm = new CmsForm();
 
             var factory = new CmsPageContentBuilder();
-            var rowLayout = factory.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
+            var rowLayout = factory.BuildCmsPageContentFromWebFormsControl(new RowLayout2 { NumColumns = 1 });
             rowLayout.Id = ToGuid(1);
             rowLayout.PlacementContentPlaceHolderId = RuntimePlaceHolderId;
             cmsForm.FormContent.Add(rowLayout);

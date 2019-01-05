@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using Cms;
 using Cms.Forms;
 using Cms.Layout;
 using Cms.Toolbox;
+using DemoSite.Controllers;
 using EmbeddedResourceVirtualPathProvider;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Configuration;
@@ -40,10 +44,21 @@ namespace DemoSite
             var configuration = new CmsConfiguration();
             configuration.AddMvcSupport();
             configuration.AddWebFormsSupport();
-
+            
             //todo: get this moved.
             var fragmentRenderers =configuration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
             var pageCompositionFactories =configuration.SupportedRenderingEngines.Select(x => x.PageCompositionFactory).ToList();
+
+            ToolboxPropertyFilter.BlacklistedDeclaringAssemblies.AddRange(new[]
+            {
+                typeof(Control).Assembly,
+                typeof(Controller).Assembly,
+                typeof(WarpCoreEntity).Assembly
+            });
+
+
+
+
 
             Dependency.RegisterMultiple<IPageCompositionElementFactory>(pageCompositionFactories);
             Dependency.RegisterMultiple<IFragmentRenderer>(fragmentRenderers);
