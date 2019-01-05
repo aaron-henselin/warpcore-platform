@@ -8,7 +8,12 @@ using Cms;
 using Cms.Forms;
 using Cms.Layout;
 using Cms.Toolbox;
+using EmbeddedResourceVirtualPathProvider;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Configuration;
 using Modules.Cms.Features.Presentation.PageComposition;
+using Modules.Cms.Features.Presentation.RenderingEngines.Mvc;
+using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
@@ -31,6 +36,20 @@ namespace DemoSite
     {
         protected void Application_Start(object sender, EventArgs e)
         {
+            
+            var configuration = new CmsConfiguration();
+            configuration.AddMvcSupport();
+            configuration.AddWebFormsSupport();
+
+            //todo: get this moved.
+            var fragmentRenderers =configuration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
+            var pageCompositionFactories =configuration.SupportedRenderingEngines.Select(x => x.PageCompositionFactory).ToList();
+
+            Dependency.RegisterMultiple<IPageCompositionElementFactory>(pageCompositionFactories);
+            Dependency.RegisterMultiple<IFragmentRenderer>(fragmentRenderers);
+
+            EmbeddedResourceVirtualPathProviderStart.Start();
+
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             
             DomainEvents.Subscribe<SiteBootCompleted>(_ =>

@@ -144,7 +144,6 @@
     <Compile Include="RouteContextResolver.cs" />
     <Compile Include="Routing\CmsRouteRegistrar.cs" />
     <Compile Include="Routing\WarpCoreRequestProcessor.cs" />
-    <Compile Include="Routing\WarpCorePageRouteHandler.cs" />
     <Compile Include="Scripting\ScriptManagerExtensions.cs" />
     <Compile Include="ServiceModel\WidgetApiHttpHandler.cs" />
     <Compile Include="ServiceModel\WidgetApiRouteHandler.cs" />
@@ -224,6 +223,7 @@
     <Folder Include="PageCompositor\" />
     <Folder Include="RenderingEngines\" />
     <Folder Include="Views\Default\" />
+    <Folder Include="Views\RowLayout2\" />
     <Folder Include="_EmbeddedResources\" />
   </ItemGroup>
   <PropertyGroup>

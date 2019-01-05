@@ -6,12 +6,12 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
     public class BatchingFragmentRenderer
     {
-        private readonly IEnumerable<IBatchingRenderEngine> _engines;
+        private readonly IEnumerable<IFragmentRenderer> _engines;
 
-        public BatchingFragmentRenderer() : this(Dependency.ResolveMultiple<IBatchingRenderEngine>())
+        public BatchingFragmentRenderer() : this(Dependency.ResolveMultiple<IFragmentRenderer>())
         {
         }
-        public BatchingFragmentRenderer(IEnumerable<IBatchingRenderEngine> engines)
+        public BatchingFragmentRenderer(IEnumerable<IFragmentRenderer> engines)
         {
             _engines = engines;
         }

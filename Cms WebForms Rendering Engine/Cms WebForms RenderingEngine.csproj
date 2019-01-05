@@ -38,13 +38,20 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationExtensions.cs" />
     <Compile Include="ControlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebFormsControlPartialPageRendering.cs" />
+    <Compile Include="CompositionElements\WebFormsControlPartialPageRendering.cs" />
+    <Compile Include="CompositionElements\WebFormsPageCompositionElement.cs" />
+    <Compile Include="WebFormsPageCompositionElementFactory.cs" />
     <Compile Include="WebFormsPageRendering.cs" />
-    <Compile Include="WebFormsRenderEngine.cs" />
+    <Compile Include="WebFormsFragmentRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cms Configuration\Cms Configuration.csproj">
+      <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
+      <Name>Cms Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
       <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
       <Name>Cms Page CompositionElements</Name>

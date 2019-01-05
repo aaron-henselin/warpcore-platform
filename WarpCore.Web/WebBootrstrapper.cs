@@ -107,13 +107,12 @@ namespace WarpCore.Web
             Dependency.Register<CmsPageRequestContext>(() => CmsPageBuilderHttpModule.RequestContext);
             Dependency.Register<UriBuilderContext>(() => HttpContext.Current.ToUriBuilderContext());
             
-            //todo: get this moved.
-            Dependency.RegisterAll<IPartialPageRenderingFactory>();
-            Dependency.RegisterAll<IBatchingRenderEngine>();
+
 
 
             CmsRouteRegistrar.RegisterDynamicRoutes();
         }
+
 
 
     }

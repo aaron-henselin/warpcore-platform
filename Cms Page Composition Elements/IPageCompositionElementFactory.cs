@@ -4,7 +4,7 @@ using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
 namespace WarpCore.Web
 {
-    public interface IPartialPageRenderingFactory
+    public interface IPageCompositionElementFactory
     {
         object ActivateType(Type type);
 

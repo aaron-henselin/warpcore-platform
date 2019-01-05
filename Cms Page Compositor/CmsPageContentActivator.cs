@@ -13,18 +13,18 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 {
     public class CmsPageContentActivator
     {
-        private Dictionary<string, IPartialPageRenderingFactory> _extensionLookup;
-        private Dictionary<Type, IPartialPageRenderingFactory> _baseTypeLookup;
+        private Dictionary<string, IPageCompositionElementFactory> _extensionLookup;
+        private Dictionary<Type, IPageCompositionElementFactory> _baseTypeLookup;
 
 
-        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPartialPageRenderingFactory>())
+        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPageCompositionElementFactory>())
         {
         }
 
-        public CmsPageContentActivator(IEnumerable<IPartialPageRenderingFactory> renderingFactories)
+        public CmsPageContentActivator(IEnumerable<IPageCompositionElementFactory> renderingFactories)
         {
-            _extensionLookup = new Dictionary<string, IPartialPageRenderingFactory>(StringComparer.OrdinalIgnoreCase);
-            _baseTypeLookup = new Dictionary<Type, IPartialPageRenderingFactory>();
+            _extensionLookup = new Dictionary<string, IPageCompositionElementFactory>(StringComparer.OrdinalIgnoreCase);
+            _baseTypeLookup = new Dictionary<Type, IPageCompositionElementFactory>();
             foreach (var fac in renderingFactories)
             {
                 var extensions = fac.GetHandledFileExtensions();
@@ -85,7 +85,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             return pp;
         }
 
-        private IPartialPageRenderingFactory GetActivator(Type toolboxItemType)
+        private IPageCompositionElementFactory GetActivator(Type toolboxItemType)
         {
             var handler = _baseTypeLookup.Keys.SingleOrDefault(x => x.IsAssignableFrom(toolboxItemType));
             if (handler == null)

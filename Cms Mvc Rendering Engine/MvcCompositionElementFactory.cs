@@ -6,7 +6,7 @@ using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
-    public class MvcRenderingEngine : IPartialPageRenderingFactory
+    public class MvcCompositionElementFactory : IPageCompositionElementFactory
     {
 
 

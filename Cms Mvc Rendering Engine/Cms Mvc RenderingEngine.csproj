@@ -64,14 +64,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControllerPartialPageRendering.cs" />
-    <Compile Include="MvcRenderingEngine.cs" />
+    <Compile Include="ConfigurationExtensions.cs" />
+    <Compile Include="CompositionElements\ControllerPartialPageRendering.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResource.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceCacheControl.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourcePath.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualDirectory.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualFile.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualPathProviderStart.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\Logger.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\Vpp.cs" />
+    <Compile Include="MvcCompositionElementFactory.cs" />
+    <Compile Include="MvcFragmentRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cms Configuration\Cms Configuration.csproj">
+      <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
+      <Name>Cms Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
       <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
       <Name>Cms Page CompositionElements</Name>

@@ -2,7 +2,7 @@
 
 namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 {
-    public interface IBatchingRenderEngine
+    public interface IFragmentRenderer
     {
         RenderingFragmentCollection Execute(PageCompositionElement pp);
     }

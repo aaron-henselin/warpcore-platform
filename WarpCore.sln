@@ -45,11 +45,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Security", "Platfo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Security Model", "Cms Security Model\Cms Security Model.csproj", "{479132F0-854E-49C4-9079-DC548EC039E3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FragmentRenderers", "FragmentRenderers", "{DB73B8DB-4249-49B9-90B5-38767617987C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RenderingEngines", "RenderingEngines", "{DB73B8DB-4249-49B9-90B5-38767617987C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms WebForms FragmentRenderer", "Cms WebForms Rendering Engine\Cms WebForms FragmentRenderer.csproj", "{0E35BDA1-F55F-4A44-BC11-051C6B4715AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms WebForms RenderingEngine", "Cms WebForms Rendering Engine\Cms WebForms RenderingEngine.csproj", "{0E35BDA1-F55F-4A44-BC11-051C6B4715AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Mvc FragmentRenderer", "Cms Mvc Rendering Engine\Cms Mvc FragmentRenderer.csproj", "{894FD5B8-EC87-4E29-A744-09D3513C212C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Mvc RenderingEngine", "Cms Mvc Rendering Engine\Cms Mvc RenderingEngine.csproj", "{894FD5B8-EC87-4E29-A744-09D3513C212C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Composer", "Cms Page Compositor\Cms Page Composer.csproj", "{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}"
 EndProject
@@ -60,6 +60,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page FragmentRendering", "Cms Page RenderingFragments\Cms Page FragmentRendering.csproj", "{18C933A1-7A6F-48EF-B086-09FFF95D6558}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Context", "Cms Context\Cms Context.csproj", "{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Configuration", "Cms Configuration\Cms Configuration.csproj", "{B4524714-8D8D-428B-B4E8-D2869745182D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +149,10 @@ Global
 		{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4524714-8D8D-428B-B4E8-D2869745182D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4524714-8D8D-428B-B4E8-D2869745182D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4524714-8D8D-428B-B4E8-D2869745182D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4524714-8D8D-428B-B4E8-D2869745182D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{189816C1-50FC-4FD9-B669-3C874AA4E9DF} = {7EC7380D-21CF-4BCD-91BE-CAB0F33F3A97}
 		{18C933A1-7A6F-48EF-B086-09FFF95D6558} = {7EC7380D-21CF-4BCD-91BE-CAB0F33F3A97}
 		{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34} = {9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}
+		{B4524714-8D8D-428B-B4E8-D2869745182D} = {9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF7B26DB-ECC6-49E0-B2C9-CB53A94E08E9}
