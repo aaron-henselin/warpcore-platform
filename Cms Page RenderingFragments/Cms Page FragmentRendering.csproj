@@ -43,6 +43,7 @@
     <Compile Include="IFragmentRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderFragmentCompositor.cs" />
+    <Compile Include="SwitchingHtmlWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">

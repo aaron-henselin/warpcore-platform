@@ -3,7 +3,6 @@ using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 {
-
     public class BatchingFragmentRenderer
     {
         private readonly IEnumerable<IFragmentRenderer> _engines;
