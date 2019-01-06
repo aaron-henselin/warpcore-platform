@@ -35,6 +35,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
         private void Render(PageCompositionElement pp,RenderAttributes attributes, StringBuilder local)
         {
+            if (!_contentToComposite.WidgetContent.ContainsKey(pp.ContentId))
+                throw new Exception("There is no rendering fragment available for " + pp.FriendlyName + " with content id " +pp.ContentId);
             var parts = _contentToComposite.WidgetContent[pp.ContentId];
 
             for (var index = 0; index < parts.Count; index++)

@@ -59,6 +59,10 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         {
             this.Html = sb.ToString();
         }
+        public HtmlOutput(string sb)
+        {
+            this.Html = sb;
+        }
     }
 
 

@@ -7,7 +7,9 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using MoreLinq;
 using WarpCore.Platform.Kernel;
+using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
@@ -55,55 +57,90 @@ namespace WarpCore.Web.RenderingEngines.Mvc
     {
         private readonly Assembly _asm;
 
+
+        private IEnumerable<string> CreateResourcePaths(IEnumerable<string> formats, IEnumerable<string> locatorPaths)
+        {
+            foreach (var format in formats)
+            foreach (var path in locatorPaths)
+                yield return path + format;
+        }
+
         public EmbeddedResourceViewEngine(Assembly asm)
         {
             _asm = asm;
-            var asmName = asm.FullName;
-            foreach (var character in Path.GetInvalidFileNameChars())
-                asmName = asmName.Replace(character, '_');
 
-            this.AreaViewLocationFormats = new string[4]
+            var controllerTypes = asm.GetTypes().Where(x => typeof(IController).IsAssignableFrom(x));
+      
+            Dictionary<string,string> namespaceFolders = new Dictionary<string, string>();
+            foreach (var type in controllerTypes)
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.vbhtml"
-            };
-            this.AreaMasterLocationFormats = new string[4]
+                if (!namespaceFolders.ContainsKey(type.Namespace))
+                    namespaceFolders.Add(type.Namespace,EmbeddedResourcePathFactory.CreateMvcViewLocatorPath(type));
+            }
+
+            var viewLocatorPrefix = namespaceFolders.Select(x => x.Value).ToList();
+
+
+
+            var areaViewLocationFormats = new string[4]
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.vbhtml"
+                "Areas.{2}.Views.{1}.{0}.cshtml",
+                "Areas.{2}.Views.{1}.{0}.vbhtml",
+                "Areas.{2}.Views.Shared.{0}.cshtml",
+                "Areas.{2}.Views.Shared.{0}.vbhtml"
             };
-            this.AreaPartialViewLocationFormats = new string[4]
+            AreaViewLocationFormats = CreateResourcePaths(areaViewLocationFormats, viewLocatorPrefix).ToArray();
+
+            var areaMasterLocationFormats = new string[4]
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Areas/{{2}}/Views/Shared/{{0}}.vbhtml"
+                "Areas.{2}.Views.{1}.{0}.cshtml",
+                "Areas.{2}.Views.{1}.{0}.vbhtml",
+                "Areas.{2}.Views.Shared.{0}.cshtml",
+                "Areas.{2}.Views.Shared.{0}.vbhtml"
             };
-            this.ViewLocationFormats = new string[4]
+            AreaMasterLocationFormats = CreateResourcePaths(areaMasterLocationFormats, viewLocatorPrefix).ToArray();
+
+
+            var areaPartialViewLocationFormats = new string[4]
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.vbhtml"
+                "Areas.{2}.Views.{1}.{0}.cshtml",
+                "Areas.{2}.Views.{1}.{0}.vbhtml",
+                "Areas.{2}.Views.Shared.{0}.cshtml",
+                "Areas.{2}.Views.Shared.{0}.vbhtml"
             };
-            this.MasterLocationFormats = new string[4]
+            AreaPartialViewLocationFormats = CreateResourcePaths(areaPartialViewLocationFormats, viewLocatorPrefix).ToArray();
+
+
+            var viewLocationFormats = new string[4]
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.vbhtml"
+                "Views.{1}.{0}.cshtml",
+                "Views.{1}.{0}.vbhtml",
+                "Views.Shared.{0}.cshtml",
+                "Views.Shared.{0}.vbhtml"
             };
-            this.PartialViewLocationFormats = new string[4]
+            ViewLocationFormats = CreateResourcePaths(viewLocationFormats, viewLocatorPrefix).ToArray();
+
+
+            var masterLocationFormats = new string[4]
             {
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/{{1}}/{{0}}.vbhtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.cshtml",
-                $"~/App_Data/EmbeddedResources/{asmName}/Views/Shared/{{0}}.vbhtml"
+                "Views.{1}.{0}.cshtml",
+                "Views.{1}.{0}.vbhtml",
+                "Views.Shared.{0}.cshtml",
+                "Views.Shared.{0}.vbhtml"
             };
+            MasterLocationFormats = CreateResourcePaths(masterLocationFormats, viewLocatorPrefix).ToArray();
+
+
+            var partialViewLocationFormats = new string[4]
+            {
+                "Views.{1}.{0}.cshtml",
+                "Views.{1}.{0}.vbhtml",
+                "Views.Shared.{0}.cshtml",
+                "Views.Shared.{0}.vbhtml"
+            };
+            PartialViewLocationFormats = CreateResourcePaths(partialViewLocationFormats, viewLocatorPrefix).ToArray();
+
+
             this.FileExtensions = new string[2]
             {
                 "cshtml",

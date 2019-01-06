@@ -285,7 +285,6 @@
     <Compile Include="App_Data\BackendPage.Master.designer.cs">
       <DependentUpon>BackendPage.Master</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\RowLayoutMvc.cs" />
     <Compile Include="Demo.Master.cs">
       <DependentUpon>Demo.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -395,10 +394,7 @@
     <Content Include="assets\summernote\font\summernote.ttf" />
     <Content Include="assets\summernote\font\summernote.woff" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Views\_ViewStart.cshtml" />
-    <EmbeddedResource Include="Views\RowLayout\Index.cshtml" />
-    <EmbeddedResource Include="Views\Shared\_Layout.cshtml" />
-    <EmbeddedResource Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -409,9 +405,7 @@
   <ItemGroup>
     <Folder Include="App_Data\BackendWidgets\EntityBuilderForms\" />
     <Folder Include="App_Data\Forms\" />
-    <Folder Include="Controllers\NewFolder1\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj">

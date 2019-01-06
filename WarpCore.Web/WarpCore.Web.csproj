@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WarpCore.Web</RootNamespace>
     <AssemblyName>WarpCore.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -63,7 +63,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -85,6 +89,7 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -112,6 +117,15 @@
   <ItemGroup>
     <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
     <Compile Include="DynamicForm.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResource.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceCacheControl.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourcePath.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualDirectory.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualFile.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualPathProviderStart.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\Logger.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\Vpp.cs" />
+    <Compile Include="EmbeddedResourceVirtualPathProvider\VppDirectory.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />

@@ -66,20 +66,17 @@
   <ItemGroup>
     <Compile Include="ConfigurationExtensions.cs" />
     <Compile Include="CompositionElements\ControllerPartialPageRendering.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResource.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceCacheControl.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourcePath.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualDirectory.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualFile.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualPathProviderStart.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\Logger.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\Vpp.cs" />
     <Compile Include="MvcCompositionElementFactory.cs" />
     <Compile Include="MvcFragmentRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Toolset\Controllers\RowLayoutMvc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Toolset\Views\_ViewStart.cshtml" />
+    <EmbeddedResource Include="Toolset\Views\RowLayout\Index.cshtml" />
+    <EmbeddedResource Include="Toolset\Views\Shared\_Layout.cshtml" />
+    <EmbeddedResource Include="Toolset\Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cms Configuration\Cms Configuration.csproj">
@@ -98,6 +95,22 @@
       <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
       <Name>Platform Kernel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
+      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
+      <Name>Cms Toolbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WarpCore.Web\WarpCore.Web.csproj">
+      <Project>{2206a30a-f468-48bd-bd98-59711a827298}</Project>
+      <Name>WarpCore.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Toolset\Controllers\NewFolder1\" />
+    <Folder Include="Toolset\Views\Default\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

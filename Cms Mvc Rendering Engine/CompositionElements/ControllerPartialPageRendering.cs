@@ -5,7 +5,7 @@ using Modules.Cms.Features.Presentation.PageComposition.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
-    public class ControllerPageCompositionElement : PageCompositionElement
+    public class ControllerPageCompositionElement : PageCompositionElement, IHasInternalLayout
     {
         public IController Controller { get; }
 
@@ -13,6 +13,11 @@ namespace WarpCore.Web.RenderingEngines.Mvc
         {
             Controller = controller;
 
+        }
+
+        public InternalLayout GetInternalLayout()
+        {
+            return (Controller as IHasInternalLayout)?.GetInternalLayout() ?? InternalLayout.Empty;
         }
     }
 }

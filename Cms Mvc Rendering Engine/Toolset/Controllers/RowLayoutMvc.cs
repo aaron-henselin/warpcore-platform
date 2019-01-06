@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 
-namespace DemoSite.Controllers
+namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
     [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : Controller, IHasInternalLayout
@@ -31,8 +27,14 @@ namespace DemoSite.Controllers
             return internalLayout;
         }
 
+
+
         public ViewResult Index()
         {
+
+            ViewBag.Css = "col-md-"+12 / NumColumns;
+            ViewBag.NumColumns = NumColumns;
+
             return View();
         }
     }

@@ -1,0 +1,14 @@
+﻿@using Modules.Cms.Features.Presentation.RenderingEngines.Mvc
+
+
+
+
+<div class="row">
+    @for (int i = 0; i < (int)Html.ViewBag.NumColumns; i++)
+    {
+        <div class="@Html.ViewBag.Css">
+            @Html.PlaceHolder(i.ToString())
+        </div>
+    }
+
+</div>

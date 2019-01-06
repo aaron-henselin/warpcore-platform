@@ -159,7 +159,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
         }
 
         [DebuggerDisplay("ClientID = {" + nameof(ClientID) + "}, (DoNotRender)")]
-        private class DoNotRenderHtmlWriterDirective : Control
+        private class DoNotRenderHtmlWriterDirective : Control, INamingContainer
         {
           
         }
