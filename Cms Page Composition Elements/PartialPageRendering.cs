@@ -51,7 +51,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Elements
         public string FriendlyName { get; set; }
         public Dictionary<string, RenderingsPlaceHolder> PlaceHolders { get; } = new Dictionary<string, RenderingsPlaceHolder>();
         public List<string> GlobalPlaceHolders { get; } = new List<string>();
-
+        public string CacheKey { get; set; }
 
         public int SelfAndDescendentElementCount => GetAllDescendents().Count;
 

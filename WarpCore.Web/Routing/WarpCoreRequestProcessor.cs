@@ -7,9 +7,11 @@ using Cms.Layout;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.PageComposition;
+using Modules.Cms.Features.Presentation.PageComposition.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.Kernel;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets;
@@ -72,6 +74,26 @@ namespace WarpCore.Cms
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page,fragmentMode);
 
+            var cache = Dependency.Resolve<CmsPageContentCacheResolver>();
+            foreach (var item in page.RootElement.GetAllDescendents())
+            {
+                if (item is CacheElement)
+                {
+                    var cacheToInject = (CacheElement) item;
+                    batch.WidgetContent.Add(item.ContentId, cacheToInject.Fragments);
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(item.CacheKey))
+                        cache.AddToCache(item.CacheKey, new CmsPageContentCache
+                        {
+                            InternalLayout = (item as IHasInternalLayout)?.GetInternalLayout(),
+                            Fragments = batch.WidgetContent[item.ContentId]
+                        });
+                }
+
+            }
+            
 
             var compositor = new RenderFragmentCompositor(page,batch);
             var composedPage = compositor.Compose(fragmentMode);

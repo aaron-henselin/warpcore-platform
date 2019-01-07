@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Caching;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms;
@@ -15,33 +17,58 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Cache
 
     }
 
-    public interface ICmsPageContentCacheResolver
+    public class CacheKeyParts
     {
-        bool TryResolveFromCache(CmsPageContent pageContent, out CmsPageContentCache element);
+        public Type WidgetType { get; set; }
+        public Guid ContentId { get; set; }
+        public Dictionary<string,string> Parameters { get; set; }
     }
+    
 
-    public class CmsPageContentCacheResolver : ICmsPageContentCacheResolver
+    public class CmsPageContentCacheResolver
     {
-        public bool TryResolveFromCache(CmsPageContent pageContent, out CmsPageContentCache element)
+        private static ConcurrentDictionary<Type,bool> IsCacheableLookup { get; } = new ConcurrentDictionary<Type, bool>();
+      
+        public void AddToCache(string cacheKey, CmsPageContentCache incomingCache)
         {
-            element = null;
+            HttpRuntime.Cache.Add(cacheKey, incomingCache, new CacheDependency(new string[0]), DateTime.Now.AddMinutes(5),
+                System.Web.Caching.Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+        }
 
-            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+        public bool IsCacheable(Type type)
+        {
+            if (IsCacheableLookup.ContainsKey(type))
+                return IsCacheableLookup[type];
 
             var genInterface = typeof(ISupportsCache<>);
             var cacheInterface =
-                toolboxItemType.GetInterfaces()
-                    .Where(x => x.ContainsGenericParameters)
+                type.GetInterfaces()
+                    .Where(x => x.IsGenericType)
                     .SingleOrDefault(x => x.GetGenericTypeDefinition() == genInterface);
 
-            if (cacheInterface == null)
-                return false;
+            IsCacheableLookup.TryAdd(type, cacheInterface != null);
+            return IsCacheableLookup[type];
+        }
+
+        public string GetCacheKey(CacheKeyParts parts)
+        {
+            var genInterface = typeof(ISupportsCache<>);
+            var cacheInterface =
+                parts.WidgetType.GetInterfaces()
+                    .Where(x => x.IsGenericType)
+                    .Single(x => x.GetGenericTypeDefinition() == genInterface);
 
             var cacheDirector = cacheInterface.GetGenericArguments().Single();
             var cacheKeyFactory = (ICmsPageContentCacheKeyFactory)Dependency.Resolve(cacheDirector);
-            var cacheKey = cacheKeyFactory.GetCacheKey(pageContent);
-            var cacheObject = HttpRuntime.Cache.Get(cacheKey);
+            return cacheKeyFactory.GetCacheKey(parts);
+        }
+
+        public bool TryResolveFromCache(string cachekey, out CmsPageContentCache element)
+        {
+            element = null;
+            
+            
+            var cacheObject = HttpRuntime.Cache.Get(cachekey);
             if (cacheObject == null)
                 return false;
 
@@ -60,9 +87,8 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Cache
     [Serializable]
     public class CmsPageContentCache
     {
-        public Dictionary<string, RenderingsPlaceHolder> PlaceHolders { get; } = new Dictionary<string, RenderingsPlaceHolder>();
-        public List<string> GlobalPlaceHolders { get; } = new List<string>();
-        public List<IRenderingFragment> RenderingFragments { get; } = new List<IRenderingFragment>();
+        public InternalLayout InternalLayout { get; set; }
+        public List<IRenderingFragment> Fragments { get; set; }
     }
 
 }

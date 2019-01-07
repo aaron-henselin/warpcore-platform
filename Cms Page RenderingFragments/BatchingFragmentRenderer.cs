@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
@@ -19,7 +20,7 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         public RenderingFragmentCollection Execute(Features.Presentation.PageComposition.Elements.PageComposition pageRendering,FragmentRenderMode renderMode)
         {
             var transformationResult = new RenderingFragmentCollection();
-            
+
             foreach (var engine in _engines)
             {
                 var localBatch = engine.Execute(pageRendering.RootElement);

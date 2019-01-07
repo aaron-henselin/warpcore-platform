@@ -17,16 +17,18 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
   public class CmsPageContentActivator
     {
+        private readonly CmsPageContentCacheResolver _cacheResolver;
         private Dictionary<string, IPageCompositionElementFactory> _extensionLookup;
         private Dictionary<Type, IPageCompositionElementFactory> _baseTypeLookup;
 
 
-        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPageCompositionElementFactory>())
+        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPageCompositionElementFactory>(), Dependency.Resolve<CmsPageContentCacheResolver>())
         {
         }
 
-        public CmsPageContentActivator(IEnumerable<IPageCompositionElementFactory> renderingFactories)
+        public CmsPageContentActivator(IEnumerable<IPageCompositionElementFactory> renderingFactories, CmsPageContentCacheResolver cacheResolver)
         {
+            _cacheResolver = cacheResolver;
             _extensionLookup = new Dictionary<string, IPageCompositionElementFactory>(StringComparer.OrdinalIgnoreCase);
             _baseTypeLookup = new Dictionary<Type, IPageCompositionElementFactory>();
             foreach (var fac in renderingFactories)
@@ -75,12 +77,30 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             var parameters = pageContent.Parameters;
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
             var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
-            var activator = GetActivator(toolboxItemType);
-            var activatedObject = activator.ActivateType(toolboxItemType);
 
-            activatedObject.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
-            
-            var pp = activator.CreateRenderingForObject(activatedObject);
+          
+            PageCompositionElement pp;
+            CmsPageContentCache found=null;
+            var cacheKeyParts = new CacheKeyParts{ContentId = pageContent.Id, Parameters = pageContent.Parameters, WidgetType = toolboxItemType};
+            var isCacheable = _cacheResolver.IsCacheable(toolboxItemType);
+            string cacheKey=null;
+            if (isCacheable)
+                cacheKey = _cacheResolver.GetCacheKey(cacheKeyParts);
+
+            var canBeActivatedViaCache = isCacheable && _cacheResolver.TryResolveFromCache(cacheKey, out found);
+            if (!canBeActivatedViaCache)
+            {
+                var activator = GetActivator(toolboxItemType);
+                var activatedObject = activator.ActivateType(toolboxItemType);
+                activatedObject.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
+                pp = activator.CreateRenderingForObject(activatedObject);
+            }
+            else
+            {
+                pp = new CacheElement(found);
+            }
+
+            pp.CacheKey = cacheKey;
             pp.ContentId = pageContent.Id;
             pp.FriendlyName = toolboxItem.FriendlyName;
             pp.LocalId = $"Layout{pageContent.Id}";

@@ -38,6 +38,7 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OutputCaching\CacheElement.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="CmsPageContentBuilder.cs" />
     <Compile Include="OutputCaching\ByParameters.cs" />
