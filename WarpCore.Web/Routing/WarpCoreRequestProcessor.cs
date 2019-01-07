@@ -80,7 +80,7 @@ namespace WarpCore.Cms
                 if (item is CacheElement)
                 {
                     var cacheToInject = (CacheElement) item;
-                    batch.WidgetContent.Add(item.ContentId, cacheToInject.Fragments);
+                    batch.RenderingResults.Add(item.ContentId, cacheToInject.RenderingResult);
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace WarpCore.Cms
                         cache.AddToCache(item.CacheKey, new CmsPageContentCache
                         {
                             InternalLayout = (item as IHasInternalLayout)?.GetInternalLayout(),
-                            Fragments = batch.WidgetContent[item.ContentId]
+                            RenderingResult = batch.RenderingResults[item.ContentId]
                         });
                 }
 

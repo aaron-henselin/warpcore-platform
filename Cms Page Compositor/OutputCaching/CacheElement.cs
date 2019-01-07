@@ -10,12 +10,12 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         public CacheElement(CmsPageContentCache found)
         {
             InternalLayout = found.InternalLayout;
-            Fragments = found.Fragments;
+            RenderingResult = found.RenderingResult;
 
         }
 
         public InternalLayout InternalLayout { get; set; }
-        public List<IRenderingFragment> Fragments { get; set; }
+        public RenderingResult RenderingResult { get; set; }
 
         public InternalLayout GetInternalLayout()
         {

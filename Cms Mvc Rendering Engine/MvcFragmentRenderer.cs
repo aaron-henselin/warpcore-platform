@@ -84,7 +84,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc
                     writer.EndWriting();
 
 
-                    collection.WidgetContent.Add(item.ContentId,writer.output[item.ContentId]);
+                    collection.RenderingResults.Add(item.ContentId,writer.output[item.ContentId]);
 
                     //var placeholderOrder = new Dictionary<string, int>();
                     //foreach (var phId in item.PlaceHolders.Keys)

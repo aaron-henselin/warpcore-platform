@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Modules.Cms.Features.Presentation.PageComposition;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
@@ -8,18 +9,19 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
     public class RenderFragmentCompositor
     {
         private readonly Features.Presentation.PageComposition.Elements.PageComposition _pageDefinition;
-        private readonly RenderingFragmentCollection _contentToComposite;
+        private readonly RenderingFragmentCollection _page;
         private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory = new PageDesignerHtmlFactory();
-        public RenderFragmentCompositor(Features.Presentation.PageComposition.Elements.PageComposition pageDefinition, RenderingFragmentCollection contentToComposite)
+        public RenderFragmentCompositor(Features.Presentation.PageComposition.Elements.PageComposition pageDefinition, RenderingFragmentCollection page)
         {
             _pageDefinition = pageDefinition;
-            _contentToComposite = contentToComposite;
+            _page = page;
         }
 
         public CompositedResponse Compose(FragmentRenderMode renderMode)
         {
             var page = new CompositedResponse();
             var sb = new StringBuilder();
+            
             Render(_pageDefinition.RootElement, new RenderAttributes {Mode=renderMode}, sb);
             page.Html = sb.ToString();
             return page;
@@ -35,15 +37,18 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
         private void Render(PageCompositionElement pp,RenderAttributes attributes, StringBuilder local)
         {
-            if (!_contentToComposite.WidgetContent.ContainsKey(pp.ContentId))
+            if (!_page.RenderingResults.ContainsKey(pp.ContentId))
                 throw new Exception("There is no rendering fragment available for " + pp.FriendlyName + " with content id " +pp.ContentId);
-            var parts = _contentToComposite.WidgetContent[pp.ContentId];
 
-            for (var index = 0; index < parts.Count; index++)
+            
+
+            var renderingResultForElement = _page.RenderingResults[pp.ContentId];
+
+            for (var index = 0; index < renderingResultForElement.InlineRenderingFragments.Count; index++)
             {
-                var part = parts[index];
+                var part = renderingResultForElement.InlineRenderingFragments[index];
                 var isFirst = index == 0;
-                var isLast = index == parts.Count - 1;
+                var isLast = index == renderingResultForElement.InlineRenderingFragments.Count - 1;
                 
 
                 if (part is HtmlOutput)
@@ -65,12 +70,19 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
                 {
                     var global = (GlobalSubstitutionOutput) part;
 
-                    if (_contentToComposite.GlobalContent.ContainsKey(global.Id))
-                    {
-                        var strings = _contentToComposite.GlobalContent[global.Id];
-                        foreach (var s in strings)
-                            local.Append(s);
-                    }
+                    var toWrite = _page.RenderingResults
+                        .SelectMany(x => x.Value.GlobalRendering)
+                        .ToLookup(x => x.Key);
+
+                    foreach (var s in toWrite[global.Id])
+                        local.Append(s);
+
+                    //if (_page.GlobalRendering.ContainsKey(global.Id))
+                    //{
+                    //    var strings = _page.GlobalRendering[global.Id];
+                    //    foreach (var s in strings)
+                    //        local.Append(s);
+                    //}
 
 
                     if (attributes.Mode == FragmentRenderMode.PageDesigner)

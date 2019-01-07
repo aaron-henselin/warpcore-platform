@@ -88,7 +88,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Cache
     public class CmsPageContentCache
     {
         public InternalLayout InternalLayout { get; set; }
-        public List<IRenderingFragment> Fragments { get; set; }
+        public RenderingResult RenderingResult { get; set; }
     }
 
 }

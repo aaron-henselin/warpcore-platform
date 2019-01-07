@@ -237,14 +237,9 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
                 HttpContext.Current.Server.Execute(nativeRoot, _writer, true);
             }
 
-            
-            
-
             return new RenderingFragmentCollection
             {
-                WidgetContent = _writer.output,
-
-
+                RenderingResults = _writer.output,
             };
         }
 
