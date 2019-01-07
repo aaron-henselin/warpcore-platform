@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.RenderingEngines.CachedContent;
 using WarpCore.Platform.Kernel;
 
-namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
+namespace Modules.Cms.Features.Presentation.PageComposition
 {
     public class BatchingFragmentRenderer
     {
@@ -21,6 +22,9 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         {
             var transformationResult = new RenderingFragmentCollection();
 
+            var cached =  new CachedContentFragmentRenderer().Execute(pageRendering.RootElement);
+            transformationResult.Add(cached);
+
             foreach (var engine in _engines)
             {
                 var localBatch = engine.Execute(pageRendering.RootElement);
@@ -28,19 +32,6 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
             }
 
             return transformationResult;
-
-
-            //var allDescendents = pageRendering.Rendering.GetAllDescendents();
-
-            //var literals = allDescendents.OfType<LiteralPartialPageRendering>().ToList();
-            //foreach (var literal in literals)
-            //{
-            //    var htmlOutput = new HtmlOutput(new StringBuilder(literal.Text));
-            //    batch.WidgetContent.Add(literal.ContentId,new List<IRenderingFragment> {htmlOutput});
-            //}
-
-
-
         }
 
 

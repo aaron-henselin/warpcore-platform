@@ -38,7 +38,6 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchingFragmentRenderer.cs" />
     <Compile Include="CompositedResponse.cs" />
     <Compile Include="FragmentRenderMode.cs" />
     <Compile Include="IRenderingFragment.cs" />

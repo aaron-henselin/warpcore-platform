@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Modules.Cms.Features.Presentation.PageComposition;
@@ -11,10 +12,16 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         private readonly Features.Presentation.PageComposition.Elements.PageComposition _pageDefinition;
         private readonly RenderingFragmentCollection _page;
         private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory = new PageDesignerHtmlFactory();
+        private ILookup<string, List<string>> _globals;
+
         public RenderFragmentCompositor(Features.Presentation.PageComposition.Elements.PageComposition pageDefinition, RenderingFragmentCollection page)
         {
             _pageDefinition = pageDefinition;
             _page = page;
+
+            _globals = _page.RenderingResults
+                .SelectMany(x => x.Value.GlobalRendering)
+                .ToLookup(x => x.Key, x=> x.Value);
         }
 
         public CompositedResponse Compose(FragmentRenderMode renderMode)
@@ -69,21 +76,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
                 if (part is GlobalSubstitutionOutput)
                 {
                     var global = (GlobalSubstitutionOutput) part;
-
-                    var toWrite = _page.RenderingResults
-                        .SelectMany(x => x.Value.GlobalRendering)
-                        .ToLookup(x => x.Key);
-
-                    foreach (var s in toWrite[global.Id])
+                    foreach (var s in _globals[global.Id])
                         local.Append(s);
-
-                    //if (_page.GlobalRendering.ContainsKey(global.Id))
-                    //{
-                    //    var strings = _page.GlobalRendering[global.Id];
-                    //    foreach (var s in strings)
-                    //        local.Append(s);
-                    //}
-
 
                     if (attributes.Mode == FragmentRenderMode.PageDesigner)
                     {

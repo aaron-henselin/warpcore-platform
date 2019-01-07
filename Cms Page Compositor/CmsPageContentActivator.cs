@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Compilation;
 using Cms.Toolbox;
-using Modules.Cms.Features.Presentation.PageComposition.Cache;
+using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.RenderingEngines.CachedContent;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;
@@ -17,18 +18,19 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
   public class CmsPageContentActivator
     {
-        private readonly CmsPageContentCacheResolver _cacheResolver;
+        private readonly CachedContentActivator _contentContentCacheElementFactory;
+
         private Dictionary<string, IPageCompositionElementFactory> _extensionLookup;
         private Dictionary<Type, IPageCompositionElementFactory> _baseTypeLookup;
 
 
-        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPageCompositionElementFactory>(), Dependency.Resolve<CmsPageContentCacheResolver>())
+        public CmsPageContentActivator():this(Dependency.ResolveMultiple<IPageCompositionElementFactory>(), Dependency.Resolve<CachedContentActivator>())
         {
         }
 
-        public CmsPageContentActivator(IEnumerable<IPageCompositionElementFactory> renderingFactories, CmsPageContentCacheResolver cacheResolver)
+        public CmsPageContentActivator(IEnumerable<IPageCompositionElementFactory> renderingFactories, CachedContentActivator contentContentCacheElementFactory)
         {
-            _cacheResolver = cacheResolver;
+            _contentContentCacheElementFactory = contentContentCacheElementFactory;
             _extensionLookup = new Dictionary<string, IPageCompositionElementFactory>(StringComparer.OrdinalIgnoreCase);
             _baseTypeLookup = new Dictionary<Type, IPageCompositionElementFactory>();
             foreach (var fac in renderingFactories)
@@ -78,26 +80,14 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
             var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
 
-          
             PageCompositionElement pp;
-            CmsPageContentCache found=null;
-            var cacheKeyParts = new CacheKeyParts{ContentId = pageContent.Id, Parameters = pageContent.Parameters, WidgetType = toolboxItemType};
-            var isCacheable = _cacheResolver.IsCacheable(toolboxItemType);
-            string cacheKey=null;
-            if (isCacheable)
-                cacheKey = _cacheResolver.GetCacheKey(cacheKeyParts);
-
-            var canBeActivatedViaCache = isCacheable && _cacheResolver.TryResolveFromCache(cacheKey, out found);
-            if (!canBeActivatedViaCache)
+            var wasCreatedViaCache =_contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, pageContent, out pp, out var cacheKey);
+            if (!wasCreatedViaCache)
             {
                 var activator = GetActivator(toolboxItemType);
                 var activatedObject = activator.ActivateType(toolboxItemType);
                 activatedObject.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
                 pp = activator.CreateRenderingForObject(activatedObject);
-            }
-            else
-            {
-                pp = new CacheElement(found);
             }
 
             pp.CacheKey = cacheKey;

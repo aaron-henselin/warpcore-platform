@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</ProjectGuid>
+    <ProjectGuid>{EF2F88AD-368A-443A-B987-5F51F90C9C21}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Modules.Cms.Features.Presentation.PageComposition</RootNamespace>
-    <AssemblyName>Modules.Cms.Features.Presentation.PageComposition</AssemblyName>
+    <RootNamespace>Modules.Cms.Features.Presentation.RenderingEngines.CachedContent</RootNamespace>
+    <AssemblyName>Modules.Cms.Features.Presentation.RenderingEngines.CachedContent</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,52 +32,39 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchingFragmentRenderer.cs" />
-    <Compile Include="CmsPageContentActivator.cs" />
-    <Compile Include="CmsPageContentBuilder.cs" />
-    <Compile Include="PageComposer.cs" />
+    <Compile Include="CachedContentPageCompositionElement.cs" />
+    <Compile Include="CachedContentFragmentRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cms Context\Cms Context.csproj">
-      <Project>{40DA81F0-FE1D-4DB3-9C11-97BA4188EC34}</Project>
-      <Name>Cms Context</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
-      <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
+      <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
       <Name>Cms Page CompositionElements</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page OutputCache\Cms Page OutputCache.csproj">
-      <Project>{2F3FBE89-0182-4026-B6A5-86198EF431F4}</Project>
+      <Project>{2f3fbe89-0182-4026-b6a5-86198ef431f4}</Project>
       <Name>Cms Page OutputCache</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
-      <Project>{18c933a1-7a6f-48ef-b086-09fff95d6558}</Project>
+      <Project>{18C933A1-7A6F-48EF-B086-09FFF95D6558}</Project>
       <Name>Cms Page FragmentRendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
+      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
       <Name>Platform Kernel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Orm\Platform Orm.csproj">
-      <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
-      <Name>Platform Orm</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Sites\Cms Sites.csproj">
-      <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
+      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
       <Name>Cms Sites</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
-      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
-      <Name>Cms Toolbox</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

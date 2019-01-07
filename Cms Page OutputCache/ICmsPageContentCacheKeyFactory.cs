@@ -1,6 +1,4 @@
-﻿using WarpCore.Cms;
-
-namespace Modules.Cms.Features.Presentation.PageComposition.Cache
+﻿namespace Modules.Cms.Features.Presentation.Cache
 {
     public interface ICmsPageContentCacheKeyFactory
     {

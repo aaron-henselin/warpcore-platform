@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Web.Mvc;
-using Modules.Cms.Features.Presentation.PageComposition.Cache;
+using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 

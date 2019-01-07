@@ -1,35 +1,18 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
-using Modules.Cms.Featues.Presentation.PageFragmentRendering;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
-using WarpCore.Cms;
-using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;
 
-namespace Modules.Cms.Features.Presentation.PageComposition.Cache
+namespace Modules.Cms.Features.Presentation.Cache
 {
-    public interface ISupportsCache<TCmsPageContentCacheKeyFactory> where TCmsPageContentCacheKeyFactory : ICmsPageContentCacheKeyFactory
-    {
 
-    }
-
-    public class CacheKeyParts
-    {
-        public Type WidgetType { get; set; }
-        public Guid ContentId { get; set; }
-        public Dictionary<string,string> Parameters { get; set; }
-    }
-    
-
-    public class CmsPageContentCacheResolver
+    public class CmsPageContentOutputCacheProvider
     {
         private static ConcurrentDictionary<Type,bool> IsCacheableLookup { get; } = new ConcurrentDictionary<Type, bool>();
       
-        public void AddToCache(string cacheKey, CmsPageContentCache incomingCache)
+        public void AddToCache(string cacheKey, CachedPageContentOutput incomingCache)
         {
             HttpRuntime.Cache.Add(cacheKey, incomingCache, new CacheDependency(new string[0]), DateTime.Now.AddMinutes(5),
                 System.Web.Caching.Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
@@ -63,7 +46,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Cache
             return cacheKeyFactory.GetCacheKey(parts);
         }
 
-        public bool TryResolveFromCache(string cachekey, out CmsPageContentCache element)
+        public bool TryResolveFromCache(string cachekey, out CachedPageContentOutput element)
         {
             element = null;
             
@@ -72,23 +55,11 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Cache
             if (cacheObject == null)
                 return false;
 
-            element = (CmsPageContentCache)cacheObject;
+            element = (CachedPageContentOutput)cacheObject;
             return true;
         }
 
 
-    }
-
-    public interface ICmsPageContentCache
-    {
-        bool TryActivateCmsPageContentCache(string cacheKey, out CmsPageContentCache cache);
-    }
-
-    [Serializable]
-    public class CmsPageContentCache
-    {
-        public InternalLayout InternalLayout { get; set; }
-        public RenderingResult RenderingResult { get; set; }
     }
 
 }

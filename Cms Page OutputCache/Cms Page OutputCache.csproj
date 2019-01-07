@@ -7,11 +7,12 @@
     <ProjectGuid>{2F3FBE89-0182-4026-B6A5-86198EF431F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cms_Page_OutputCache</RootNamespace>
-    <AssemblyName>Cms Page OutputCache</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Modules.Cms.Features.Presentation.Cache</RootNamespace>
+    <AssemblyName>Modules.Cms.Features.Presentation.Cache</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,8 +44,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ByParameters.cs" />
+    <Compile Include="CachedContentFragmentRenderer.cs" />
+    <Compile Include="CachedContentPageCompositionElement.cs" />
+    <Compile Include="CacheKeyParts.cs" />
+    <Compile Include="CachedPageContentOutput.cs" />
+    <Compile Include="CmsPageContentOutputCacheProvider.cs" />
+    <Compile Include="ICmsPageContentCacheKeyFactory.cs" />
+    <Compile Include="ISupportsCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
+      <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
+      <Name>Cms Page CompositionElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
+      <Project>{18c933a1-7a6f-48ef-b086-09fff95d6558}</Project>
+      <Name>Cms Page FragmentRendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
+      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
+      <Name>Platform Kernel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sites\Cms Sites.csproj">
+      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
+      <Name>Cms Sites</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

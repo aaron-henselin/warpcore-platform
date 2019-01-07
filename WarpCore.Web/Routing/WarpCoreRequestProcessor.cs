@@ -6,8 +6,8 @@ using Cms;
 using Cms.Layout;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.PageComposition;
-using Modules.Cms.Features.Presentation.PageComposition.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
@@ -65,7 +65,7 @@ namespace WarpCore.Cms
                 pageBuilder.AddAdHocContent(contentItem, root);
             }
 
-            page.RootElement.GetAllDescendents();
+
 
             var fragmentMode = rt.PageRenderMode == PageRenderMode.PageDesigner
                 ? FragmentRenderMode.PageDesigner
@@ -74,26 +74,17 @@ namespace WarpCore.Cms
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page,fragmentMode);
 
-            var cache = Dependency.Resolve<CmsPageContentCacheResolver>();
+            var cache = Dependency.Resolve<CmsPageContentOutputCacheProvider>();
             foreach (var item in page.RootElement.GetAllDescendents())
             {
-                if (item is CacheElement)
-                {
-                    var cacheToInject = (CacheElement) item;
-                    batch.RenderingResults.Add(item.ContentId, cacheToInject.RenderingResult);
-                }
-                else
-                {
-                    if (!string.IsNullOrWhiteSpace(item.CacheKey))
-                        cache.AddToCache(item.CacheKey, new CmsPageContentCache
-                        {
-                            InternalLayout = (item as IHasInternalLayout)?.GetInternalLayout(),
-                            RenderingResult = batch.RenderingResults[item.ContentId]
-                        });
-                }
-
+                if (!string.IsNullOrWhiteSpace(item.CacheKey))
+                    cache.AddToCache(item.CacheKey, new CachedPageContentOutput
+                    {
+                        InternalLayout = (item as IHasInternalLayout)?.GetInternalLayout(),
+                        RenderingResult = batch.RenderingResults[item.ContentId]
+                    });
             }
-            
+
 
             var compositor = new RenderFragmentCompositor(page,batch);
             var composedPage = compositor.Compose(fragmentMode);
@@ -106,9 +97,6 @@ namespace WarpCore.Cms
         public bool IsReusable { get; } = false;
     }
 
-    public class CacheInjector
-    {
-    }
 
     public  class WarpCoreRequestProcessor
     {

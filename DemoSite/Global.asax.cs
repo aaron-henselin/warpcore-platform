@@ -45,9 +45,9 @@ namespace DemoSite
             var configuration = new CmsConfiguration();
             configuration.AddMvcSupport();
             configuration.AddWebFormsSupport();
-            
-            //todo: get this moved.
-            var fragmentRenderers =configuration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
+
+           //todo: get this moved.
+           var fragmentRenderers =configuration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
             var pageCompositionFactories =configuration.SupportedRenderingEngines.Select(x => x.PageCompositionFactory).ToList();
 
             ToolboxPropertyFilter.BlacklistedDeclaringAssemblies.AddRange(new[]

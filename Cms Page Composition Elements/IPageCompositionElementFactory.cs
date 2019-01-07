@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using WarpCore.Cms;
 
 namespace WarpCore.Web
 {
+
     public interface IPageCompositionElementFactory
     {
         object ActivateType(Type type);
