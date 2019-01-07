@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Script.Serialization;
 using Cms.Layout;
+using Modules.Cms.Featues.Presentation.PageFragmentRendering;
+using Modules.Cms.Features.Presentation.PageComposition.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using MoreLinq;
 using WarpCore.Cms;
 using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
+    public class CacheElement : PageCompositionElement
+    {
+    }
+
+
+
+
     public class PageComposer
     {
         private readonly LayoutRepository _layoutRepository = new LayoutRepository();

@@ -40,6 +40,9 @@
   <ItemGroup>
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="CmsPageContentBuilder.cs" />
+    <Compile Include="OutputCaching\ByParameters.cs" />
+    <Compile Include="OutputCaching\ICmsPageContentCacheKeyFactory.cs" />
+    <Compile Include="OutputCaching\ISupportsCache.cs" />
     <Compile Include="PageComposer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

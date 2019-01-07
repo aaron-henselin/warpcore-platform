@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Compilation;
 using Cms.Toolbox;
+using Modules.Cms.Features.Presentation.PageComposition.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
@@ -11,7 +13,9 @@ using WarpCore.Web;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
-    public class CmsPageContentActivator
+
+
+  public class CmsPageContentActivator
     {
         private Dictionary<string, IPageCompositionElementFactory> _extensionLookup;
         private Dictionary<Type, IPageCompositionElementFactory> _baseTypeLookup;
@@ -105,8 +109,8 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             return activatedObject.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
         }
 
-        
 
-  
+
+
     }
 }

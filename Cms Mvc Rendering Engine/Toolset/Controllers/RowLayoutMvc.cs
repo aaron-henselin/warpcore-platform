@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Web.Mvc;
+using Modules.Cms.Features.Presentation.PageComposition.Cache;
 using Modules.Cms.Features.Presentation.PageComposition.Elements;
 using WarpCore.Platform.DataAnnotations;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
     [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
-    public class RowLayout : Controller, IHasInternalLayout
+    public class RowLayout : Controller, IHasInternalLayout, ISupportsCache<ByParameters>
     {
         public const string ApiId = "WC/RowLayout";
 

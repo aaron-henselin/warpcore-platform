@@ -61,8 +61,9 @@ namespace WarpCore.Cms
                 var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? SpecialRenderingFragmentContentIds.PageRoot;
                 var root = d[placementLayoutBuilderId];
                 pageBuilder.AddAdHocContent(contentItem, root);
-
             }
+
+            page.RootElement.GetAllDescendents();
 
             var fragmentMode = rt.PageRenderMode == PageRenderMode.PageDesigner
                 ? FragmentRenderMode.PageDesigner
@@ -81,6 +82,10 @@ namespace WarpCore.Cms
 
 
         public bool IsReusable { get; } = false;
+    }
+
+    public class CacheInjector
+    {
     }
 
     public  class WarpCoreRequestProcessor

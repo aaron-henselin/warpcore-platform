@@ -34,6 +34,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchingFragmentRenderer.cs" />
@@ -53,6 +55,18 @@
     <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
       <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
       <Name>Platform Kernel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orm\Platform Orm.csproj">
+      <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
+      <Name>Platform Orm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sites\Cms Sites.csproj">
+      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
+      <Name>Cms Sites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
+      <Project>{1C4A66BB-372E-4A5C-BD08-49F533E5DAAE}</Project>
+      <Name>Cms Toolbox</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

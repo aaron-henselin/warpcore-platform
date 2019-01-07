@@ -12,7 +12,6 @@ namespace Modules.Cms.Features.Presentation.PageComposition.Elements
     }
     public class PageComposition
     {
-        public Guid CompositionId { get; set; } = Guid.NewGuid();
         public PageCompositionElement RootElement { get; set; }
         public List<string> Scripts { get; set; }
         public List<string> Styles { get; set; }
