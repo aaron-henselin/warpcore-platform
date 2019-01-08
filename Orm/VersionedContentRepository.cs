@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm
@@ -46,15 +45,7 @@ namespace WarpCore.Platform.Orm
     }
 
 
-    public static class RepositoryExtensions
-    {
-        public static ExposeToWarpCoreApi GetRepositoryAttribute(this ISupportsCmsForms entity)
-        {
-            var entityType = entity.GetType();
-            var atr = (ExposeToWarpCoreApi)entityType.GetCustomAttribute(typeof(ExposeToWarpCoreApi));
-            return atr;
-        }
-    }
+
 
 
     public abstract class VersionedContentRepository<TVersionedContentEntity> : IVersionedContentRepository, ISupportsCmsForms where TVersionedContentEntity : VersionedContentEntity, new()
@@ -117,15 +108,15 @@ namespace WarpCore.Platform.Orm
             //todo: resolve <T> from metadata.
             var contentItems = await Orm.FindContentVersions<TVersionedContentEntity>(condition, version);
 
-            if (SecurityModel != null)
-                foreach (var contentItem in contentItems)
-                {
-                    //todo: move attribute descriptions to extensibility
-                    var api = RepositoryExtensions.GetRepositoryAttribute(this);
+            //if (SecurityModel != null)
+            //    foreach (var contentItem in contentItems)
+            //    {
+            //        //todo: move attribute descriptions to extensibility
+            //        var api = RepositoryExtensions.GetRepositoryAttribute(this);
 
-                    var permissionSet = SecurityModel.CalculatePermissions(new SecurityQuery{ItemId=contentItem.ContentId,RepositoryApiId = api.TypeUid});
-                    PermissionSetEvaluator.Assert(permissionSet, KnownPrivilegeNames.Read);
-                }
+            //        var permissionSet = SecurityModel.CalculatePermissions(new SecurityQuery{ItemId=contentItem.ContentId,RepositoryApiId = api.TypeUid});
+            //        PermissionSetEvaluator.Assert(permissionSet, KnownPrivilegeNames.Read);
+            //    }
 
             return contentItems;
         }

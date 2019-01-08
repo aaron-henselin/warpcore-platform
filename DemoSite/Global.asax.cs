@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.UI;
@@ -11,6 +12,7 @@ using Cms;
 using Cms.Forms;
 using Cms.Layout;
 using Cms.Toolbox;
+using DemoSite.UserControls;
 using EmbeddedResourceVirtualPathProvider;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Configuration;
@@ -64,7 +66,9 @@ namespace DemoSite
             Dependency.RegisterMultiple<IPageCompositionElementFactory>(pageCompositionFactories);
             Dependency.RegisterMultiple<IFragmentRenderer>(fragmentRenderers);
 
-            EmbeddedResourceVirtualPathProviderStart.Start();
+            var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
+
+            var results = vpp.AddBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
 
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             

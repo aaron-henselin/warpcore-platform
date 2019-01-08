@@ -15,6 +15,7 @@ namespace WarpCore.Cms
 
             RouteTable.Routes.Add("PageDesignerApi",new Route("wc-api/pagedesigner/{*pathInfo}",new PageDesignerApiRouteHandler()));
             RouteTable.Routes.Add("Configurator", new Route("wc-api/configurator", new ConfiguratorRouteHandler()));
+            RouteTable.Routes.Add("BlazorModules", new Route("BlazorModules/{*pathInfo}", new BlazorRouteHandler()));
 
         }
 

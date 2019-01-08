@@ -16,6 +16,8 @@ using WarpCore.DbEngines.AzureStorage;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Extensions;
 using WarpCore.Web.Scripting;
+using System;
+using System.Linq.Expressions;
 
 namespace DemoSite
 {

@@ -15,8 +15,6 @@ using WarpCore.Platform.Orm;
 
 namespace WarpCore.Platform.Extensibility
 {
-
-
     internal static class TypeSearcher
     {
 

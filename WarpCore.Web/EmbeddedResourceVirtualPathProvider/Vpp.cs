@@ -8,9 +8,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Helpers;
 using System.Web.Hosting;
+using System.Web.Script.Serialization;
 using EmbeddedResourceVirtualPathProvider;
 using Modules.Cms.Toolbox;
+using MoreLinq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 {
@@ -37,20 +42,80 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 
         public Dictionary<string, string> _ = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public void Add(Assembly assembly, string projectSourcePath = null)
+        public List<string> AddBlazorModule(Assembly assembly)
         {
             dependentAssemblies.Add(assembly);
 
-            var prefix = EmbeddedResourcePathFactory.CreateVppAsmDirectoryPath(assembly);
+            var resources = assembly.GetManifestResourceNames();
 
+            List<string> generatedVpp = new List<string>();
+            
+            var booters = resources.Where(x => x.EndsWith(".blazor.boot.json",StringComparison.OrdinalIgnoreCase));
+            foreach (var bootFile in booters)
+            {
+                var contents = AssemblyResourceReader.Read(assembly, bootFile);
+                var jObject = JObject.Parse(contents);
+                var libraryName = jObject["main"].ToString();
+                if (libraryName.EndsWith(".dll"))
+                    libraryName = libraryName.Substring(0, libraryName.Length - 4);
+
+                var binSearch = libraryName + ".dist._framework._bin.";
+                var heuristicallyFoundResources = resources.Where(r => r.Contains(binSearch));
+
+                string prefix=null;
+                foreach (var resourcesToInclude in heuristicallyFoundResources)
+                {
+                    var at = resourcesToInclude.IndexOf(binSearch, StringComparison.OrdinalIgnoreCase);
+                    prefix = resourcesToInclude.Substring(0, at-1);
+
+                    var pathRight = resourcesToInclude.Substring(at + binSearch.Length);
+                    var fullPath = "~/BlazorModules/"+libraryName + "/dist/_framework/_bin/" + pathRight;
+                    var resourceContents = AssemblyResourceReader.Read(assembly, resourcesToInclude);
+                    _.Add(fullPath, resourceContents);
+                    generatedVpp.Add(fullPath);
+                }
+
+                var monoJs = libraryName + "/dist/_framework/wasm/mono.js";
+                var monoWasm = libraryName + "/dist/_framework/wasm/mono.wasm";
+                var blazor_boot = libraryName + "/dist/_framework/blazor.boot.json";
+                var blazor_server = libraryName + "/dist/_framework/blazor.server.js";
+                var blazor_webassembly =libraryName + "/dist/_framework/blazor.webassembly.js";
+
+                foreach (var resourceToInclude in new[]
+                    {monoJs, monoWasm, blazor_boot, blazor_server, blazor_webassembly})
+                {
+                    _.Add("~/BlazorModules/"+resourceToInclude, AssemblyResourceReader.Read(assembly,prefix + "." + resourceToInclude.Replace("/",".")));
+                    generatedVpp.Add("~/BlazorModules/" + resourceToInclude);
+                }
+
+              
+            }
+
+            return generatedVpp;
+        }
+
+        public void Add(Assembly assembly, string projectSourcePath = null)
+        {
+            dependentAssemblies.Add(assembly);
+            var prefix = EmbeddedResourcePathFactory.CreateVppAsmDirectoryPathForViews(assembly);
             var assemblyName = assembly.GetName().Name;
-
             foreach (var resourcePath in assembly.GetManifestResourceNames().Where(r => r.StartsWith(assemblyName)))
             {
                 var resourcePathWithoutAsm = resourcePath.Substring(assemblyName.Length + 1);
                 var content = AssemblyResourceReader.Read(assembly, resourcePath);
                 _.Add(prefix + "/" + resourcePathWithoutAsm, content);
             }
+
+        }
+
+        public override bool DirectoryExists(string virtualDir)
+        {
+
+            if (_.Keys.Any(x => x.StartsWith(virtualDir + "/")))
+                return true;
+
+
+            return base.DirectoryExists(virtualDir);
         }
 
         public override VirtualFile GetFile(string virtualPath)

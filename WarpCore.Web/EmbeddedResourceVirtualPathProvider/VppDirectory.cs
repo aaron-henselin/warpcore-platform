@@ -7,7 +7,7 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 {
     public static class EmbeddedResourcePathFactory
     {
-        public static string CreateVppAsmDirectoryPath(Assembly asm)
+        public static string CreateVppAsmDirectoryPathForViews(Assembly asm)
         {
             var asmName = asm.FullName;
             foreach (var character in Path.GetInvalidFileNameChars())
@@ -19,7 +19,7 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
         public static string CreateMvcViewLocatorPath(Type type)
         {
 
-            var asmDir = WarpCore.Web.EmbeddedResourceVirtualPathProvider.EmbeddedResourcePathFactory.CreateVppAsmDirectoryPath(type.Assembly);
+            var asmDir = WarpCore.Web.EmbeddedResourceVirtualPathProvider.EmbeddedResourcePathFactory.CreateVppAsmDirectoryPathForViews(type.Assembly);
 
             var shortName = type.Namespace.Substring(type.Assembly.GetName().Name.Length + 1);
             if (shortName.Length == 0)

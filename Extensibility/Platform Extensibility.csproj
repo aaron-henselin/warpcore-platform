@@ -64,6 +64,7 @@
     <Compile Include="DynamicContent\WarpCoreIlGenerator.cs" />
     <Compile Include="ExposeToWarpCoreApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryExtensions.cs" />
     <Compile Include="SupportsCustomFieldsAttribute.cs" />
     <Compile Include="TypeSearcher.cs" />
   </ItemGroup>

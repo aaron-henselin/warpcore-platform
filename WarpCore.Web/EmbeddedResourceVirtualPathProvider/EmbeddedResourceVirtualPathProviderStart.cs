@@ -5,7 +5,7 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 {
     public static class EmbeddedResourceVirtualPathProviderStart
     {
-        public static void Start()
+        public static Vpp Start()
         {
             //By default, we scan all non system assemblies for embedded resources
             var assemblies = System.Web.Compilation.BuildManager.GetReferencedAssemblies()
@@ -16,7 +16,11 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
             foreach (var asm in assemblies)
                 vpp.Add(asm);
 
+           
+
             System.Web.Hosting.HostingEnvironment.RegisterVirtualPathProvider(vpp);
+
+            return vpp;
         }
     }
 }

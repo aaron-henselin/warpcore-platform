@@ -393,6 +393,7 @@
     <Content Include="assets\summernote\font\summernote.eot" />
     <Content Include="assets\summernote\font\summernote.ttf" />
     <Content Include="assets\summernote\font\summernote.woff" />
+    <Content Include="BlazorModules\web.config" />
     <None Include="packages.config" />
     <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
@@ -405,9 +406,14 @@
   <ItemGroup>
     <Folder Include="App_Data\BackendWidgets\EntityBuilderForms\" />
     <Folder Include="App_Data\Forms\" />
+    <Folder Include="BlazorModules\BlazorComponents.Client\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BackendSiteTooling\BackendSiteTooling.csproj">
+      <Project>{d9f38176-ef82-4a23-9981-5e0f4cb1adee}</Project>
+      <Name>BackendSiteTooling</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj">
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
       <Name>Helpers</Name>
