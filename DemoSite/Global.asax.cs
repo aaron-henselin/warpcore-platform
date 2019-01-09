@@ -68,7 +68,8 @@ namespace DemoSite
 
             var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
 
-            var results = vpp.AddBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
+            var blazor = new BlazorToolkit();
+            blazor.HostBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
 
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
             

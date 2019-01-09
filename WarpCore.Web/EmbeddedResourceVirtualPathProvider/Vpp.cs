@@ -36,63 +36,110 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
         }
     }
 
-    public class Vpp : VirtualPathProvider
+    public class BlazorToolkit
     {
-        private List<Assembly> dependentAssemblies = new List<Assembly>();
+        static Dictionary<string,string> _hostedFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public Dictionary<string, string> _ = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        public List<string> AddBlazorModule(Assembly assembly)
+        public string GetHostedPath(string key)
         {
-            dependentAssemblies.Add(assembly);
+            return _hostedFiles[key];
+        }
 
-            var resources = assembly.GetManifestResourceNames();
+        public IReadOnlyCollection<string> FindIncludedBlazorModules(Assembly asm)
+        {
+            List<string> allLibraries = new List<string>();
 
-            List<string> generatedVpp = new List<string>();
-            
-            var booters = resources.Where(x => x.EndsWith(".blazor.boot.json",StringComparison.OrdinalIgnoreCase));
+            var resources = asm.GetManifestResourceNames();
+            var booters = resources.Where(x => x.EndsWith(".blazor.boot.json", StringComparison.OrdinalIgnoreCase));
             foreach (var bootFile in booters)
             {
-                var contents = AssemblyResourceReader.Read(assembly, bootFile);
+                var contents = AssemblyResourceReader.ReadString(asm, bootFile);
                 var jObject = JObject.Parse(contents);
                 var libraryName = jObject["main"].ToString();
+
                 if (libraryName.EndsWith(".dll"))
+                {
                     libraryName = libraryName.Substring(0, libraryName.Length - 4);
+                    allLibraries.Add(libraryName);
+                }
+            }
+
+            return allLibraries;
+        }
+
+        private Dictionary<string, byte[]> FindIncludedBlazorModuleFiles(Assembly asm)
+        {
+            var generatedVpp = new Dictionary<string,byte[]>();
+
+            var libraries = FindIncludedBlazorModules(asm);
+            var allResources = asm.GetManifestResourceNames();
+
+            foreach (var libraryName in libraries)
+            {
 
                 var binSearch = libraryName + ".dist._framework._bin.";
-                var heuristicallyFoundResources = resources.Where(r => r.Contains(binSearch));
+                var heuristicallyFoundResources = allResources.Where(r => r.Contains(binSearch));
 
-                string prefix=null;
+                string prefix = null;
                 foreach (var resourcesToInclude in heuristicallyFoundResources)
                 {
                     var at = resourcesToInclude.IndexOf(binSearch, StringComparison.OrdinalIgnoreCase);
-                    prefix = resourcesToInclude.Substring(0, at-1);
+                    prefix = resourcesToInclude.Substring(0, at - 1);
 
                     var pathRight = resourcesToInclude.Substring(at + binSearch.Length);
-                    var fullPath = "~/BlazorModules/"+libraryName + "/dist/_framework/_bin/" + pathRight;
-                    var resourceContents = AssemblyResourceReader.Read(assembly, resourcesToInclude);
-                    _.Add(fullPath, resourceContents);
-                    generatedVpp.Add(fullPath);
+                    var fullPath = libraryName + "/dist/_framework/_bin/" + pathRight;
+                    var resourceContents = AssemblyResourceReader.ReadBinary(asm, resourcesToInclude);
+                    generatedVpp.Add(fullPath,resourceContents);
                 }
 
                 var monoJs = libraryName + "/dist/_framework/wasm/mono.js";
                 var monoWasm = libraryName + "/dist/_framework/wasm/mono.wasm";
                 var blazor_boot = libraryName + "/dist/_framework/blazor.boot.json";
                 var blazor_server = libraryName + "/dist/_framework/blazor.server.js";
-                var blazor_webassembly =libraryName + "/dist/_framework/blazor.webassembly.js";
+                var blazor_webassembly = libraryName + "/dist/_framework/blazor.webassembly.js";
 
                 foreach (var resourceToInclude in new[]
                     {monoJs, monoWasm, blazor_boot, blazor_server, blazor_webassembly})
                 {
-                    _.Add("~/BlazorModules/"+resourceToInclude, AssemblyResourceReader.Read(assembly,prefix + "." + resourceToInclude.Replace("/",".")));
-                    generatedVpp.Add("~/BlazorModules/" + resourceToInclude);
+                    generatedVpp.Add(resourceToInclude, AssemblyResourceReader.ReadBinary(asm, prefix + "." + resourceToInclude.Replace("/", ".")));
+
                 }
 
-              
+
             }
 
             return generatedVpp;
         }
+
+        public void HostBlazorModule(Assembly assembly)
+        {
+            var allFiles = FindIncludedBlazorModuleFiles(assembly);
+            var appData = "~/App_Data/WarpCore/Temp/BlazorModules/";
+            foreach (var fileToWrite in allFiles)
+            {
+                var fullVpath = (appData + fileToWrite.Key);
+
+                var lastDirIndex = fullVpath.LastIndexOf("/");
+                var directoryToCreateVirtual = fullVpath.Substring(0, lastDirIndex);
+                var directoryToCreatePhysical = HttpContext.Current.Server.MapPath(directoryToCreateVirtual);
+                Directory.CreateDirectory(directoryToCreatePhysical);
+
+                var fileToCreatePhysical = HttpContext.Current.Server.MapPath(fullVpath);
+                File.WriteAllBytes(fileToCreatePhysical, fileToWrite.Value);
+
+                _hostedFiles.Add(fileToWrite.Key, fullVpath);
+            }
+            
+        }
+
+    }
+
+    public class Vpp : VirtualPathProvider
+    {
+        private List<Assembly> dependentAssemblies = new List<Assembly>();
+
+        public Dictionary<string, string> _ = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
 
         public void Add(Assembly assembly, string projectSourcePath = null)
         {
@@ -102,7 +149,7 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
             foreach (var resourcePath in assembly.GetManifestResourceNames().Where(r => r.StartsWith(assemblyName)))
             {
                 var resourcePathWithoutAsm = resourcePath.Substring(assemblyName.Length + 1);
-                var content = AssemblyResourceReader.Read(assembly, resourcePath);
+                var content = AssemblyResourceReader.ReadString(assembly, resourcePath);
                 _.Add(prefix + "/" + resourcePathWithoutAsm, content);
             }
 

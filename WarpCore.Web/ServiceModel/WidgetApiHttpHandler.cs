@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.ModelBinding;
@@ -12,6 +13,7 @@ using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 using WarpCore.Web.Widgets;
 
 namespace WarpCore.Web.ServiceModel
@@ -179,34 +181,39 @@ namespace WarpCore.Web.ServiceModel
 
     }
 
-    public class BlazorModuleHttpHandler : IHttpHandler
+    public class BlazorHostHttpHandler : IHttpHandler
     {
-        public static byte[] ReadFully(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
 
         public void ProcessRequest(HttpContext context)
         {
-            var f = VirtualPathProvider.OpenFile(context.Request.RawUrl);
-       
-            context.Response.Clear();
-            context.Response.ContentType = "Application/msword";
-            context.Response.AddHeader("Content-Disposition", "attachment; filename=myfile.docx");
-            context.Response.BinaryWrite(ReadFully(f));
-            // myMemoryStream.WriteTo(Response.OutputStream); //works too
-            context.Response.Flush();
-            context.Response.Close();
-            context.Response.End();
+            var tk = new BlazorToolkit();
+            var withoutRoutePrefix = "blazorcomponents.client/dist"+context.Request.RawUrl;
+            try
+            {
+                var hostedPath = tk.GetHostedPath(withoutRoutePrefix);
+
+                if (withoutRoutePrefix.EndsWith(".dll"))
+                    context.Response.ContentType = "application/octet-stream";
+
+                if (withoutRoutePrefix.EndsWith(".wasm"))
+                    context.Response.ContentType = "application/wasm";
+
+                if (withoutRoutePrefix.EndsWith(".json"))
+                    context.Response.ContentType = "application/json";
+
+                context.Server.Transfer(hostedPath);
+            }
+            catch (ThreadAbortException)
+            {
+                return;
+            }
+            catch (Exception e)
+            {
+                context.Response.StatusCode = 404;
+            }
+
+
+
         }
 
         public bool IsReusable { get; }

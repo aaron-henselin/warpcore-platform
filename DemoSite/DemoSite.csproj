@@ -165,6 +165,7 @@
     <Content Include="assets\summernote\summernote.css" />
     <Content Include="assets\summernote\summernote.js" />
     <Content Include="assets\summernote\summernote.min.js" />
+    <Content Include="index.html" />
     <Content Include="css\ajax-loader.gif" />
     <Content Include="css\animate.css" />
     <Content Include="css\aos.css" />
@@ -241,7 +242,9 @@
     <Content Include="Scripts\jquery.slidereveal.min.js" />
     <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
     <Content Include="UserControls\CustomNavigation.ascx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Data\BackendWidgets\AddPageWizard.ascx.cs">
@@ -402,11 +405,12 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="_framework\web.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\BackendWidgets\EntityBuilderForms\" />
     <Folder Include="App_Data\Forms\" />
-    <Folder Include="BlazorModules\BlazorComponents.Client\" />
+    <Folder Include="App_Data\WarpCore\Temp\BlazorModules\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

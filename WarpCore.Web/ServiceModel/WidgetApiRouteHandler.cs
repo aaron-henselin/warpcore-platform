@@ -3,11 +3,12 @@ using System.Web.Routing;
 
 namespace WarpCore.Web.ServiceModel
 {
-    public class BlazorRouteHandler : IRouteHandler
+    public class BlazorHostRouteHandler : IRouteHandler
     {
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            return new BlazorModuleHttpHandler();
+
+            return new BlazorHostHttpHandler();
         }
     }
 
