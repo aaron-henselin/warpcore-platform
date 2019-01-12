@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
+using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 {
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
+    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
     public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-hiddenfield";

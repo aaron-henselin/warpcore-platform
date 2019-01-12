@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
@@ -15,7 +14,7 @@ namespace WarpCore.Web.Widgets.Content
         public string Test2 { get; set; }
     }
 
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
+    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : Control
     {
         public const string ApiId = "warpcore-content-html";

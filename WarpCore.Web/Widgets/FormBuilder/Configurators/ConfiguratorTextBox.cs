@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Widgets.FormBuilder.Support;
@@ -41,7 +38,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
     }
 
 
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
+    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId,FriendlyName = "TextBox", Category = "Form Controls")]
     public class ConfiguratorTextBox : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-textbox";

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Script.Serialization;
 using Cms.Layout;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
-using MoreLinq;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Platform.Kernel;
 
@@ -93,13 +91,15 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             AddContent(parentCompositionElement, contentToActivate, true);
         }
 
-        public void AddLayoutContent(Elements.PageComposition page, Layout layoutToApply)
+        public void AddLayoutContent(Page.Elements.PageComposition page, Layout layoutToApply)
         {
-           
-            
+
+
             if (!string.IsNullOrWhiteSpace(layoutToApply.MasterPagePath))
-                page.RootElement = _contentActivator.ActivateLayoutByExtension(layoutToApply.MasterPagePath);
-            
+            {
+                page.RootElement =_contentActivator.ActivateRootLayout(layoutToApply.MasterPagePath);
+            }
+
 
             var structure = _layoutRepository.GetLayoutStructure(layoutToApply);
             var lns = FlattenLayoutTree(structure);
@@ -107,7 +107,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             if (lns.Any())
             {
                 var mpFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
-                page.RootElement = _contentActivator.ActivateLayoutByExtension(mpFile);
+                page.RootElement = _contentActivator.ActivateRootLayout(mpFile);
             }
             
 

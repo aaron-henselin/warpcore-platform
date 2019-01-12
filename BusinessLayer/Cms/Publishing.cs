@@ -1,5 +1,4 @@
-﻿using System;
-using WarpCore.Cms.Routing;
+﻿using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 
 namespace WarpCore.Cms

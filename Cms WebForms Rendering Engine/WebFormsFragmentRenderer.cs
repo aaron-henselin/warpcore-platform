@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
@@ -218,7 +215,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             }
             else
             {
-                var nativeRoot = new Page();
+                var nativeRoot = new System.Web.UI.Page();
                 var body = new HtmlGenericControl("body");
                 var form = new HtmlGenericControl("form");
 

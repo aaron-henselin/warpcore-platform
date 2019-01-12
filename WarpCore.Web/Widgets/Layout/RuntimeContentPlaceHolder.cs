@@ -1,6 +1,4 @@
-﻿using System.Web.UI;
-
-namespace WarpCore.Web.Widgets
+﻿namespace WarpCore.Web.Widgets
 {
 
 }

@@ -1,5 +1,5 @@
 ﻿using System.Web.UI;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {

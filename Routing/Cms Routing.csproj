@@ -48,21 +48,25 @@
     <Compile Include="WarpCorePageUri.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
-      <Name>Platform Kernel</Name>
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
+      <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
+      <Name>Cms Page Composer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Orm\Platform Orm.csproj">
-      <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
-      <Name>Platform Orm</Name>
+    <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
+      <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
+      <Name>Cms Site Content</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Sites\Cms Sites.csproj">
-      <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
-      <Name>Cms Sites</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
-      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
+    <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
+      <Project>{60BB28EB-2853-47BF-A9F6-A385031B3C3A}</Project>
       <Name>Cms Toolbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform Core\Platform Core.csproj">
+      <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
+      <Name>Platform Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
+      <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
+      <Name>Platform Orm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

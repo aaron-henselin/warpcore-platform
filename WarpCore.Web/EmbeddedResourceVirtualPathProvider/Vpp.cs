@@ -5,16 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
 using System.Web.Caching;
-using System.Web.Helpers;
 using System.Web.Hosting;
-using System.Web.Script.Serialization;
-using EmbeddedResourceVirtualPathProvider;
 using Modules.Cms.Toolbox;
-using MoreLinq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
@@ -124,8 +119,29 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
                 var directoryToCreatePhysical = HttpContext.Current.Server.MapPath(directoryToCreateVirtual);
                 Directory.CreateDirectory(directoryToCreatePhysical);
 
+                
                 var fileToCreatePhysical = HttpContext.Current.Server.MapPath(fullVpath);
-                File.WriteAllBytes(fileToCreatePhysical, fileToWrite.Value);
+
+                int tryCount = 0;
+                bool written = false;
+                    while (!written)
+                    try
+                    {
+                        File.WriteAllBytes(fileToCreatePhysical, fileToWrite.Value);
+                        written = true;
+                    }
+                    catch (Exception e)
+                    {
+
+                        tryCount++;
+                        if (tryCount < 5)
+                            Thread.Sleep(1000);
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    
 
                 _hostedFiles.Add(fileToWrite.Key, fullVpath);
             }

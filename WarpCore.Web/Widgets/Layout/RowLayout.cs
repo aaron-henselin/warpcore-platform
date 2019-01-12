@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
-using WarpCore.Cms;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Web.Widgets
@@ -14,7 +10,7 @@ namespace WarpCore.Web.Widgets
 
 
 
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
+    [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout2 : Control, INamingContainer, IHasInternalLayout
     {
         public const string ApiId = "WC/RowLayout_WebForms";

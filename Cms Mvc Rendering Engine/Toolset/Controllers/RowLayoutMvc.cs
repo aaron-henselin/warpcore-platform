@@ -2,12 +2,12 @@
 using System.ComponentModel;
 using System.Web.Mvc;
 using Modules.Cms.Features.Presentation.Cache;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Platform.DataAnnotations;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
+    [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : Controller, IHasInternalLayout, ISupportsCache<ByParameters>
     {
         public const string ApiId = "WC/RowLayout";

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>WarpCore.Cms.Toolbox</RootNamespace>
+    <AssemblyName>WarpCore.Cms.Toolbox</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj" />
+  </ItemGroup>
+
+</Project>

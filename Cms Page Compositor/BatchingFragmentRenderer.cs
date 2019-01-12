@@ -18,7 +18,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         }
 
 
-        public RenderingFragmentCollection Execute(Features.Presentation.PageComposition.Elements.PageComposition pageRendering,FragmentRenderMode renderMode)
+        public RenderingFragmentCollection Execute(Page.Elements.PageComposition pageRendering,FragmentRenderMode renderMode)
         {
             var transformationResult = new RenderingFragmentCollection();
 

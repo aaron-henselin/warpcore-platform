@@ -91,7 +91,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
         //    //};
         //}
 
-        public static Control GetRootControl(this Page pageActual)
+        public static Control GetRootControl(this System.Web.UI.Page pageActual)
         {
             MasterPage topLevelMaster = pageActual.Master;
             if (topLevelMaster == null)

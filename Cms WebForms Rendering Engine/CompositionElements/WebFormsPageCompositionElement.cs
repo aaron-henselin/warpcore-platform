@@ -1,14 +1,13 @@
-﻿using System.Web.UI;
-using System.Web.UI.WebControls;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+﻿using System.Web.UI.WebControls;
+using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
     public class WebFormsPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine
     {
-        private readonly Page _masterPage;
+        private readonly System.Web.UI.Page _masterPage;
 
-        public WebFormsPageCompositionElement(Page page)
+        public WebFormsPageCompositionElement(System.Web.UI.Page page)
         {
             _masterPage = page;
 
@@ -24,7 +23,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
         }
 
 
-        public Page GetPage()
+        public System.Web.UI.Page GetPage()
         {
             return _masterPage;
         }

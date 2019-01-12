@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Cms_Site_Content</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Platform Extensibility\Platform Extensibility.csproj" />
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj" />
+    <ProjectReference Include="..\Platform SecurityModel\Platform SecurityModel.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
@@ -64,7 +65,8 @@ namespace WarpCore.Cms
                 var toolboxManager = new ToolboxManager();
                 var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
 
-                var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+                var toolboxItemType = default(Type);//todo: add content routing.
+                continue;
                 var contentRouteAttributes = toolboxItemType.GetCustomAttributes(typeof(ContentRouteAttribute)).Cast<ContentRouteAttribute>().ToList();
 
                 foreach (var contentRouteAttribute in contentRouteAttributes)

@@ -1,9 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Configurator.ascx.cs" Inherits="DemoSite.Configurator1" %>
-<%@ Import Namespace="DemoSite" %>
-<%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder" %>
-<%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder.Configurators" %>
 <%@ Import Namespace="WarpCore.Web.Widgets.FormBuilder.Support" %>
-<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
 
 <div class="designer wc-configurator">

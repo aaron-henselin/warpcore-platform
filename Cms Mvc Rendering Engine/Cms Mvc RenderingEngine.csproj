@@ -72,6 +72,7 @@
     <Compile Include="Toolset\Controllers\RowLayoutMvc.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Toolset\Views\_ViewStart.cshtml" />
     <EmbeddedResource Include="Toolset\Views\RowLayout\Index.cshtml" />
@@ -83,33 +84,29 @@
       <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
       <Name>Cms Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
-      <Project>{189816c1-50fc-4fd9-b669-3c874aa4e9df}</Project>
-      <Name>Cms Page CompositionElements</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
       <Name>Cms Page Composer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj">
+      <Project>{11CC6161-C3D9-486D-8E0B-206BB9479D3B}</Project>
+      <Name>Cms Page Elements</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page OutputCache\Cms Page OutputCache.csproj">
       <Project>{2F3FBE89-0182-4026-B6A5-86198EF431F4}</Project>
       <Name>Cms Page OutputCache</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
-      <Project>{18c933a1-7a6f-48ef-b086-09fff95d6558}</Project>
-      <Name>Cms Page FragmentRendering</Name>
+    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
+      <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
+      <Name>Cms Page Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
-      <Name>Platform Kernel</Name>
+    <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
+      <Project>{60bb28eb-2853-47bf-a9f6-a385031b3c3a}</Project>
+      <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
       <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
       <Name>Platform DataAnnotations</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
-      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
-      <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\WarpCore.Web\WarpCore.Web.csproj">
       <Project>{2206a30a-f468-48bd-bd98-59711a827298}</Project>

@@ -1,10 +1,9 @@
 ﻿using System;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Presentation.Cache;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Platform.Kernel;
-using WarpCore.Web;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.CachedContent
 {

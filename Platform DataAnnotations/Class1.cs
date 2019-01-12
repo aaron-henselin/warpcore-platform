@@ -2,6 +2,19 @@
 
 namespace WarpCore.Platform.DataAnnotations
 {
+    public class TableAttribute : Attribute
+    {
+        public string TableName { get; }
+
+        public TableAttribute(string tableName)
+        {
+            TableName = tableName;
+        }
+    }
+
+    public class ColumnAttribute : Attribute { }
+    
+
     public class UserInterfaceIgnoreAttribute : Attribute
     {
     }
@@ -41,4 +54,7 @@ namespace WarpCore.Platform.DataAnnotations
         Url
     }
 
+    public class IgnorePropertyAttribute : Attribute
+    {
+    }
 }

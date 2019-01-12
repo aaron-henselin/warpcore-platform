@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JsonSubTypes, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JsonSubTypes.1.5.1\lib\net47\JsonSubTypes.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
@@ -59,8 +62,8 @@
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
@@ -426,61 +429,65 @@
       <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
       <Name>Cms Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Context\Cms Context.csproj">
-      <Project>{40da81f0-fe1d-4db3-9c11-97ba4188ec34}</Project>
-      <Name>Cms Context</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Mvc Rendering Engine\Cms Mvc RenderingEngine.csproj">
       <Project>{894FD5B8-EC87-4E29-A744-09D3513C212C}</Project>
       <Name>Cms Mvc RenderingEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
-      <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
-      <Name>Cms Page CompositionElements</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
       <Name>Cms Page Composer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
-      <Project>{18C933A1-7A6F-48EF-B086-09FFF95D6558}</Project>
-      <Name>Cms Page FragmentRendering</Name>
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj">
+      <Project>{11CC6161-C3D9-486D-8E0B-206BB9479D3B}</Project>
+      <Name>Cms Page Elements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
+      <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
+      <Name>Cms Page Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms PageDesigner Context\Cms PageDesigner Context.csproj">
+      <Project>{D1C31107-82D7-4530-A0AA-D750A3DD8386}</Project>
+      <Name>Cms PageDesigner Context</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Request Context\Cms Request Context.csproj">
+      <Project>{F0C718DD-DA88-4DA8-B713-FA0D1B24BE7B}</Project>
+      <Name>Cms Request Context</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
+      <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
+      <Name>Cms Site Content</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
+      <Project>{60BB28EB-2853-47BF-A9F6-A385031B3C3A}</Project>
+      <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms WebForms Rendering Engine\Cms WebForms RenderingEngine.csproj">
       <Project>{0E35BDA1-F55F-4A44-BC11-051C6B4715AF}</Project>
       <Name>Cms WebForms RenderingEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Extensibility\Platform Extensibility.csproj">
-      <Project>{b8d80998-fe66-409d-b451-701d7fdda361}</Project>
-      <Name>Platform Extensibility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infrastructure\AzureStorage\InMemoryDb.csproj">
       <Project>{029cfa15-e004-4022-a5c6-01575a2e0aa0}</Project>
       <Name>InMemoryDb</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1a8eb44b-2613-499c-a07c-89442225f4c6}</Project>
-      <Name>Platform Kernel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Orm\Platform Orm.csproj">
-      <Project>{0686c4d6-1e52-42b5-86ed-d563d552fbfd}</Project>
-      <Name>Platform Orm</Name>
+    <ProjectReference Include="..\Platform Core\Platform Core.csproj">
+      <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
+      <Name>Platform Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
       <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
       <Name>Platform DataAnnotations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform Extensibility\Platform Extensibility.csproj">
+      <Project>{02599E26-647E-4142-9A35-1523AB08717F}</Project>
+      <Name>Platform Extensibility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
+      <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
+      <Name>Platform Orm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
       <Name>Cms Routing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sites\Cms Sites.csproj">
-      <Project>{59ee4828-438b-4efe-bc8a-93226851304b}</Project>
-      <Name>Cms Sites</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Toolbox\Cms Toolbox.csproj">
-      <Project>{1c4a66bb-372e-4a5c-bd08-49f533e5daae}</Project>
-      <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\WarpCore.Web\WarpCore.Web.csproj">
       <Project>{2206a30a-f468-48bd-bd98-59711a827298}</Project>

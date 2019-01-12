@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Compilation;
-using Cms.Toolbox;
-using Modules.Cms.Features.Presentation.Cache;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using Modules.Cms.Features.Presentation.RenderingEngines.CachedContent;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Kernel;
-using WarpCore.Web;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
@@ -58,8 +53,9 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
 
         }
+        
 
-        public  PageCompositionElement ActivateLayoutByExtension(string virtualPath)
+        public  Type CompileResourceAtVirtualPath(string virtualPath)
         {
 
             if (!virtualPath.Contains("."))
@@ -70,15 +66,46 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             if (!_extensionLookup.ContainsKey(last))
                 throw new Exception("No rendering engine is registered that handles file extension: " + virtualPath);
 
-            return _extensionLookup[last].CreateRenderingForPhysicalFile(virtualPath);
+            
+            return _extensionLookup[last].Build(virtualPath);
 
+        }
+
+        public PageCompositionElement ActivateRootLayout(string layoutFileName)
+        {
+            var toolboxItemType = CompileResourceAtVirtualPath(layoutFileName);
+
+            PageCompositionElement pp;
+            var wasCreatedViaCache = _contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, new CmsPageContent
+                {Id= SpecialRenderingFragmentContentIds.PageRoot }, out pp, out var cacheKey);
+            if (!wasCreatedViaCache)
+            {
+                var activator = GetActivator(toolboxItemType);
+                //var activatedObject = activator.ActivateType(toolboxItemType);
+                //activatedObject.SetPropertyValues(parameters, ToolboxPropertyFilter.SupportsDesigner);
+                pp = activator.CreateRenderingForObject(layoutFileName);
+            }
+
+            pp.CacheKey = cacheKey;
+            pp.ContentId = SpecialRenderingFragmentContentIds.PageRoot;
+            pp.FriendlyName = "Page Layout";
+            pp.LocalId = $"Layout";
+            pp.LayoutBuilderId = Guid.Empty;
+
+            return pp;
         }
 
         public PageCompositionElement ActivateCmsPageContent(CmsPageContent pageContent)
         {
             var parameters = pageContent.Parameters;
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
-            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+
+            Type toolboxItemType;
+            if (toolboxItem.AscxPath == null)
+                toolboxItemType = Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
+            else
+                toolboxItemType=CompileResourceAtVirtualPath(toolboxItem.AscxPath);
+            
 
             PageCompositionElement pp;
             var wasCreatedViaCache =_contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, pageContent, out pp, out var cacheKey);
@@ -112,11 +139,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
         public IDictionary<string, string> GetDefaultContentParameterValues(ToolboxItem toolboxItem)
         {
-            var toolboxItemType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
-            var activator = GetActivator(toolboxItemType);
-            var activatedObject = activator.ActivateType(toolboxItemType);
-
-            return activatedObject.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+           return new CmsPageContentActivator().GetDefaultContentParameterValues(toolboxItem);
         }
 
 

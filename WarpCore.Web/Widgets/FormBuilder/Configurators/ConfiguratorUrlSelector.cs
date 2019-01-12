@@ -3,11 +3,9 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms.Toolbox;
-using DemoSite;
+using WarpCore.Cms.Toolbox;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
-using WarpCore.Cms.Sites;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Extensions;
@@ -15,7 +13,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder
 {
-    [global::Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Url", Category = "Form Controls")]
+    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Url", Category = "Form Controls")]
     public class ConfiguratorUrlSelector : PlaceHolder, INamingContainer, ILabeledConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-urlselector";

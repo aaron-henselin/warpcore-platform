@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
-using MoreLinq;
-using WarpCore.Platform.Kernel;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
@@ -51,6 +47,11 @@ namespace WarpCore.Web.RenderingEngines.Mvc
             c.ViewEngineCollection.Insert(0,new EmbeddedResourceViewEngine(type.Assembly));
 
             return c;
+        }
+
+        public Type Build(string virtualPath)
+        {
+            throw new NotImplementedException();
         }
     }
     public class EmbeddedResourceViewEngine : RazorViewEngine

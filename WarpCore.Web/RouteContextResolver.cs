@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WarpCore.Cms.Routing;
-
-namespace WarpCore.Cms
+﻿namespace WarpCore.Cms
 {
     //public class RouteContextResolver
     //{

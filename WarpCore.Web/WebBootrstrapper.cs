@@ -1,26 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
-using Cms.Toolbox;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
-using MoreLinq;
+using Platform_Hosting_AspNet;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
-using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
 using WarpCore.Web.Extensions;
@@ -104,9 +93,13 @@ namespace WarpCore.Web
         {
             DynamicModuleUtility.RegisterModule(typeof(CmsPageBuilderHttpModule));
 
+            //aspnet pipeline
+            Dependency.Register<IHttpRequest>(() => new AspNetHttpRequest());
+            Dependency.Register<IWebServer>(() => new AspNetWebServer());
+            Dependency.Register<IHttpItems>(() => new AspNetItems());
+
             Dependency.Register<CmsPageRequestContext>(() => CmsPageBuilderHttpModule.RequestContext);
             Dependency.Register<UriBuilderContext>(() => HttpContext.Current.ToUriBuilderContext());
-            
 
 
 

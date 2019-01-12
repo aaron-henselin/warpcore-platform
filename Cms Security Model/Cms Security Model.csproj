@@ -40,29 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
-      <Name>Platform Kernel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Orm\Platform Orm.csproj">
-      <Project>{0686C4D6-1E52-42B5-86ED-D563D552FBFD}</Project>
-      <Name>Platform Orm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Platform Security\Platform Security.csproj">
-      <Project>{F6EFB2A6-B102-4AD1-91B4-BFDCB2EE5688}</Project>
-      <Name>Platform Security</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{B9D4AFC3-AE7D-4F42-8BB3-9B2A1394BB96}</Project>
       <Name>Cms Routing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sites\Cms Sites.csproj">
-      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
-      <Name>Cms Sites</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

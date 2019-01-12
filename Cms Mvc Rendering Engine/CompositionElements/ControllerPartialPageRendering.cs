@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+﻿using System.Web.Mvc;
+using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {

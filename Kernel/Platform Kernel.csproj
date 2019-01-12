@@ -53,52 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DependencyResolverShortcuts.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Acquire.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.AssertCount.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Batch.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Concat.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Consume.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.DistinctBy.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.EquiZip.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ExceptBy.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Fold.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Fold.g.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ForEach.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Generate.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.GenerateByIndex.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.GroupAdjacent.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Index.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.MaxBy.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.MinBy.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.OrderedMerge.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Pad.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Pairwise.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Pipe.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Prepend.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.PreScan.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Scan.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.SingleOrFallback.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.SkipUntil.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Split.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.TakeEvery.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.TakeLast.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.TakeUntil.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ToDataTable.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ToDelimitedString.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ToDelimitedString.g.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ToHashSet.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Trace.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.Zip.cs" />
-    <Compile Include="MoreLinq\MoreEnumerable.ZipLongest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\PropertyInfoExtensions.cs" />
-    <Compile Include="SecuredOperation.cs" />
-    <Compile Include="TinyIoc.cs" />
-    <Compile Include="TypeConverter.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Uri.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -5,9 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage.Table;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
-
 namespace WarpCore.DbEngines.AzureStorage
 {
 
@@ -15,7 +14,7 @@ namespace WarpCore.DbEngines.AzureStorage
     {
         private static DataSet _ds = new DataSet();
 
-        private object _syncroot = new object();
+        private readonly object _syncroot = new object();
 
         public void Save(WarpCoreEntity item)
         {
@@ -137,11 +136,11 @@ namespace WarpCore.DbEngines.AzureStorage
             lock (_syncroot)
             {
                 var tableAttribute = type.GetCustomAttribute<TableAttribute>();
-                var tableRef = _ds.Tables.Cast<DataTable>().SingleOrDefault(x => x.TableName == tableAttribute.Name);
+                var tableRef = _ds.Tables.Cast<DataTable>().SingleOrDefault(x => x.TableName == tableAttribute.TableName);
                 if (tableRef != null)
                     return tableRef;
 
-                var dataTable = new DataTable {TableName = tableAttribute.Name};
+                var dataTable = new DataTable {TableName = tableAttribute.TableName};
 
                 dataTable.Columns.Add("RowKey", typeof(Guid));
                 dataTable.Columns.Add("PartitionKey", typeof(string));

@@ -55,21 +55,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cms Page Composition Elements\Cms Page CompositionElements.csproj">
-      <Project>{189816C1-50FC-4FD9-B669-3C874AA4E9DF}</Project>
-      <Name>Cms Page CompositionElements</Name>
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj">
+      <Project>{11cc6161-c3d9-486d-8e0b-206bb9479d3b}</Project>
+      <Name>Cms Page Elements</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page RenderingFragments\Cms Page FragmentRendering.csproj">
-      <Project>{18c933a1-7a6f-48ef-b086-09fff95d6558}</Project>
-      <Name>Cms Page FragmentRendering</Name>
+    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
+      <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
+      <Name>Cms Page Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kernel\Platform Kernel.csproj">
-      <Project>{1A8EB44B-2613-499C-A07C-89442225F4C6}</Project>
-      <Name>Platform Kernel</Name>
+    <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
+      <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
+      <Name>Cms Site Content</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Sites\Cms Sites.csproj">
-      <Project>{59EE4828-438B-4EFE-BC8A-93226851304B}</Project>
-      <Name>Cms Sites</Name>
+    <ProjectReference Include="..\Platform Core\Platform Core.csproj">
+      <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
+      <Name>Platform Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

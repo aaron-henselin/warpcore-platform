@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Cms;
 using Modules.Cms.Features.Context;
-using Modules.Cms.Features.Presentation.PageComposition.Elements;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
-using WarpCore.Cms.Toolbox;
-using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 using WarpCore.Web;
-using WarpCore.Web.Extensions;
-using WarpCore.Web.Widgets;
 
 namespace DemoSite
 {

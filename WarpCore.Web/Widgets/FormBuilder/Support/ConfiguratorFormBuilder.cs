@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Web.UI;
-using Cms;
 using Cms.Forms;
-using Cms.Toolbox;
 using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
@@ -26,7 +24,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
         public static CmsForm GenerateDefaultFormForWidget(ToolboxItem toolboxItem)
         {
-            var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
+            //todo: fix
+            var clrType = Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
+            //var clrType = ToolboxManager.ResolveToolboxItemClrType(toolboxItem);
 
             return GenerateDefaultForm(clrType);
         }

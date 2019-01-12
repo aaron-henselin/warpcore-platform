@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FormDesigner.ascx.cs" Inherits="DemoSite.FormDesigner" %>
-<%@ Register TagPrefix="a" Namespace="WarpCore.Web.Widgets" Assembly="WarpCore.Web" %>
 
 <style>
     .wc-navbar{ display: none !important;}
