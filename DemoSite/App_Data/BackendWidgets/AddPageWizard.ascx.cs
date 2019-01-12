@@ -81,7 +81,7 @@ namespace DemoSite
             if (selected == null)
                 return layout;
 
-            var pgContent = new CmsPageContent
+            var pgContent = new PageContent
             {
                 Id = new Guid("b8029034-01db-47fe-8db8-3a1700d9caf1"), //doesn't matter what this is, but it needs to be consistent (i think?)
                 PlacementContentPlaceHolderId = nameof(PageTypeSpecificSettingsPlaceHolder),

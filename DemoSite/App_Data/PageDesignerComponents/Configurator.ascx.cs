@@ -73,7 +73,7 @@ namespace DemoSite
 
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
             
-            var activatedControl = new CmsPageContentActivator().ActivateCmsPageContent(_contentToEdit);
+            var activatedControl = new CmsPageContentActivator().ActivateCmsPageContent(_contentToEdit.ToPresentationElement());
             var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);

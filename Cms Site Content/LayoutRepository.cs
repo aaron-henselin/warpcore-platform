@@ -35,20 +35,6 @@ namespace Cms.Layout
     {
         public const string ApiId = "4e3e0fdb-5008-4239-93cc-3ac6307e2a5d";
 
-        public LayoutNode GetLayoutStructure(Layout layout)
-        {
-            LayoutNode ln = null;
-            if (layout.ParentLayoutId != null)
-            {
-                var parentLayout = GetById(layout.ParentLayoutId.Value);
-                ln = GetLayoutStructure(parentLayout);
-            }
 
-            return new LayoutNode
-            {
-                Layout = layout,
-                ParentNode = ln
-            };
-        }
     }
 }

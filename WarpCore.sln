@@ -63,15 +63,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IncludedTooling", "Included
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendSiteTooling", "BackendSiteTooling\BackendSiteTooling.csproj", "{D9F38176-EF82-4A23-9981-5E0F4CB1ADEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Elements", "Cms Page Elements\Cms Page Elements.csproj", "{11CC6161-C3D9-486D-8E0B-206BB9479D3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Page Elements", "Cms Page Elements\Cms Page Elements.csproj", "{11CC6161-C3D9-486D-8E0B-206BB9479D3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Rendering", "Cms Page Rendering\Cms Page Rendering.csproj", "{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Page Rendering", "Cms Page Rendering\Cms Page Rendering.csproj", "{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Context", "Context", "{4F2680E6-9CDC-4D76-BF54-7AEA043B091E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms PageDesigner Context", "Cms PageDesigner Context\Cms PageDesigner Context.csproj", "{D1C31107-82D7-4530-A0AA-D750A3DD8386}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms PageDesigner Context", "Cms PageDesigner Context\Cms PageDesigner Context.csproj", "{D1C31107-82D7-4530-A0AA-D750A3DD8386}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Request Context", "Cms Request Context\Cms Request Context.csproj", "{F0C718DD-DA88-4DA8-B713-FA0D1B24BE7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Request Context", "Cms Request Context\Cms Request Context.csproj", "{F0C718DD-DA88-4DA8-B713-FA0D1B24BE7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosting", "Hosting", "{B6A3FC7D-E6EE-47F2-9979-CF032AB0E512}"
 EndProject
@@ -79,17 +79,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Hosting AspNet", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{6FEC50B5-303F-4880-B814-4B8E62C09623}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Core", "Platform Core\Platform Core.csproj", "{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform Core", "Platform Core\Platform Core.csproj", "{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Site Content", "Cms Site Content\Cms Site Content.csproj", "{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Site Content", "Cms Site Content\Cms Site Content.csproj", "{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Orm", "Platform Orm\Platform Orm.csproj", "{47861BA0-3E49-4908-BD58-76C4F0015394}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform Orm", "Platform Orm\Platform Orm.csproj", "{47861BA0-3E49-4908-BD58-76C4F0015394}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform Extensibility", "Platform Extensibility\Platform Extensibility.csproj", "{02599E26-647E-4142-9A35-1523AB08717F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform Extensibility", "Platform Extensibility\Platform Extensibility.csproj", "{02599E26-647E-4142-9A35-1523AB08717F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform SecurityModel", "Platform SecurityModel\Platform SecurityModel.csproj", "{BE21EDEE-BCAC-4EEB-A3D2-C450E080E2FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform SecurityModel", "Platform SecurityModel\Platform SecurityModel.csproj", "{BE21EDEE-BCAC-4EEB-A3D2-C450E080E2FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Toolbox", "Cms Toolbox\Cms Toolbox.csproj", "{60BB28EB-2853-47BF-A9F6-A385031B3C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Toolbox", "Cms Toolbox\Cms Toolbox.csproj", "{60BB28EB-2853-47BF-A9F6-A385031B3C3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendSiteApi", "BackendSiteApi\BackendSiteApi.csproj", "{201C8B1D-A85C-4682-B634-F752EDFEE5B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -213,6 +215,10 @@ Global
 		{60BB28EB-2853-47BF-A9F6-A385031B3C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60BB28EB-2853-47BF-A9F6-A385031B3C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60BB28EB-2853-47BF-A9F6-A385031B3C3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{201C8B1D-A85C-4682-B634-F752EDFEE5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{201C8B1D-A85C-4682-B634-F752EDFEE5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{201C8B1D-A85C-4682-B634-F752EDFEE5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{201C8B1D-A85C-4682-B634-F752EDFEE5B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,6 +261,7 @@ Global
 		{02599E26-647E-4142-9A35-1523AB08717F} = {B71D8DF2-A32F-459B-B167-5F406180C548}
 		{BE21EDEE-BCAC-4EEB-A3D2-C450E080E2FD} = {B71D8DF2-A32F-459B-B167-5F406180C548}
 		{60BB28EB-2853-47BF-A9F6-A385031B3C3A} = {9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}
+		{201C8B1D-A85C-4682-B634-F752EDFEE5B2} = {1E5BA4D7-A40E-495C-898C-4D0CA78F53D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF7B26DB-ECC6-49E0-B2C9-CB53A94E08E9}

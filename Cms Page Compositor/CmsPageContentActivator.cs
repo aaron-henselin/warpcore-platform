@@ -76,7 +76,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             var toolboxItemType = CompileResourceAtVirtualPath(layoutFileName);
 
             PageCompositionElement pp;
-            var wasCreatedViaCache = _contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, new CmsPageContent
+            var wasCreatedViaCache = _contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, new PageContent
                 {Id= SpecialRenderingFragmentContentIds.PageRoot }, out pp, out var cacheKey);
             if (!wasCreatedViaCache)
             {
@@ -95,7 +95,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             return pp;
         }
 
-        public PageCompositionElement ActivateCmsPageContent(CmsPageContent pageContent)
+        public PageCompositionElement ActivateCmsPageContent(PageContent pageContent)
         {
             var parameters = pageContent.Parameters;
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);

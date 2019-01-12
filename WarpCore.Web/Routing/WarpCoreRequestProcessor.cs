@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Cms.Layout;
 using Cms_PageDesigner_Context;
@@ -14,6 +15,23 @@ using WarpCore.Web.Extensions;
 
 namespace WarpCore.Cms
 {
+    public static class PresentationElementHelpers
+    {
+        public static PageContent ToPresentationElement(this CmsPageContent content)
+        {
+            return new PageContent
+            {
+                Id = content.Id,
+                AllContent = content.AllContent.Select(ToPresentationElement).ToList(),
+                Order = content.Order,
+                Parameters = content.Parameters,
+                PlacementContentPlaceHolderId = content.PlacementContentPlaceHolderId,
+                PlacementLayoutBuilderId = content.PlacementLayoutBuilderId,
+                WidgetTypeCode = content.WidgetTypeCode,
+            };
+        }
+    }
+
     public class ContentPageHandler : IHttpHandler
     {
         public ContentPageHandler()
@@ -26,6 +44,29 @@ namespace WarpCore.Cms
             var activator = new CmsPageContentActivator();
             RenderContentPage(rq,activator);
         }
+
+
+
+        public static PageLayout GetLayoutStructure(Layout layout)
+        {
+            var layoutRepo = new LayoutRepository();
+
+            PageLayout ln = null;
+            if (layout.ParentLayoutId != null)
+            {
+                var parentLayout = layoutRepo.GetById(layout.ParentLayoutId.Value);
+                ln = GetLayoutStructure(parentLayout);
+            }
+
+            return new PageLayout
+            {
+                AllContent = layout.PageContent.Select(x => x.ToPresentationElement()).ToList(),
+                MasterPagePath = layout.MasterPagePath,
+                Name = layout.Name,
+                ParentLayout = ln
+            };
+        }
+
 
 
         private static void RenderContentPage(CmsPageRequestContext rt, CmsPageContentActivator activator)
@@ -41,7 +82,7 @@ namespace WarpCore.Cms
                 var layoutRepository = new LayoutRepository();
                 var layoutToApply = layoutRepository.GetById(rt.CmsPage.LayoutId);
                 
-                pageBuilder.AddLayoutContent(page, layoutToApply);
+                pageBuilder.AddLayoutContent(page, GetLayoutStructure(layoutToApply) );
             }
 
             var pageSpecificContent = rt.CmsPage.PageContent;
@@ -58,7 +99,9 @@ namespace WarpCore.Cms
             {
                 var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? SpecialRenderingFragmentContentIds.PageRoot;
                 var root = d[placementLayoutBuilderId];
-                pageBuilder.AddAdHocContent(contentItem, root);
+
+                var presentationElement = contentItem.ToPresentationElement();
+                pageBuilder.AddAdHocContent(presentationElement, root);
             }
 
 

@@ -7,6 +7,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Cms.Forms;
 using Modules.Cms.Features.Presentation.Page.Elements;
+using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
@@ -42,7 +43,7 @@ namespace WarpCore.Web
             foreach (var item in _cmsForm.DesignedContent)              //todo: better way.
                 item.PlacementContentPlaceHolderId = nameof(surface);
 
-            layout.DefaultContent.AddRange(_cmsForm.DesignedContent);
+            layout.DefaultContent.AddRange(_cmsForm.DesignedContent.Select(x => x.ToPresentationElement()));
             return layout;
         }
 

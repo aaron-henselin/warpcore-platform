@@ -33,7 +33,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.CachedContent
             _cmsPageContentOutputCacheProvider = cmsPageContentOutputCacheProvider;
         }
 
-        public bool TryCreateCachedContentElement(Type toolboxItemType, CmsPageContent pageContent, out PageCompositionElement element, out string cacheKey)
+        public bool TryCreateCachedContentElement(Type toolboxItemType, PageContent pageContent, out PageCompositionElement element, out string cacheKey)
         {
             element = null;
             CachedPageContentOutput found = null;

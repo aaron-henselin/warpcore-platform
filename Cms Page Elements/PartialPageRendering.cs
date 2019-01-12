@@ -5,39 +5,39 @@ using WarpCore.Cms;
 
 namespace Modules.Cms.Features.Presentation.Page.Elements
 {
+    public class PageLayout
+    {
+        public string Name { get; set; }
+        public string MasterPagePath { get; set; }
+        public List<PageContent> AllContent { get; set; } = new List<PageContent>();
+        public PageLayout ParentLayout { get; set; }
+    }
+
+    public class PageContent
+    {
+        public Guid Id { get; set; }
+        public string PlacementContentPlaceHolderId { get; set; }
+        public Guid? PlacementLayoutBuilderId { get; set; }
+        public int Order { get; set; }
+        public string WidgetTypeCode { get; set; }
+        public Dictionary<string, string> Parameters { get; set; }
+        public List<PageContent> AllContent { get; set; } = new List<PageContent>();
+
+    }
+
     public class InternalLayout
     {
         public List<string> PlaceHolderIds { get; } = new List<string>();
-        public List<CmsPageContent> DefaultContent { get; } = new List<CmsPageContent>();
+        public List<PageContent> DefaultContent { get; } = new List<PageContent>();
 
         public static InternalLayout Empty => new InternalLayout();
     }
 
     public interface IHasInternalLayout
     {
-        //IReadOnlyCollection<CmsPageContent> GetDefaultPlaceHolderContents(ILayoutControl layoutControl,
-        //    string placeholderId);
-
+      
         InternalLayout GetInternalLayout();
-
-        //protected void ActivateLayout(ILayoutControl layout)
-        //{
-        //    if (layout == null)
-        //        return;
-
-        //    var generatedPlaceHolders = layout.InitializeLayout();
-        //    //foreach (var ph in generatedPlaceHolders)
-        //    //{
-
-        //    //    //return _cmsForm.DesignedContent;
-        //    //    //var contentActivator = new CmsPageContentActivator();
-        //    //    //return _cmsForm.DesignedContent.Select(x => contentActivator.ActivateCmsPageContent(x)).ToList();
-
-        //    //    this.PlaceHolders.Add(ph, new RenderingsPlaceHolder { Id = ph, Renderings = layout.GetAutoIncludedElementsForPlaceHolder(ph).Select(factory).ToList() });
-        //    //}
-
-        //    this.LayoutBuilderId = layout.LayoutBuilderId;
-        //}
+        
     }
 
     [DebuggerDisplay("Name = {"+nameof(FriendlyName)+"}, ContentId = {" + nameof(ContentId)+"}" )]

@@ -10,7 +10,6 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 {
     public class PageComposer
     {
-        private readonly LayoutRepository _layoutRepository = new LayoutRepository();
         private readonly CmsPageContentActivator _contentActivator;
 
         public PageComposer(): this(Dependency.Resolve<CmsPageContentActivator>())
@@ -24,7 +23,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         }
 
         private void AddContent(PageCompositionElement parentCompositionElement,
-            IReadOnlyCollection<CmsPageContent> contents, bool isFromLayout)
+            IReadOnlyCollection<PageContent> contents, bool isFromLayout)
         {
             foreach (var content in contents)
             {
@@ -36,7 +35,9 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             }
         }
 
-        private void AddContent(RenderingsPlaceHolder placementPlaceHolder, CmsPageContent content,
+
+
+        private void AddContent(RenderingsPlaceHolder placementPlaceHolder, PageContent content,
             bool isFromLayout)
         {
             var activatedWidget = _contentActivator.ActivateCmsPageContent(content);
@@ -48,7 +49,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
                 activatedWidget.PlaceHolders.Add(placeholderId, new RenderingsPlaceHolder(placeholderId));
             
 
-            var mergedContent = new List<CmsPageContent>();
+            var mergedContent = new List<PageContent>();
             var placedByUser = content.AllContent;
             var placedByDefault = internalLayout.DefaultContent;
 
@@ -62,7 +63,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         }
 
 
-        private static RenderingsPlaceHolder FindPlacementLocation(PageCompositionElement searchContext, CmsPageContent content)
+        private static RenderingsPlaceHolder FindPlacementLocation(PageCompositionElement searchContext, PageContent content)
         {
             if (!string.IsNullOrWhiteSpace(content.PlacementContentPlaceHolderId))
             try
@@ -76,65 +77,49 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             return searchContext.PlaceHolders.FirstOrDefault().Value; //should this be ordered?
         }
 
-        public void AddLayoutContent(CmsPageContent contentToActivate, RenderingsPlaceHolder page)
+        public void AddLayoutContent(PageContent contentToActivate, RenderingsPlaceHolder page)
         {
             AddContent(page, contentToActivate, true);
         }
 
-        public void AddAdHocContent(CmsPageContent contentToActivate, PageCompositionElement page)
+        public void AddAdHocContent(PageContent contentToActivate, PageCompositionElement page)
         {
             AddContent(page,new[]{contentToActivate},false);
         }
 
-        public void AddLayoutContent(IReadOnlyCollection<CmsPageContent> contentToActivate, PageCompositionElement parentCompositionElement)
+        public void AddLayoutContent(IReadOnlyCollection<PageContent> contentToActivate, PageCompositionElement parentCompositionElement)
         {
             AddContent(parentCompositionElement, contentToActivate, true);
         }
 
-        public void AddLayoutContent(Page.Elements.PageComposition page, Layout layoutToApply)
+        public void AddLayoutContent(Page.Elements.PageComposition page, PageLayout layoutToApply)
         {
-
+            if (layoutToApply.ParentLayout != null)
+                AddLayoutContent(page,layoutToApply.ParentLayout);
 
             if (!string.IsNullOrWhiteSpace(layoutToApply.MasterPagePath))
             {
                 page.RootElement =_contentActivator.ActivateRootLayout(layoutToApply.MasterPagePath);
             }
 
-
-            var structure = _layoutRepository.GetLayoutStructure(layoutToApply);
-            var lns = FlattenLayoutTree(structure);
-
-            if (lns.Any())
-            {
-                var mpFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
-                page.RootElement = _contentActivator.ActivateRootLayout(mpFile);
-            }
+            AddLayoutContent(layoutToApply.AllContent,page.RootElement);
             
+            //var structure = _layoutRepository.GetLayoutStructure(layoutToApply);
+            //var lns = FlattenLayoutTree(structure);
 
+            //if (lns.Any())
+            //{
+            //    var mpFile = layoutToApply.MasterPagePath = lns.First().Layout.MasterPagePath;
+            //    page.RootElement = _contentActivator.ActivateRootLayout(mpFile);
+            //}
+            
+            ////todo: nested layouts.
             //var root = localPage.GetRootControl();
-            foreach (var ln in lns)
-                AddLayoutContent(ln.Layout.PageContent, page.RootElement);
+            //foreach (var ln in layoutToApply.NestedLayouts)
+            //    AddLayoutContent(ln.PageContent, page.RootElement);
         }
 
-        private static IReadOnlyCollection<LayoutNode> FlattenLayoutTree(LayoutNode ln)
-        {
-            int depth = 0;
-            List<LayoutNode> lns = new List<LayoutNode>();
 
-            var currentNode = ln;
-            while (currentNode != null)
-            {
-                if (depth > 255)
-                    throw new Exception("Recursive layout.");
-
-                lns.Add(currentNode);
-                currentNode = ln.ParentNode;
-                depth++;
-            }
-
-            lns.Reverse();
-            return lns;
-        }
 
 
     }

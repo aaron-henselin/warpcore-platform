@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cms PageDesigner Context\Cms PageDesigner Context.csproj" />
-    <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj" />
   </ItemGroup>
 
   <ItemGroup>
