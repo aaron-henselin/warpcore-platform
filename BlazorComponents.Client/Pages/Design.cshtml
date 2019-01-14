@@ -15,7 +15,7 @@
 else
 {
     <design>
-        @currentDesign.Html
+        @((MarkupString)RenderPage(currentDesign))
     </design>
 }
 
@@ -24,6 +24,11 @@ else
     [Parameter]
     string pageId{get;set;}
     Node currentDesign;
+
+    string RenderPage(Node design)
+    {
+
+    }
 
     protected override async Task OnInitAsync()
     {

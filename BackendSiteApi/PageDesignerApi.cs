@@ -49,8 +49,8 @@ namespace BackendSiteApi
             nodeToWrite.ContentId = metadata.ContentId;
             nodeToWrite.FriendlyName = metadata.FriendlyName;
 
-            if (metadata.NodeType == FragmentType.Html)
-                nodeToWrite.Type = NodeType.Html;
+            if (metadata.NodeType == FragmentType.Element)
+                nodeToWrite.Type = NodeType.Element;
 
             if (metadata.NodeType == FragmentType.LayoutSubtitution)
                 nodeToWrite.Type = NodeType.LayoutSubtitution;
@@ -81,10 +81,7 @@ namespace BackendSiteApi
 
         public void Write(string html)
         {
-            if (CurrentNode.Html == null)
-                CurrentNode.Html = html;
-            else
-            CurrentNode.Html += html;
+            CurrentNode.ChildNodes.Add(new Node {Type=NodeType.Html,Html=html });
         }
     }
 

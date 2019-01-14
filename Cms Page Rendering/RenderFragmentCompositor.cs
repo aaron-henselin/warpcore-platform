@@ -111,6 +111,7 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
     public enum FragmentType
     {
+        Element,
         Html,
         LayoutSubtitution,
         GlobalSubstitution

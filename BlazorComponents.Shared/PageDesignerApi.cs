@@ -7,6 +7,7 @@ namespace BlazorComponents.Shared
 
     public enum NodeType
     {
+        Element,
         Html,
         LayoutSubtitution,
         GlobalSubstitution
