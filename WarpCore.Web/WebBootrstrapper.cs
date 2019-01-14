@@ -55,8 +55,7 @@ namespace WarpCore.Web
         private static readonly object _bootStartedSync = new object();
         private static bool _bootingStarted;
 
-      
-        public static void EnsureSiteBootHasBeenStarted()
+        internal static void EnsureSiteBootHasBeenStarted()
         {
             lock (_bootStartedSync)
             {
@@ -74,9 +73,10 @@ namespace WarpCore.Web
 
                     ExtensibilityBootstrapper.PreloadPluginAssembliesFromFileSystem(AppDomain.CurrentDomain);
                     ExtensibilityBootstrapper.RegisterExtensibleTypesWithApi(AppDomain.CurrentDomain);
-                   
+                  
                     ToolboxBootstrapper.RegisterToolboxItemsWithApi(AppDomain.CurrentDomain);
-                    
+
+                    ExtensibilityBootstrapper.InitializeModules(AppDomain.CurrentDomain);
                     IsBooted = true;
 
                 }).ContinueWith(x =>

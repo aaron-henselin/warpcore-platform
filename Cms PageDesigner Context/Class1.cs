@@ -5,6 +5,14 @@ using WarpCore.Cms;
 namespace Cms_PageDesigner_Context
 {
 
+    public static class PageDesignerUriComponents
+    {
+        public const string PageId = "wc-pg";
+        public const string SiteId = "wc-st";
+        public const string ContentEnvironment = "wc-ce";
+        public const string ViewMode = "wc-viewmode";
+        public const string ContentVersion = "wc-cv";
+    }
     public class EditingContext : IPageContent
     {
         public List<CmsPageContent> AllContent { get; set; }

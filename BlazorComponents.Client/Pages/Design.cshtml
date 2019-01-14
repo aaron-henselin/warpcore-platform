@@ -1,0 +1,42 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using BlazorComponents.Shared
+@page "/Pages/{pageId}/Design"
+@inject HttpClient Http
+
+
+
+@if (currentDesign == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <design>
+        @currentDesign.Html
+    </design>
+}
+
+
+@functions {
+    [Parameter]
+    string pageId{get;set;}
+    Node currentDesign;
+
+    protected override async Task OnInitAsync()
+    {
+        currentDesign = await Http.GetJsonAsync<Node>("api/design?pageId="+new Guid(pageId));
+    }
+
+    void SiteChanged(UIChangeEventArgs dropdownEvent)
+    {
+
+    }
+
+    void ToggleExpand(UIChangeEventArgs toExpand)
+    {
+    }
+
+    }

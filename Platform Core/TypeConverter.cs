@@ -4,6 +4,11 @@ using Newtonsoft.Json;
 
 namespace WarpCore.Platform.Kernel
 {
+    public interface IModuleInitializer
+    {
+        void InitializeModule();
+    }
+
     public interface ISupportsJavaScriptSerializer
     {
 

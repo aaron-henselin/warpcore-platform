@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using Cms_PageDesigner_Context;
 using Modules.Cms.Features.Context;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -11,14 +12,7 @@ namespace WarpCore.Web.Extensions
 {
 
 
-    public static class PageDesignerUriComponents
-    {
-        public const string PageId = "wc-pg";
-        public const string SiteId = "wc-st";
-        public const string ContentEnvironment = "wc-ce";
-        public const string ViewMode = "wc-viewmode";
-        public const string ContentVersion = "wc-cv";
-    }
+
 
 
     public static class HttpContextExtensions

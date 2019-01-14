@@ -1,0 +1,125 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+
+@page "/Pages"
+@inject HttpClient Http
+
+
+
+
+@if (sites == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select class="form-control" onchange="@SiteChanged">
+        <option value="">Site</option>
+        @foreach (var site in sites)
+        {
+            <option value="@site.SiteId">@site.SiteName</option>
+        }
+    </select>
+
+
+
+    <div runat="server" class="pagetree" ID="PageTreeWrapper">
+        @if (currentSite != null)
+        {
+            foreach (var item in currentSite.Items)
+            {
+                <div class="pagetree-item depth-@item.Depth"
+                     data-path="@item.VirtualPath"
+                     data-parent="@item.ParentPath">
+                    
+                     @if (item.HasChildItems)
+                     {
+                         var icon = "glyphicon-triangle-bottom";
+                         if (!item.IsExpanded)
+                         {
+                             icon = "glyphicon-triangle-right";
+                         }
+                        
+                        <a onclick="ToggleExpand">
+                            <span runat="server" class="glyphicon @icon"></span>
+                        </a>
+                         
+                     }
+                    
+
+
+                        <span class="pagetree-item-title">
+                            @item.Name
+
+                            @if (item.IsHomePage)
+                            {
+                                <span class="glyphicon glyphicon-home homepage-icon"></span>
+                            }
+
+                            @if (!item.IsPublished)
+                            {
+                                <small class="unpublished badge">Draft</small>
+                            }
+
+                        </span>
+                    <span class="pull-right pagetree-item-actions">
+                        <a href="/Pages/@item.PageId/Design">
+                            <span class=" glyphicon glyphicon-text-background"></span>
+                            Design
+                        </a>
+                        <asp:LinkButton runat="server"
+                                        ID="PublishLinkButton"
+                                        CommandArgument="@item.PageId"
+                                        OnClick="PublishLinkButton_OnClick">
+                            <span class="glyphicon glyphicon-send"></span>
+                            Publish
+                        </asp:LinkButton>
+                        
+                        <a href="@item.SettingsUrl">
+                            <span class="glyphicon glyphicon glyphicon-tasks"></span>
+                            Settings
+                        </a>
+
+
+                    </span>
+
+
+                </div>
+
+            }
+
+
+        }
+
+    </div>
+
+
+
+}
+
+
+@functions {
+    PageTreeModel currentSite;
+    PageTreeModel[] sites;
+
+    protected override async Task OnInitAsync()
+    {
+        sites = await Http.GetJsonAsync<PageTreeModel[]>
+            ("api/pagetreeapi/sites");
+    }
+
+    void SiteChanged(UIChangeEventArgs dropdownEvent)
+    {
+       
+        var selectedPageTreeId = dropdownEvent.Value.ToString();
+        currentSite =sites.Single(x => x.SiteId == new Guid(selectedPageTreeId));
+        this.StateHasChanged();
+    }
+
+    void ToggleExpand(UIChangeEventArgs toExpand)
+    {
+    }
+
+}

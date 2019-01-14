@@ -12,5 +12,7 @@ namespace Modules.Cms.Features.Configuration
         }
 
         public IEnumerable<RenderingEngineSupport> SupportedRenderingEngines => _supportedEngines;
+
+       public static CmsConfiguration Current { get; set; } = new CmsConfiguration();
     }
 }

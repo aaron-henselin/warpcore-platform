@@ -48,12 +48,16 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
     public class GlobalSubstitutionOutput : IRenderingFragment
     {
         public string Id { get; set; }
+
+        
     }
 
     [DebuggerDisplay("LayoutPlaceHolder = {" + nameof(Id) + "}")]
     public class LayoutSubstitutionOutput : IRenderingFragment
     {
         public string Id { get; set; }
+
+        
     }
 
     [DebuggerDisplay("Html = {" + nameof(Html) + "}")]
@@ -69,6 +73,7 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         {
             this.Html = sb;
         }
+        
     }
 
 

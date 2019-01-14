@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI.WebControls;
+using BlazorComponents.Shared;
+using Cms_PageDesigner_Context;
 using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
@@ -15,23 +17,7 @@ using WarpCore.Web.Scripting;
 namespace DemoSite
 {
 
-    [Serializable]
-    public class PageTreeItem
-    {
-        public string Name { get; set; }
-        public string VirtualPath { get; set; }
-        public int Depth { get; set; }
-        public string ParentPath { get; set; }
-        public bool IsHomePage { get; internal set; }
-        public bool IsPublished { get; set; }
-        public string DesignUrl { get; set; }
-
-        public string SettingsUrl { get; set; }
-        public bool IsExpanded { get; set; }
-        public bool Visible { get; set; }
-        public bool HasChildItems { get; set; }
-        public Guid PageId { get; set; }
-    }
+    
 
     [Serializable]
     public class PageTreeControlState

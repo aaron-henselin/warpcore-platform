@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Cms.Layout;
-using Cms_PageDesigner_Context;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Cache;
@@ -32,6 +29,7 @@ namespace WarpCore.Cms
         }
     }
 
+
     public class ContentPageHandler : IHttpHandler
     {
         public ContentPageHandler()
@@ -41,80 +39,29 @@ namespace WarpCore.Cms
         public void ProcessRequest(HttpContext context)
         {
             var rq = CmsPageRequestContext.Current;
-            var activator = new CmsPageContentActivator();
-            RenderContentPage(rq,activator);
+          
+            RenderContentPage(rq);
         }
 
 
 
-        public static PageLayout GetLayoutStructure(Layout layout)
+        
+
+
+        private static void RenderContentPage(CmsPageRequestContext rt)
         {
-            var layoutRepo = new LayoutRepository();
-
-            PageLayout ln = null;
-            if (layout.ParentLayoutId != null)
-            {
-                var parentLayout = layoutRepo.GetById(layout.ParentLayoutId.Value);
-                ln = GetLayoutStructure(parentLayout);
-            }
-
-            return new PageLayout
-            {
-                AllContent = layout.PageContent.Select(x => x.ToPresentationElement()).ToList(),
-                MasterPagePath = layout.MasterPagePath,
-                Name = layout.Name,
-                ParentLayout = ln
-            };
-        }
-
-
-
-        private static void RenderContentPage(CmsPageRequestContext rt, CmsPageContentActivator activator)
-        {
-            var pageBuilder = new PageComposer(activator);
-
-            var page = new PageComposition();
-
-            page.RootElement = new UndefinedLayoutPageCompositionElement();
-            if (rt.CmsPage.LayoutId != Guid.Empty)
-            {
-
-                var layoutRepository = new LayoutRepository();
-                var layoutToApply = layoutRepository.GetById(rt.CmsPage.LayoutId);
-                
-                pageBuilder.AddLayoutContent(page, GetLayoutStructure(layoutToApply) );
-            }
-
-            var pageSpecificContent = rt.CmsPage.PageContent;
-            if (rt.PageRenderMode == PageRenderMode.PageDesigner)
-            {
-                var editing = new EditingContextManager();
-                var context = editing.GetOrCreateEditingContext(rt.CmsPage);
-                pageSpecificContent = context.AllContent;
-            }
-
-            var d = page.GetPartialPageRenderingByLayoutBuilderId();
-
-            foreach (var contentItem in pageSpecificContent)
-            {
-                var placementLayoutBuilderId = contentItem.PlacementLayoutBuilderId ?? SpecialRenderingFragmentContentIds.PageRoot;
-                var root = d[placementLayoutBuilderId];
-
-                var presentationElement = contentItem.ToPresentationElement();
-                pageBuilder.AddAdHocContent(presentationElement, root);
-            }
-
-
+            var builder = new PageCompositionBuilder();
+            var pageComposition = builder.CreatePageComposition(rt.CmsPage, rt.PageRenderMode);
 
             var fragmentMode = rt.PageRenderMode == PageRenderMode.PageDesigner
                 ? FragmentRenderMode.PageDesigner
                 : FragmentRenderMode.Readonly;
 
             var cre = new BatchingFragmentRenderer();
-            var batch = cre.Execute(page,fragmentMode);
+            var batch = cre.Execute(pageComposition, fragmentMode);
 
             var cache = Dependency.Resolve<CmsPageContentOutputCacheProvider>();
-            foreach (var item in page.RootElement.GetAllDescendents())
+            foreach (var item in pageComposition.RootElement.GetAllDescendents())
             {
                 if (!string.IsNullOrWhiteSpace(item.CacheKey))
                     cache.AddToCache(item.CacheKey, new CachedPageContentOutput
@@ -125,16 +72,17 @@ namespace WarpCore.Cms
             }
 
 
-            var compositor = new RenderFragmentCompositor(page,batch);
-            var composedPage = compositor.Compose(fragmentMode);
+            var compositor = new RenderFragmentCompositor(pageComposition,batch);
 
-            HttpContext.Current.Response.Write(composedPage.Html);
+            var writer = new HtmlOnlyComposedHtmlWriter();
+            compositor.WriteComposedFragments(fragmentMode,writer);
+          
+            HttpContext.Current.Response.Write(writer.ToString());
         }
-
-
 
         public bool IsReusable { get; } = false;
     }
+
 
 
     public  class WarpCoreRequestProcessor

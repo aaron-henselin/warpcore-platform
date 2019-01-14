@@ -126,6 +126,7 @@
     <Compile Include="EmbeddedResourceVirtualPathProvider\Logger.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\Vpp.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\VppDirectory.cs" />
+    <Compile Include="Routing\PageCompositionBuilder.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
     <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />

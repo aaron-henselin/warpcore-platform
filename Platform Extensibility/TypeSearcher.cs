@@ -35,6 +35,14 @@ namespace WarpCore.Platform.Extensibility
                 .DistinctBy(x => x.AssemblyQualifiedName)
                 .ToList();
         }
+
+        public static IReadOnlyCollection<Type> FindModulesKnownToWarpCore(IReadOnlyCollection<Type> allTypes)
+        {
+            return allTypes
+                .Where(x => typeof(IModuleInitializer).IsAssignableFrom(x) && !x.IsInterface)
+                .DistinctBy(x => x.AssemblyQualifiedName)
+                .ToList();
+        }
     }
 
     internal class ExtensibleRepositoryDescription
@@ -49,6 +57,18 @@ namespace WarpCore.Platform.Extensibility
 
     public class ExtensibilityBootstrapper
     {
+        public static void InitializeModules(AppDomain domain)
+        {
+            var assemblies = domain.GetAssemblies();
+            var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
+            var initializers = TypeSearcher.FindModulesKnownToWarpCore(allTypes);
+            foreach (var moduleType in initializers)
+            {
+                var module = (IModuleInitializer)Activator.CreateInstance(moduleType);
+                module.InitializeModule();
+            }
+        }
+
         public static void PreloadPluginAssembliesFromFileSystem(AppDomain appDomain)
         {
             AssemblyLoader.LoadAssemblies(appDomain, asm => asm.GetCustomAttribute<IsWarpCorePluginAssemblyAttribute>() != null);

@@ -16,7 +16,7 @@ namespace Modules.Cms.Features.Presentation.Page.Elements
         public List<string> Scripts { get; set; }
         public List<string> Styles { get; set; }
 
-        public Dictionary<Guid, PageCompositionElement> GetPartialPageRenderingByLayoutBuilderId()
+        public Dictionary<Guid, PageCompositionElement>GetPartialPageRenderingByLayoutBuilderId()
         {
             Dictionary<Guid,PageCompositionElement> d = new Dictionary<Guid, PageCompositionElement>();
             

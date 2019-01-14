@@ -36,13 +36,9 @@ namespace DemoSite
         protected void Application_Start(object sender, EventArgs e)
         {
             
-            var configuration = new CmsConfiguration();
-            configuration.AddMvcSupport();
-            configuration.AddWebFormsSupport();
+            CmsConfiguration.Current.AddMvcSupport();
+            CmsConfiguration.Current.AddWebFormsSupport();
 
-           //todo: get this moved.
-           var fragmentRenderers =configuration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
-            var pageCompositionFactories =configuration.SupportedRenderingEngines.Select(x => x.PageCompositionFactory).ToList();
 
             ToolboxPropertyFilter.BlacklistedDeclaringAssemblies.AddRange(new[]
             {
@@ -53,10 +49,6 @@ namespace DemoSite
 
 
 
-
-
-            Dependency.RegisterMultiple<IPageCompositionElementFactory>(pageCompositionFactories);
-            Dependency.RegisterMultiple<IFragmentRenderer>(fragmentRenderers);
 
             var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
 
