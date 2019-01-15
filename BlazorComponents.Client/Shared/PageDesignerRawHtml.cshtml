@@ -1,0 +1,10 @@
+﻿@using BlazorComponents.Shared
+
+<wc-html text="@Html"/>
+@(new MarkupString(Html))
+
+
+@functions {
+    [Parameter]
+    private string Html { get; set; } // Demonstrates how a parent component can supply parameters
+}

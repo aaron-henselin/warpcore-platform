@@ -1,0 +1,30 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+
+@if (DesignNode.Type == NodeType.Element)
+        {
+<PageDesignerWidget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+        }
+
+@if (DesignNode.Type == NodeType.LayoutSubtitution)
+        {
+<PageDesignerLayoutSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+        }
+
+@if (DesignNode.Type == NodeType.GlobalSubstitution)
+        {
+<PageDesignerGlobalSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+
+        }
+
+
+@functions {
+    [Parameter]
+    public Node DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [Parameter]
+    public PageDesignEventsDispatcher Dispatcher { get; set; }
+
+
+}

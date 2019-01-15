@@ -101,6 +101,33 @@ namespace WarpCore.Cms
         {
             return Name;
         }
+
+        public CmsPageContent FindContentById(Guid id)
+        {
+            foreach (var child in this.PageContent)
+            {
+                var found = FindContentById(child, id);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
+
+        private CmsPageContent FindContentById(CmsPageContent searchNode, Guid id)
+        {
+            if (searchNode.Id == id)
+                return searchNode;
+
+            foreach (var child in searchNode.AllContent)
+            {
+                var found = FindContentById(child, id);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
     }
 
     public enum RoutePriority
@@ -206,6 +233,7 @@ namespace WarpCore.Cms
 
         [SerializedComplexObject]
         public List<CmsPageContent> AllContent { get; set; } = new List<CmsPageContent>();
+
 
     }
 

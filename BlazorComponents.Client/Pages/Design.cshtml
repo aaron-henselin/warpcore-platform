@@ -2,37 +2,58 @@
 @using BlazorComponents.Shared
 @using System.Linq.Expressions
 @using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared
 @using BlazorComponents.Shared
 @page "/Pages/{pageId}/Design"
 @inject HttpClient Http
 
 
 
-@if (currentDesign == null)
+@if (CurrentDesign == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading design...</em></p>
 }
 else
 {
-    <design>
-        @((MarkupString)RenderPage(currentDesign))
-    </design>
+    <wc-design>
+    <PageDesignerWidget DesignNode=@CurrentDesign Dispatcher=@dispatcher/>
+    </wc-design>
 }
 
+<PageDesignerSideBar ref="SideBar"/>
 
 @functions {
     [Parameter]
     string pageId{get;set;}
-    Node currentDesign;
 
-    string RenderPage(Node design)
-    {
+    PageDesignerSideBar SideBar { get; set; }
 
-    }
+    Node CurrentDesign { get; set; }
+
+    PageDesignEventsDispatcher dispatcher { get; set; }
+
 
     protected override async Task OnInitAsync()
     {
-        currentDesign = await Http.GetJsonAsync<Node>("api/design?pageId="+new Guid(pageId));
+        dispatcher = new PageDesignEventsDispatcher
+        {
+            Edit = contentToEdit =>
+            {
+                this.SideBar.NodeToConfigure = CurrentDesign.FindDescendentNode(contentToEdit);
+            },
+            Delete = contentToDelete =>
+            {
+                CurrentDesign.RemoveDescendentNode(contentToDelete);
+            }
+
+        };
+
+
+        var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("api/design/toolbox?pageId=" + new Guid(pageId));
+        SideBar.Categories = toolboxViewModel.ToolboxCategories.ToList();
+        CurrentDesign = await Http.GetJsonAsync<Node>("api/design/page?pageId=" + new Guid(pageId));
     }
 
     void SiteChanged(UIChangeEventArgs dropdownEvent)
@@ -44,4 +65,4 @@ else
     {
     }
 
-    }
+ }

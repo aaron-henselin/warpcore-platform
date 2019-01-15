@@ -103,10 +103,11 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
     }
 
     public class CompostedContentMetdata {
-        public string FriendlyName { get; set; }
         public Guid ContentId { get; set; }
-        public RenderAttributes RenderAttributes { get; set; }
+        //public RenderAttributes RenderAttributes { get; set; }
         public FragmentType NodeType { get; set; }
+
+        public string PlaceHolderId { get; set; }
     }
 
     public enum FragmentType
@@ -121,8 +122,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
     {
         private readonly PageComposition _pageDefinition;
         private readonly RenderingFragmentCollection _page;
-        private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory =
-            Dependency.Resolve<PageDesignerHtmlFactory>();
+        //private readonly PageDesignerHtmlFactory _pageDesignerHtmlFactory =
+        //    Dependency.Resolve<PageDesignerHtmlFactory>();
 
         private ILookup<string, List<string>> _globals;
 
@@ -151,10 +152,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
             var metadata = new CompostedContentMetdata
             {
-                FriendlyName = pp.FriendlyName,
                 ContentId = pp.ContentId,
-                RenderAttributes = attributes,
-                NodeType = FragmentType.Html,
+                NodeType = FragmentType.Element
             };
             local.BeginWriting(metadata);
 
@@ -169,7 +168,7 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
 
                 if (part is HtmlOutput)
                 {
-
+                    
                     var htmlOutput = (HtmlOutput) part;
                     var renderAttributes = new RenderAttributes
                     {
@@ -189,9 +188,7 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
                     var global = (GlobalSubstitutionOutput)part;
                     local.BeginWriting(new CompostedContentMetdata
                     {
-                        FriendlyName = global.Id,
                         NodeType = FragmentType.GlobalSubstitution
-                        
                     });
 
                     foreach (var s in _globals[global.Id])
@@ -248,9 +245,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
                  
                     local.BeginWriting(new CompostedContentMetdata
                     {
-                        FriendlyName = subPart.Id,
-                        RenderAttributes = renderAttributes,
-                        NodeType = FragmentType.LayoutSubtitution
+                        PlaceHolderId = subPart.Id,
+                        NodeType = FragmentType.LayoutSubtitution,
                     });
 
                     foreach (var item in relevantPlaceHolder.Renderings)
