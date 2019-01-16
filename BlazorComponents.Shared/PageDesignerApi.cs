@@ -6,6 +6,8 @@ using System.Text;
 namespace BlazorComponents.Shared
 {
 
+
+
     public enum NodeType
     {
         Element,
@@ -22,7 +24,7 @@ namespace BlazorComponents.Shared
         public List<Node> ChildNodes { get; set; } = new List<Node>();
         public bool IsFromLayout { get; set; }
 
-        public Dictionary<string,string> Parameters { get; set; }
+        public Dictionary<string,string> Parameters { get; set; } = new Dictionary<string, string>();
         public string PlaceHolderId { get; set; }
 
         public Node FindDescendentNode(Guid id)

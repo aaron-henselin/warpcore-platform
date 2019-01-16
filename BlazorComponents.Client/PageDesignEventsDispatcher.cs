@@ -13,7 +13,15 @@ namespace BlazorComponents.Client
         public Action<Guid> Delete { get; set; }
     }
 
+    public class DesignerChrome
+    {
+        public SideBarMode SideBarMode { get; set; }
 
+        public static DesignerChrome Default => new DesignerChrome();
+
+    }
+
+    public enum SideBarMode { Collapsed, Toolbox, Configurator}
 
 
 }

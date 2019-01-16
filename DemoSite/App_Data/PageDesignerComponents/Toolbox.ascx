@@ -3,9 +3,7 @@
 
 <!-- toolbox (move to uc) -->
 <div class="tbx">
-    <div class="handle">
-        <span class="glyphicon glyphicon-wrench"></span>
-    </div>
+
     <h3 class="save-header">
         <span class="button-group">
         <span class="button">

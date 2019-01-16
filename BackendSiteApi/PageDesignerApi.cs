@@ -25,7 +25,6 @@ namespace BackendSiteApi
             var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
             var page = new PageCompositionBuilder().CreatePageComposition(draft,PageRenderMode.PageDesigner);
 
-
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page, FragmentRenderMode.PageDesigner);
             var compositor = new RenderFragmentCompositor(page, batch);

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using BlazorComponents.Client.Shared;
+using BlazorComponents.Client.Shared.PageDesigner;
 using BlazorComponents.Shared;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
@@ -24,6 +26,10 @@ namespace BlazorComponents.Client
         {
             base.BuildRenderTree(builder);
 
+
+            var sw = new Stopwatch();
+            sw.Start();
+            Console.WriteLine("starting layout");
 
             int seq = 0;
             string htmlRaw = string.Empty;
@@ -67,7 +73,6 @@ namespace BlazorComponents.Client
                 }
             }
 
-            Console.WriteLine(seq + " starting layout");
 
             var reader = htmlDoc.CreateReader();
             reader.Read();
@@ -86,7 +91,8 @@ namespace BlazorComponents.Client
                 }
             }
 
-            Console.WriteLine(seq + " done layout");
+            sw.Stop();
+            Console.WriteLine(seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
 
             //Console.WriteLine("preparing to transform: " + htmlDoc.Root?.Name);
             //WriteLayout(builder,htmlDoc);
@@ -109,35 +115,35 @@ namespace BlazorComponents.Client
 
             if (reader.NodeType == XmlNodeType.Element)
             {
-                Console.WriteLine(globalSeq + " element " + reader.Name);
+                //Console.WriteLine(globalSeq + " element " + reader.Name);
 
                 if (reader.LocalName.StartsWith("wc-child-"))
                 {
                     var position = Convert.ToInt32(reader.LocalName.Substring("wc-child-".Length));
                     var toRender = DesignNodeCollection[position];
 
-                    Console.WriteLine(globalSeq + " BLAZOR OPEN CO");
-                    builder.OpenComponent<BlazorComponents.Client.Shared.PageDesignerChild>(localSeq++);
+                    //Console.WriteLine(globalSeq + " BLAZOR OPEN CO");
+                    builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.Node>(toRender));
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PageDesignEventsDispatcher>(Dispatcher));
                     builder.CloseComponent();
-                    Console.WriteLine(globalSeq + " BLAZOR CLOSE CO");
+                    //Console.WriteLine(globalSeq + " BLAZOR CLOSE CO");
                     return localSeq;
                 }
                 else
                 {
-                    Console.WriteLine(globalSeq + " BLAZOR OPEN EL");
+                    //Console.WriteLine(globalSeq + " BLAZOR OPEN EL");
                     builder.OpenElement(localSeq++, reader.Name.ToString());
 
 
                     if (reader.HasAttributes)
                     {
-                        Console.WriteLine(reader.Name + " Attribute");
+                        //Console.WriteLine(reader.Name + " Attribute");
                         for (int i = 0; i < reader.AttributeCount; i++)
                         {
                             reader.MoveToAttribute(i);
-                            Console.WriteLine(localSeq + " attr " + reader.Name + ", " + reader.Value);
-                            Console.WriteLine(localSeq + " BLAZOR ADD ATTR");
+                            //Console.WriteLine(localSeq + " attr " + reader.Name + ", " + reader.Value);
+                            //Console.WriteLine(localSeq + " BLAZOR ADD ATTR");
                             builder.AddAttribute(localSeq++, reader.Name, reader.Value);
                         }
                         reader.MoveToElement();
@@ -146,7 +152,7 @@ namespace BlazorComponents.Client
 
                     if (reader.IsEmptyElement)
                     {
-                        Console.WriteLine(localSeq + " BLAZOR CLOSE EL *EMPTY*");
+                        //Console.WriteLine(localSeq + " BLAZOR CLOSE EL *EMPTY*");
                         builder.CloseElement();
                     }
 
@@ -157,21 +163,21 @@ namespace BlazorComponents.Client
 
             if (reader.NodeType == XmlNodeType.Text)
             {
-                Console.WriteLine(globalSeq + " text " + reader.Value);
-                Console.WriteLine(globalSeq + " BLAZOR ADD MARKUP");
+               // Console.WriteLine(globalSeq + " text " + reader.Value);
+                //Console.WriteLine(globalSeq + " BLAZOR ADD MARKUP");
                 builder.AddMarkupContent(localSeq++, reader.Value?.ToString());
                 return localSeq;
             }
 
             if (reader.NodeType == XmlNodeType.EndElement)
             {
-                Console.WriteLine(globalSeq + " end-element " + reader.Name);
-                Console.WriteLine(globalSeq + " BLAZOR CLOSE EL");
+                //Console.WriteLine(globalSeq + " end-element " + reader.Name);
+                //Console.WriteLine(globalSeq + " BLAZOR CLOSE EL");
                 builder.CloseElement();
                 return localSeq;
             }
 
-            Console.WriteLine(globalSeq + " unexpected node type: "+ reader.NodeType);
+            //Console.WriteLine(globalSeq + " unexpected node type: "+ reader.NodeType);
 
             return localSeq;
         }

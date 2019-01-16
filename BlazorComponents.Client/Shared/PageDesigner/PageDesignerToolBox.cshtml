@@ -1,0 +1,103 @@
+﻿@using BlazorComponents.Shared
+@inject HttpClient Http
+
+
+
+@if (Categories != null)
+{
+    <div class="tbx">
+        <div class="handle">
+            <span class="glyphicon glyphicon-wrench"></span>
+        </div>
+        <h3 class="save-header">
+            <span class="button-group">
+                <span class="button">
+                    <span class="glyphicon glyphicon-arrow-left">
+                        <a runat="server" Text="Back" ID="BackToPageTreeLinkButton"></a>
+                    </span>
+                </span>
+            </span>
+            <span class="button-group right">
+                <span class="button">
+                    <span class="glyphicon glyphicon-floppy-save">
+                        <a runat="server" Text="Save" ID="SaveDraftButton"></a>
+                    </span>
+                </span>
+                <span class="button last">
+                    <span class="glyphicon  glyphicon-send">
+                        <a runat="server" Text="Publish" ID="SaveAndPublishButton"></a>
+                    </span>
+                </span>
+            </span>
+        </h3>
+        <h3>
+            Toolbox<br />
+            <select class="form-control" onchange="@CategoryChanged">
+                <option value="">Site</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.CategoryName">@category.CategoryName</option>
+                }
+            </select>
+
+        </h3>
+        <div id="toolboxUl" runat="server" class="toolbox-item-list">
+
+            @if (SelectedCategory != null)
+            {
+                foreach (var item in SelectedCategory.Items)
+                {
+                    <div class="toolbox-item wc-layout-handle" data-wc-toolbox-item-name="@item.WidgetTypeCode">
+                        <span class="glyphicon glyphicon-option-vertical">
+                        </span>
+                        @item.Name
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+}
+else
+{
+    <p>Loading toolbox..</p>
+}
+
+@functions
+{
+private List<ToolboxCategory> _categories;
+
+public List<ToolboxCategory> Categories
+{
+    get { return _categories; }
+    set
+    {
+        _categories = value;
+        this.StateHasChanged();
+    }
+}
+
+protected override async Task OnInitAsync()
+{
+    try
+    {
+        var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("api/design/toolbox?pageId=" + Guid.Empty);
+        Categories = toolboxViewModel.ToolboxCategories.ToList();
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        Categories = new List<ToolboxCategory>();
+    }
+}
+
+
+
+public ToolboxCategory SelectedCategory { get; set; }
+
+void CategoryChanged(UIChangeEventArgs dropdownEvent)
+{
+    SelectedCategory = Categories.Single(x => x.CategoryName == dropdownEvent.Value.ToString());
+}
+
+}
