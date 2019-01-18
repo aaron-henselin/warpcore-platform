@@ -23,16 +23,16 @@ else
 @functions {
     [Parameter]
     string pageId{get;set;}
-    Node currentDesign;
+    PreviewNode currentDesign;
+    PageStructure pageStructure;
 
-    string RenderPage(Node design)
-    {
 
-    }
 
     protected override async Task OnInitAsync()
     {
-        currentDesign = await Http.GetJsonAsync<Node>("api/design?pageId="+new Guid(pageId));
+        currentDesign = await Http.GetJsonAsync<PreviewNode>("api/design/"+new Guid(pageId)+"/preview");
+        pageStructure = await Http.GetJsonAsync<PageStructure>("api/design/"+new Guid(pageId)+"/structure");
+
     }
 
     void SiteChanged(UIChangeEventArgs dropdownEvent)
