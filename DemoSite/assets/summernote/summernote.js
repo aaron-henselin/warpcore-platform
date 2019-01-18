@@ -856,7 +856,7 @@ function withClosestSiblings(node, pred) {
  * - [workaround] old IE only works with &nbsp;
  * - [workaround] IE11 and other browser works with bogus br
  */
-var blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+var blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br/>';
 /**
  * @method nodeLength
  *
@@ -885,7 +885,7 @@ function isEmpty(node) {
         return true;
     }
     else if (!isText(node) && len === 1 && node.innerHTML === blankHTML) {
-        // ex) <p><br></p>, <span><br></span>
+        // ex) <p><br/></p>, <span><br/></span>
         return true;
     }
     else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {

@@ -124,7 +124,7 @@ warpcore.page.edit = function () {
 
     //});
 
-    const containers = document.querySelectorAll('wc-droptarget,.toolbox-item-list');
+    const containers = document.querySelectorAll('wc-droptarget.active,.toolbox-item-list');
     [].forEach.call(containers, function (el) {
 
         var pull = true;

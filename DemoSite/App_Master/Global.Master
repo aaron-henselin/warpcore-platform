@@ -85,13 +85,13 @@
           <div class="col-md-3 mb-3">
             <a href="#" class="featured-img">
               <div class="text-1 p-4 d-flex align-items-center">
-                <h3>The Verge<br><span class="tag">Website</span></h3>
+                <h3>The Verge<br/><span class="tag">Website</span></h3>
               </div>
               <img src="images/image_1.jpg" class="img-fluid" alt="">
               <div class="text p-4 d-flex align-items-center">
                 <div class="user d-flex align-items-center">
                   <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                  <h3>John Bruce <br><span class="position">Designer</span></h3>
+                  <h3>John Bruce <br/><span class="position">Designer</span></h3>
                 </div>
               </div>
             </a>
@@ -105,13 +105,13 @@
                   <div class="col-md-8">
                     <a href="#" class="featured-img">
                       <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Racks<br><span class="tag">Website</span></h3>
+                        <h3>Racks<br/><span class="tag">Website</span></h3>
                       </div>
                       <img src="images/image_5.jpg" class="img-fluid" alt="">
                       <div class="text p-4 d-flex align-items-center">
                         <div class="user d-flex align-items-center">
                           <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
+                          <h3>John Bruce <br/><span class="position">Designer</span></h3>
                         </div>
                       </div>
                     </a>
@@ -120,13 +120,13 @@
                   <div class="col-md-4">
                     <a href="#" class="featured-img">
                       <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Zendesk<br><span class="tag">Website</span></h3>
+                        <h3>Zendesk<br/><span class="tag">Website</span></h3>
                       </div>
                       <img src="images/image_4.jpg" class="img-fluid" alt="">
                       <div class="text p-4 d-flex align-items-center">
                         <div class="user d-flex align-items-center">
                           <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
+                          <h3>John Bruce <br/><span class="position">Designer</span></h3>
                         </div>
                       </div>
                     </a>
@@ -140,13 +140,13 @@
                   <div class="col-md-8">
                     <a href="#" class="featured-img">
                       <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Curator<br><span class="tag">Website</span></h3>
+                        <h3>Curator<br/><span class="tag">Website</span></h3>
                       </div>
                       <img src="images/image_6.jpg" class="img-fluid" alt="">
                       <div class="text p-4 d-flex align-items-center">
                         <div class="user d-flex align-items-center">
                           <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
+                          <h3>John Bruce <br/><span class="position">Designer</span></h3>
                         </div>
                       </div>
                     </a>
@@ -154,13 +154,13 @@
                   <div class="col-md-4">
                     <a href="#" class="featured-img">
                       <div class="text-1 p-4 d-flex align-items-center">
-                        <h3>Tasty<br><span class="tag">Website</span></h3>
+                        <h3>Tasty<br/><span class="tag">Website</span></h3>
                       </div>
                       <img src="images/image_3.jpg" class="img-fluid" alt="">
                       <div class="text p-4 d-flex align-items-center">
                         <div class="user d-flex align-items-center">
                           <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                          <h3>John Bruce <br><span class="position">Designer</span></h3>
+                          <h3>John Bruce <br/><span class="position">Designer</span></h3>
                         </div>
                       </div>
                     </a>
@@ -173,13 +173,13 @@
           <div class="col-md-3">
             <a href="#" class="featured-img">
               <div class="text-1 p-4 d-flex align-items-center">
-                <h3>Voyage<br><span class="tag">Website</span></h3>
+                <h3>Voyage<br/><span class="tag">Website</span></h3>
               </div>
               <img src="images/image_2.jpg" class="img-fluid" alt="">
               <div class="text p-4 d-flex align-items-center">
                 <div class="user d-flex align-items-center">
                   <div class="user-img mr-3" style="background-image: url(images/person_1.jpg);"></div>
-                  <h3>John Bruce <br><span class="position">Designer</span></h3>
+                  <h3>John Bruce <br/><span class="position">Designer</span></h3>
                 </div>
               </div>
             </a>

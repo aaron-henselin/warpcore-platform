@@ -1,0 +1,16 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+<wc-substitution data-wc-placeholder-id='@DesignNode.PlaceHolderId'>
+    <wc-droptarget class=@(DesignNode.IsFromLayout ? string.Empty : "active") data-wc-placeholder-id='@DesignNode.PlaceHolderId' data-wc-layout-builder-id='@DesignNode.ContentId'>
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+    </wc-droptarget>
+</wc-substitution>
+
+    @functions {
+    [Parameter]
+    Node DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+        [Parameter]
+        PageDesignEventsDispatcher Dispatcher { get; set; }
+    }

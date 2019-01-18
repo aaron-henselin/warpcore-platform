@@ -51,6 +51,15 @@
     <Content Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.svg" />
     <Content Include="Blazor\BlazorComponents.Client\dist\css\site.css" />
     <Content Include="Blazor\BlazorComponents.Client\dist\index.html" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\Mono.Security.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.IO.FileSystem.Primitives.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Text.RegularExpressions.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Threading.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Threading.Tasks.Extensions.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Xml.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Xml.Linq.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Xml.ReaderWriter.dll" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Xml.XDocument.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\blazor.server.js" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\blazor.webassembly.js" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\wasm\mono.js" />

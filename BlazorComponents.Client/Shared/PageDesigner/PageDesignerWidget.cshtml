@@ -1,0 +1,49 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+@using System.Linq
+<wc-widget-render data-wc-layout='@DesignNode.ChildNodes.Any(x => x.PlaceHolderId != null)' data-wc-page-content-id='@DesignNode.ContentId'>
+    @if (!DesignNode.IsFromLayout)
+    {
+        <li class='StackedListItem StackedListItem--isDraggable wc-layout-handle' tabindex='1'
+            data-wc-page-content-id='@DesignNode.ContentId'>
+            <div class='StackedListContent'>
+                <h4 class='Heading Heading--size4 text-no-select'>
+
+                    <span class='glyphicon glyphicon-cog wc-edit-command configure'
+                          data-wc-widget-type=''
+                          data-wc-editing-command-configure='@DesignNode.ContentId'
+                          onclick=@(e => Dispatcher.Edit(DesignNode.ContentId))>
+                    </span>
+                    <span class='glyphicon glyphicon-remove wc-edit-command delete pull-right'
+                          data-wc-editing-command-delete='@DesignNode.ContentId'
+                          onclick="@(e => Dispatcher.Delete(DesignNode.ContentId))">
+                    </span>
+
+                    @DesignNode.FriendlyName
+                </h4>
+                <div class='DragHandle'></div>
+                <div class='Pattern Pattern--typeHalftone'></div>
+                <div class='Pattern Pattern--typePlaced'></div>
+            </div>
+        </li>
+    }
+    <wc-widget-preview>
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+    </wc-widget-preview>
+</wc-widget-render>
+
+
+@functions {
+[Parameter]
+Node DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+[Parameter]
+PageDesignEventsDispatcher Dispatcher { get; set; }
+
+
+
+}
+
+
+

@@ -2,46 +2,129 @@
 @using BlazorComponents.Shared
 @using System.Linq.Expressions
 @using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 @page "/Pages/{pageId}/Design"
 @inject HttpClient Http
 
 
 
-@if (currentDesign == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <design>
-        @((MarkupString)RenderPage(currentDesign))
-    </design>
-}
+
+<div class="row">
+    <wc-design class="@(Chrome.SideBarMode != SideBarMode.Collapsed ? "col-md-9" : "col-md-12")">
+
+        @if (Chrome.SideBarMode == SideBarMode.Collapsed || Chrome.SideBarMode == SideBarMode.Toolbox)
+        {
+            <wc-sidebar-handle>
+                <a class="handle" onclick=@ToggleSideBar>
+                    <span class="glyphicon glyphicon-wrench"></span>
+                </a>
+            </wc-sidebar-handle>
+        }
+
+        @if (CurrentDesign == null)
+        {
+            <p>
+                <em>Loading design...</em>
+            </p>
+        }
+        else
+        {
+            <PageDesignerWidget DesignNode=@CurrentDesign Dispatcher=@dispatcher />
+        }
+    </wc-design>
+    <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
+        <PageDesignerConfigurator ref="ConfiguratorWidget" />
+    </wc-sidebar>
+    <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Toolbox ? "col-md-3" : "collapse")">
+        <PageDesignerToolBox ref="ToolBoxWidget" />
+    </wc-sidebar>
+
+
+  
+</div>
+
+
 
 
 @functions {
     [Parameter]
     string pageId{get;set;}
-    Node currentDesign;
 
-    string RenderPage(Node design)
-    {
+    PageDesignerToolBox ToolBoxWidget { get; set; }
+    PageDesignerConfigurator ConfiguratorWidget { get; set; }
 
-    }
+    Node CurrentDesign { get; set; }
+
+    DesignerChrome Chrome { get; set; } = DesignerChrome.Default;
+
+    PageDesignEventsDispatcher dispatcher { get; set; }
+
 
     protected override async Task OnInitAsync()
     {
-        currentDesign = await Http.GetJsonAsync<Node>("api/design?pageId="+new Guid(pageId));
+        dispatcher = new PageDesignEventsDispatcher
+        {
+            Edit = contentToEdit =>
+            {
+                this.ConfiguratorWidget.NodeToConfigure = CurrentDesign.FindDescendentNode(contentToEdit);
+            },
+            Delete = contentToDelete =>
+            {
+                CurrentDesign.RemoveDescendentNode(contentToDelete);
+            }
+
+        };
+
+
+
+
+        try
+        {
+            CurrentDesign = await Http.GetJsonAsync<Node>("api/design/page?pageId=" + new Guid(pageId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            var errorPage = new Node{
+                Type = NodeType.Element,
+                FriendlyName = "Error Message",
+                IsFromLayout =true};
+            errorPage.ChildNodes.Add(
+                new Node{Type = NodeType.Html,
+                    Html = "There was an error retrieving the page design."
+
+                });
+
+            CurrentDesign = errorPage;
+        }
+
     }
 
-    void SiteChanged(UIChangeEventArgs dropdownEvent)
+
+    void ToggleSideBar(UIMouseEventArgs toExpand)
     {
-
+        Chrome.SideBarMode = Chrome.SideBarMode == SideBarMode.Collapsed ? SideBarMode.Toolbox : SideBarMode.Collapsed;
+        this.StateHasChanged();
     }
 
-    void ToggleExpand(UIChangeEventArgs toExpand)
-    {
-    }
+ }
 
+
+<style>
+    wc-sidebar-handle {
+        position: absolute;
+        right: 0;
+        background-color: #000000c9;
+        padding: 5px;
+        width: 40px;
+        color: white;
+        font-size: 20px;
     }
+    wc-sidebar.col-md-3 {
+        padding: 0;
+    }
+</style>

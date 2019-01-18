@@ -1,0 +1,15 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+<wc-substitution>
+    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+</wc-substitution>
+
+
+@functions {
+[Parameter]
+Node DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+[Parameter]
+PageDesignEventsDispatcher Dispatcher { get; set; }
+}
