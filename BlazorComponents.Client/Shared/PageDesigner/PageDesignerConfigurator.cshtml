@@ -1,4 +1,6 @@
-﻿@using BlazorComponents.Shared
+﻿@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Shared
 @inject HttpClient Http
 
 <div class="designer wc-configurator">
@@ -18,7 +20,13 @@
             </h3>
 
             <div runat="server" ID="surface" CssClass="wc-configurator-surface">
-
+                @{
+                    var toRender = ConfiguratorStructure.ChildNodes;
+                    foreach (var item in toRender)
+                    {
+                        <FormNode DesignNode=@item Dispatcher=@Dispatcher/>
+                    }
+                }
             </div>
         }
     </div>
@@ -27,20 +35,26 @@
 @functions
 {
 
-private PageStructure ConfiguratorStructure { get; set; }
-public StructureNode NodeToConfigure { get; set; }
+    private PageStructure ConfiguratorStructure { get; set; }
 
-public async Task StartEditing(StructureNode structureNode)
-{
-    NodeToConfigure = structureNode;
-    ConfiguratorStructure = null;
-    this.StateHasChanged();
+    [Parameter]
+    public StructureNode NodeToConfigure { get; set; }
+
+    [Parameter]
+    public FormEventDispatcher Dispatcher { get; set; }
 
 
-    var formApiPath = "api/design/configurator-form/" + structureNode.WidgetTypeCode;
-    ConfiguratorStructure = await Http.GetJsonAsync<PageStructure>(formApiPath);
-    this.StateHasChanged();
-}
+    public async Task StartEditing(StructureNode structureNode)
+    {
+        NodeToConfigure = structureNode;
+        ConfiguratorStructure = null;
+        this.StateHasChanged();
+
+
+        var formApiPath = "api/design/configurator-form/" + structureNode.WidgetTypeCode;
+        ConfiguratorStructure = await Http.GetJsonAsync<PageStructure>(formApiPath);
+        this.StateHasChanged();
+    }
 
 
 }

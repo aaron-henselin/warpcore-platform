@@ -51,6 +51,7 @@
     <Content Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.svg" />
     <Content Include="Blazor\BlazorComponents.Client\dist\css\site.css" />
     <Content Include="Blazor\BlazorComponents.Client\dist\index.html" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\WarpCore.Platform.DataAnnotations.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\Mono.Security.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.IO.FileSystem.Primitives.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Text.RegularExpressions.dll" />

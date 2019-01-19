@@ -71,9 +71,12 @@
         {
             Edit = async(contentToEdit) => 
             {
+                Chrome.SideBarMode = SideBarMode.Configurator;
+                this.StateHasChanged();
+
                 var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
                 await this.ConfiguratorWidget.StartEditing(relatedPageContent);
-
+                this.StateHasChanged();
 
             },
             Delete = contentToDelete =>

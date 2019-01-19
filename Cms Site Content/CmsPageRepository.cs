@@ -229,7 +229,7 @@ namespace WarpCore.Cms
         public string WidgetTypeCode { get; set; }
 
         [SerializedComplexObject]
-        public Dictionary<string,string> Parameters { get; set; }
+        public Dictionary<string,string> Parameters { get; set; } = new Dictionary<string, string>();
 
         [SerializedComplexObject]
         public List<CmsPageContent> AllContent { get; set; } = new List<CmsPageContent>();
