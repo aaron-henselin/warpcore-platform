@@ -447,6 +447,10 @@
       <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
       <Name>Cms Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cms Form Composer\Cms Form Composer.csproj">
+      <Project>{17aff9bf-0959-4022-b745-d154cdaf892d}</Project>
+      <Name>Cms Form Composer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Mvc Rendering Engine\Cms Mvc RenderingEngine.csproj">
       <Project>{894FD5B8-EC87-4E29-A744-09D3513C212C}</Project>
       <Name>Cms Mvc RenderingEngine</Name>

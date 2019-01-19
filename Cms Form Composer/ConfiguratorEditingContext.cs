@@ -23,16 +23,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
     }
 
-    public class ConfiguratorBuildArguments
-    {
-        public IDictionary<string, string> DefaultValues { get; set; }
-        public Type ClrType { get; set; }
-        public Func<PropertyInfo, bool> PropertyFilter { get; set; }
-        public EditingContext ParentEditingContext { get; set; }
 
-        public Guid PageContentId { get; set; }
-        public ConfiguratorEvents Events { get; set; }
-    }
 
     public class ConfiguratorEvents
     {

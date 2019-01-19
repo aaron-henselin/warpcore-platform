@@ -36,15 +36,15 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
 
         [UserInterfaceHint][DisplayName("Display Name")]
-        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
+//        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
 
         [UserInterfaceHint(Editor = Editor.CheckBox)][DisplayName("Required")]
         public bool IsRequired { get; set; }
 
-        [UserInterfaceHint(Editor = Editor.Hidden)]
-        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
+        //[UserInterfaceHint(Editor = Editor.Hidden)]
+        //public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
 
         [DisplayName("Values From Repository")]
         [UserInterfaceHint(Editor = Editor.OptionList)]
@@ -121,15 +121,15 @@ namespace WarpCore.Web.Widgets.FormBuilder
 
         }
 
-        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
-        {
-            _buildArguments = buildArguments;
-            ReloadListOptions(buildArguments.DefaultValues);
+        //public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
+        //{
+        //    _buildArguments = buildArguments;
+        //    ReloadListOptions(buildArguments.DefaultValues);
 
-            buildArguments.Events.ValueChanged += (sender, args) => {
-                ReloadListOptions(args.Model);
-            };
-        }
+        //    buildArguments.Events.ValueChanged += (sender, args) => {
+        //        ReloadListOptions(args.Model);
+        //    };
+        //}
 
 
 

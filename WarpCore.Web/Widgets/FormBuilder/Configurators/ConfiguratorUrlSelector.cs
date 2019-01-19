@@ -38,7 +38,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         /// </summary>
         [UserInterfaceHint]
         [DisplayName("Display name")]
-        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
+        //[UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
 

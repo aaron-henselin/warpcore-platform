@@ -129,13 +129,10 @@
     <Compile Include="Routing\PageCompositionBuilder.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
-    <Compile Include="Widgets\FormBuilder\Support\ConfiguratorFormBuilder.cs" />
-    <Compile Include="Widgets\FormBuilder\Support\CmsFormReadWriter.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\CompositeConfigurator.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorCheckBox.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorDropDownList.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorHiddenField.cs" />
-    <Compile Include="Widgets\FormBuilder\Support\ConfiguratorEditingContext.cs" />
     <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorTextBox.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
@@ -154,7 +151,6 @@
     <Compile Include="ServiceModel\WidgetApiRouteHandler.cs" />
     <Compile Include="WebBootrstrapper.cs" />
     <Compile Include="Widgets\AscxPlaceHolder.cs" />
-    <Compile Include="Widgets\FormBuilder\Support\FormBuilderDataSources.cs" />
     <Compile Include="Widgets\Layout\Column.cs" />
     <Compile Include="Widgets\Content\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
@@ -172,6 +168,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cms Form Composer\Cms Form Composer.csproj">
+      <Project>{17aff9bf-0959-4022-b745-d154cdaf892d}</Project>
+      <Name>Cms Form Composer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7afdb16f-6b42-494b-baf4-42db78a3fabc}</Project>
       <Name>Cms Page Composer</Name>
@@ -235,6 +235,7 @@
     <Folder Include="Models\" />
     <Folder Include="PageCompositor\" />
     <Folder Include="RenderingEngines\" />
+    <Folder Include="Widgets\FormBuilder\Support\" />
     <Folder Include="_EmbeddedResources\" />
   </ItemGroup>
   <PropertyGroup>

@@ -12,6 +12,11 @@ using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
+    public class ConfiguratorBuildArguments
+    {
+        public Type ClrType { get; set; }
+    }
+
     public interface IListControlSource
     {
         IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model);
@@ -42,14 +47,17 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     {
     }
 
+
+
+
     public interface IConfiguratorControl
     {
-        void InitializeEditingContext(ConfiguratorBuildArguments buildArguments);
+        //void InitializeEditingContext(ConfiguratorBuildArguments buildArguments);
         string PropertyName { get; }
         void SetValue(string newValue);
         string GetValue();
         void SetConfiguration(SettingProperty settingProperty);
-        ConfiguratorBehaviorCollection Behaviors { get; }
+        //ConfiguratorBehaviorCollection Behaviors { get; }
     }
 
     public class ContentControlSourceAttribute : Attribute, IListControlSource
@@ -136,22 +144,22 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
     }
 
-    public class ConfiguratorEditingContextHelper
-    {
-        public static Type GetClrType(EditingContext editingContext)
-        {
-            return RepositoryActivator.ActivateRepository<ISupportsCmsForms>(editingContext.DesignContentTypeId).New().GetType();
-        }
+    //public class ConfiguratorEditingContextHelper
+    //{
+    //    public static Type GetClrType(EditingContext editingContext)
+    //    {
+    //        return RepositoryActivator.ActivateRepository<ISupportsCmsForms>(editingContext.DesignContentTypeId).New().GetType();
+    //    }
 
-        public static List<PropertyInfo> PropertiesFilered(ConfiguratorBuildArguments buildArguments)
-        {
-            var t = GetClrType(buildArguments.ParentEditingContext);
-            var propertiesFilered =
-                t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
-                    .ToList();
-            return propertiesFilered;
-        }
-    }
+    //    public static List<PropertyInfo> PropertiesFilered(ConfiguratorBuildArguments buildArguments)
+    //    {
+    //        var t = GetClrType(buildArguments.ParentEditingContext);
+    //        var propertiesFilered =
+    //            t.GetPropertiesFiltered(ToolboxPropertyFilter.SupportsDesigner)
+    //                .ToList();
+    //        return propertiesFilered;
+    //    }
+    //}
 
     public static class PropertyDataSourceHelper
     {
@@ -166,29 +174,29 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
         }
     }
 
-    public class CompositeOnlyPropertiesDataSourceAttribute : Attribute, IListControlSource
-    {
-        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
-        {
-            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
-            var props = propertiesFilered.Where(x =>
-                x.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any());
+    //public class CompositeOnlyPropertiesDataSourceAttribute : Attribute, IListControlSource
+    //{
+    //    public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
+    //    {
+    //        var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
+    //        var props = propertiesFilered.Where(x =>
+    //            x.PropertyType.GetCustomAttributes<CompositeConfiguratorTypeAttribute>().Any());
 
-            foreach (var prop in props)
-            {
-                var metadata = ToolboxMetadataReader.GetPropertyMetadata(prop);
-                var label = PropertyDataSourceHelper.CreateListOptionLabel(metadata);
+    //        foreach (var prop in props)
+    //        {
+    //            var metadata = ToolboxMetadataReader.GetPropertyMetadata(prop);
+    //            var label = PropertyDataSourceHelper.CreateListOptionLabel(metadata);
 
-                yield return new ListOption
-                {
-                    Text=label,
-                    Value = prop.Name
-                };
-            }
-        }
+    //            yield return new ListOption
+    //            {
+    //                Text=label,
+    //                Value = prop.Name
+    //            };
+    //        }
+    //    }
 
 
-    }
+    //}
 
 
     public class FixedOptionListDataSourceAttribute : Attribute, IListControlSource
@@ -213,6 +221,13 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             }
         }
     }
+    [Serializable]
+    public class ListOption
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+
     public class PropertiesAsOptionListSource : Attribute, IListControlSource
     {
         private readonly Type[] _propertyTypes;
@@ -228,12 +243,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             _propertyTypes = propertyTypes;
         }
 
-        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
+        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string, string> model)
         {
-            var propertiesFilered = ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
+            var propertiesFilered = new List<PropertyInfo>();// ConfiguratorEditingContextHelper.PropertiesFilered(buildArguments);
 
             if (_propertyTypes != null)
-                propertiesFilered=propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();
+                propertiesFilered = propertiesFilered.Where(x => _propertyTypes.Contains(x.PropertyType)).ToList();
 
             foreach (var prop in propertiesFilered)
             {

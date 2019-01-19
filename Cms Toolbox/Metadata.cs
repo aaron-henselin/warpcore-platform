@@ -11,12 +11,7 @@ namespace WarpCore.Cms.Toolbox
 
 
 
-    [Serializable]
-    public class ListOption
-    {
-        public string Text { get; set; }
-        public string Value { get; set; }
-    }
+
 
 
 
@@ -25,7 +20,7 @@ namespace WarpCore.Cms.Toolbox
         public PropertyInfo PropertyInfo { get; set; }
         public string DisplayName { get; set; }
         public Editor? Editor { get; set; }
-        public Type ConfiguratorType { get; set; }
+        public string ConfiguratorType { get; set; }
         public List<Type> Behaviors { get; set; }
     }
 

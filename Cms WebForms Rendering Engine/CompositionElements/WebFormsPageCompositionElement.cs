@@ -3,7 +3,8 @@ using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
-    public class WebFormsPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine
+    public class WebFormsPageCompositionElement : PageCompositionElement, 
+        IHandledByWebFormsRenderingEngine
     {
         private readonly System.Web.UI.Page _masterPage;
 

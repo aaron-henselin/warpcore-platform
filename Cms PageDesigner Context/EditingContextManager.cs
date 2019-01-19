@@ -20,7 +20,7 @@ namespace Cms_PageDesigner_Context
         }
 
 
-        private EditingContext CreateEditingContext(IHasSubRenderingPlans hasDesignedLayout)
+        private EditingContext CreateEditingContext(IHasDesignedContent hasDesignedLayout)
         {
             var ec = new EditingContext
             {
@@ -33,7 +33,7 @@ namespace Cms_PageDesigner_Context
             return JsonConvert.DeserializeObject<EditingContext>(raw);
         }
 
-        public EditingContext GetOrCreateEditingContext(IHasSubRenderingPlans hasDesignedLayout)
+        public EditingContext GetOrCreateEditingContext(IHasDesignedContent hasDesignedLayout)
         {
 
             var pageDesignHasNotStarted =

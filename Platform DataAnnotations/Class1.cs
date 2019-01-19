@@ -43,7 +43,7 @@ namespace WarpCore.Platform.DataAnnotations
     {
         public Editor Editor { get; set; }
 
-        public Type CustomEditorType { get; set; }
+        public string CustomEditorType { get; set; }
 
     }
 

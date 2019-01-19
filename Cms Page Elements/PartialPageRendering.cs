@@ -33,6 +33,8 @@ namespace Modules.Cms.Features.Presentation.Page.Elements
         public static InternalLayout Empty => new InternalLayout();
     }
 
+
+
     public interface IHasInternalLayout
     {
       

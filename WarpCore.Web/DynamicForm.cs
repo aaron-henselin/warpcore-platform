@@ -131,17 +131,17 @@ namespace WarpCore.Web
 
             var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
 
-            var configuratorEditingContext = new ConfiguratorBuildArguments
-            {
-                ClrType = draft.GetType(),
-                PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
-                DefaultValues = d
-            };
-            configuratorEditingContext.Events = CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext, _activatedConfigurators).Events;
+            //var configuratorEditingContext = new ConfiguratorBuildArguments
+            //{
+            //    ClrType = draft.GetType(),
+            //    PropertyFilter = ToolboxPropertyFilter.SupportsOrm,
+            //    DefaultValues = d
+            //};
+            //configuratorEditingContext.Events = CmsFormReadWriter.AddEventTracking(surface, configuratorEditingContext, _activatedConfigurators).Events;
 
-            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, configuratorEditingContext);
-            SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
-            CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, configuratorEditingContext);
+            //CmsFormReadWriter.InitializeEditing(_activatedConfigurators, configuratorEditingContext);
+            //SetConfiguratorEditingContextDefaultValuesFromUrl(configuratorEditingContext);
+            //CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, configuratorEditingContext);
 
         }
 
@@ -152,17 +152,17 @@ namespace WarpCore.Web
             //if (!canSetDefaults)
             //    return;
 
-            var defaultValueCollection = _dynamicFormRequest.DefaultValues;
-            foreach (var kvp in defaultValueCollection)
-                configuratorBuildArguments.DefaultValues[kvp.Key] = kvp.Value;
+            //var defaultValueCollection = _dynamicFormRequest.DefaultValues;
+            //foreach (var kvp in defaultValueCollection)
+            //    configuratorBuildArguments.DefaultValues[kvp.Key] = kvp.Value;
 
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
-            eventTracking.RaiseEvents();
-            eventTracking.UpdateEventData();
+            //var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
+            //eventTracking.RaiseEvents();
+            //eventTracking.UpdateEventData();
         }
 
         private WarpCoreEntity GetDraft()

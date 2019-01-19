@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
@@ -17,5 +18,7 @@ namespace WarpCore.Web.RenderingEngines.Mvc
         {
             return (Controller as IHasInternalLayout)?.GetInternalLayout() ?? InternalLayout.Empty;
         }
+
+
     }
 }

@@ -63,6 +63,10 @@
       <Project>{59dd9963-de88-416e-9f78-08c3ad3c484c}</Project>
       <Name>BlazorComponents.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cms Form Composer\Cms Form Composer.csproj">
+      <Project>{17aff9bf-0959-4022-b745-d154cdaf892d}</Project>
+      <Name>Cms Form Composer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
       <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
       <Name>Cms Page Composer</Name>

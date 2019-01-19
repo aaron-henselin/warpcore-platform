@@ -1,0 +1,16 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+@implements IConfiguratorComponent
+
+
+<input type="text" bind="@RawInput"/>
+
+@functions {
+    [Parameter]
+    public ConfiguratorSetup Setup { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [Parameter]
+    public FormEventDispatcher Dispatcher { get; set; }
+
+    private string RawInput { get; set; }
+}

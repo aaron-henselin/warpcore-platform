@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using BlazorComponents.Shared;
+using Cms.Forms;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Sites;
@@ -19,21 +21,55 @@ namespace BackendSiteApi
     public class PageDesignerApiController : ApiController
     {
         [HttpGet]
-        [Route("api/design/page")]
-        public Node Page(Guid pageId)
+        [Route("api/design/page/{pageId}/preview")]
+        public PreviewNode Page(Guid pageId)
         {
             var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
-            var page = new PageCompositionBuilder().CreatePageComposition(draft,PageRenderMode.PageDesigner);
+            var page = new PageCompositionBuilder().CreatePageComposition(draft, PageRenderMode.PageDesigner);
+            var cre = new BatchingFragmentRenderer();
+            var batch = cre.Execute(page, FragmentRenderMode.PageDesigner);
+            var compositor = new RenderFragmentCompositor(page, batch);
+            var treeWriter = new PagePreviewWriter(draft);
+
+            compositor.WriteComposedFragments(FragmentRenderMode.PageDesigner, treeWriter);
+            return treeWriter.RootNode;
+        }
+
+        [HttpPost]
+        [Route("api/design/page/{pageId}/preview")]
+        public PreviewNode Page(Guid pageId, PageStructure pageStructure)
+        {
+            var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
+
+            new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
+
+            var page = new PageCompositionBuilder().CreatePageComposition(draft, PageRenderMode.PageDesigner);
 
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page, FragmentRenderMode.PageDesigner);
             var compositor = new RenderFragmentCompositor(page, batch);
+            var treeWriter = new PagePreviewWriter(draft);
 
-            var treeWriter= new TreeHtmlWriter(draft);
-
-            compositor.WriteComposedFragments(FragmentRenderMode.PageDesigner,treeWriter);
-
+            compositor.WriteComposedFragments(FragmentRenderMode.PageDesigner, treeWriter);
             return treeWriter.RootNode;
+        }
+
+        [HttpGet]
+        [Route("api/design/page/{pageId}/structure")]
+        public PageStructure PageStructure(Guid pageId)
+        {
+            var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
+            return new StructureNodeConverter().GetPageStructure(draft);
+        }
+
+        [HttpGet]
+        [Route("api/design/configurator-form/{widgetTypeCode}")]
+        public PageStructure GetConfiguratorForm(string widgetTypeCode)
+        {
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode);
+            var toolboxItemNativeType = new CmsPageContentActivator().GetToolboxItemNativeType(toolboxItem);
+            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
+            return new StructureNodeConverter().GetPageStructure(defaultForm);
         }
 
         [HttpGet]
@@ -62,24 +98,70 @@ namespace BackendSiteApi
     }
 
 
+    public class StructureNodeConverter
+    {
+        public void ApplyNewStructureToCmsPage(CmsPage draft, PageStructure pageStructure)
+        {
+            draft.PageContent = pageStructure.ChildNodes.Select(ApplyNewStructure).ToList();
+        }
+
+        public CmsPageContent ApplyNewStructure(StructureNode node)
+        {
+            return new CmsPageContent
+            {
+                Id = node.Id,
+                Order = node.Order,
+                PlacementContentPlaceHolderId = node.PlacementContentPlaceHolderId,
+                PlacementLayoutBuilderId = node.PlacementLayoutBuilderId,
+                Parameters = node.Parameters,
+                WidgetTypeCode = node.WidgetTypeCode,
+                AllContent = node.ChildNodes.Select(ApplyNewStructure).ToList()
+            };
+        }
 
 
-    public class TreeHtmlWriter : ComposedHtmlWriter
+        public PageStructure GetPageStructure(IHasDesignedContent draft)
+        {
+            return new PageStructure
+            {
+                ChildNodes = draft.DesignedContent.Select(GetPageStructure).ToList()
+            };
+        }
+
+        private StructureNode GetPageStructure(CmsPageContent content)
+        {
+            var sn = new StructureNode
+            {
+                Id = content.Id,
+                Order = content.Order,
+                Parameters = content.Parameters,
+                PlacementContentPlaceHolderId = content.PlacementContentPlaceHolderId,
+                PlacementLayoutBuilderId = content.PlacementLayoutBuilderId,
+                WidgetTypeCode = content.WidgetTypeCode,
+                ChildNodes = content.AllContent.Select(GetPageStructure).ToList()
+            };
+            return sn;
+        }
+    }
+
+
+
+    public class PagePreviewWriter : ComposedHtmlWriter
     {
         private readonly CmsPage _draft;
 
-        public TreeHtmlWriter(CmsPage draft)
+        public PagePreviewWriter(CmsPage draft)
         {
             _draft = draft;
         }
 
-        private Stack<Node> Node = new Stack<Node>();
+        private Stack<PreviewNode> Node = new Stack<PreviewNode>();
 
-        public Node RootNode { get; set; }
+        public PreviewNode RootNode { get; set; }
 
         public void BeginWriting(CompostedContentMetdata metadata)
         {
-            var nodeToWrite = new Node();
+            var nodeToWrite = new PreviewNode();
             if (Node.Count > 0)
                 CurrentNode.ChildNodes.Add(nodeToWrite);
             else
@@ -106,7 +188,7 @@ namespace BackendSiteApi
         }
 
 
-        private Node CurrentNode => Node.Peek();
+        private PreviewNode CurrentNode => Node.Peek();
 
         private void WriteMetadata()
         {
@@ -132,7 +214,7 @@ namespace BackendSiteApi
 
         public void Write(string html)
         {
-            CurrentNode.ChildNodes.Add(new Node {Type=NodeType.Html,Html=html });
+            CurrentNode.ChildNodes.Add(new PreviewNode {Type=NodeType.Html,Html=html });
         }
     }
 

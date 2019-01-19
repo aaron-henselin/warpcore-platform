@@ -98,14 +98,11 @@ namespace Modules.Cms.Features.Presentation.PageComposition
         public PageCompositionElement ActivateCmsPageContent(PageContent pageContent)
         {
             var parameters = pageContent.Parameters;
-            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
+            var widgetTypeCode = pageContent.WidgetTypeCode;
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode);
 
-            Type toolboxItemType;
-            if (toolboxItem.AscxPath == null)
-                toolboxItemType = Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
-            else
-                toolboxItemType=CompileResourceAtVirtualPath(toolboxItem.AscxPath);
-            
+            var toolboxItemType = GetToolboxItemNativeType(toolboxItem);
+
 
             PageCompositionElement pp;
             var wasCreatedViaCache =_contentContentCacheElementFactory.TryCreateCachedContentElement(toolboxItemType, pageContent, out pp, out var cacheKey);
@@ -124,6 +121,16 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             pp.LayoutBuilderId = pageContent.Id;
 
             return pp;
+        }
+
+        public Type GetToolboxItemNativeType(ToolboxItem toolboxItem)
+        {
+            Type toolboxItemType;
+            if (toolboxItem.AscxPath == null)
+                toolboxItemType = Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
+            else
+                toolboxItemType = CompileResourceAtVirtualPath(toolboxItem.AscxPath);
+            return toolboxItemType;
         }
 
         private IPageCompositionElementFactory GetActivator(Type toolboxItemType)

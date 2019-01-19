@@ -68,29 +68,29 @@ namespace DemoSite
 
         private void RebuildDesignSurface()
         {
-            ConfiguratorFormBuilderRuntimePlaceHolder.DataBind();
-            ConfiguratorFormBuilderRuntimePlaceHolder.Controls.Clear();
+            //ConfiguratorFormBuilderRuntimePlaceHolder.DataBind();
+            //ConfiguratorFormBuilderRuntimePlaceHolder.Controls.Clear();
 
-            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
+            //var toolboxItem = new ToolboxManager().GetToolboxItemByCode(_contentToEdit.WidgetTypeCode);
             
-            var activatedControl = new CmsPageContentActivator().ActivateCmsPageContent(_contentToEdit.ToPresentationElement());
-            var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+            //var activatedControl = new CmsPageContentActivator().ActivateCmsPageContent(_contentToEdit.ToPresentationElement());
+            //var parametersAfterActivation = activatedControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
-            var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
-            _activatedConfigurators = new List<IConfiguratorControl>();// =CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
+            //var cmsForm=ConfiguratorFormBuilder.GenerateDefaultFormForWidget(toolboxItem);
+            //_activatedConfigurators = new List<IConfiguratorControl>();// =CmsPageLayoutEngine.ActivateAndPlaceContent(surface, cmsForm.DesignedContent).OfType<IConfiguratorControl>().ToList();
 
-            var buildArguments = new ConfiguratorBuildArguments
-            {
-                PageContentId = _configuratorControlState.PageContentId,
-                ClrType = activatedControl.GetType(),
-                PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
-                DefaultValues = parametersAfterActivation,
-                ParentEditingContext = new EditingContextManager().GetEditingContext(),
-            };
-            buildArguments.Events = CmsFormReadWriter.AddEventTracking(surface, buildArguments,_activatedConfigurators).Events;
+            //var buildArguments = new ConfiguratorBuildArguments
+            //{
+            //    PageContentId = _configuratorControlState.PageContentId,
+            //    ClrType = activatedControl.GetType(),
+            //    PropertyFilter = ToolboxPropertyFilter.SupportsDesigner,
+            //    DefaultValues = parametersAfterActivation,
+            //    ParentEditingContext = new EditingContextManager().GetEditingContext(),
+            //};
+            //buildArguments.Events = CmsFormReadWriter.AddEventTracking(surface, buildArguments,_activatedConfigurators).Events;
 
-            CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
-            CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, buildArguments);
+            //CmsFormReadWriter.InitializeEditing(_activatedConfigurators, buildArguments);
+            //CmsFormReadWriter.SetDefaultValues(_activatedConfigurators, buildArguments);
 
         }
 
@@ -99,12 +99,12 @@ namespace DemoSite
         {
             base.OnLoad(e);
             
-            if (_configuratorControlState != null)
-            {
-                var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
-                eventTracking.RaiseEvents();
-                eventTracking.UpdateEventData();
-            }
+            //if (_configuratorControlState != null)
+            //{
+            //    var eventTracking = CmsFormReadWriter.GetEventTracking(surface);
+            //    eventTracking.RaiseEvents();
+            //    eventTracking.UpdateEventData();
+            //}
 
 
         }

@@ -25,7 +25,7 @@
             </wc-sidebar-handle>
         }
 
-        @if (CurrentDesign == null)
+        @if (CurrentPreview == null)
         {
             <p>
                 <em>Loading design...</em>
@@ -33,7 +33,7 @@
         }
         else
         {
-            <PageDesignerWidget DesignNode=@CurrentDesign Dispatcher=@dispatcher />
+            <PageDesignerWidget DesignNode=@CurrentPreview Dispatcher=@dispatcher />
         }
     </wc-design>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
@@ -57,7 +57,8 @@
     PageDesignerToolBox ToolBoxWidget { get; set; }
     PageDesignerConfigurator ConfiguratorWidget { get; set; }
 
-    Node CurrentDesign { get; set; }
+    PreviewNode CurrentPreview { get; set; }
+    PageStructure CurrentStructure { get; set; }
 
     DesignerChrome Chrome { get; set; } = DesignerChrome.Default;
 
@@ -68,13 +69,16 @@
     {
         dispatcher = new PageDesignEventsDispatcher
         {
-            Edit = contentToEdit =>
+            Edit = async(contentToEdit) => 
             {
-                this.ConfiguratorWidget.NodeToConfigure = CurrentDesign.FindDescendentNode(contentToEdit);
+                var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
+                await this.ConfiguratorWidget.StartEditing(relatedPageContent);
+
+
             },
             Delete = contentToDelete =>
             {
-                CurrentDesign.RemoveDescendentNode(contentToDelete);
+                CurrentPreview.RemoveDescendentNode(contentToDelete);
             }
 
         };
@@ -84,22 +88,23 @@
 
         try
         {
-            CurrentDesign = await Http.GetJsonAsync<Node>("api/design/page?pageId=" + new Guid(pageId));
+            CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + new Guid(pageId) +"/preview");
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + new Guid(pageId)+"/structure");
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            var errorPage = new Node{
+            var errorPage = new PreviewNode{
                 Type = NodeType.Element,
                 FriendlyName = "Error Message",
                 IsFromLayout =true};
             errorPage.ChildNodes.Add(
-                new Node{Type = NodeType.Html,
+                new PreviewNode{Type = NodeType.Html,
                     Html = "There was an error retrieving the page design."
 
                 });
 
-            CurrentDesign = errorPage;
+            CurrentPreview = errorPage;
         }
 
     }

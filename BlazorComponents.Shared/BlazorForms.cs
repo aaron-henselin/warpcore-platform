@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarpCore.Platform.DataAnnotations;
 
 namespace BlazorComponents.Shared
 {
-    public class BlazorForm
+
+
+    public class ConfiguratorSetup
     {
-        public BlazorFormNode RootNode { get; set; }
+        public string PropertyName { get; set; }
+        public string DisplayName { get; set; }
+        public string PropertyType { get; set; }
+        public Editor Editor { get; set; }
+        public string CustomEditorCode { get; set; }
     }
 
-    public class BlazorFormNode
+    public class ConfiguratorRow
     {
-        public string ControlName { get; set; }
-        public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-
-        public Dictionary<string, List<BlazorFormNode>> ChildContent { get; set; } = new Dictionary<string, List<BlazorFormNode>>();
+        public int NumColumns { get; set; }
     }
-
 
 }

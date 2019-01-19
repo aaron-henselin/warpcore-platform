@@ -6,18 +6,63 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using BlazorComponents.Client.Shared;
+using BlazorComponents.Client.Shared.Forms;
 using BlazorComponents.Client.Shared.PageDesigner;
 using BlazorComponents.Shared;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.JSInterop;
+using WarpCore.Platform.DataAnnotations;
 
 namespace BlazorComponents.Client
 {
+    public interface IConfiguratorComponent
+    {
+        [Parameter]
+        ConfiguratorSetup Setup { get; set; } // Demonstrates how a parent component can supply parameters
+
+        [Parameter]
+        FormEventDispatcher Dispatcher { get; set; }
+
+    }
+
+    public class ConfiguratorActivator : BlazorComponent
+    {
+        [Parameter]
+        public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+        [Parameter]
+        public FormEventDispatcher Dispatcher { get; set; }
+
+        private Type TypeLookup(ConfiguratorSetup setup)
+        {
+            return typeof(FormTextBox);
+        }
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            base.BuildRenderTree(builder);
+
+            var toJson = Json.Serialize(DesignNode.Parameters);
+            var configuration = Json.Deserialize<ConfiguratorSetup>(toJson);
+
+            var t = TypeLookup(configuration);
+            if (!typeof(IConfiguratorComponent).IsAssignableFrom(t))
+                throw new Exception("Not an Iconfiguratorcomponent.");
+
+            var localSeq = 0;
+            builder.OpenComponent(localSeq++,t);
+            builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Setup), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.ConfiguratorSetup>(configuration));
+            builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.FormEventDispatcher>(Dispatcher));
+            builder.CloseComponent();
+        }
+    }
+
     public class PageDesignerChildren : BlazorComponent
     {
         [Parameter]
-        List<Node> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
+        List<PreviewNode> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
 
         [Parameter]
         PageDesignEventsDispatcher Dispatcher { get; set; }
@@ -122,9 +167,10 @@ namespace BlazorComponents.Client
                     var position = Convert.ToInt32(reader.LocalName.Substring("wc-child-".Length));
                     var toRender = DesignNodeCollection[position];
 
+
                     //Console.WriteLine(globalSeq + " BLAZOR OPEN CO");
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
-                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.Node>(toRender));
+                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PageDesignEventsDispatcher>(Dispatcher));
                     builder.CloseComponent();
                     //Console.WriteLine(globalSeq + " BLAZOR CLOSE CO");

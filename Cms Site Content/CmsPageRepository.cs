@@ -17,7 +17,7 @@ namespace WarpCore.Cms
     {
     }
 
-    public interface IHasSubRenderingPlans
+    public interface IHasDesignedContent
     {
         Guid DesignForContentId { get; }
         Guid ContentTypeId { get; }
@@ -39,7 +39,7 @@ namespace WarpCore.Cms
     [Table("cms_page")]
     [WarpCoreEntity(ApiId,TitleProperty =nameof(Name),ContentNameSingular = "Page")]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
-    public class CmsPage : VersionedContentEntity, IHasSubRenderingPlans
+    public class CmsPage : VersionedContentEntity, IHasDesignedContent
     {
         public const string ApiId = "5299865c-8c7c-47e2-8ca0-d7615dde8377";
 

@@ -183,44 +183,44 @@ namespace DemoSite
                 RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
 
-            CmsPageContentBuilder builder = new CmsPageContentBuilder();
+            //CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
-            var twoColumn =
-                builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
-            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-            form.FormContent.Add(twoColumn);
-
-
-            var textboxPageContent =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Name),
-                    DisplayName = "Page Name",
-
-                });
-
-            textboxPageContent.PlacementContentPlaceHolderId = "0";
-
-            var urlSelector =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorUrlSelector()
-                {
-                    PropertyName = nameof(CmsPage.RedirectUri),
-                    DisplayName = "Redirect To",
-
-                });
-
-            textboxPageContent.PlacementContentPlaceHolderId = "0";
-
-            twoColumn.AllContent.Add(textboxPageContent);
-            twoColumn.AllContent.Add(urlSelector);
+            //var twoColumn =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
+            //twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            //form.FormContent.Add(twoColumn);
 
 
-            var siteIdDropdown =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
-                {
-                    PropertyName = nameof(CmsPage.SiteId)
-                });
-            twoColumn.AllContent.Add(siteIdDropdown);
+            //var textboxPageContent =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+            //    {
+            //        PropertyName = nameof(CmsPage.Name),
+            //        DisplayName = "Page Name",
+
+            //    });
+
+            //textboxPageContent.PlacementContentPlaceHolderId = "0";
+
+            //var urlSelector =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorUrlSelector()
+            //    {
+            //        PropertyName = nameof(CmsPage.RedirectUri),
+            //        DisplayName = "Redirect To",
+
+            //    });
+
+            //textboxPageContent.PlacementContentPlaceHolderId = "0";
+
+            //twoColumn.AllContent.Add(textboxPageContent);
+            //twoColumn.AllContent.Add(urlSelector);
+
+
+            //var siteIdDropdown =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
+            //    {
+            //        PropertyName = nameof(CmsPage.SiteId)
+            //    });
+            //twoColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);
@@ -238,32 +238,32 @@ namespace DemoSite
                 RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
 
-            CmsPageContentBuilder builder = new CmsPageContentBuilder();
+            //CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
-            var twoColumn =
-                builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
-            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-            form.FormContent.Add(twoColumn);
-
-
-            var textboxPageContent =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Name),
-                    DisplayName = "Page Name",
-
-                });
-
-            textboxPageContent.PlacementContentPlaceHolderId = "0";
-            twoColumn.AllContent.Add(textboxPageContent);
+            //var twoColumn =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
+            //twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            //form.FormContent.Add(twoColumn);
 
 
-            var siteIdDropdown =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
-                {
-                    PropertyName = nameof(CmsPage.SiteId)
-                });
-            twoColumn.AllContent.Add(siteIdDropdown);
+            //var textboxPageContent =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+            //    {
+            //        PropertyName = nameof(CmsPage.Name),
+            //        DisplayName = "Page Name",
+
+            //    });
+
+            //textboxPageContent.PlacementContentPlaceHolderId = "0";
+            //twoColumn.AllContent.Add(textboxPageContent);
+
+
+            //var siteIdDropdown =
+            //    builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
+            //    {
+            //        PropertyName = nameof(CmsPage.SiteId)
+            //    });
+            //twoColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);
@@ -282,65 +282,65 @@ namespace DemoSite
                 RepositoryUid = new Guid(CmsPageRepository.ApiId),
             };
 
-            
-
-            CmsPageContentBuilder builder = new CmsPageContentBuilder();
-
-            var twoColumn =
-            builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
-            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-            form.FormContent.Add(twoColumn);
-            
-
-            var textboxPageContent =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Name),
-                    DisplayName = "Page Name",
-                    
-                });
-
-            textboxPageContent.PlacementContentPlaceHolderId = "0";
-            twoColumn.AllContent.Add(textboxPageContent);
 
 
-            var layoutDropDown =
-            builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorDropDownList
-            {
-                PropertyName = nameof(CmsPage.LayoutId),
-                DisplayName = "Layout",
-            });
-            layoutDropDown.PlacementContentPlaceHolderId = "1";
-            twoColumn.AllContent.Add(layoutDropDown);
+//            CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
-            var oneColumn =
-builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
-            oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-            form.FormContent.Add(oneColumn);
+//            var twoColumn =
+//            builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
+//            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+//            form.FormContent.Add(twoColumn);
 
-            var keywords =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Keywords),
-                    DisplayName = "Keywords",
-                });
-            keywords.PlacementContentPlaceHolderId = "0";
-            oneColumn.AllContent.Add(keywords);
 
-            var description =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-                {
-                    PropertyName = nameof(CmsPage.Description),
-                    DisplayName = "Description",
-                });
-            oneColumn.AllContent.Add(description);
+//            var textboxPageContent =
+//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+//                {
+//                    PropertyName = nameof(CmsPage.Name),
+//                    DisplayName = "Page Name",
 
-            var siteIdDropdown =
-                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
-                {
-                    PropertyName = nameof(CmsPage.SiteId)
-                });
-            oneColumn.AllContent.Add(siteIdDropdown);
+//                });
+
+//            textboxPageContent.PlacementContentPlaceHolderId = "0";
+//            twoColumn.AllContent.Add(textboxPageContent);
+
+
+//            var layoutDropDown =
+//            builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorDropDownList
+//            {
+//                PropertyName = nameof(CmsPage.LayoutId),
+//                DisplayName = "Layout",
+//            });
+//            layoutDropDown.PlacementContentPlaceHolderId = "1";
+//            twoColumn.AllContent.Add(layoutDropDown);
+
+//            var oneColumn =
+//builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
+//            oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+//            form.FormContent.Add(oneColumn);
+
+//            var keywords =
+//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+//                {
+//                    PropertyName = nameof(CmsPage.Keywords),
+//                    DisplayName = "Keywords",
+//                });
+//            keywords.PlacementContentPlaceHolderId = "0";
+//            oneColumn.AllContent.Add(keywords);
+
+//            var description =
+//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+//                {
+//                    PropertyName = nameof(CmsPage.Description),
+//                    DisplayName = "Description",
+//                });
+//            oneColumn.AllContent.Add(description);
+
+//            var siteIdDropdown =
+//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
+//                {
+//                    PropertyName = nameof(CmsPage.SiteId)
+//                });
+//            oneColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);

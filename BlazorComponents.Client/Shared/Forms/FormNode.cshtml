@@ -1,0 +1,25 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+
+
+@if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
+{
+    <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher />
+}
+
+@if (DesignNode.WidgetTypeCode == "Configurator")
+{
+    <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher/>
+}
+
+
+@functions {
+    [Parameter]
+    public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [Parameter]
+    public FormEventDispatcher Dispatcher { get; set; }
+
+
+}

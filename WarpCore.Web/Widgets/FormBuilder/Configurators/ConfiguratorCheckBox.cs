@@ -41,7 +41,7 @@ namespace WarpCore.Web.Widgets.FormBuilder
         }
 
         [UserInterfaceHint]
-        [UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
+        //[UserInterfaceBehavior(typeof(WhenPropertyNameChangedResetDisplayName))]
         public string DisplayName { get; set; }
 
         [UserInterfaceHint(Editor = Editor.Hidden)]

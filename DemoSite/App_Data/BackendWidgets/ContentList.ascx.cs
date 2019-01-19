@@ -93,7 +93,7 @@ namespace DemoSite
 
         public string PropertyName { get; set; }
 
-        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
+        //public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
     
 
         protected override void OnInit(EventArgs e)
@@ -110,15 +110,15 @@ namespace DemoSite
             this.Controls.Add(_editingField);
         }
 
-        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
-        {
-            var currentRepositoryValue = buildArguments.DefaultValues.Get<Guid>(nameof(ContentList.RepositoryId));
-            var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
-            _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.SupportsOrm);
+        //public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
+        //{
+        //    var currentRepositoryValue = buildArguments.DefaultValues.Get<Guid>(nameof(ContentList.RepositoryId));
+        //    var entityType = RepositoryTypeResolver.ResolveTypeByApiId(currentRepositoryValue);
+        //    _allProperties = ToolboxMetadataReader.ReadProperties(entityType, ToolboxPropertyFilter.SupportsOrm);
 
 
          
-        }
+        //}
 
         private void SetupEditForm()
         {
@@ -174,7 +174,7 @@ namespace DemoSite
         public void SetConfiguration(SettingProperty settingProperty)
         {
             this.PropertyName = settingProperty.PropertyInfo.Name;
-            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
+            //Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
         }
 
         public void SetValue(string newValue)
@@ -199,7 +199,7 @@ namespace DemoSite
         [DataRelation(RepositoryMetadataManager.ApiId)]
         public Guid RepositoryId { get; set; }
 
-        [UserInterfaceHint(CustomEditorType = typeof(ContentListConfigurator))]
+        [UserInterfaceHint(CustomEditorType = nameof(ContentListConfigurator))]
         public ContentListConfiguration Config { get; set; }
 
         //private ContentListControlState _controlState = new ContentListControlState();

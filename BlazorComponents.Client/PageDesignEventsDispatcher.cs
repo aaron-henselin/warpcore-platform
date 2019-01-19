@@ -6,6 +6,10 @@ using BlazorComponents.Shared;
 
 namespace BlazorComponents.Client
 {
+    public class FormEventDispatcher
+    {
+    }
+
     public class PageDesignEventsDispatcher
     {
         public Action<Guid> Edit { get; set; }

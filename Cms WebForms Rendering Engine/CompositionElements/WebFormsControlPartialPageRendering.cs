@@ -1,9 +1,12 @@
-﻿using System.Web.UI;
+﻿using System;
+using System.Web.UI;
 using Modules.Cms.Features.Presentation.Page.Elements;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
 {
-    public class WebFormsControlPageCompositionElement : PageCompositionElement, IHandledByWebFormsRenderingEngine, IHasInternalLayout
+    public class WebFormsControlPageCompositionElement : PageCompositionElement,
+        IHandledByWebFormsRenderingEngine, 
+        IHasInternalLayout
     {
         private readonly Control _activatedWidget;
 
@@ -12,6 +15,11 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.WebForms
             this._activatedWidget = activatedWidget;
             this.LocalId = activatedWidget.ID;
 
+        }
+
+        public Type GetConfigurationType()
+        {
+            return _activatedWidget.GetType();
         }
 
         public Control GetControl()
