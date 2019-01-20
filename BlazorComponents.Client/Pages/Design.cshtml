@@ -67,10 +67,16 @@
 
     protected override async Task OnInitAsync()
     {
+        formEventDispatcher.EditingCancelled += (sender, args) =>
+        {
+            Chrome.SideBarMode = SideBarMode.Collapsed;
+        };
+
         dispatcher = new PageDesignEventsDispatcher
         {
-            Edit = async(contentToEdit) => 
+            Edit = async(contentToEdit) =>
             {
+
                 Chrome.SideBarMode = SideBarMode.Configurator;
                 this.StateHasChanged();
 
@@ -78,8 +84,7 @@
                 if (relatedPageContent == null)
                     throw new Exception("Node with id " + contentToEdit + " could not be found in the current page structure.");
 
-                await this.ConfiguratorWidget.StartEditing(relatedPageContent);
-                this.StateHasChanged();
+                formEventDispatcher.OnStartEditing(relatedPageContent);
 
             },
             Delete = contentToDelete =>

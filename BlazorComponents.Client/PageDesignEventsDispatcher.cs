@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BlazorComponents.Client
 {
+    public class StartEditingArgs : EventArgs
+    {
+        public StructureNode StructureNode { get; set; }
+    }
+
     public class ValueChangedEventArgs
     {
         public string PropertyName { get; set; }
@@ -16,6 +21,8 @@ namespace BlazorComponents.Client
     public class FormEventDispatcher
     {
         public event EventHandler ValueChanged;
+        public event EventHandler<StartEditingArgs> EditingStarted;
+        public event EventHandler EditingCancelled;
 
         public Dictionary<string, string> CurrentValues { get; set; } = new Dictionary<string, string>();
         
@@ -29,6 +36,16 @@ namespace BlazorComponents.Client
                 RegisteredComponents.Add(property, blazorComponent);
             else
                 RegisteredComponents[property] = blazorComponent;
+        }
+
+        public void OnStartEditing(StructureNode node)
+        {
+            EditingStarted?.Invoke(this,new StartEditingArgs{StructureNode = node});
+        }
+
+        public void OnCancelEditing()
+        {
+            EditingCancelled?.Invoke(this,new EventArgs());
         }
     }
 

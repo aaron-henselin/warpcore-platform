@@ -20,11 +20,16 @@
 
     private string RawInput { get; set; }
 
+    public string Value {
+        get { return RawInput; }
+        set { RawInput = value; }
+    }
+
+
+
     protected override void OnParametersSet()
     {
         //base.OnParametersSet();
-
-
         Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
 
         if (Setup == null)
@@ -32,6 +37,8 @@
 
         if (Dispatcher == null)
             throw new Exception("No dispatcher is available, cannot register FormTextBox.");
+
+
 
         Dispatcher.RegisterComponent(Setup.PropertyName,this);
     }

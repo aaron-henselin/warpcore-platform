@@ -25,6 +25,10 @@ namespace BlazorComponents.Client
         [Parameter]
         FormEventDispatcher Dispatcher { get; set; }
 
+        string Value { get; set; }
+
+
+
     }
 
     public class ConfiguratorActivator : BlazorComponent
