@@ -120,13 +120,13 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             
             if (property.ConfiguratorType != null)
             {
-                setup.CustomEditorCode = property.ConfiguratorType;
+                setup.EditorCode = property.ConfiguratorType;
             }
             else
             {
 
                 var editor = GetEditorForSettingProperty(property);
-                setup.Editor = editor;
+                setup.EditorCode = editor.ToString();
             }
 
             var cmsPageContent = new CmsPageContent();

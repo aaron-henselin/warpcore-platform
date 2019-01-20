@@ -12,8 +12,7 @@ namespace BlazorComponents.Shared
         public string PropertyName { get; set; }
         public string DisplayName { get; set; }
         public string PropertyType { get; set; }
-        public Editor Editor { get; set; }
-        public string CustomEditorCode { get; set; }
+        public string EditorCode { get; set; }
     }
 
     public class ConfiguratorRow

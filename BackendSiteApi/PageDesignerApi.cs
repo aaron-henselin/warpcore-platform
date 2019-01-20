@@ -64,13 +64,25 @@ namespace BackendSiteApi
 
         [HttpGet]
         [Route("api/design/configurator-form/{widgetTypeCode}")]
-        public PageStructure GetConfiguratorForm(string widgetTypeCode)
+        public ConfiguratorFormDescription GetConfiguratorForm(string widgetTypeCode)
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode);
             var toolboxItemNativeType = new CmsPageContentActivator().GetToolboxItemNativeType(toolboxItem);
             var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
-            return new StructureNodeConverter().GetPageStructure(defaultForm);
+
+            // new CmsPageContentActivator().GetDefaultContentParameterValues(toolboxItem)
+            //.ToDictionary(x => x.Key, x => x.Value)
+
+            var description =
+                new ConfiguratorFormDescription
+                {
+                    Layout = new StructureNodeConverter().GetPageStructure(defaultForm),
+                    DefaultValues = new Dictionary<string, string>()
+                };
+            return description;
         }
+
+
 
         [HttpGet]
         [Route("api/design/toolbox")]

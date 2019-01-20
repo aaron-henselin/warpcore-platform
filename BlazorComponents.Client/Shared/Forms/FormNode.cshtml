@@ -3,16 +3,17 @@
 @using Microsoft.JSInterop
 
 
-@if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
-{
-    <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher />
-}
+<wc-form-element data-element-type="@DesignNode.WidgetTypeCode">
+    @if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
+    {
+        <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    }
 
-@if (DesignNode.WidgetTypeCode == "Configurator")
-{
-    <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher/>
-}
-
+    @if (DesignNode.WidgetTypeCode == "ConfiguratorElement")
+    {
+        <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher/>
+    }
+</wc-form-element>
 
 @functions {
     [Parameter]

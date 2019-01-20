@@ -6,7 +6,7 @@
 <div class="designer wc-configurator">
 
     <div runat="server" Id="ConfiguratorSideBarBody">
-        @if (ConfiguratorStructure != null)
+        @if (FormDescription != null)
         {
             <h3 style="min-height: 50px;">
                 <small class="pull-right">
@@ -21,9 +21,10 @@
 
             <div runat="server" ID="surface" CssClass="wc-configurator-surface">
                 @{
-                    var toRender = ConfiguratorStructure.ChildNodes;
+                    var toRender = FormDescription.Layout.ChildNodes;
                     foreach (var item in toRender)
                     {
+ 
                         <FormNode DesignNode=@item Dispatcher=@Dispatcher/>
                     }
                 }
@@ -35,24 +36,36 @@
 @functions
 {
 
-    private PageStructure ConfiguratorStructure { get; set; }
+    private ConfiguratorFormDescription FormDescription { get; set; }
+
+    StructureNode NodeToEdit { get; set; }
 
     [Parameter]
-    public StructureNode NodeToConfigure { get; set; }
-
-    [Parameter]
-    public FormEventDispatcher Dispatcher { get; set; }
+    FormEventDispatcher Dispatcher { get; set; }
 
 
-    public async Task StartEditing(StructureNode structureNode)
+    public async Task StartEditing(StructureNode nodeToEdit)
     {
-        NodeToConfigure = structureNode;
-        ConfiguratorStructure = null;
+        if (nodeToEdit == null)
+            throw new ArgumentNullException(nameof(nodeToEdit));
+
+        if (Dispatcher == null)
+            throw new ArgumentNullException(nameof(Dispatcher));
+
+        Console.WriteLine($"[Forms] StartEditing {nodeToEdit.WidgetTypeCode}, id: {nodeToEdit.Id}");
+        Console.WriteLine($"[Forms] Resetting Layout");
+
+        NodeToEdit = nodeToEdit;
+        FormDescription = null;
         this.StateHasChanged();
 
+        Console.WriteLine($"[Forms] Retrieving new form description");
+        var formApiPath = "api/design/configurator-form/" + nodeToEdit.WidgetTypeCode;
+        FormDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
 
-        var formApiPath = "api/design/configurator-form/" + structureNode.WidgetTypeCode;
-        ConfiguratorStructure = await Http.GetJsonAsync<PageStructure>(formApiPath);
+        Console.WriteLine($"[Forms] Setting current values");
+        Dispatcher.CurrentValues = NodeToEdit.Parameters;
+
         this.StateHasChanged();
     }
 

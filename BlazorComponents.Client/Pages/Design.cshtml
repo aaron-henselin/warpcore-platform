@@ -37,7 +37,7 @@
         }
     </wc-design>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
-        <PageDesignerConfigurator ref="ConfiguratorWidget" />
+        <PageDesignerConfigurator ref="ConfiguratorWidget" Dispatcher=@formEventDispatcher />
     </wc-sidebar>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Toolbox ? "col-md-3" : "collapse")">
         <PageDesignerToolBox ref="ToolBoxWidget" />
@@ -62,8 +62,8 @@
 
     DesignerChrome Chrome { get; set; } = DesignerChrome.Default;
 
-    PageDesignEventsDispatcher dispatcher { get; set; }
-
+    PageDesignEventsDispatcher dispatcher  = new PageDesignEventsDispatcher();
+    FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
 
     protected override async Task OnInitAsync()
     {
@@ -75,6 +75,9 @@
                 this.StateHasChanged();
 
                 var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
+                if (relatedPageContent == null)
+                    throw new Exception("Node with id " + contentToEdit + " could not be found in the current page structure.");
+
                 await this.ConfiguratorWidget.StartEditing(relatedPageContent);
                 this.StateHasChanged();
 

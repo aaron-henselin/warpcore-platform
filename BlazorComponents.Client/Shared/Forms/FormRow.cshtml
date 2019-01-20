@@ -10,6 +10,7 @@
         {
             <div class="col-md-@cssSuffix">
                 @{
+                    Console.WriteLine($@"[Forms] Rendering column {i}");
                     var toRender = DesignNode.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i.ToString());
                     foreach (var item in toRender)
                     {

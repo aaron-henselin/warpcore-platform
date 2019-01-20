@@ -40,6 +40,8 @@ namespace BlazorComponents.Client
             return typeof(FormTextBox);
         }
 
+
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             base.BuildRenderTree(builder);
@@ -50,6 +52,8 @@ namespace BlazorComponents.Client
             var t = TypeLookup(configuration);
             if (!typeof(IConfiguratorComponent).IsAssignableFrom(t))
                 throw new Exception("Not an Iconfiguratorcomponent.");
+
+            Console.WriteLine("[Forms] Activating "+ t.FullName);
 
             var localSeq = 0;
             builder.OpenComponent(localSeq++,t);
@@ -71,10 +75,17 @@ namespace BlazorComponents.Client
         {
             base.BuildRenderTree(builder);
 
+            var nonHtmlCount = DesignNodeCollection.Any(x => x.Type != NodeType.Html);
+            var htmlCount = DesignNodeCollection.Count(x => x.Type == NodeType.Html);
+            if (!nonHtmlCount && htmlCount == 1)
+            {
+                builder.AddMarkupContent(0,DesignNodeCollection[0].Html);
+                return;
+            }
 
             var sw = new Stopwatch();
             sw.Start();
-            Console.WriteLine("starting layout");
+            Console.WriteLine("[Page Preview] Rendering Sublayout");
 
             int seq = 0;
             string htmlRaw = string.Empty;
@@ -137,7 +148,8 @@ namespace BlazorComponents.Client
             }
 
             sw.Stop();
-            Console.WriteLine(seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
+            Console.WriteLine("[Page Preview] Finished Sublayout. "+ seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
+            
 
             //Console.WriteLine("preparing to transform: " + htmlDoc.Root?.Name);
             //WriteLayout(builder,htmlDoc);

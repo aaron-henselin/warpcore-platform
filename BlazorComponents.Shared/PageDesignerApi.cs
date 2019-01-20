@@ -85,6 +85,13 @@ namespace BlazorComponents.Shared
         }
     }
 
+
+    public class ConfiguratorFormDescription
+    {
+        public PageStructure Layout { get; set; }
+        public Dictionary<string,string> DefaultValues { get; set; }
+    }
+
     public class PageStructure : IUnrootedTree<StructureNode>
     { 
         public List<StructureNode> ChildNodes { get; set; }

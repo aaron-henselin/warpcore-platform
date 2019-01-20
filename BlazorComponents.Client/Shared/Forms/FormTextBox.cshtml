@@ -3,7 +3,13 @@
 @implements IConfiguratorComponent
 
 
-<input type="text" bind="@RawInput"/>
+
+<div class="form-group">
+    <label>@Setup.DisplayName</label>
+    <input type="text" bind="@RawInput" class="form-control"/>
+</div>
+
+
 
 @functions {
     [Parameter]
@@ -13,4 +19,20 @@
     public FormEventDispatcher Dispatcher { get; set; }
 
     private string RawInput { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+
+
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Setup == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        if (Dispatcher == null)
+            throw new Exception("No dispatcher is available, cannot register FormTextBox.");
+
+        Dispatcher.RegisterComponent(Setup.PropertyName,this);
+    }
 }
