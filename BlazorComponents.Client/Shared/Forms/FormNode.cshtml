@@ -6,12 +6,12 @@
 <wc-form-element data-element-type="@DesignNode.WidgetTypeCode">
     @if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
     {
-        <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher />
+        <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
     }
 
     @if (DesignNode.WidgetTypeCode == "ConfiguratorElement")
     {
-        <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher/>
+        <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
     }
 </wc-form-element>
 
@@ -22,5 +22,6 @@
     [Parameter]
     public FormEventDispatcher Dispatcher { get; set; }
 
-
+    [Parameter]
+    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 }

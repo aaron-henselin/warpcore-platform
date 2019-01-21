@@ -14,7 +14,7 @@
                     var toRender = DesignNode.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i.ToString());
                     foreach (var item in toRender)
                     {
-                        <FormNode DesignNode=@item Dispatcher=@Dispatcher/>
+                        <FormNode DesignNode=@item Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
                     }
                 }
             </div>
@@ -29,4 +29,7 @@
 
     [Parameter]
     public FormEventDispatcher Dispatcher { get; set; }
+
+    [Parameter]
+    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 }

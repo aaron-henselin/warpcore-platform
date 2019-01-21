@@ -14,11 +14,11 @@
                         <span class="glyphicon glyphicon-info-sign">
                         </span> Cancel
                     </button>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" onclick=@SaveOnClick>
                         Save
                     </button>
                 </small>
-                Settings<br />
+                Settings<br/>
             </h3>
 
             <div runat="server" ID="surface" CssClass="wc-configurator-surface">
@@ -26,11 +26,16 @@
                     var toRender = FormDescription.Layout.ChildNodes;
                     foreach (var item in toRender)
                     {
- 
-                        <FormNode DesignNode=@item Dispatcher=@Dispatcher/>
+
+                        <FormNode DesignNode=@item Dispatcher=@Dispatcher ConfiguratorRegistry=@_registry/>
                     }
                 }
             </div>
+
+        }
+        else
+        {
+            <p>loading..</p>
         }
     </div>
 </div>
@@ -38,44 +43,47 @@
 @functions
 {
     [Parameter]
-    public ConfiguratorFormDescription FormDescription { get; set; }
+    ConfiguratorFormDescription FormDescription { get; set; }
 
     [Parameter]
     FormEventDispatcher Dispatcher { get; set; }
 
+    [Parameter]
+    Action CancelChangesAction { get; set; }
+
+    [Parameter]
+    Action<CommittedChangesArgs> CommitChangesAction { get; set; }
+
+    ConfiguratorRegistry _registry = new ConfiguratorRegistry();
+    private Guid _contentId;
+
+    public async Task BeginApplyNewFormLayout(Task<ConfiguratorFormDescription> formDescriptionFactory)
+    {
+        FormDescription = null;
+        FormDescription = await formDescriptionFactory;
+    }
+
+    public void StartNewSession(FormSession session)
+    {
+        _contentId = session.ContentId;
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetValues(session.OriginalValues);
+
+    }
+
     public void CancelOnClick(UIMouseEventArgs args)
     {
-        Dispatcher.CancelEditingSession();
+        CancelChangesAction();
     }
 
-    protected  override  void OnParametersSet()
+    public void SaveOnClick(UIMouseEventArgs args)
     {
-        Dispatcher.EditingCancelled += (sender, args) =>
-        {
-            FormDescription = null;
-        };
+        var readWriter = new CmsFormReadWriter(_registry);
+        if (!readWriter.IsFormValid())
+            return;
 
-
-        //Dispatcher.SessionStarted += async (sender, args) =>
-        //{
-        //    var nodeToEdit = args.Session;
-
-        //    if (nodeToEdit == null)
-        //        throw new ArgumentNullException(nameof(nodeToEdit));
-
-        //    if (Dispatcher == null)
-        //        throw new ArgumentNullException(nameof(Dispatcher));
-
-        //    Console.WriteLine($"[Forms] StartEditing id: {nodeToEdit.ContentId}");
-        //    Console.WriteLine($"[Forms] Setting current values");
-
-        //    Dispatcher.CurrentValues = args.Session.OriginalValues;
-
-        //    this.StateHasChanged();
-        //};
-
+        CommitChangesAction(new CommittedChangesArgs{NewValues = readWriter.GetValues(), ContentId = _contentId});
     }
-
 
 
 

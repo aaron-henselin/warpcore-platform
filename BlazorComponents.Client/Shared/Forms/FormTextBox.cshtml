@@ -18,6 +18,8 @@
     [Parameter]
     public FormEventDispatcher Dispatcher { get; set; }
 
+    [Parameter]
+    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 
     private string TextBoxValue { get; set; }
 
@@ -33,6 +35,8 @@
         }
     }
 
+    public bool IsValid { get { return true; } }
+
 
     protected override void OnParametersSet()
     {
@@ -45,6 +49,6 @@
         if (Dispatcher == null)
             throw new Exception("No dispatcher is available, cannot register FormTextBox.");
 
-        Dispatcher.RegisterComponent(Setup.PropertyName,this);
+        ConfiguratorRegistry.RegisterComponent(Setup.PropertyName,this);
     }
  }
