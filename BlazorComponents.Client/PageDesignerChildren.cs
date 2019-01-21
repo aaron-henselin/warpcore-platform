@@ -25,18 +25,25 @@ namespace BlazorComponents.Client
         [Parameter]
         FormEventDispatcher Dispatcher { get; set; }
 
-       string Value { get; set; }
+        [Parameter]
+        ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 
+        string Value { get; set; }
+
+        bool IsValid { get; }
 
     }
 
     public class ConfiguratorActivator : BlazorComponent
     {
         [Parameter]
-        public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+        StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
         [Parameter]
-        public FormEventDispatcher Dispatcher { get; set; }
+        FormEventDispatcher Dispatcher { get; set; }
+
+        [Parameter]
+        ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 
         private Type TypeLookup(ConfiguratorSetup setup)
         {
@@ -62,6 +69,7 @@ namespace BlazorComponents.Client
             builder.OpenComponent(localSeq++,t);
             builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Setup), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.ConfiguratorSetup>(configuration));
             builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.FormEventDispatcher>(Dispatcher));
+            builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.ConfiguratorRegistry), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<ConfiguratorRegistry>(ConfiguratorRegistry));
             builder.CloseComponent();
         }
     }
@@ -72,7 +80,7 @@ namespace BlazorComponents.Client
         List<PreviewNode> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
 
         [Parameter]
-        PageDesignEventsDispatcher Dispatcher { get; set; }
+        PagePreviewEventsDispatcher Dispatcher { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -186,7 +194,7 @@ namespace BlazorComponents.Client
                     //Console.WriteLine(globalSeq + " BLAZOR OPEN CO");
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
-                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PageDesignEventsDispatcher>(Dispatcher));
+                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PagePreviewEventsDispatcher>(Dispatcher));
                     builder.CloseComponent();
                     //Console.WriteLine(globalSeq + " BLAZOR CLOSE CO");
                     return localSeq;

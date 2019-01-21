@@ -56,6 +56,19 @@ namespace BlazorComponents.Shared
         }
 
 
+        public static void RemoveDescendentNode<T>(this IUnrootedTree<T> tree, Guid id) where T : ITreeNode<T>
+        {
+            foreach (var child in tree.ChildNodes)
+            {
+                var success = RemoveDescendentNode(child, id);
+                if (success)
+                    return;
+            }
+            
+                throw new Exception("Node was not found.");
+
+        }
+
         public static void RemoveDescendentNode<T>(this IRootedTree<T> tree, Guid id) where T : ITreeNode<T>
         {
             var success = RemoveDescendentNode(tree.RootNode, id);

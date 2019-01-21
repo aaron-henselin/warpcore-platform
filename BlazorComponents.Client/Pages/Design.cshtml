@@ -28,16 +28,20 @@
         @if (CurrentPreview == null)
         {
             <p>
-                <em>Loading design...</em>
+                <em>Generating preview..</em>
             </p>
         }
         else
         {
-            <PageDesignerWidget DesignNode=@CurrentPreview Dispatcher=@dispatcher />
+            <PageDesignerWidget DesignNode=@CurrentPreview Dispatcher=@_previewEventsDispatcher />
         }
     </wc-design>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
-        <PageDesignerConfigurator ref="ConfiguratorWidget" Dispatcher=@formEventDispatcher />
+        <PageDesignerConfigurator 
+            ref="ConfiguratorWidget"
+            CancelChangesAction=@CloseSideBar
+            CommitChangesAction=@CommitChanges
+            Dispatcher=@formEventDispatcher />
     </wc-sidebar>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Toolbox ? "col-md-3" : "collapse")">
         <PageDesignerToolBox ref="ToolBoxWidget" />
@@ -62,43 +66,60 @@
 
     DesignerChrome Chrome { get; set; } = DesignerChrome.Default;
 
-    PageDesignEventsDispatcher dispatcher  = new PageDesignEventsDispatcher();
+    PagePreviewEventsDispatcher _previewEventsDispatcher  = new PagePreviewEventsDispatcher();
     FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
+
+    private StructureNode GetStructureNodeById(Guid id)
+    {
+        var relatedPageContent = this.CurrentStructure.FindDescendentNode(id);
+        if (relatedPageContent == null)
+            throw new Exception("Node with id " + id + " could not be found in the current page structure.");
+
+        return relatedPageContent;
+    }
 
     protected override void OnInit()
     {
-        dispatcher = new PageDesignEventsDispatcher
+        _previewEventsDispatcher = new PagePreviewEventsDispatcher
         {
-            Edit = async(contentToEdit) => {
-                var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
-                if (relatedPageContent == null)
-                    throw new Exception("Node with id " + contentToEdit + " could not be found in the current page structure.");
-
-                await BeginExpandSideBarAndStartEditing(relatedPageContent);
-            },
-            Delete = contentToDelete =>
+            Edit = async(contentToEdit) =>
             {
-                CurrentPreview.RemoveDescendentNode(contentToDelete);
+                var node = GetStructureNodeById(contentToEdit);
+                await BeginExpandSideBarAndStartEditing(node);
+            },
+            Delete = async contentToDelete =>
+            {
+                CurrentStructure.RemoveDescendentNode(contentToDelete);
+                await RefreshPagePreviewAsync(new Guid(pageId));
+
             }
         };
     }
 
     protected override async Task OnInitAsync()
     {
-        formEventDispatcher.EditingCancelled += (sender, args) =>
-        {
-            Chrome.SideBarMode = SideBarMode.Collapsed;
-        };
-
-        await BeginRetrievingPagePreview(new Guid(pageId));
+        await RefreshPagePreviewAsync(new Guid(pageId));
     }
 
-    private async Task BeginRetrievingPagePreview(Guid previewPageId)
+
+
+    private async Task RefreshPagePreviewAsync(Guid previewPageId)
     {
+        CurrentPreview = null;
         try
         {
-            CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + previewPageId +"/preview");
-            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + previewPageId +"/structure");
+            if (CurrentStructure == null)
+            {
+                Console.WriteLine($"[Design Page] Downloading first-time preview for page {previewPageId}");
+                CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview");
+                CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + previewPageId + "/structure");
+            }
+            else
+            {
+                Console.WriteLine($"[Design Page] Downloading updated preview for {previewPageId}");
+                CurrentPreview = await Http.PostJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview",CurrentStructure);
+            }
+            this.StateHasChanged();
         }
         catch (Exception e)
         {
@@ -117,6 +138,24 @@
         }
     }
 
+    private async void CommitChanges(CommittedChangesArgs args)
+    {
+        Console.WriteLine($"[Design Page] Applying configuration changes to node {args.ContentId}");
+
+        var node = GetStructureNodeById(args.ContentId);
+        foreach (var kvp in args.NewValues)
+            node.Parameters[kvp.Key] = kvp.Value;
+
+        CloseSideBar();
+        await RefreshPagePreviewAsync(new Guid(pageId));
+    }
+
+    private void CloseSideBar()
+    {
+        Chrome.SideBarMode = SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
     private async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
     {
         Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
@@ -126,10 +165,10 @@
         //(1) Set up form layout
         /////////////////////////////////
         Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
-        ConfiguratorWidget.FormDescription = null;
-        var formDescription = await RetrieveConfiguratorSidebarLayoutAsync(relatedPageContent.WidgetTypeCode);
+
+        await ConfiguratorWidget.BeginApplyNewFormLayout(RetrieveConfiguratorSidebarLayoutAsync(relatedPageContent.WidgetTypeCode));
+
         Console.WriteLine($"[Design Page] Applying new form layout.");
-        ConfiguratorWidget.FormDescription = formDescription;
         this.StateHasChanged();
 
         //(2) set up new form session
@@ -139,7 +178,7 @@
             ContentId = relatedPageContent.Id,
             OriginalValues = relatedPageContent.Parameters
         };
-        formEventDispatcher.StartNewSession(session);
+        ConfiguratorWidget.StartNewSession(session);
     }
 
     private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
@@ -171,6 +210,6 @@
         font-size: 20px;
     }
     wc-sidebar.col-md-3 {
-        padding: 0;
+        padding-left: 0;
     }
 </style>
