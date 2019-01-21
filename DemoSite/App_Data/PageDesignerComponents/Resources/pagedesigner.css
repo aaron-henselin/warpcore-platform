@@ -147,7 +147,7 @@
 
 wc-droptarget {
     display: block;
-    min-height: 100px;
+    min-height: 10px;
     border: 1px dashed #efefef;
     transition-property: height;
     transition-duration: 1s;

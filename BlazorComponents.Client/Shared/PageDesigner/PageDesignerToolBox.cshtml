@@ -47,7 +47,7 @@
             {
                 foreach (var item in SelectedCategory.Items)
                 {
-                    <div class="toolbox-item wc-layout-handle" data-wc-toolbox-item-name="@item.WidgetTypeCode">
+                    <div draggable="true" class="toolbox-item wc-layout-handle" data-wc-toolbox-item-name="@item.WidgetTypeCode">
                         <span class="glyphicon glyphicon-option-vertical">
                         </span>
                         @item.Name
