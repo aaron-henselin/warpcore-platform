@@ -37,17 +37,15 @@
 
 @functions
 {
-
-    private ConfiguratorFormDescription FormDescription { get; set; }
-
-    StructureNode NodeToEdit { get; set; }
+    [Parameter]
+    public ConfiguratorFormDescription FormDescription { get; set; }
 
     [Parameter]
     FormEventDispatcher Dispatcher { get; set; }
 
     public void CancelOnClick(UIMouseEventArgs args)
     {
-        Dispatcher.OnCancelEditing();
+        Dispatcher.CancelEditingSession();
     }
 
     protected  override  void OnParametersSet()
@@ -55,34 +53,26 @@
         Dispatcher.EditingCancelled += (sender, args) =>
         {
             FormDescription = null;
-            NodeToEdit = null;
         };
-        Dispatcher.EditingStarted += async (sender, args) =>
-        {
-            var nodeToEdit = args.StructureNode;
 
-            if (nodeToEdit == null)
-                throw new ArgumentNullException(nameof(nodeToEdit));
 
-            if (Dispatcher == null)
-                throw new ArgumentNullException(nameof(Dispatcher));
+        //Dispatcher.SessionStarted += async (sender, args) =>
+        //{
+        //    var nodeToEdit = args.Session;
 
-            Console.WriteLine($"[Forms] StartEditing {nodeToEdit.WidgetTypeCode}, id: {nodeToEdit.Id}");
-            Console.WriteLine($"[Forms] Resetting Layout");
+        //    if (nodeToEdit == null)
+        //        throw new ArgumentNullException(nameof(nodeToEdit));
 
-            NodeToEdit = nodeToEdit;
-            FormDescription = null;
-            this.StateHasChanged();
+        //    if (Dispatcher == null)
+        //        throw new ArgumentNullException(nameof(Dispatcher));
 
-            Console.WriteLine($"[Forms] Retrieving new form description");
-            var formApiPath = "api/design/configurator-form/" + nodeToEdit.WidgetTypeCode;
-            FormDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
+        //    Console.WriteLine($"[Forms] StartEditing id: {nodeToEdit.ContentId}");
+        //    Console.WriteLine($"[Forms] Setting current values");
 
-            Console.WriteLine($"[Forms] Setting current values");
-            Dispatcher.CurrentValues = NodeToEdit.Parameters;
+        //    Dispatcher.CurrentValues = args.Session.OriginalValues;
 
-            this.StateHasChanged();
-        };
+        //    this.StateHasChanged();
+        //};
 
     }
 

@@ -9,7 +9,13 @@ namespace BlazorComponents.Client
 {
     public class StartEditingArgs : EventArgs
     {
-        public StructureNode StructureNode { get; set; }
+        public FormSession Session { get; set; }
+    }
+
+    public class FormSession
+    {
+        public Guid ContentId { get; set; }
+        public Dictionary<string,string> OriginalValues { get; set; }
     }
 
     public class ValueChangedEventArgs
@@ -21,16 +27,15 @@ namespace BlazorComponents.Client
     public class FormEventDispatcher
     {
         public event EventHandler ValueChanged;
-        public event EventHandler<StartEditingArgs> EditingStarted;
+        //public event EventHandler<StartEditingArgs> SessionStarted;
         public event EventHandler EditingCancelled;
-
-        public Dictionary<string, string> CurrentValues { get; set; } = new Dictionary<string, string>();
+        
         
         public Dictionary<string, IConfiguratorComponent> RegisteredComponents { get; set; } = new Dictionary<string, IConfiguratorComponent>();
 
         public void RegisterComponent(string property, IConfiguratorComponent blazorComponent)
         {
-            Console.WriteLine($@"Registering blazor form control {blazorComponent.Setup.EditorCode} for {property}");
+            Console.WriteLine($@"[Forms] Registering blazor form control {blazorComponent.Setup.EditorCode} for {property}");
 
             if (!RegisteredComponents.ContainsKey(property))
                 RegisteredComponents.Add(property, blazorComponent);
@@ -38,14 +43,39 @@ namespace BlazorComponents.Client
                 RegisteredComponents[property] = blazorComponent;
         }
 
-        public void OnStartEditing(StructureNode node)
+        public void StartNewSession(FormSession session)
         {
-            EditingStarted?.Invoke(this,new StartEditingArgs{StructureNode = node});
+            SetControlValuesFromOriginalValues(session);
+          //  SessionStarted?.Invoke(this, new StartEditingArgs { Session = session });
         }
 
-        public void OnCancelEditing()
+        private void SetControlValuesFromOriginalValues(FormSession session)
+        {
+            var propertyNames = RegisteredComponents.Keys;
+            foreach (var propertyName in propertyNames)
+            {
+                if (session.OriginalValues.ContainsKey(propertyName))
+                {
+                    var originalValue = session.OriginalValues[propertyName];
+                    Console.WriteLine($"[Forms] Setting {propertyName} to original value '{originalValue}'");
+                    RegisteredComponents[propertyName].Value = originalValue;
+                }
+                else
+                {
+                    Console.WriteLine($"[Forms] No value is available for component {propertyName}.");
+                    RegisteredComponents[propertyName].Value = null;
+                }
+            }
+        }
+
+        public void CancelEditingSession()
         {
             EditingCancelled?.Invoke(this,new EventArgs());
+        }
+
+        public void RaiseValueChanged(string property)
+        {
+
         }
     }
 

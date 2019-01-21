@@ -6,7 +6,7 @@
 
 <div class="form-group">
     <label>@Setup.DisplayName</label>
-    <input type="text" bind="@RawInput" class="form-control"/>
+    <input type="text" bind="@TextBoxValue" class="form-control" />
 </div>
 
 
@@ -18,13 +18,20 @@
     [Parameter]
     public FormEventDispatcher Dispatcher { get; set; }
 
-    private string RawInput { get; set; }
+
+    private string TextBoxValue { get; set; }
 
     public string Value {
-        get { return RawInput; }
-        set { RawInput = value; }
+        get
+        {
+            return TextBoxValue;
+        }
+        set
+        {
+            TextBoxValue = value;
+            this.StateHasChanged();
+        }
     }
-
 
 
     protected override void OnParametersSet()
@@ -38,8 +45,6 @@
         if (Dispatcher == null)
             throw new Exception("No dispatcher is available, cannot register FormTextBox.");
 
-
-
         Dispatcher.RegisterComponent(Setup.PropertyName,this);
     }
-}
+ }

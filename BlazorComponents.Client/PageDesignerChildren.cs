@@ -25,8 +25,7 @@ namespace BlazorComponents.Client
         [Parameter]
         FormEventDispatcher Dispatcher { get; set; }
 
-        string Value { get; set; }
-
+       string Value { get; set; }
 
 
     }

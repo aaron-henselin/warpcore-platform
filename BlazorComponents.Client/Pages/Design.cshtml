@@ -65,6 +65,24 @@
     PageDesignEventsDispatcher dispatcher  = new PageDesignEventsDispatcher();
     FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
 
+    protected override void OnInit()
+    {
+        dispatcher = new PageDesignEventsDispatcher
+        {
+            Edit = async(contentToEdit) => {
+                var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
+                if (relatedPageContent == null)
+                    throw new Exception("Node with id " + contentToEdit + " could not be found in the current page structure.");
+
+                await BeginExpandSideBarAndStartEditing(relatedPageContent);
+            },
+            Delete = contentToDelete =>
+            {
+                CurrentPreview.RemoveDescendentNode(contentToDelete);
+            }
+        };
+    }
+
     protected override async Task OnInitAsync()
     {
         formEventDispatcher.EditingCancelled += (sender, args) =>
@@ -72,35 +90,15 @@
             Chrome.SideBarMode = SideBarMode.Collapsed;
         };
 
-        dispatcher = new PageDesignEventsDispatcher
-        {
-            Edit = async(contentToEdit) =>
-            {
+        await BeginRetrievingPagePreview(new Guid(pageId));
+    }
 
-                Chrome.SideBarMode = SideBarMode.Configurator;
-                this.StateHasChanged();
-
-                var relatedPageContent = this.CurrentStructure.FindDescendentNode(contentToEdit);
-                if (relatedPageContent == null)
-                    throw new Exception("Node with id " + contentToEdit + " could not be found in the current page structure.");
-
-                formEventDispatcher.OnStartEditing(relatedPageContent);
-
-            },
-            Delete = contentToDelete =>
-            {
-                CurrentPreview.RemoveDescendentNode(contentToDelete);
-            }
-
-        };
-
-
-
-
+    private async Task BeginRetrievingPagePreview(Guid previewPageId)
+    {
         try
         {
-            CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + new Guid(pageId) +"/preview");
-            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + new Guid(pageId)+"/structure");
+            CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + previewPageId +"/preview");
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + previewPageId +"/structure");
         }
         catch (Exception e)
         {
@@ -117,9 +115,41 @@
 
             CurrentPreview = errorPage;
         }
-
     }
 
+    private async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
+    {
+        Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
+        Chrome.SideBarMode = SideBarMode.Configurator;
+        this.StateHasChanged();
+
+        //(1) Set up form layout
+        /////////////////////////////////
+        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
+        ConfiguratorWidget.FormDescription = null;
+        var formDescription = await RetrieveConfiguratorSidebarLayoutAsync(relatedPageContent.WidgetTypeCode);
+        Console.WriteLine($"[Design Page] Applying new form layout.");
+        ConfiguratorWidget.FormDescription = formDescription;
+        this.StateHasChanged();
+
+        //(2) set up new form session
+        //////////////////////////////////
+        var session = new FormSession
+        {
+            ContentId = relatedPageContent.Id,
+            OriginalValues = relatedPageContent.Parameters
+        };
+        formEventDispatcher.StartNewSession(session);
+    }
+
+    private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
+    {
+        Console.WriteLine($"[Design Page] Retrieving new form description");
+        var formApiPath = "api/design/configurator-form/" + widgetTypeCode;
+        var formDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
+        return formDescription;
+
+    }
 
     void ToggleSideBar(UIMouseEventArgs toExpand)
     {
