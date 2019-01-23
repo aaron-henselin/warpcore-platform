@@ -4,22 +4,22 @@
 
 @if (DesignNode.Type == NodeType.Element)
 {
-    <PageDesignerWidget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    <PageDesignerWidget DesignNode=@DesignNode  />
 
     @if (Position != ChildPosition.Last)
     {
-        <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+        <PageDesignerDropTarget DesignNode=@DesignNode />
     }
 }
 
 @if (DesignNode.Type == NodeType.LayoutSubtitution)
 {
-    <PageDesignerLayoutSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    <PageDesignerLayoutSubstitution DesignNode=@DesignNode />
 }
 
 @if (DesignNode.Type == NodeType.GlobalSubstitution)
 {
-    <PageDesignerGlobalSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    <PageDesignerGlobalSubstitution DesignNode=@DesignNode  />
 
 }
 
@@ -28,7 +28,7 @@
     [Parameter]
     public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
+    [CascadingParameter]
     public PagePreviewEventsDispatcher Dispatcher { get; set; }
 
     [Parameter]

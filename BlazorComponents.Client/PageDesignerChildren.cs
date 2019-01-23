@@ -79,8 +79,8 @@ namespace BlazorComponents.Client
         [Parameter]
         List<PreviewNode> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
 
-        [Parameter]
-        PagePreviewEventsDispatcher Dispatcher { get; set; }
+        [CascadingParameter]
+        protected PagePreviewEventsDispatcher Dispatcher { get; set; }
 
         private string CreateLayoutHtml()
         {
@@ -103,6 +103,9 @@ namespace BlazorComponents.Client
         {
             base.BuildRenderTree(builder);
 
+            if (!DesignNodeCollection.Any())
+                return;
+
             var nonHtmlCount = DesignNodeCollection.Any(x => x.Type != NodeType.Html);
             var htmlCount = DesignNodeCollection.Count(x => x.Type == NodeType.Html);
             if (!nonHtmlCount && htmlCount == 1)
@@ -110,6 +113,8 @@ namespace BlazorComponents.Client
                 builder.AddMarkupContent(0,DesignNodeCollection[0].Html);
                 return;
             }
+
+
 
             var sw = new Stopwatch();
             sw.Start();
@@ -194,7 +199,7 @@ namespace BlazorComponents.Client
                 {
                     var position = Convert.ToInt32(reader.LocalName.Substring("wc-child-".Length));
                     var toRender = DesignNodeCollection[position];
- 
+
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PagePreviewEventsDispatcher>(Dispatcher));

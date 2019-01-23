@@ -31,7 +31,7 @@
         </li>
     }
     <wc-widget-preview>
-        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
     </wc-widget-preview>
 </wc-widget-render>
 
@@ -40,8 +40,8 @@
 [Parameter]
 PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-[Parameter]
-PagePreviewEventsDispatcher Dispatcher { get; set; }
+[CascadingParameter]
+protected PagePreviewEventsDispatcher Dispatcher { get; set; }
 
     void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
     {

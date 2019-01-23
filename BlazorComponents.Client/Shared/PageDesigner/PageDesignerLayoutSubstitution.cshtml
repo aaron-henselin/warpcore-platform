@@ -3,13 +3,19 @@
 
 <wc-substitution class="@_hoverClass"
                  ondragenter="@(e => OnSubstitutionDragEnter(e))"
-                 ondragleave="@(e => OnSubstitutionDragLeave(e))">
+                 ondragleave="@(e => OnSubstitutionDragLeave(e))"
+                 data-id1="@DesignNode.ContentId"
+                 data-id2="@DesignNode.PlaceHolderId">
 
-    <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    <PageDesignerDropTarget DesignNode=@DesignNode />
 
-    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
 
-    <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    @if (DesignNode.ChildNodes.Any())
+    {
+        <PageDesignerDropTarget DesignNode=@DesignNode/>
+    }
+
 
 </wc-substitution>
 
@@ -17,8 +23,8 @@
     [Parameter]
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
-    PagePreviewEventsDispatcher Dispatcher { get; set; }
+    [CascadingParameter]
+    protected PagePreviewEventsDispatcher Dispatcher { get; set; }
 
     private string _hoverClass = "";
 

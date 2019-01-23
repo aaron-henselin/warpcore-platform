@@ -27,13 +27,17 @@
 
         @if (CurrentPreview == null)
         {
+            <Loader/>
             <p>
                 <em>Generating preview..</em>
             </p>
         }
         else
         {
-            <PageDesignerWidget DesignNode=@CurrentPreview Dispatcher=@_previewEventsDispatcher />
+            <CascadingValue Value=@_previewEventsDispatcher>
+                <PageDesignerWidget DesignNode=@CurrentPreview  />
+            </CascadingValue>
+            
         }
     </wc-design>
     <wc-sidebar class="@(Chrome.SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
@@ -63,7 +67,6 @@
 
     PreviewNode CurrentPreview { get; set; }
     PageStructure CurrentStructure { get; set; }
-
     DesignerChrome Chrome { get; set; } = DesignerChrome.Default;
 
     PagePreviewEventsDispatcher _previewEventsDispatcher  = new PagePreviewEventsDispatcher();
@@ -94,6 +97,7 @@
 
             }
         };
+        
     }
 
     protected override async Task OnInitAsync()
@@ -199,29 +203,3 @@
  }
 
 
-<style>
-
-    wc-droptarget {
-        display: block;
-        min-height: 20px;
-        border: 1px dotted #efefef;
-        transition-property: height;
-        transition-duration: 1s;
-    }
-
-    wc-substitution.hover wc-droptarget {
-        min-height:20px;
-    }
-    wc-sidebar-handle {
-        position: absolute;
-        right: 0;
-        background-color: #000000c9;
-        padding: 5px;
-        width: 40px;
-        color: white;
-        font-size: 20px;
-    }
-    wc-sidebar.col-md-3 {
-        padding-left: 0;
-    }
-</style>

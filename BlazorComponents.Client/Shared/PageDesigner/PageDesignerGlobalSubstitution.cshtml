@@ -2,7 +2,7 @@
 @using BlazorComponents.Shared
 
 <wc-substitution>
-    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
+    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
 </wc-substitution>
 
 
@@ -10,7 +10,7 @@
     [Parameter]
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
-    PagePreviewEventsDispatcher Dispatcher { get; set; }
+    [CascadingParameter]
+    protected PagePreviewEventsDispatcher Dispatcher { get; set; }
 
 }

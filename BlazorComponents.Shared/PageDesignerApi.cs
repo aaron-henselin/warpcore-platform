@@ -142,7 +142,11 @@ namespace BlazorComponents.Shared
 
         public Dictionary<string,string> Parameters { get; set; } = new Dictionary<string, string>();
         public string PlaceHolderId { get; set; }
+    }
 
-
+    public class LayoutPosition
+    {
+        public Guid ContentId { get; set; }
+        public string PlaceHolderId { get; set; }
     }
 }
