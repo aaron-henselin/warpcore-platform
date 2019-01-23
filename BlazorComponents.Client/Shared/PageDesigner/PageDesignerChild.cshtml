@@ -3,20 +3,25 @@
 
 
 @if (DesignNode.Type == NodeType.Element)
-        {
-<PageDesignerWidget DesignNode=@DesignNode Dispatcher=@Dispatcher />
-        }
+{
+    <PageDesignerWidget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+
+    @if (Position != ChildPosition.Last)
+    {
+        <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+    }
+}
 
 @if (DesignNode.Type == NodeType.LayoutSubtitution)
-        {
-<PageDesignerLayoutSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
-        }
+{
+    <PageDesignerLayoutSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+}
 
 @if (DesignNode.Type == NodeType.GlobalSubstitution)
-        {
-<PageDesignerGlobalSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
+{
+    <PageDesignerGlobalSubstitution DesignNode=@DesignNode Dispatcher=@Dispatcher />
 
-        }
+}
 
 
 @functions {
@@ -25,6 +30,10 @@
 
     [Parameter]
     public PagePreviewEventsDispatcher Dispatcher { get; set; }
+
+    [Parameter]
+    public ChildPosition Position { get; set; }
+
 
 
 }

@@ -1,0 +1,61 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+
+<wc-droptarget class=@(DesignNode.IsFromLayout ? string.Empty : "active")
+               style="@(_highlightDropTargetStyle+" "+_activateDropTargetStyle)"
+               dropzone="move"
+               ondragenter="@(e => OnContainerDragEnter(e))"
+               ondrop="@(e => OnContainerDrop(e))"
+               ondragover="event.preventDefault();"
+               ondragleave="@(e => OnContainerDragLeave(e))">
+
+    &nbsp;@_dropText
+
+</wc-droptarget>
+
+@functions {
+    [Parameter]
+    public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [Parameter]
+    public PagePreviewEventsDispatcher Dispatcher { get; set; }
+
+    [Parameter]
+    public ChildPosition Position { get; set; }
+
+
+        string _highlightDropTargetStyle = string.Empty;
+        string _activateDropTargetStyle = string.Empty;
+        string _dropText = "";
+
+        void OnSubstitutionDragEnter(UIDragEventArgs e)
+        {
+            _activateDropTargetStyle = "min-height:100px;border: 1px dashed #efefef;transition-property: height;transition-duration: 1s;";
+        }
+
+        void OnSubstitutionDragLeave(UIDragEventArgs e)
+        {
+            _activateDropTargetStyle = String.Empty;
+        }
+
+        void OnContainerDragEnter(UIDragEventArgs e)
+        {
+            _highlightDropTargetStyle = "border:5px dashed salmon !important";
+            _dropText = "Add Here.";
+        }
+
+        void OnContainerDragLeave(UIDragEventArgs e)
+        {
+            _highlightDropTargetStyle = String.Empty;
+            _dropText = "";
+        }
+
+        void OnContainerDrop(UIDragEventArgs e)
+        {
+            _highlightDropTargetStyle = null;
+
+            Console.WriteLine("[Page Preview] Drag Drop completed");
+        }
+
+}

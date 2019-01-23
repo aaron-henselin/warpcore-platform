@@ -1,58 +1,36 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Shared
 
-<wc-substitution data-wc-placeholder-id='@DesignNode.PlaceHolderId' 
+<wc-substitution class="@_hoverClass"
                  ondragenter="@(e => OnSubstitutionDragEnter(e))"
-                 ondragover="event.preventDefault();"
-                 ondragleave="@(e => OnSubstitutionDragEnter(e))"
-                 >
+                 ondragleave="@(e => OnSubstitutionDragLeave(e))">
 
-    <wc-droptarget class=@(DesignNode.IsFromLayout ? string.Empty : "active")
-                   data-wc-placeholder-id='@DesignNode.PlaceHolderId'
-                   data-wc-layout-builder-id='@DesignNode.ContentId'
-                   style="@(_highlightDropTargetStyle+" "+_activateDropTargetStyle)"
-                   dropzone="move" ondragenter="@(e => OnContainerDragEnter(e))"
-                   ondragover="event.preventDefault();"
-                   ondragleave="@(e => OnContainerDragLeave(e))"></wc-droptarget>
+    <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
 
-    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher/>
+    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes Dispatcher=@Dispatcher />
 
-    <wc-droptarget class=@(DesignNode.IsFromLayout ? string.Empty : "active")
-                   data-wc-placeholder-id='@DesignNode.PlaceHolderId'
-                   data-wc-layout-builder-id='@DesignNode.ContentId'
-                   style="@(_highlightDropTargetStyle+" "+_activateDropTargetStyle)"
-                   dropzone="move" ondragenter="@(e => OnContainerDragEnter(e))"
-                   ondragover="event.preventDefault();"
-                   ondragleave="@(e => OnContainerDragLeave(e))"></wc-droptarget>
+    <PageDesignerDropTarget DesignNode=@DesignNode Dispatcher=@Dispatcher />
+
 </wc-substitution>
 
-    @functions {
+@functions {
     [Parameter]
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-        [Parameter]
-        PagePreviewEventsDispatcher Dispatcher { get; set; }
+    [Parameter]
+    PagePreviewEventsDispatcher Dispatcher { get; set; }
 
-        string _highlightDropTargetStyle = string.Empty;
-        string _activateDropTargetStyle = string.Empty;
+    private string _hoverClass = "";
 
-        void OnSubstitutionDragEnter(UIDragEventArgs e)
-        {
-            _activateDropTargetStyle = "min-height:10px;border: 1px dashed #efefef;transition-property: height;transition-duration: 1s;";
-        }
-
-        void OnSubstitutionDragLeave(UIDragEventArgs e)
-        {
-            _activateDropTargetStyle = String.Empty;
-        }
-
-        void OnContainerDragEnter(UIDragEventArgs e)
-        {
-            _highlightDropTargetStyle = "border:5px dashed salmon !important";
-        }
-
-        void OnContainerDragLeave(UIDragEventArgs e)
-        {
-            _highlightDropTargetStyle = String.Empty;
-        }
+    void OnSubstitutionDragEnter(UIDragEventArgs e)
+    {
+        _hoverClass="hover";
     }
+
+    void OnSubstitutionDragLeave(UIDragEventArgs e)
+    {
+        _hoverClass="";
+    }
+
+
+}

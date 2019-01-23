@@ -26,6 +26,9 @@
     <Content Update="Shared\Forms\FormRow.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Shared\PageDesigner\PageDesignerDropTarget.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\PageDesigner\PageDesignerChild.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

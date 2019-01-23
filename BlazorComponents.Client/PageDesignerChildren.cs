@@ -82,6 +82,23 @@ namespace BlazorComponents.Client
         [Parameter]
         PagePreviewEventsDispatcher Dispatcher { get; set; }
 
+        private string CreateLayoutHtml()
+        {
+            string htmlRaw = string.Empty;
+            int i = 0;
+            foreach (var child in DesignNodeCollection)
+            {
+                if (child.Type == NodeType.Html)
+                    htmlRaw += child.Html;
+                else
+                    htmlRaw += "<wc-child-" + i + " />";
+
+                i++;
+            }
+
+            return htmlRaw;
+        }
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             base.BuildRenderTree(builder);
@@ -99,49 +116,21 @@ namespace BlazorComponents.Client
             Console.WriteLine("[Page Preview] Rendering Sublayout");
 
             int seq = 0;
-            string htmlRaw = string.Empty;
-            int i = 0;
-            foreach (var child in DesignNodeCollection)
-            {
-                if (child.Type == NodeType.Html)
-                    htmlRaw += child.Html;
-                else
-                    htmlRaw += "<wc-child-"+i+" />";
-
-                i++;
-            }
-            //htmlRaw += "</wc-render-tree>";
-
-
-            XNode htmlDoc;
+            var layoutHtml = CreateLayoutHtml();
+            XNode layoutXml;
             try
             {
-                
-                htmlDoc = XDocument.Parse(htmlRaw);
+                layoutXml = ParseLayoutXml(layoutHtml);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                try
-                {
-                    htmlDoc = XElement.Parse(htmlRaw);
-                }
-                catch (Exception)
-                {
-                    htmlRaw = "<wc-render-wrapper>" + htmlRaw + "</wc-render-wrapper>";
-                    try
-                    {
-                        htmlDoc = XDocument.Parse(htmlRaw);
-                    }
-                    catch (Exception exception)
-                    {
-                        builder.AddContent(seq++, exception.Message);
-                        return;
-                    }
-                }
+                builder.AddContent(seq++, exception.Message);
+                return;
             }
+         
 
 
-            var reader = htmlDoc.CreateReader();
+            var reader = layoutXml.CreateReader();
             reader.Read();
 
             bool hasMore = true;
@@ -162,17 +151,33 @@ namespace BlazorComponents.Client
             Console.WriteLine("[Page Preview] Finished Sublayout. "+ seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
             
 
-            //Console.WriteLine("preparing to transform: " + htmlDoc.Root?.Name);
-            //WriteLayout(builder,htmlDoc);
-            //int seq = 0;
-            //builder.OpenElement(seq++, "wc-node-list");
-            //foreach(var child in DesignNodeCollection)
-            //{
-            //    if (child.Type == NodeType.Html)
-            //        builder.AddMarkupContent(seq++,child.Html);
+  
+        }
 
-            //}
-            //builder.CloseElement();
+        private XNode ParseLayoutXml(string layoutHtml)
+        {
+
+            XNode htmlDoc;
+            try
+            {
+
+                return XDocument.Parse(layoutHtml);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    return XElement.Parse(layoutHtml);
+                }
+                catch (Exception)
+                {
+                    layoutHtml = "<wc-render-wrapper>" + layoutHtml + "</wc-render-wrapper>";
+
+                    return XDocument.Parse(layoutHtml);
+
+                }
+            }
+
         }
 
         private int WriteLayout(RenderTreeBuilder builder, XmlReader reader, int globalSeq)
@@ -189,14 +194,23 @@ namespace BlazorComponents.Client
                 {
                     var position = Convert.ToInt32(reader.LocalName.Substring("wc-child-".Length));
                     var toRender = DesignNodeCollection[position];
-
-
-                    //Console.WriteLine(globalSeq + " BLAZOR OPEN CO");
+ 
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PagePreviewEventsDispatcher>(Dispatcher));
+
+                    var justElements = DesignNodeCollection.Where(x => x.Type != NodeType.Html).ToList();
+
+                    var childPosition = ChildPosition.Middle;
+                    if (justElements.First() == toRender)
+                        childPosition = ChildPosition.First;
+
+                    if (justElements.Last() == toRender)
+                        childPosition = ChildPosition.Last;
+ 
+                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Position), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<ChildPosition>(childPosition));
+
                     builder.CloseComponent();
-                    //Console.WriteLine(globalSeq + " BLAZOR CLOSE CO");
                     return localSeq;
                 }
                 else
@@ -245,11 +259,12 @@ namespace BlazorComponents.Client
                 builder.CloseElement();
                 return localSeq;
             }
-
-            //Console.WriteLine(globalSeq + " unexpected node type: "+ reader.NodeType);
+            
 
             return localSeq;
         }
 
     }
+
+    public enum ChildPosition { First,Middle,Last}
 }
