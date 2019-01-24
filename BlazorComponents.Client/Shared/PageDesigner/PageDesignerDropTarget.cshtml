@@ -1,4 +1,5 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 
 
@@ -21,11 +22,11 @@
     [Parameter]
     public PreviewNode AfterDesignNode { get; set; }
 
-    [CascadingParameter]
-    public PreviewNode SubstitutionNode { get; set; }
+    [CascadingParameter(Name= "SubstitutionNode")]
+    protected PreviewNode SubstitutionNode { get; set; }
 
     [CascadingParameter]
-    protected PagePreviewEventsDispatcher Dispatcher { get; set; }
+    protected PageDesignerPagePreview Dispatcher { get; set; }
 
     [Parameter]
     public ChildPosition Position { get; set; }
@@ -54,17 +55,39 @@
         _dropText = "";
     }
 
-    void OnContainerDrop(UIDragEventArgs e)
+    async Task OnContainerDrop(UIDragEventArgs e)
     {
         _dropText = "";
         _highlightDropTargetStyle = null;
 
         Console.WriteLine("[Page Preview] Drag Drop completed");
 
+        if (SubstitutionNode == null)
+        {
+            throw new Exception("Substitution node is null");
+        }
+
         var dropped = DragDropContext.Dragging;
         DragDropContext.Dragging = null;
-        Dispatcher.ContentMoved.Invoke(new ContentMovedArgs {ChildOf = SubstitutionNode,MovedNode=dropped,PlaceAfter = AfterDesignNode});
+        if (dropped == null)
+        {
+            throw new Exception("DragDropContext.Dragging is null.");
+        }
+
+        if (Dispatcher == null)
+        {
+            throw new Exception("Dispatcher is null.");
+        }
+
+
+        await Dispatcher.ContentMoved(new ContentMoveLocation
+        {
+            ToChildOf = SubstitutionNode.PreviewNodeId,
+            MovedPreviewNodeId =dropped.PreviewNodeId,
+            PlaceAfter = AfterDesignNode?.PreviewNodeId
+
+        });
 
     }
-    
+
 }

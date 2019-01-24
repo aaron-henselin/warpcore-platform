@@ -21,37 +21,81 @@ namespace BlazorComponents.Shared
         List<T> ChildNodes { get; }
     }
 
-    public static class TreeExtensions
+    public static class StackExtensions
     {
-        public static T FindDescendentNode<T>(this IRootedTree<T> tree,Guid id) where T : ITreeNode<T>
+        public static T PopUntil<T>(this Stack<T> stack, Func<T,bool> untilCondition)
         {
-            return FindDescendentNode(tree.RootNode, id);
-        }
+            if (stack.Count == 0)
+                return default(T);
 
-        public static T FindDescendentNode<T>(this IUnrootedTree<T> tree, Guid id) where T : ITreeNode<T>
-        {
-            foreach (var child in tree.ChildNodes)
+            var peek = stack.Peek();
+            var untilConditionIsMet = untilCondition.Invoke(peek);
+            if (!untilConditionIsMet)
             {
-                var found = FindDescendentNode(child, id);
-                if (found != null)
-                    return found;
+                stack.Pop();
+                PopUntil<T>(stack, untilCondition);
             }
+            else
+                return peek;
 
             return default(T);
         }
+    }
 
-        public static T FindDescendentNode<T>(this T searchNode, Guid id) where T:ITreeNode<T>
+    public static class TreeExtensions
+    {
+        public static T FindDescendentNode<T>(this IUnrootedTree<T> tree, Guid id) where T : ITreeNode<T>
         {
+            return FindDescendentNode(tree, id, out _);
+        }
+
+        public static T FindDescendentNode<T>(this IRootedTree<T> tree, Guid id) where T : ITreeNode<T>
+        {
+            return FindDescendentNode(tree, id, out _);
+        }
+
+
+        public static T FindDescendentNode<T>(this IRootedTree<T> tree,Guid id, out IReadOnlyCollection<T> searchPath) where T : ITreeNode<T>
+        {
+            var searchStack = new Stack<T>();
+            var found = FindDescendentNode(tree.RootNode, id,searchStack);
+            searchPath = searchStack.ToArray();
+            return found;
+        }
+
+
+        public static T FindDescendentNode<T>(this IUnrootedTree<T> tree, Guid id, out IReadOnlyCollection<T> searchPath) where T : ITreeNode<T>
+        {
+            var searchStack = new Stack<T>();
+            foreach (var child in tree.ChildNodes)
+            {
+                var found = FindDescendentNode(child, id,searchStack);
+                if (found != null)
+                {
+                    searchPath = searchStack.ToArray();
+                    return found;
+                }
+            }
+
+            searchPath = new List<T>();
+            return default(T);
+        }
+
+        public static T FindDescendentNode<T>(this T searchNode, Guid id, Stack<T> currentSearchPath) where T:ITreeNode<T>
+        {
+            currentSearchPath.Push(searchNode);
+
             if (searchNode.Id == id)
                 return searchNode;
 
             foreach (var child in searchNode.ChildNodes)
             {
-                var found = FindDescendentNode(child, id);
+                var found = FindDescendentNode(child, id, currentSearchPath);
                 if (found != null)
                     return found;
             }
 
+            currentSearchPath.Pop();
             return default(T);
         }
 

@@ -32,6 +32,12 @@
     <Content Update="Shared\PageDesigner\PageDesignerChild.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Shared\PageDesigner\PageDesignerChrome.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Shared\PageDesigner\PageDesignerPagePreview.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\PageDesigner\PageDesignerGlobalSubstitution.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

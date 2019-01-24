@@ -1,0 +1,111 @@
+﻿@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Shared
+@inject HttpClient Http
+
+<wc-chrome>
+    <CascadingValue Value=@this>
+
+        <wc-design class="@(SideBarMode != SideBarMode.Collapsed ? "col-md-9" : "col-md-12")">
+
+            @if (SideBarMode == SideBarMode.Collapsed || SideBarMode == SideBarMode.Toolbox)
+            {
+                <wc-sidebar-handle>
+                    <a class="handle" onclick=@ToggleSideBar>
+                        <span class="glyphicon glyphicon-wrench"></span>
+                    </a>
+                </wc-sidebar-handle>
+            }
+
+            <PageDesignerPagePreview ref="Preview" />
+
+        </wc-design>
+        <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
+            <PageDesignerConfigurator ref="ConfiguratorWidget"
+                                      CancelChangesAction=@CloseSideBar
+                                      CommitChangesAction=@CommitChanges
+                                      Dispatcher=@formEventDispatcher />
+        </wc-sidebar>
+        <wc-sidebar class="@(SideBarMode == SideBarMode.Toolbox ? "col-md-3" : "collapse")">
+            <PageDesignerToolBox ref="ToolBoxWidget" />
+        </wc-sidebar>
+  
+    </CascadingValue>
+</wc-chrome>
+
+@functions
+{
+    [Parameter]
+    public Guid pageId { get; set; }
+
+    private SideBarMode SideBarMode { get; set; }
+
+    PageDesignerPagePreview Preview { get; set; }
+    PageDesignerToolBox ToolBoxWidget { get; set; }
+    PageDesignerConfigurator ConfiguratorWidget { get; set; }
+
+    FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
+
+
+
+    private async void CommitChanges(CommittedChangesArgs args)
+    {
+        Console.WriteLine($"[Design Page] Applying configuration changes to node {args.ContentId}");
+
+        var node = Preview.GetStructureNodeById(args.ContentId);
+        foreach (var kvp in args.NewValues)
+            node.Parameters[kvp.Key] = kvp.Value;
+
+        CloseSideBar();
+        await Preview.RefreshPagePreviewAsync(pageId);
+    }
+
+    public void CloseSideBar()
+    {
+        SideBarMode = SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+    public async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
+    {
+        Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
+        SideBarMode = SideBarMode.Configurator;
+        this.StateHasChanged();
+
+        //(1) Set up form layout
+        /////////////////////////////////
+        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
+
+        await ConfiguratorWidget.BeginApplyNewFormLayout(RetrieveConfiguratorSidebarLayoutAsync(relatedPageContent.WidgetTypeCode));
+
+        Console.WriteLine($"[Design Page] Applying new form layout.");
+        this.StateHasChanged();
+
+        //(2) set up new form session
+        //////////////////////////////////
+        var session = new FormSession
+        {
+            ContentId = relatedPageContent.Id,
+            OriginalValues = relatedPageContent.Parameters
+        };
+        ConfiguratorWidget.StartNewSession(session);
+    }
+
+    private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
+    {
+        Console.WriteLine($"[Design Page] Retrieving new form description");
+        var formApiPath = "api/design/configurator-form/" + widgetTypeCode;
+        var formDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
+        return formDescription;
+
+    }
+
+    void ToggleSideBar(UIMouseEventArgs toExpand)
+    {
+        SideBarMode = SideBarMode == SideBarMode.Collapsed ? SideBarMode.Toolbox : SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+}
+

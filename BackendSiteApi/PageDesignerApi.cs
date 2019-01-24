@@ -174,7 +174,7 @@ namespace BackendSiteApi
         public void BeginWriting(CompostedContentMetdata metadata)
         {
             var nodeToWrite = new PreviewNode();
-            nodeToWrite.Id = ToGuid(_seq++);
+            nodeToWrite.PreviewNodeId = ToGuid(_seq++);
 
             if (Node.Count > 0)
                 CurrentNode.ChildNodes.Add(nodeToWrite);
@@ -231,7 +231,7 @@ namespace BackendSiteApi
 
             var previewNode = new PreviewNode
             {
-                Id = ToGuid(_seq++),
+                PreviewNodeId = ToGuid(_seq++),
                 Type = NodeType.Html,
                 Html = html
             };

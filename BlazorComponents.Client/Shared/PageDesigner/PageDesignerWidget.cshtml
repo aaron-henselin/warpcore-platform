@@ -41,7 +41,7 @@
 PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
 [CascadingParameter]
-protected PagePreviewEventsDispatcher Dispatcher { get; set; }
+protected PageDesignerPagePreview Dispatcher { get; set; }
 
     void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
     {

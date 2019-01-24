@@ -86,7 +86,7 @@ namespace BlazorComponents.Client
         List<PreviewNode> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
 
         [CascadingParameter]
-        protected PagePreviewEventsDispatcher Dispatcher { get; set; }
+        protected PageDesignerPagePreview Dispatcher { get; set; }
 
         private string CreateLayoutHtml()
         {
@@ -105,6 +105,8 @@ namespace BlazorComponents.Client
             return htmlRaw;
         }
 
+        private static Dictionary<string, XNode> _cache = new Dictionary<string, XNode>();
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             base.BuildRenderTree(builder);
@@ -116,30 +118,35 @@ namespace BlazorComponents.Client
             var htmlCount = DesignNodeCollection.Count(x => x.Type == NodeType.Html);
             if (!nonHtmlCount && htmlCount == 1)
             {
-                builder.AddMarkupContent(0,DesignNodeCollection[0].Html);
+                builder.AddMarkupContent(0, DesignNodeCollection[0].Html);
                 return;
             }
 
-
-
-            var sw = new Stopwatch();
-            sw.Start();
-            Console.WriteLine("[Page Preview] Rendering Sublayout");
-
-            int seq = 0;
-            var layoutHtml = CreateLayoutHtml();
             XNode layoutXml;
-            try
+            int seq = 0;
+            var key = Json.Serialize(DesignNodeCollection);
+            if (!_cache.ContainsKey(key))
             {
-                layoutXml = ParseLayoutXml(layoutHtml);
+                var layoutHtml = CreateLayoutHtml();
+                try
+                {
+                    layoutXml = ParseLayoutXml(layoutHtml);
+                    _cache.Add(key,layoutXml);
+                }
+                catch (Exception exception)
+                {
+                    builder.AddContent(seq++, exception.Message);
+                    return;
+                }
             }
-            catch (Exception exception)
+            else
             {
-                builder.AddContent(seq++, exception.Message);
-                return;
+                layoutXml = _cache[key];
             }
-         
 
+            //var sw = new Stopwatch();
+            //sw.Start();
+            //Console.WriteLine("[Page Preview] Rendering Sublayout");
 
             var reader = layoutXml.CreateReader();
             reader.Read();
@@ -158,8 +165,8 @@ namespace BlazorComponents.Client
                 }
             }
 
-            sw.Stop();
-            Console.WriteLine("[Page Preview] Finished Sublayout. "+ seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
+            //sw.Stop();
+            //Console.WriteLine("[Page Preview] Finished Sublayout. "+ seq + " elements, delivered in " + sw.Elapsed.TotalSeconds);
             
 
   
@@ -208,7 +215,7 @@ namespace BlazorComponents.Client
 
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
-                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.PagePreviewEventsDispatcher>(Dispatcher));
+                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<PageDesignerPagePreview>(Dispatcher));
 
                     var justElements = DesignNodeCollection.Where(x => x.Type != NodeType.Html).ToList();
 

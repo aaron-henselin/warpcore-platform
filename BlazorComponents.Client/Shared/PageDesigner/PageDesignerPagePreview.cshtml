@@ -1,0 +1,146 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Shared
+@inject HttpClient Http
+
+<CascadingValue Value=@this>
+    <wc-page-preview>
+        @if (CurrentPreview == null)
+        {
+        <Loader />
+        <p>
+            <em>Generating preview..</em>
+        </p>
+        }
+        else
+        {
+
+        <PageDesignerWidget DesignNode=@CurrentPreview />
+
+
+        }
+    </wc-page-preview>
+</CascadingValue>
+
+@functions {
+
+    [CascadingParameter]
+    PageDesignerChrome Chrome { get; set; }
+
+    PreviewNode CurrentPreview { get; set; }
+    public PageStructure CurrentStructure { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        Console.WriteLine("[Design Page] Initializing..");
+        await RefreshPagePreviewAsync(Chrome.pageId);
+    }
+
+
+    public async Task Edit(Guid contentToEdit)
+    {
+        var node = GetStructureNodeById(contentToEdit);
+        await Chrome.BeginExpandSideBarAndStartEditing(node);
+    }
+
+    public async Task Delete(Guid contentToDelete)
+    {
+        CurrentStructure.RemoveDescendentNode(contentToDelete);
+        await RefreshPagePreviewAsync(Chrome.pageId);
+
+    }
+
+    public async Task ContentMoved(ContentMoveLocation contentMoved)
+    {
+        Console.WriteLine($"[Design Page] Content move started MovedPid={contentMoved.MovedPreviewNodeId} ToSubstitutionPid={contentMoved.ToChildOf}, PlaceAfterPid={contentMoved.PlaceAfter}.");
+
+        var searchPath = new Stack<PreviewNode>();
+        var newParent = CurrentPreview.FindDescendentNode(contentMoved.ToChildOf, searchPath);
+        if (newParent == null)
+            throw new Exception(contentMoved.MovedPreviewNodeId + " was not found in the current preview");
+
+        int level = 0;
+        var parts = searchPath.ToArray().ToList();
+        foreach (var part in parts)
+        {
+            Console.WriteLine($"{level++}, Pid={part.PreviewNodeId}, ContentId={part.ContentId}, PlaceholderId={part.PlaceHolderId}");
+        }
+
+        var newParentSubstitution = parts[0];//searchPath.PopUntil(x => !string.IsNullOrWhiteSpace(x.PlaceHolderId));
+        var newParentLayoutElement = parts[1];//searchPath.PopUntil(x => x.ContentId != default(Guid));
+
+        if (newParentSubstitution == null)
+            throw new Exception("A parent placeholder was not found in the current preview");
+        if (newParentLayoutElement == null)
+            throw new Exception("A parent layout element was not found in the current preview");
+
+        var oldPath = new Stack<PreviewNode>();
+        var originalPreviewNode = CurrentPreview.FindDescendentNode(contentMoved.MovedPreviewNodeId,oldPath);
+
+        var originalStructureNode = CurrentStructure.FindDescendentNode(originalPreviewNode.ContentId);
+        if (originalStructureNode == null)
+            throw new Exception("A structure node of " + originalPreviewNode.ContentId + " was not found in the current page structure.");
+
+        CurrentStructure.RemoveDescendentNode(originalPreviewNode.ContentId);
+
+        var addToStructureNode = CurrentStructure.FindDescendentNode(newParentLayoutElement.ContentId);
+        if (addToStructureNode == null)
+            throw new Exception("A structure node of " + newParentLayoutElement.ContentId + " was not found in the current page structure.");
+
+        addToStructureNode.ChildNodes.Add(originalStructureNode);
+        originalStructureNode.PlacementContentPlaceHolderId = newParentSubstitution.PlaceHolderId;
+
+        await RefreshPagePreviewAsync(Chrome.pageId);
+    }
+
+
+
+    public async Task RefreshPagePreviewAsync(Guid previewPageId)
+    {
+        CurrentPreview = null;
+        try
+        {
+            if (CurrentStructure == null)
+            {
+                Console.WriteLine($"[Design Page] Downloading first-time preview for page {previewPageId}");
+                CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview");
+                CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + previewPageId + "/structure");
+
+            }
+            else
+            {
+                Console.WriteLine($"[Design Page] Downloading updated preview for {previewPageId}");
+                CurrentPreview = await Http.PostJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview",CurrentStructure);
+
+            }
+            this.StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            var errorPage = new PreviewNode{
+                Type = NodeType.Element,
+                FriendlyName = "Error Message",
+                IsFromLayout =true};
+            errorPage.ChildNodes.Add(
+                new PreviewNode{Type = NodeType.Html,
+                    Html = "There was an error retrieving the page design."
+
+                });
+
+            CurrentPreview = errorPage;
+        }
+    }
+
+
+    public StructureNode GetStructureNodeById(Guid id)
+    {
+        var relatedPageContent = CurrentStructure.FindDescendentNode(id);
+        if (relatedPageContent == null)
+            throw new Exception("Node with id " + id + " could not be found in the current page structure.");
+
+        return relatedPageContent;
+    }
+
+}
+

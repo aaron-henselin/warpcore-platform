@@ -1,4 +1,5 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 
 
@@ -29,7 +30,7 @@
     public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
-    public PagePreviewEventsDispatcher Dispatcher { get; set; }
+    public PageDesignerPagePreview Dispatcher { get; set; }
 
     [Parameter]
     public ChildPosition Position { get; set; }

@@ -125,29 +125,22 @@ namespace BlazorComponents.Client
         }
     }
 
-    public class ContentMovedArgs : EventArgs
+    public class ContentMoveLocation : EventArgs
     {
-        public PreviewNode MovedNode { get; set; }
-        public PreviewNode ChildOf { get; set; }
-        public PreviewNode PlaceAfter { get; set; }
+        public Guid MovedPreviewNodeId { get; set; }
+        public Guid ToChildOf { get; set; }
+        public Guid? PlaceAfter { get; set; }
     }
 
-    public class PagePreviewEventsDispatcher
-    {
-        public Action<Guid> Edit { get; set; }
+    //public class PageDesignerPagePreview
+    //{
+    //    public Action<Guid> Edit { get; set; }
 
-        public Action<Guid> Delete { get; set; }
+    //    public Action<Guid> Delete { get; set; }
 
-        public Action<ContentMovedArgs> ContentMoved { get; set; }
-    }
+    //    public Action<ContentMovedArgs> ContentMoved { get; set; }
+    //}
 
-    public class DesignerChrome
-    {
-        public SideBarMode SideBarMode { get; set; }
-
-        public static DesignerChrome Default => new DesignerChrome();
-
-    }
 
     public enum SideBarMode { Collapsed, Toolbox, Configurator}
 

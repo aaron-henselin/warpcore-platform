@@ -1,11 +1,8 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 
-<wc-substitution class="@_hoverClass"
-                 ondragenter="@(e => OnSubstitutionDragEnter(e))"
-                 ondragleave="@(e => OnSubstitutionDragLeave(e))"
-                 data-id1="@DesignNode.ContentId"
-                 data-id2="@DesignNode.PlaceHolderId">
+<wc-substitution>
     
     <CascadingValue Value=@DesignNode Name="SubstitutionNode">
         <PageDesignerDropTarget />
@@ -24,19 +21,8 @@
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
-    protected PagePreviewEventsDispatcher Dispatcher { get; set; }
+    protected PageDesignerPagePreview Dispatcher { get; set; }
 
-    private string _hoverClass = "";
-
-    void OnSubstitutionDragEnter(UIDragEventArgs e)
-    {
-        _hoverClass="hover";
-    }
-
-    void OnSubstitutionDragLeave(UIDragEventArgs e)
-    {
-        _hoverClass="";
-    }
 
 
 }
