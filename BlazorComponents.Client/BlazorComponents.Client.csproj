@@ -26,28 +26,31 @@
     <Content Update="Shared\Forms\FormRow.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerDropTarget.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\WidgetHandle.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerChild.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\DropTarget.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Shared\PageDesigner\Preview\PageDesignerChild.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Shared\PageDesigner\PageDesignerChrome.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerPagePreview.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\PagePreview.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerGlobalSubstitution.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\PageDesignerGlobalSubstitution.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerLayoutSubstitution.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\PlaceHolderPreview.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Shared\PageDesigner\PageDesignerToolBox.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Shared\PageDesigner\PageDesignerWidget.cshtml">
+    <Content Update="Shared\PageDesigner\Preview\WidgetPreview.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Shared\Loader.cshtml">

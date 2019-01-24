@@ -1,0 +1,44 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
+@using BlazorComponents.Shared
+
+
+<li draggable="true" class='StackedListItem StackedListItem--isDraggable wc-layout-handle' tabindex='1'
+    data-wc-page-content-id='@DesignNode.ContentId'
+    ondragstart="@(e => OnItemDragStart(e, DesignNode))"
+>
+    <div class='StackedListContent'>
+        <h4 class='Heading Heading--size4 text-no-select'>
+
+            <span class='glyphicon glyphicon-cog wc-edit-command configure'
+                  data-wc-widget-type=''
+                  data-wc-editing-command-configure='@DesignNode.PreviewNodeId'
+                  onclick=@(e => Dispatcher.Edit(DesignNode))>
+            </span>
+            <span class='glyphicon glyphicon-remove wc-edit-command delete pull-right'
+                  data-wc-editing-command-delete='@DesignNode.PreviewNodeId'
+                  onclick="@(e => Dispatcher.Delete(DesignNode))">
+            </span>
+
+            @DesignNode.FriendlyName
+        </h4>
+        <div class='DragHandle'></div>
+        <div class='Pattern Pattern--typeHalftone'></div>
+        <div class='Pattern Pattern--typePlaced'></div>
+    </div>
+</li>
+
+@functions {
+    [Parameter]
+    PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    protected PagePreview Dispatcher { get; set; }
+
+    void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
+    {
+        DragDropContext.Dragging = dragItem;
+    }
+
+}

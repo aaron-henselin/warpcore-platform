@@ -1,5 +1,6 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
 
 <wc-substitution>
@@ -12,6 +13,6 @@
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
-    protected PageDesignerPagePreview Dispatcher { get; set; }
+    protected PagePreview Dispatcher { get; set; }
 
 }

@@ -1,21 +1,22 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
 
 
 @if (DesignNode.Type == NodeType.Element)
 {
-    <PageDesignerWidget DesignNode=@DesignNode  />
+    <WidgetPreview DesignNode=@DesignNode  />
 
     @if (Position != ChildPosition.Last)
     {
-        <PageDesignerDropTarget AfterDesignNode=@DesignNode />
+        <DropTarget AfterDesignNode=@DesignNode />
     }
 }
 
 @if (DesignNode.Type == NodeType.LayoutSubtitution)
 {
-    <PageDesignerLayoutSubstitution DesignNode=@DesignNode />
+    <PlaceHolderPreview DesignNode=@DesignNode />
 }
 
 @if (DesignNode.Type == NodeType.GlobalSubstitution)
@@ -30,7 +31,7 @@
     public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
-    public PageDesignerPagePreview Dispatcher { get; set; }
+    public PagePreview Dispatcher { get; set; }
 
     [Parameter]
     public ChildPosition Position { get; set; }

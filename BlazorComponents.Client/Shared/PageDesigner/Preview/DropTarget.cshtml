@@ -1,5 +1,6 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
 
 
@@ -26,7 +27,7 @@
     protected PreviewNode SubstitutionNode { get; set; }
 
     [CascadingParameter]
-    protected PageDesignerPagePreview Dispatcher { get; set; }
+    protected PagePreview Dispatcher { get; set; }
 
     [Parameter]
     public ChildPosition Position { get; set; }

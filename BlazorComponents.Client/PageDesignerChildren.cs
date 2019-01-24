@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using BlazorComponents.Client.Shared;
 using BlazorComponents.Client.Shared.Forms;
 using BlazorComponents.Client.Shared.PageDesigner;
+using BlazorComponents.Client.Shared.PageDesigner.Preview;
 using BlazorComponents.Shared;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
@@ -86,7 +87,7 @@ namespace BlazorComponents.Client
         List<PreviewNode> DesignNodeCollection { get; set; } // Demonstrates how a parent component can supply parameters
 
         [CascadingParameter]
-        protected PageDesignerPagePreview Dispatcher { get; set; }
+        protected PagePreview Dispatcher { get; set; }
 
         private string CreateLayoutHtml()
         {
@@ -215,7 +216,7 @@ namespace BlazorComponents.Client
 
                     builder.OpenComponent<PageDesignerChild>(localSeq++);
                     builder.AddAttribute(localSeq++, nameof(PageDesignerChild.DesignNode), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.PreviewNode>(toRender));
-                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<PageDesignerPagePreview>(Dispatcher));
+                    builder.AddAttribute(localSeq++, nameof(PageDesignerChild.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<PagePreview>(Dispatcher));
 
                     var justElements = DesignNodeCollection.Where(x => x.Type != NodeType.Html).ToList();
 

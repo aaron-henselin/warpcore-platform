@@ -1,6 +1,7 @@
 ﻿@using System.Net
 @using BlazorComponents.Client
 @using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
 @inject HttpClient Http
 
@@ -18,7 +19,7 @@
                 </wc-sidebar-handle>
             }
 
-            <PageDesignerPagePreview ref="Preview" />
+            <PagePreview ref="Preview" />
 
         </wc-design>
         <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
@@ -41,7 +42,7 @@
 
     private SideBarMode SideBarMode { get; set; }
 
-    PageDesignerPagePreview Preview { get; set; }
+    PagePreview Preview { get; set; }
     PageDesignerToolBox ToolBoxWidget { get; set; }
     PageDesignerConfigurator ConfiguratorWidget { get; set; }
 

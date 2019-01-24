@@ -15,7 +15,7 @@
         else
         {
 
-        <PageDesignerWidget DesignNode=@CurrentPreview />
+        <WidgetPreview DesignNode=@CurrentPreview />
 
 
         }
@@ -37,15 +37,15 @@
     }
 
 
-    public async Task Edit(Guid contentToEdit)
+    public async Task Edit(PreviewNode contentToEdit)
     {
-        var node = GetStructureNodeById(contentToEdit);
+        var node = GetStructureNodeById(contentToEdit.ContentId);
         await Chrome.BeginExpandSideBarAndStartEditing(node);
     }
 
-    public async Task Delete(Guid contentToDelete)
+    public async Task Delete(PreviewNode contentToDelete)
     {
-        CurrentStructure.RemoveDescendentNode(contentToDelete);
+        CurrentStructure.RemoveDescendentNode(contentToDelete.ContentId);
         await RefreshPagePreviewAsync(Chrome.pageId);
 
     }

@@ -1,0 +1,31 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+@using System.Linq
+<wc-widget-render data-wc-layout='@DesignNode.ChildNodes.Any(x => x.PlaceHolderId != null)' data-wc-page-content-id='@DesignNode.ContentId'>
+    @if (!DesignNode.IsFromLayout)
+    {
+        <WidgetHandle DesignNode=@DesignNode/>
+    }
+    <wc-widget-preview>
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
+    </wc-widget-preview>
+</wc-widget-render>
+
+
+@functions {
+[Parameter]
+PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+[CascadingParameter]
+protected PagePreview Dispatcher { get; set; }
+
+    void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
+    {
+        DragDropContext.Dragging = dragItem;
+    }
+
+}
+
+
+
