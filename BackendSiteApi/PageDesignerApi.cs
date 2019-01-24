@@ -161,7 +161,7 @@ namespace BackendSiteApi
     public class PagePreviewWriter : ComposedHtmlWriter
     {
         private readonly CmsPage _draft;
-
+        private int _seq = 1;
         public PagePreviewWriter(CmsPage draft)
         {
             _draft = draft;
@@ -174,6 +174,8 @@ namespace BackendSiteApi
         public void BeginWriting(CompostedContentMetdata metadata)
         {
             var nodeToWrite = new PreviewNode();
+            nodeToWrite.Id = ToGuid(_seq++);
+
             if (Node.Count > 0)
                 CurrentNode.ChildNodes.Add(nodeToWrite);
             else
@@ -226,7 +228,20 @@ namespace BackendSiteApi
 
         public void Write(string html)
         {
-            CurrentNode.ChildNodes.Add(new PreviewNode {Type=NodeType.Html,Html=html });
+
+            var previewNode = new PreviewNode
+            {
+                Id = ToGuid(_seq++),
+                Type = NodeType.Html,
+                Html = html
+            };
+            CurrentNode.ChildNodes.Add(previewNode);
+        }
+        private static Guid ToGuid(int value)
+        {
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes, 0);
+            return new Guid(bytes);
         }
     }
 

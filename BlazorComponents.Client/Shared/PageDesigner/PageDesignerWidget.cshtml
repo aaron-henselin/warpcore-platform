@@ -45,7 +45,7 @@ protected PagePreviewEventsDispatcher Dispatcher { get; set; }
 
     void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
     {
-        //DragDropHelper.Item = dragItem;
+        DragDropContext.Dragging = dragItem;
     }
 
 }

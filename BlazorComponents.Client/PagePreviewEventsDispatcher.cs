@@ -125,11 +125,20 @@ namespace BlazorComponents.Client
         }
     }
 
+    public class ContentMovedArgs : EventArgs
+    {
+        public PreviewNode MovedNode { get; set; }
+        public PreviewNode ChildOf { get; set; }
+        public PreviewNode PlaceAfter { get; set; }
+    }
+
     public class PagePreviewEventsDispatcher
     {
         public Action<Guid> Edit { get; set; }
 
         public Action<Guid> Delete { get; set; }
+
+        public Action<ContentMovedArgs> ContentMoved { get; set; }
     }
 
     public class DesignerChrome

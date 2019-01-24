@@ -6,17 +6,17 @@
                  ondragleave="@(e => OnSubstitutionDragLeave(e))"
                  data-id1="@DesignNode.ContentId"
                  data-id2="@DesignNode.PlaceHolderId">
+    
+    <CascadingValue Value=@DesignNode Name="SubstitutionNode">
+        <PageDesignerDropTarget />
 
-    <PageDesignerDropTarget DesignNode=@DesignNode />
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
 
-    <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
-
-    @if (DesignNode.ChildNodes.Any())
-    {
-        <PageDesignerDropTarget DesignNode=@DesignNode/>
-    }
-
-
+        @if (DesignNode.ChildNodes.Any())
+        {
+            <PageDesignerDropTarget AfterDesignNode=@DesignNode.ChildNodes.Last()/>
+        }
+    </CascadingValue>
 </wc-substitution>
 
 @functions {

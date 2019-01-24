@@ -133,7 +133,9 @@ namespace BlazorComponents.Shared
     {
         public string FriendlyName { get; set; }
         public Guid ContentId { get; set; }
-        public Guid Id => ContentId;
+        public Guid Id => PreviewNodeId;
+
+        public Guid PreviewNodeId { get; set; }
 
         public NodeType Type { get; set; }
         public string Html { get; set; }

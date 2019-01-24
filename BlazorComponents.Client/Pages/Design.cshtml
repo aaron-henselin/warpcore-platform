@@ -95,9 +95,17 @@
                 CurrentStructure.RemoveDescendentNode(contentToDelete);
                 await RefreshPagePreviewAsync(new Guid(pageId));
 
+            },
+            ContentMoved = async (contentMoved) =>
+            {
+                var movedNode = CurrentPreview.FindDescendentNode(contentMoved.MovedNode.Id);
+                var movedNode = CurrentPreview.FindDescendentNode(contentMoved.ChildOf.Id);
+                CurrentPreview.FindDescendentNode(contentMoved.PlaceAfter.ContentId);
+
+
             }
         };
-        
+
     }
 
     protected override async Task OnInitAsync()
