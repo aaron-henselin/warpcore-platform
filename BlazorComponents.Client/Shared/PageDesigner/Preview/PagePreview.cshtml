@@ -7,10 +7,9 @@
     <wc-page-preview>
         @if (CurrentPreview == null)
         {
-        <Loader />
-        <p>
-            <em>Generating preview..</em>
-        </p>
+            <p>
+                <em>Generating preview..</em>
+            </p>
         }
         else
         {
@@ -28,30 +27,27 @@
     PageDesignerChrome Chrome { get; set; }
 
     PreviewNode CurrentPreview { get; set; }
-    public PageStructure CurrentStructure { get; set; }
 
-    protected override async Task OnInitAsync()
-    {
-        Console.WriteLine("[Design Page] Initializing..");
-        await RefreshPagePreviewAsync(Chrome.pageId);
-    }
+
+    //protected override async Task OnInitAsync()
+    //{
+    //    Console.WriteLine("[Design Page] Initializing..");
+    //    await RefreshPagePreviewAsync(Chrome.pageId);
+    //}
 
 
     public async Task Edit(PreviewNode contentToEdit)
     {
-        var node = GetStructureNodeById(contentToEdit.ContentId);
+        var node = Chrome.CurrentStructure.GetStructureNodeById(contentToEdit.ContentId);
         await Chrome.BeginExpandSideBarAndStartEditing(node);
     }
 
     public async Task Delete(PreviewNode contentToDelete)
     {
-        CurrentStructure.RemoveDescendentNode(contentToDelete.ContentId);
-        await RefreshPagePreviewAsync(Chrome.pageId);
+        Chrome.CurrentStructure.RemoveDescendentNode(contentToDelete.ContentId);
+        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
 
     }
-
-
-
 
     private ContentLocation ResolveContentLocation(PagePreviewPosition contentMoved)
     {
@@ -91,20 +87,18 @@
         var oldPath = new Stack<PreviewNode>();
         var originalPreviewNode = CurrentPreview.FindDescendentNode(previewNode.Id, oldPath);
 
-        var originalStructureNode = CurrentStructure.FindDescendentNode(originalPreviewNode.ContentId);
+        var originalStructureNode = Chrome.CurrentStructure.FindDescendentNode(originalPreviewNode.ContentId);
         if (originalStructureNode == null)
             throw new Exception("A structure node of " + originalPreviewNode.ContentId + " was not found in the current page structure.");
 
-        CurrentStructure.RemoveDescendentNode(originalPreviewNode.ContentId);
-
-        var addToStructureNode = CurrentStructure.FindDescendentNode(newContentLocation.ParentWidget.ContentId);
-        if (addToStructureNode == null)
-            throw new Exception("A structure node of " + newContentLocation.ParentWidget.ContentId + " was not found in the current page structure.");
-
-        addToStructureNode.ChildNodes.Add(originalStructureNode);
+        Chrome.CurrentStructure.RemoveDescendentNode(originalPreviewNode.ContentId);
         originalStructureNode.PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId;
+        Chrome.CurrentStructure.Add(originalStructureNode, newContentLocation.ParentWidget.ContentId);
 
-        await RefreshPagePreviewAsync(Chrome.pageId);
+        
+
+
+        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
     }
 
     public async Task AddContent(ToolboxItemViewModel toolboxItem, PagePreviewPosition addLocation)
@@ -113,43 +107,26 @@
             $"[Design Page] Content add started ToSubstitutionPid={addLocation.ToChildOf}, PlaceAfterPid={addLocation.PlaceAfter}.");
         var newContentLocation = ResolveContentLocation(addLocation);
 
-        var addToStructureNode = CurrentStructure.FindDescendentNode(newContentLocation.ParentWidget.ContentId);
-        if (addToStructureNode == null)
-            throw new Exception("A structure node of " + newContentLocation.ParentWidget.ContentId +
-                                " was not found in the current page structure.");
-
         var newStructureNode = new StructureNode
         {
             Id = Guid.NewGuid(),
             WidgetTypeCode = toolboxItem.WidgetTypeCode,
             PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId,
         };
+        Chrome.CurrentStructure.Add(newStructureNode, newContentLocation.ParentWidget.ContentId);
 
-        addToStructureNode.ChildNodes.Add(newStructureNode);
 
 
-        await RefreshPagePreviewAsync(Chrome.pageId);
+        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
     }
 
-
-    public async Task RefreshPagePreviewAsync(Guid previewPageId)
+    public async Task RefreshPagePreviewAsync(Guid previewPageId, PageStructure newPageStructure)
     {
         CurrentPreview = null;
         try
         {
-            if (CurrentStructure == null)
-            {
-                Console.WriteLine($"[Design Page] Downloading first-time preview for page {previewPageId}");
-                CurrentPreview = await Http.GetJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview");
-                CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + previewPageId + "/structure");
 
-            }
-            else
-            {
-                Console.WriteLine($"[Design Page] Downloading updated preview for {previewPageId}");
-                CurrentPreview = await Http.PostJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview",CurrentStructure);
-
-            }
+            CurrentPreview = await Http.PostJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview", newPageStructure);
             this.StateHasChanged();
         }
         catch (Exception e)
@@ -170,14 +147,6 @@
     }
 
 
-    public StructureNode GetStructureNodeById(Guid id)
-    {
-        var relatedPageContent = CurrentStructure.FindDescendentNode(id);
-        if (relatedPageContent == null)
-            throw new Exception("Node with id " + id + " could not be found in the current page structure.");
-
-        return relatedPageContent;
-    }
 
 }
 

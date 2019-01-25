@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -35,6 +36,35 @@ namespace BlazorComponents.Client
 
     }
 
+    public interface IHasBusyState
+    {
+        bool IsBusy { get; set; }
+    }
+
+    public static class IHasBusyStateExtensions
+    {
+        public static IDisposable TrackBusyState(this IHasBusyState busy)
+        {
+            return new BusyDisposable(busy);
+        }
+    }
+
+    public class BusyDisposable : IDisposable
+    {
+        private readonly IHasBusyState _hasBusyState;
+
+
+        public BusyDisposable(IHasBusyState hasBusyState)
+        {
+            _hasBusyState = hasBusyState;
+            _hasBusyState.IsBusy = true;
+        }
+
+        public void Dispose()
+        {
+            _hasBusyState.IsBusy = false;
+        }
+    }
 
     public static class DragDropContext
     {

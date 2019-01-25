@@ -161,17 +161,29 @@
                 height: 50%;
             }
 
-            .wc-droptarget-highlight.wc-droptarget-hover {
-                height: 32px;
-                margin-top: 0px;
-                margin-bottom: 0px;
-                transition-property: height;
-                transition-duration: .5s;
-                transition-property: margin-top;
-                transition-duration: .5s;
-                transition-property: margin-bottom;
-                transition-duration: .5s;
+            wc-sidebar {
+                box-shadow:  12px 0 15px -4px rgba(0, 0, 0, 0.8), -12px 0 8px -4px rgba(0, 0, 0, 0.22)
             }
+
+            .toolbox-select {
+                color: white !important;
+                background-color: #2E2E2E!important;
+                font-size: 14px !important;
+            }
+
+        .wc-configurator-surface{ padding: 5px;}
+
+        .wc-droptarget-highlight.wc-droptarget-hover {
+            height: 32px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            transition-property: height;
+            transition-duration: .5s;
+            transition-property: margin-top;
+            transition-duration: .5s;
+            transition-property: margin-bottom;
+            transition-duration: .5s;
+        }
 
                 .wc-droptarget-highlight.wc-droptarget-hover div {
                     border: 1px dashed grey;
@@ -307,6 +319,15 @@
             width: 120px;
             height: 120px;
             animation: spin 2s linear infinite;
+        }
+
+        .loader-sm {
+            border: 3px solid #0000001a;
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {

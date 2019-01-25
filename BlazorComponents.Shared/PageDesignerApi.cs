@@ -150,9 +150,34 @@ namespace BlazorComponents.Shared
     }
 
     public class PageStructure : IUnrootedTree<StructureNode>
-    { 
-        public List<StructureNode> ChildNodes { get; set; }
+    {
+        public static Guid RootId { get; } = new Guid("00000000-0000-0000-0000-000000000001");
+        public List<StructureNode> ChildNodes { get; set; } = new List<StructureNode>();
 
+        public StructureNode GetStructureNodeById(Guid id)
+        {
+            var relatedPageContent = this.FindDescendentNode(id);
+            if (relatedPageContent == null)
+                throw new Exception("Node with id " + id + " could not be found in the current page structure.");
+
+            return relatedPageContent;
+        }
+
+        public void Add(StructureNode newStructureNode, Guid parentNodeId)
+        {
+            if (PageStructure.RootId == parentNodeId)
+            {
+                ChildNodes.Add(newStructureNode);
+            }
+            else
+            {
+                var addToStructureNode = this.FindDescendentNode(parentNodeId);
+                if (addToStructureNode == null)
+                    throw new Exception("A structure node of " + parentNodeId + " was not found in the current page structure.");
+
+                addToStructureNode.ChildNodes.Add(newStructureNode);
+            }
+        }
     }
 
     public class StructureNode : ITreeNode<StructureNode>

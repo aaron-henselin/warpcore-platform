@@ -1,7 +1,8 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Shared
-
 @using System.Linq
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
+
 <wc-widget-render data-wc-layout='@DesignNode.ChildNodes.Any(x => x.PlaceHolderId != null)' data-wc-page-content-id='@DesignNode.ContentId'>
     @if (!DesignNode.IsFromLayout)
     {

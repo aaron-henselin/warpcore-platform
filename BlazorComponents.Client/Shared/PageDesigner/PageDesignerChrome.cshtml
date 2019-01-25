@@ -4,7 +4,7 @@
 @using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
 @inject HttpClient Http
-
+@implements IHasBusyState
 <wc-chrome>
 
 
@@ -12,9 +12,16 @@
         @if (SideBarMode == SideBarMode.Collapsed || SideBarMode == SideBarMode.Toolbox)
         {
             <wc-sidebar-handle>
-                <a class="handle" onclick=@ToggleSideBar>
-                    <span class="glyphicon glyphicon-wrench"></span>
-                </a>
+                @if (IsBusy)
+                {
+                    <div class="loader-sm"></div>
+                }
+                else
+                {
+                    <a class="handle" onclick=@ToggleSideBar>
+                        <span class="glyphicon glyphicon-wrench"></span>
+                    </a>
+                }
             </wc-sidebar-handle>
         }
         <CascadingValue Value=@this>
@@ -37,45 +44,90 @@
 
 @functions
 {
-[Parameter]
-public Guid pageId { get; set; }
+    [Parameter]
+    public Guid pageId { get; set; }
 
-private SideBarMode SideBarMode { get; set; }
+    private SideBarMode SideBarMode { get; set; }
 
-PagePreview Preview { get; set; }
-PageDesignerToolBox ToolBoxWidget { get; set; }
-PageDesignerConfigurator ConfiguratorWidget { get; set; }
+    public PageStructure CurrentStructure { get; set; }
 
-FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
+    PagePreview Preview { get; set; }
+    PageDesignerToolBox ToolBoxWidget { get; set; }
+    PageDesignerConfigurator ConfiguratorWidget { get; set; }
 
+    FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
 
-
-public void CloseSideBar()
-{
-    SideBarMode = SideBarMode.Collapsed;
-    this.StateHasChanged();
-}
-
-public async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
-{
-    Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
-    SideBarMode = SideBarMode.Configurator;
-    this.StateHasChanged();
-
-    await ConfiguratorWidget.StartNewSession(relatedPageContent);
-}
-
-public async Task RefreshPagePreviewAsync()
-{
-    await Preview.RefreshPagePreviewAsync(pageId);
-}
+    private bool _isBusy = false;
+    public bool IsBusy {
+        get { return _isBusy; }
+        set
+        {
+            _isBusy =value;
+            this.StateHasChanged();
+        }
+    }
 
 
-void ToggleSideBar(UIMouseEventArgs toExpand)
-{
-    SideBarMode = SideBarMode == SideBarMode.Collapsed ? SideBarMode.Toolbox : SideBarMode.Collapsed;
-    this.StateHasChanged();
-}
+
+    protected override async Task OnInitAsync()
+    {
+        using (this.TrackBusyState())
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + pageId + "/structure");
+
+        await Preview.RefreshPagePreviewAsync(pageId,CurrentStructure);
+    }
+
+
+
+    public void CloseSideBar()
+    {
+        SideBarMode = SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+    public async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
+    {
+        Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
+        SideBarMode = SideBarMode.Configurator;
+        this.StateHasChanged();
+
+        await ConfiguratorWidget.StartNewSession(relatedPageContent);
+    }
+
+    public async Task RefreshPagePreviewAsync()
+    {
+        using (this.TrackBusyState())
+        {
+            this.StateHasChanged();
+            await Preview.RefreshPagePreviewAsync(pageId, CurrentStructure);
+        }
+    }
+
+
+    void ToggleSideBar(UIMouseEventArgs toExpand)
+    {
+        SideBarMode = SideBarMode == SideBarMode.Collapsed ? SideBarMode.Toolbox : SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+    public async Task Save(UIMouseEventArgs eventArgs)
+    {
+        using (this.TrackBusyState())
+        {
+            await Http.PostJsonAsync<ToolboxViewModel>($"api/design/page/{pageId}/draft",CurrentStructure);
+            CloseSideBar();
+        }
+    }
+
+    public async Task SaveAndPublish(UIMouseEventArgs eventArgs)
+    {
+        using (this.TrackBusyState())
+        {
+          
+            await Http.PostJsonAsync<ToolboxViewModel>($"api/design/page/{pageId}/live", CurrentStructure);
+            CloseSideBar();
+        }
+    }
 
 }
 

@@ -54,6 +54,31 @@ namespace BackendSiteApi
             return treeWriter.RootNode;
         }
 
+        [HttpPost]
+        [Route("api/design/page/{pageId}/draft")]
+        public void SaveDraft(Guid pageId, PageStructure pageStructure)
+        {
+            var pageRepository = new CmsPageRepository();
+            var draft = pageRepository.FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
+
+            new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
+
+            pageRepository.Save(draft);
+        }
+
+        [HttpPost]
+        [Route("api/design/page/{pageId}/live")]
+        public void SaveAndPublish(Guid pageId, PageStructure pageStructure)
+        {
+            var pageRepository = new CmsPageRepository();
+            var draft = pageRepository.FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
+
+            new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
+
+            pageRepository.Save(draft);
+            pageRepository.Publish(By.ContentId(draft.ContentId));
+        }
+
         [HttpGet]
         [Route("api/design/page/{pageId}/structure")]
         public PageStructure PageStructure(Guid pageId)

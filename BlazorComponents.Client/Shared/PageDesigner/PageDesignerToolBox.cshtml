@@ -1,4 +1,5 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 @inject HttpClient Http
 
@@ -19,12 +20,12 @@
                 </span>
             </span>
             <span class="button-group right">
-                <span class="button">
+                <span class="button" onclick=@_chrome.Save>
                     <span class="glyphicon glyphicon-floppy-save">
                         <a runat="server" Text="Save" ID="SaveDraftButton"></a>
                     </span>
                 </span>
-                <span class="button last">
+                <span class="button last" onclick=@_chrome.SaveAndPublish>
                     <span class="glyphicon  glyphicon-send">
                         <a runat="server" Text="Publish" ID="SaveAndPublishButton"></a>
                     </span>
@@ -33,7 +34,7 @@
         </h3>
         <h3>
             Toolbox<br />
-            <select class="form-control" onchange="@CategoryChanged">
+            <select class="form-control toolbox-select" onchange="@CategoryChanged">
                 <option value="">Site</option>
                 @foreach (var category in Categories)
                 {
@@ -69,43 +70,48 @@ else
 
 @functions
 {
-private List<ToolboxCategory> _categories;
+    [CascadingParameter]
+    private PageDesignerChrome _chrome { get; set; }
+    private List<ToolboxCategory> _categories;
 
-public List<ToolboxCategory> Categories
-{
-    get { return _categories; }
-    set
+    public List<ToolboxCategory> Categories
     {
-        _categories = value;
-        this.StateHasChanged();
+        get { return _categories; }
+        set
+        {
+            _categories = value;
+            this.StateHasChanged();
+        }
     }
-}
 
-protected override async Task OnInitAsync()
-{
-    try
+    protected override async Task OnInitAsync()
     {
-        var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("api/design/toolbox?pageId=" + Guid.Empty);
-        Categories = toolboxViewModel.ToolboxCategories.ToList();
+        try
+        {
+            var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("api/design/toolbox?pageId=" + Guid.Empty);
+            Categories = toolboxViewModel.ToolboxCategories.ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Categories = new List<ToolboxCategory>();
+        }
     }
-    catch (Exception e)
+
+
+
+    public ToolboxCategory SelectedCategory { get; set; }
+
+    void CategoryChanged(UIChangeEventArgs dropdownEvent)
     {
-        Console.WriteLine(e.Message);
-        Categories = new List<ToolboxCategory>();
+        SelectedCategory = Categories.Single(x => x.CategoryName == dropdownEvent.Value.ToString());
     }
-}
-
-
-
-public ToolboxCategory SelectedCategory { get; set; }
-
-void CategoryChanged(UIChangeEventArgs dropdownEvent)
-{
-    SelectedCategory = Categories.Single(x => x.CategoryName == dropdownEvent.Value.ToString());
-}
     void OnItemDragStart(UIDragEventArgs e, ToolboxItemViewModel dragItem)
     {
         DragDropContext.Dragging = dragItem;
     }
+
+
+
 
 }
