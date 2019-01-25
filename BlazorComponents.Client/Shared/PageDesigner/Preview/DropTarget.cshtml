@@ -27,7 +27,7 @@
     protected PreviewNode SubstitutionNode { get; set; }
 
     [CascadingParameter]
-    protected PagePreview Dispatcher { get; set; }
+    protected PagePreview Preview { get; set; }
 
     [Parameter]
     public ChildPosition Position { get; set; }
@@ -75,19 +75,31 @@
             throw new Exception("DragDropContext.Dragging is null.");
         }
 
-        if (Dispatcher == null)
+        if (Preview == null)
         {
             throw new Exception("Dispatcher is null.");
         }
 
-
-        await Dispatcher.ContentMoved(new ContentMoveLocation
+        if (dropped is PreviewNode droppedPreviewNode)
         {
-            ToChildOf = SubstitutionNode.PreviewNodeId,
-            MovedPreviewNodeId =dropped.PreviewNodeId,
-            PlaceAfter = AfterDesignNode?.PreviewNodeId
 
-        });
+            await Preview.MoveContent(droppedPreviewNode,new PagePreviewPosition
+            {
+                ToChildOf = SubstitutionNode.PreviewNodeId,
+                PlaceAfter = AfterDesignNode?.PreviewNodeId
+
+            });
+        }
+
+        if (dropped is ToolboxItemViewModel toolboxItem)
+        {
+            await Preview.AddContent(toolboxItem,new PagePreviewPosition
+            {
+                ToChildOf = SubstitutionNode.PreviewNodeId,
+                PlaceAfter = AfterDesignNode?.PreviewNodeId
+
+            });
+        }
 
     }
 

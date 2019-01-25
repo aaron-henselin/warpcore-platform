@@ -38,7 +38,7 @@ namespace BlazorComponents.Client
 
     public static class DragDropContext
     {
-        public static PreviewNode Dragging { get; set; }
+        public static object Dragging { get; set; }
     }
 
     public class ConfiguratorActivator : BlazorComponent

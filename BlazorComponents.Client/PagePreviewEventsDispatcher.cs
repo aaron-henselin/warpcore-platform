@@ -7,17 +7,8 @@ using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BlazorComponents.Client
 {
-    public class CommittedChangesArgs : EventArgs
-    {
-        public IDictionary<string,string> NewValues { get; set; }
-        public Guid ContentId { get; set; }
-    }
 
-    public class FormSession
-    {
-        public Guid ContentId { get; set; }
-        public Dictionary<string,string> OriginalValues { get; set; }
-    }
+
 
     public class ValueChangedEventArgs
     {
@@ -108,7 +99,6 @@ namespace BlazorComponents.Client
     public class FormEventDispatcher
     {
         public event EventHandler EditingCancelled;
-        public event EventHandler<CommittedChangesArgs> ChangesCommitted;
 
 
         public void RaiseEditingSessionCancelled()
@@ -117,17 +107,17 @@ namespace BlazorComponents.Client
         }
 
 
-        public bool RaiseCommitChanges(IDictionary<string,string> newValues)
-        {
-            var committedChanges = new CommittedChangesArgs{NewValues = newValues};
-            ChangesCommitted?.Invoke(this,committedChanges);
-            return true;
-        }
+
     }
 
-    public class ContentMoveLocation : EventArgs
+    public class ContentLocation
     {
-        public Guid MovedPreviewNodeId { get; set; }
+        public PreviewNode ParentPlaceHolder { get; set; }
+        public PreviewNode ParentWidget { get; set; }
+    }
+
+    public class PagePreviewPosition 
+    {
         public Guid ToChildOf { get; set; }
         public Guid? PlaceAfter { get; set; }
     }
@@ -138,7 +128,7 @@ namespace BlazorComponents.Client
 
     //    public Action<Guid> Delete { get; set; }
 
-    //    public Action<ContentMovedArgs> ContentMoved { get; set; }
+    //    public Action<ContentMovedArgs> MoveContent { get; set; }
     //}
 
 

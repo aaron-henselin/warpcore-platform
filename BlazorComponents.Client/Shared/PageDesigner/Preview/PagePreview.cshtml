@@ -50,14 +50,15 @@
 
     }
 
-    public async Task ContentMoved(ContentMoveLocation contentMoved)
-    {
-        Console.WriteLine($"[Design Page] Content move started MovedPid={contentMoved.MovedPreviewNodeId} ToSubstitutionPid={contentMoved.ToChildOf}, PlaceAfterPid={contentMoved.PlaceAfter}.");
 
+
+
+    private ContentLocation ResolveContentLocation(PagePreviewPosition contentMoved)
+    {
         var searchPath = new Stack<PreviewNode>();
         var newParent = CurrentPreview.FindDescendentNode(contentMoved.ToChildOf, searchPath);
         if (newParent == null)
-            throw new Exception(contentMoved.MovedPreviewNodeId + " was not found in the current preview");
+            throw new Exception(contentMoved.ToChildOf + " was not found in the current preview");
 
         int level = 0;
         var parts = searchPath.ToArray().ToList();
@@ -66,16 +67,29 @@
             Console.WriteLine($"{level++}, Pid={part.PreviewNodeId}, ContentId={part.ContentId}, PlaceholderId={part.PlaceHolderId}");
         }
 
-        var newParentSubstitution = parts[0];//searchPath.PopUntil(x => !string.IsNullOrWhiteSpace(x.PlaceHolderId));
-        var newParentLayoutElement = parts[1];//searchPath.PopUntil(x => x.ContentId != default(Guid));
+        var newParentSubstitution = parts[0]; //searchPath.PopUntil(x => !string.IsNullOrWhiteSpace(x.PlaceHolderId));
+        var newParentLayoutElement = parts[1]; //searchPath.PopUntil(x => x.ContentId != default(Guid));
 
         if (newParentSubstitution == null)
             throw new Exception("A parent placeholder was not found in the current preview");
         if (newParentLayoutElement == null)
             throw new Exception("A parent layout element was not found in the current preview");
 
+        return new ContentLocation
+        {
+            ParentPlaceHolder = newParentSubstitution,
+            ParentWidget = newParentLayoutElement
+        };
+    }
+
+    public async Task MoveContent(PreviewNode previewNode, PagePreviewPosition contentMoved)
+    {
+        Console.WriteLine($"[Design Page] Content move started MovedPid={previewNode.Id} ToSubstitutionPid={contentMoved.ToChildOf}, PlaceAfterPid={contentMoved.PlaceAfter}.");
+
+        var newContentLocation = ResolveContentLocation(contentMoved);
+
         var oldPath = new Stack<PreviewNode>();
-        var originalPreviewNode = CurrentPreview.FindDescendentNode(contentMoved.MovedPreviewNodeId,oldPath);
+        var originalPreviewNode = CurrentPreview.FindDescendentNode(previewNode.Id, oldPath);
 
         var originalStructureNode = CurrentStructure.FindDescendentNode(originalPreviewNode.ContentId);
         if (originalStructureNode == null)
@@ -83,16 +97,39 @@
 
         CurrentStructure.RemoveDescendentNode(originalPreviewNode.ContentId);
 
-        var addToStructureNode = CurrentStructure.FindDescendentNode(newParentLayoutElement.ContentId);
+        var addToStructureNode = CurrentStructure.FindDescendentNode(newContentLocation.ParentWidget.ContentId);
         if (addToStructureNode == null)
-            throw new Exception("A structure node of " + newParentLayoutElement.ContentId + " was not found in the current page structure.");
+            throw new Exception("A structure node of " + newContentLocation.ParentWidget.ContentId + " was not found in the current page structure.");
 
         addToStructureNode.ChildNodes.Add(originalStructureNode);
-        originalStructureNode.PlacementContentPlaceHolderId = newParentSubstitution.PlaceHolderId;
+        originalStructureNode.PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId;
 
         await RefreshPagePreviewAsync(Chrome.pageId);
     }
 
+    public async Task AddContent(ToolboxItemViewModel toolboxItem, PagePreviewPosition addLocation)
+    {
+        Console.WriteLine(
+            $"[Design Page] Content add started ToSubstitutionPid={addLocation.ToChildOf}, PlaceAfterPid={addLocation.PlaceAfter}.");
+        var newContentLocation = ResolveContentLocation(addLocation);
+
+        var addToStructureNode = CurrentStructure.FindDescendentNode(newContentLocation.ParentWidget.ContentId);
+        if (addToStructureNode == null)
+            throw new Exception("A structure node of " + newContentLocation.ParentWidget.ContentId +
+                                " was not found in the current page structure.");
+
+        var newStructureNode = new StructureNode
+        {
+            Id = Guid.NewGuid(),
+            WidgetTypeCode = toolboxItem.WidgetTypeCode,
+            PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId,
+        };
+
+        addToStructureNode.ChildNodes.Add(newStructureNode);
+
+
+        await RefreshPagePreviewAsync(Chrome.pageId);
+    }
 
 
     public async Task RefreshPagePreviewAsync(Guid previewPageId)

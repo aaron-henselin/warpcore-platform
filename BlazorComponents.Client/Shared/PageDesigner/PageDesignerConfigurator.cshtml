@@ -1,5 +1,6 @@
 ﻿@using System.Net
 @using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 @inject HttpClient Http
 
@@ -48,41 +49,65 @@
     [Parameter]
     FormEventDispatcher Dispatcher { get; set; }
 
-    [Parameter]
-    Action CancelChangesAction { get; set; }
+    [CascadingParameter]
+    PageDesignerChrome Chrome { get; set; }
 
-    [Parameter]
-    Action<CommittedChangesArgs> CommitChangesAction { get; set; }
+    StructureNode _structureNode;
 
     ConfiguratorRegistry _registry = new ConfiguratorRegistry();
-    private Guid _contentId;
 
-    public async Task BeginApplyNewFormLayout(Task<ConfiguratorFormDescription> formDescriptionFactory)
+
+
+    private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
     {
-        FormDescription = null;
-        FormDescription = await formDescriptionFactory;
+        Console.WriteLine($"[Design Page] Retrieving new form description");
+        var formApiPath = "api/design/configurator-form/" + widgetTypeCode;
+        var formDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
+        return formDescription;
+
     }
 
-    public void StartNewSession(FormSession session)
+    public async Task StartNewSession(StructureNode relatedPageContent)
     {
-        _contentId = session.ContentId;
-        var readWriter = new CmsFormReadWriter(_registry);
-        readWriter.SetValues(session.OriginalValues);
 
+        _structureNode = relatedPageContent;
+
+        //(1) Set up form layout
+        /////////////////////////////////
+        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
+        FormDescription = null;
+        Console.WriteLine($"[Design Page] Applying new form layout.");
+        FormDescription = await RetrieveConfiguratorSidebarLayoutAsync(_structureNode.WidgetTypeCode);
+        this.StateHasChanged();
+
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetValues(_structureNode.Parameters);
     }
 
     public void CancelOnClick(UIMouseEventArgs args)
     {
-        CancelChangesAction();
+        Chrome.CloseSideBar();
     }
 
-    public void SaveOnClick(UIMouseEventArgs args)
+    public async Task SaveOnClick(UIMouseEventArgs args)
     {
+        if (_structureNode == null)
+            throw new Exception("_structureNode is null.");
+
         var readWriter = new CmsFormReadWriter(_registry);
         if (!readWriter.IsFormValid())
             return;
 
-        CommitChangesAction(new CommittedChangesArgs{NewValues = readWriter.GetValues(), ContentId = _contentId});
+        Console.WriteLine($"[Design Page] Applying configuration changes to node {_structureNode.Id}");
+
+        var newValues = readWriter.GetValues();
+        foreach (var kvp in newValues)
+            _structureNode.Parameters[kvp.Key] = kvp.Value;
+
+        Chrome.CloseSideBar();
+        await Chrome.RefreshPagePreviewAsync();
+
+
     }
 
 

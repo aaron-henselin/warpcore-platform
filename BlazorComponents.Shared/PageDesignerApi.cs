@@ -162,7 +162,7 @@ namespace BlazorComponents.Shared
         public Guid? PlacementLayoutBuilderId { get; set; }
         public int Order { get; set; }
         public string WidgetTypeCode { get; set; }
-        public Dictionary<string, string> Parameters { get; set; }
+        public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
         public List<StructureNode> ChildNodes { get; set; } = new List<StructureNode>();
     }
 

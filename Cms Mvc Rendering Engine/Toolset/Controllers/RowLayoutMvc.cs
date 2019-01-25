@@ -10,7 +10,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Control
     [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : Controller, IHasInternalLayout, ISupportsCache<ByParameters>
     {
-        public const string ApiId = "WC/RowLayout";
+        public const string ApiId = "wc-row-layout";
 
         [UserInterfaceHint]
         [DisplayName("Number of Columns")]

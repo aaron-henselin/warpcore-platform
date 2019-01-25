@@ -1,4 +1,5 @@
-﻿@using BlazorComponents.Shared
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
 @inject HttpClient Http
 
 
@@ -47,7 +48,10 @@
             {
                 foreach (var item in SelectedCategory.Items)
                 {
-                    <div draggable="true" class="toolbox-item wc-layout-handle" data-wc-toolbox-item-name="@item.WidgetTypeCode">
+                    <div draggable="true" class="toolbox-item wc-layout-handle" 
+                         data-wc-toolbox-item-name="@item.WidgetTypeCode"
+                         ondragstart="@(e => OnItemDragStart(e, item))"
+                         >
                         <span class="glyphicon glyphicon-option-vertical">
                         </span>
                         @item.Name
@@ -99,5 +103,9 @@ void CategoryChanged(UIChangeEventArgs dropdownEvent)
 {
     SelectedCategory = Categories.Single(x => x.CategoryName == dropdownEvent.Value.ToString());
 }
+    void OnItemDragStart(UIDragEventArgs e, ToolboxItemViewModel dragItem)
+    {
+        DragDropContext.Dragging = dragItem;
+    }
 
 }

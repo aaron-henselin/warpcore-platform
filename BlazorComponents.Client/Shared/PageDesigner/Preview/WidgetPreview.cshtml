@@ -14,11 +14,11 @@
 
 
 @functions {
-[Parameter]
-PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-[CascadingParameter]
-protected PagePreview Dispatcher { get; set; }
+    [CascadingParameter]
+    protected PagePreview Dispatcher { get; set; }
 
     void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
     {
