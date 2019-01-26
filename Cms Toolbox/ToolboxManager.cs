@@ -1,11 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms.Toolbox
 {
+    [Table("cms_toolbox_client_application")]
+    public class BlazorApplication : UnversionedContentEntity
+    {
+     
+        public List<BlazorAssemblyReference> AssemblyReferences { get; set; } = new List<BlazorAssemblyReference>();
+    }
 
+    public class BlazorAssemblyReference
+    {
+    }
 
     [Table("cms_toolbox_item")]
     public class ToolboxItem : UnversionedContentEntity

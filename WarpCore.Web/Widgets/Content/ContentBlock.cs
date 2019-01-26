@@ -14,29 +14,5 @@ namespace WarpCore.Web.Widgets.Content
         public string Test2 { get; set; }
     }
 
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid=ApiId, FriendlyName = "Content Block", Category = "Content")]
-    public class ContentBlock : Control
-    {
-        public const string ApiId = "warpcore-content-html";
 
-        [UserInterfaceHint(Editor = Editor.RichText)][DisplayName("Html")]
-        public string AdHocHtml { get; set; }
-
-        //public ComplexDemo ComplexDemo { get; set; }
-
-        protected override void OnInit(EventArgs e)
-        {
-            base.OnInit(e);
-
-            DataBind();
-        }
-
-        public override void DataBind()
-        {
-            base.DataBind();
-
-            this.Controls.Clear();
-            this.Controls.Add(new Literal { Text = AdHocHtml });
-        }
-    }
 }

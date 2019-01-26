@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Cms_StaticContent_RenderingEngine</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cms Configuration\Cms Configuration.csproj" />
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj" />
+    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj" />
+    <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj" />
+  </ItemGroup>
+
+</Project>

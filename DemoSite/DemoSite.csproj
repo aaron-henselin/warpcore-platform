@@ -479,6 +479,10 @@
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
       <Name>Cms Site Content</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Cms StaticContent RenderingEngine\Cms StaticContent RenderingEngine.csproj">
+      <Project>{c684346f-972b-4ddb-a5a5-66c0b1408b4c}</Project>
+      <Name>Cms StaticContent RenderingEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
       <Project>{60BB28EB-2853-47BF-A9F6-A385031B3C3A}</Project>
       <Name>Cms Toolbox</Name>

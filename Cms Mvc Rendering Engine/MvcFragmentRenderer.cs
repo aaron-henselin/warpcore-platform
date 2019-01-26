@@ -40,13 +40,6 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc
             var switching = (SwitchingHtmlWriter) response.Output;
             switching.AddLayoutSubsitution(placeHolderId);
 
-            //var actual = htmlHelper.ViewContext.Writer;
-            //actual.Flush();
-            //var noReponse = (SwitchingHtmlWriter)htmlHelper.ViewContext.RequestContext.HttpContext.Response.Output;
-            //noReponse.Write(actual.ToString());
-            //noReponse.AddLayoutSubsitution(placeHolderId);
-            //htmlHelper.ViewContext.Writer = new StringWriter();
-
             return MvcHtmlString.Empty;
         }
     }

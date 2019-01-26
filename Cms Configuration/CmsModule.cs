@@ -19,6 +19,7 @@ namespace Modules.Cms.Features.Configuration
             var fragmentRenderers = cmsConfiguration.SupportedRenderingEngines.Select(x => x.FragmentRenderer).ToList();
             var pageCompositionFactories = cmsConfiguration.SupportedRenderingEngines.Select(x => x.PageCompositionFactory).ToList();
 
+
             Dependency.RegisterMultiple<IPageCompositionElementFactory>(pageCompositionFactories);
             Dependency.RegisterMultiple<IFragmentRenderer>(fragmentRenderers);
 

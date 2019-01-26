@@ -6,6 +6,7 @@ using System.Web.UI;
 using Cms;
 using Cms.Forms;
 using Cms.Layout;
+using Cms_StaticContent_RenderingEngine;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Configuration;
 using Modules.Cms.Features.Presentation.Page.Elements;
@@ -38,7 +39,7 @@ namespace DemoSite
             
             CmsConfiguration.Current.AddMvcSupport();
             CmsConfiguration.Current.AddWebFormsSupport();
-
+            CmsConfiguration.Current.AddStaticContentSupport();
 
             ToolboxPropertyFilter.BlacklistedDeclaringAssemblies.AddRange(new[]
             {
