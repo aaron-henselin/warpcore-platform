@@ -135,12 +135,6 @@ namespace DemoSite
             var tbx = new ToolboxManager();
             tbx.Save(new ToolboxItem
             {
-                AscxPath = "/App_Data/BackendWidgets/PageTree.ascx",
-                WidgetUid = "wc-pagetree",
-                FriendlyName = "Page Tree"
-            });
-            tbx.Save(new ToolboxItem
-            {
                 AscxPath = "/App_Data/BackendWidgets/EntityBuilder.ascx",
                 WidgetUid = "wc-entitybuilder",
                 FriendlyName = "Entity Builder"
@@ -402,7 +396,8 @@ namespace DemoSite
             {
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = "wc-pagetree"
+                WidgetTypeCode = BlazorApp.ApiId,
+
             });
 
 

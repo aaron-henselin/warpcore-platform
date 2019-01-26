@@ -2,6 +2,7 @@
 using System.Web;
 using Modules.Cms.Features.Context;
 using WarpCore.Cms;
+using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 using WarpCore.Web.Extensions;
 
 namespace WarpCore.Web
@@ -27,6 +28,19 @@ namespace WarpCore.Web
 
                     return;
                 }
+
+                var currentUri = HttpContext.Current.Request.RawUrl;
+                if (currentUri.Contains("/_framework/"))
+                {
+                    var indexOf = currentUri.IndexOf("/_framework/");
+                    var right = currentUri.Substring(indexOf + 1);
+                    var key = $"BlazorComponents.Client/dist/{right}";
+                    var vPath = new BlazorToolkit().GetHostedPath(key);
+                    HttpContext.Current.RewritePath(vPath);
+                    return;
+                }
+                // "/App_Data/WarpCore/Temp/BlazorModules/"
+
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();
                 HttpContext.Current.Request.RequestContext.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken,routingContext);

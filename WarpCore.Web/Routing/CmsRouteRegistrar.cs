@@ -1,4 +1,6 @@
-﻿using System.Web.Routing;
+﻿using System;
+using System.Web;
+using System.Web.Routing;
 using WarpCore.Web.ServiceModel;
 
 namespace WarpCore.Cms
@@ -9,16 +11,33 @@ namespace WarpCore.Cms
     {
         public static void RegisterDynamicRoutes()
         {
-            RouteTable.Routes.RouteExistingFiles = true;
-
+            RouteTable.Routes.RouteExistingFiles = false;
+           
             RouteTable.Routes.Add("PageDesignerApi",new Route("wc-api/pagedesigner/{*pathInfo}",new PageDesignerApiRouteHandler()));
             RouteTable.Routes.Add("Configurator", new Route("wc-api/configurator", new ConfiguratorRouteHandler()));
 
             //RouteTable.Routes.Add("BlazorModules", new Route("{*pathInfo}", new RouteValueDictionary(), new RouteValueDictionary(), new BlazorHostRouteHandler()));
-            RouteTable.Routes.Add("BlazorModules", new Route("{folder}/{*resource}",new RouteValueDictionary(), new RouteValueDictionary(new{ folder="_framework"}), new BlazorHostRouteHandler()));
+            //var constraints = new RouteValueDictionary();
+            //constraints.Add("url",new AppUrlConstraint());
+            //RouteTable.Routes.Add("BlazorModules", new Route("{*url}",defaults: new RouteValueDictionary(), constraints:constraints,routeHandler: new BlazorHostRouteHandler()));
+
+ 
         }
 
 
 
     }
+
+    //public class AppUrlConstraint : IRouteConstraint
+    //{
+    //    public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    //    {
+    //        if (values[parameterName] != null)
+    //        {
+    //            var url = values[parameterName].ToString();
+    //            return url.Contains("/_framework/");
+    //        }
+    //        return false;
+    //    }
+    //}
 }

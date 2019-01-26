@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using WarpCore.Platform.Kernel;
@@ -14,6 +15,8 @@ namespace Platform_Hosting_AspNet
         }
 
         public NameValueCollection QueryString => HttpContext.Current.Request.QueryString;
+
+        public Uri Uri => HttpContext.Current.Request.Url;
 
         public IDictionary<string, object> RouteTokens =>
             HttpContext.Current.Request.RequestContext.RouteData.DataTokens.ToDictionary(x => x.Key,x => x.Value);

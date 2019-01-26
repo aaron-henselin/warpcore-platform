@@ -208,7 +208,6 @@
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
-    <Content Include="App_Data\BackendWidgets\PageTree.ascx" />
     <Content Include="App_Data\AdminSite\NavBar.ascx" />
     <Content Include="images\about.jpg" />
     <Content Include="images\bg_1.jpg" />
@@ -342,12 +341,6 @@
     </Compile>
     <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.designer.cs">
       <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\BackendWidgets\PageTree.ascx.cs">
-      <DependentUpon>PageTree.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\BackendWidgets\PageTree.ascx.designer.cs">
-      <DependentUpon>PageTree.ascx</DependentUpon>
     </Compile>
     <Compile Include="App_Data\AdminSite\NavBar.ascx.cs">
       <DependentUpon>NavBar.ascx</DependentUpon>

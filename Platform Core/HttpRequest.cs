@@ -1,10 +1,13 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 
 namespace WarpCore.Platform.Kernel
 {
     public interface IHttpRequest
     {
         NameValueCollection QueryString { get; }
+
+        Uri Uri { get; }
     }
 
     public interface IWebServer
