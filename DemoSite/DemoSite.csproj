@@ -117,7 +117,6 @@
     <Content Include="App_Data\BackendWidgets\AddPageWizard.ascx" />
     <Content Include="App_Data\Booting.aspx" />
     <Content Include="App_Data\DynamicPage.aspx" />
-    <Content Include="App_Data\PageDesignerComponents\Configurator.ascx" />
     <Content Include="App_Data\BackendWidgets\FormDesigner.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityBuilder.ascx" />
     <Content Include="App_Data\BackendWidgets\EntityList.ascx" />
@@ -206,8 +205,6 @@
     <Content Include="fonts\ionicons\fonts\ionicons.svg" />
     <Content Include="fonts\open-iconic\open-iconic.svg" />
     <Content Include="Global.asax" />
-    <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
-    <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
     <Content Include="images\about.jpg" />
     <Content Include="images\bg_1.jpg" />
     <Content Include="images\bg_2.jpg" />
@@ -251,7 +248,6 @@
     <Content Include="js\scrollax.min.js" />
     <Content Include="App_Data\BackendWidgets\ContentList.ascx" />
     <Content Include="Scripts\jquery.slidereveal.min.js" />
-    <Content Include="App_Data\PageDesignerComponents\Toolbox.ascx" />
     <Content Include="UserControls\CustomNavigation.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -285,12 +281,6 @@
     </Compile>
     <Compile Include="App_Master\Global.Master.designer.cs">
       <DependentUpon>Global.Master</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\Configurator.ascx.cs">
-      <DependentUpon>Configurator.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\Configurator.ascx.designer.cs">
-      <DependentUpon>Configurator.ascx</DependentUpon>
     </Compile>
     <Compile Include="App_Data\BackendPage.Master.cs">
       <DependentUpon>BackendPage.Master</DependentUpon>
@@ -328,19 +318,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.cs">
-      <DependentUpon>PageDesignerState.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\PageDesignerState.ascx.designer.cs">
-      <DependentUpon>PageDesignerState.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.cs">
-      <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.designer.cs">
-      <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
-    </Compile>
     <Compile Include="App_Data\BackendWidgets\ContentList.ascx.cs">
       <DependentUpon>ContentList.ascx</DependentUpon>
     </Compile>
@@ -348,12 +325,6 @@
       <DependentUpon>ContentList.ascx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.cs">
-      <DependentUpon>Toolbox.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\PageDesignerComponents\Toolbox.ascx.designer.cs">
-      <DependentUpon>Toolbox.ascx</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\CustomNavigation.ascx.cs">
       <DependentUpon>CustomNavigation.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

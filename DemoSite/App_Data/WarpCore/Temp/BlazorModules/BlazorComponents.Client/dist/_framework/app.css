@@ -219,6 +219,7 @@ wc-substitution {
     }
 
 wc-sidebar-handle {
+    z-index: 9999999;
     position: absolute;
     right: 0;
     background-color: #000000c9;
