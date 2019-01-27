@@ -1,0 +1,62 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+
+@page "/Pages"
+@inject HttpClient Http
+@layout OneColumn
+
+
+
+@if (sites == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select class="form-control" onchange="@SiteChanged">
+        <option value="">Site</option>
+        @foreach (var site in sites)
+        {
+            <option value="@site.SiteId">@site.SiteName</option>
+        }
+    </select>
+
+    <CascadingValue Value=@this>
+    <PageTreeBrowser currentSite=@currentSite/>
+    </CascadingValue>
+
+}
+
+
+@functions {
+    SitemapModel currentSite;
+    SitemapModel[] sites;
+
+    private string CurrentExpandPath = "/";
+
+    protected override async Task OnInitAsync()
+    {
+        await RefreshSitemaps();
+    }
+
+    public async Task RefreshSitemaps()
+    {
+        sites = await Http.GetJsonAsync<SitemapModel[]>
+            ("/api/pagetreeapi/sites");
+    }
+
+
+    void SiteChanged(UIChangeEventArgs dropdownEvent)
+    {
+
+        var selectedPageTreeId = dropdownEvent.Value.ToString();
+        currentSite =sites.Single(x => x.SiteId == new Guid(selectedPageTreeId));
+        this.StateHasChanged();
+    }
+
+
+
+
+}

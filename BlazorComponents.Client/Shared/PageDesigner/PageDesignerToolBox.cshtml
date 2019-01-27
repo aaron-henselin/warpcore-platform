@@ -14,19 +14,19 @@
         <h3 class="save-header">
             <span class="button-group">
                 <span class="button">
-                    <span class="glyphicon glyphicon-arrow-left">
+                    <span class="fas fa-backspace">
                         <a runat="server" Text="Back" ID="BackToPageTreeLinkButton"></a>
                     </span>
                 </span>
             </span>
             <span class="button-group right">
                 <span class="button" onclick=@_chrome.Save>
-                    <span class="glyphicon glyphicon-floppy-save">
+                    <span class="fas fa-save">
                         <a runat="server" Text="Save" ID="SaveDraftButton"></a>
                     </span>
                 </span>
                 <span class="button last" onclick=@_chrome.SaveAndPublish>
-                    <span class="glyphicon  glyphicon-send">
+                    <span class="fas fa-paper-plane">
                         <a runat="server" Text="Publish" ID="SaveAndPublishButton"></a>
                     </span>
                 </span>
@@ -53,7 +53,7 @@
                          data-wc-toolbox-item-name="@item.WidgetTypeCode"
                          ondragstart="@(e => OnItemDragStart(e, item))"
                          >
-                        <span class="glyphicon glyphicon-option-vertical">
+                        <span class="fas fa-grip-vertical">
                         </span>
                         @item.Name
                     </div>

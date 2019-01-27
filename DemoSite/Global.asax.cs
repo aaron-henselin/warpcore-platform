@@ -351,7 +351,8 @@ namespace DemoSite
             var backendLayout = new Layout
             {
                 Name = "Backend Layout",
-                MasterPagePath = "/App_Data/BackendPage.Master"
+                MasterPagePath = "/App_Data/BackendPage.Master",
+                PageContent = new List<CmsPageContent> { new CmsPageContent { Id = Guid.NewGuid(),PlacementContentPlaceHolderId = "Body", WidgetTypeCode = "wc-navigation-bar" } }
             };
 
 

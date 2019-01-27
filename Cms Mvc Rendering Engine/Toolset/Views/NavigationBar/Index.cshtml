@@ -1,0 +1,81 @@
+﻿@using System.Web.Mvc
+@using System.Web.Mvc.Html
+@using Modules.Cms.Features.Presentation.RenderingEngines.Mvc
+@model Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers.NavigationBarViewModel
+
+
+<nav class="wc-navbar navbar navbar-expand-lg navbar-dark bg-dark">
+    
+    <a class="navbar-brand">
+        <div class="wc-site-selector-icon">
+            <span class="glyphicon glyphicon-globe"></span>
+        </div>
+        <div class="navbar-header">
+            @Html.DropDownList("SiteSelector",Model.Sites.Select(x => new SelectListItem{Text=x.Text,Value=x.Url}))
+            @*<asp:DropDownList class="pull-right wc-site-selector" />*@
+        </div>
+    </a>
+
+        <ul class="navbar-nav mr-auto">
+
+            @foreach (var item in Model.TopLevelNavigationItems)
+            {
+
+                
+                    if (!item.ChildItems.Any())
+                     {
+                         <li class="nav-item">
+                             <a class="nav-link" href="@item.Url">@item.Text</a>
+                         </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @item.Text
+                            </a>
+                            <div class="dropdown-menu">
+                                @foreach (var subItem in item.ChildItems)
+                                {
+                                    
+                                        <a class="dropdown-item" href="@subItem.Url">@subItem.Text</a>
+                                   
+                                }   
+                            </div>
+                        </li>
+                        
+                    }
+            }
+        </ul>
+  
+</nav>
+
+
+
+<style>
+    .wc-site-selector-icon{ 
+        color: white;
+        display: inline-block;
+        left: 0;
+        position: absolute;
+        top: 18px;
+    }
+    .pagetree-item {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .wc-navbar {
+        background-color: #2E2E2E;
+    }
+    .wc-navbar a {
+        color: white;
+    }
+    .wc-site-selector {
+        color: white;       
+        background-color: #2E2E2E;
+        border: 0;
+        width: 100%;
+        font-size: 18px;
+        height: 50px;
+    }
+</style>

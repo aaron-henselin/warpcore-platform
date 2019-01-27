@@ -7,7 +7,7 @@
         <ContentTemplate>
             <asp:Panel runat="server" Id="ConfiguratorSideBarBody">
             <h3 style="min-height: 50px;">
-                <small class="pull-right">
+                <small class="float-right">
                     <button class="configurator-cancel btn">
                         <span class="glyphicon glyphicon-info-sign">
                         </span> Cancel

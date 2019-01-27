@@ -1,0 +1,39 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Pages
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Client.Shared.PageDesigner.Preview
+@using BlazorComponents.Shared
+@inject HttpClient Http
+
+<div runat="server" class="pagetree" ID="PageTreeWrapper">
+
+
+    @if (currentSite != null)
+    {
+        foreach (var item in currentSite.ChildNodes)
+        {
+    <CascadingValue Value=@this>
+        <PageTreeNode item=@item />
+    </CascadingValue>
+        }
+    }
+
+</div>
+
+
+@functions {
+
+    [Parameter]
+    SitemapModel currentSite { get; set; }
+
+    [CascadingParameter]
+    PageTrees siteBrowser { get; set; }
+
+    public async Task SendToPublish(SitemapModelNode node)
+    {
+        await Http.PostAsync($"/api/pagetreeapi/publish?id={node.PageId}",null);
+        await siteBrowser.RefreshSitemaps();
+        this.StateHasChanged();
+    }
+}
+

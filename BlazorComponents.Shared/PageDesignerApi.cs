@@ -44,6 +44,24 @@ namespace BlazorComponents.Shared
 
     public static class TreeExtensions
     {
+        public static IReadOnlyCollection<T> GetAllDescendents<T>(this IUnrootedTree<T> tree) where T : ITreeNode<T>
+        {
+            List<T> foundNodes = new List<T>();
+            foreach (var childNode in tree.ChildNodes)
+                foundNodes.AddRange(childNode.GetAllDescendentsAndSelf());
+
+            return foundNodes;
+        }
+
+        public static IReadOnlyCollection<T> GetAllDescendentsAndSelf<T>(this T treeNode) where T : ITreeNode<T>
+        {
+            List<T> foundNodes = new List<T>();
+            foundNodes.Add(treeNode);
+            foreach (var childNode in treeNode.ChildNodes)
+                foundNodes.AddRange(childNode.GetAllDescendentsAndSelf());
+            return foundNodes;
+        }
+
         public static T FindDescendentNode<T>(this IUnrootedTree<T> tree, Guid id) where T : ITreeNode<T>
         {
             return FindDescendentNode(tree, id, out _);

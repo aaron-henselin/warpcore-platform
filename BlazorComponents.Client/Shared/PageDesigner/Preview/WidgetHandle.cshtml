@@ -10,13 +10,13 @@
 >
     <div class='StackedListContent'>
         <h4 class='Heading Heading--size4 text-no-select'>
-
-            <span class='glyphicon glyphicon-cog wc-edit-command configure'
+            
+            <span class='fas fa-wrench wc-edit-command configure'
                   data-wc-widget-type=''
                   data-wc-editing-command-configure='@DesignNode.PreviewNodeId'
                   onclick=@(e => Dispatcher.Edit(DesignNode))>
             </span>
-            <span class='glyphicon glyphicon-remove wc-edit-command delete pull-right'
+            <span class='fas fa-trash-alt wc-edit-command delete float-right'
                   data-wc-editing-command-delete='@DesignNode.PreviewNodeId'
                   onclick="@(e => Dispatcher.Delete(DesignNode))">
             </span>

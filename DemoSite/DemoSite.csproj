@@ -208,7 +208,6 @@
     <Content Include="Global.asax" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerState.ascx" />
     <Content Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx" />
-    <Content Include="App_Data\AdminSite\NavBar.ascx" />
     <Content Include="images\about.jpg" />
     <Content Include="images\bg_1.jpg" />
     <Content Include="images\bg_2.jpg" />
@@ -342,12 +341,6 @@
     <Compile Include="App_Data\PageDesignerComponents\PageDesignerControlSet.ascx.designer.cs">
       <DependentUpon>PageDesignerControlSet.ascx</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\AdminSite\NavBar.ascx.cs">
-      <DependentUpon>NavBar.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="App_Data\AdminSite\NavBar.ascx.designer.cs">
-      <DependentUpon>NavBar.ascx</DependentUpon>
-    </Compile>
     <Compile Include="App_Data\BackendWidgets\ContentList.ascx.cs">
       <DependentUpon>ContentList.ascx</DependentUpon>
     </Compile>
@@ -414,6 +407,7 @@
     <Content Include="_framework\web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\AdminSite\" />
     <Folder Include="App_Data\BackendWidgets\EntityBuilderForms\" />
     <Folder Include="App_Data\Forms\" />
     <Folder Include="App_Data\WarpCore\Temp\BlazorModules\" />

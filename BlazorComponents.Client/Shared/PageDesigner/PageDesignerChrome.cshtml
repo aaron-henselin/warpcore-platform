@@ -8,7 +8,7 @@
 <wc-chrome>
 
 
-    <wc-design class="@(SideBarMode != SideBarMode.Collapsed ? "col-md-9" : "col-md-12")">
+    <wc-design class="col">
         @if (SideBarMode == SideBarMode.Collapsed || SideBarMode == SideBarMode.Toolbox)
         {
             <wc-sidebar-handle>
@@ -19,7 +19,7 @@
                 else
                 {
                     <a class="handle" onclick=@ToggleSideBar>
-                        <span class="glyphicon glyphicon-wrench"></span>
+                        <span class="fas fa-tools"></span>
                     </a>
                 }
             </wc-sidebar-handle>
@@ -29,12 +29,12 @@
         </CascadingValue>
     </wc-design>
 
-    <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col-md-3" : "collapse")">
+    <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col col-md-3" : "collapse")">
         <CascadingValue Value=@this>
             <PageDesignerConfigurator ref="ConfiguratorWidget" Dispatcher=@formEventDispatcher />
         </CascadingValue>
     </wc-sidebar>
-    <wc-sidebar class="@(SideBarMode == SideBarMode.Toolbox ? "col-md-3" : "collapse")">
+    <wc-sidebar class="@(SideBarMode == SideBarMode.Toolbox ? "col col-md-3" : "collapse")">
         <CascadingValue Value=@this>
             <PageDesignerToolBox ref="ToolBoxWidget" />
         </CascadingValue>
