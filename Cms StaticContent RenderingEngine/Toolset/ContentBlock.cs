@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
+using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.Page.Elements;
+using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel;
 
@@ -27,7 +29,7 @@ namespace Cms_StaticContent_RenderingEngine
 
 
     [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
-    public class BlazorApp : StaticContentControl, ISupportsCache<ByInstance>
+    public class BlazorApp : StaticContentControl, ISupportsCache<ByInstance>, IHostsClientSideRoutes
     {
         public const string ApiId = "warpcore-blazor-app";
 
@@ -37,8 +39,9 @@ namespace Cms_StaticContent_RenderingEngine
 
         public override StaticContent GetStaticContent()
         {
-            var currentUri = Dependency.Resolve<IHttpRequest>().Uri;
-            var absPath = currentUri.AbsolutePath;
+            //route here is the _app host_
+            var applicationBaseUri = CmsPageRequestContext.Current.Route.VirtualPath;
+            var absPath = applicationBaseUri.ToString();
             if (!absPath.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                 absPath += "/";
 

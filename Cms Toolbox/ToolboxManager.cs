@@ -17,6 +17,12 @@ namespace WarpCore.Cms.Toolbox
     {
     }
 
+    public interface IHostsClientSideRoutes
+    {
+
+    }
+
+
     [Table("cms_toolbox_item")]
     public class ToolboxItem : UnversionedContentEntity
     {

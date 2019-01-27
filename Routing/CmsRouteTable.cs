@@ -118,11 +118,6 @@ namespace WarpCore.Cms.Routing
             }
 
             var absPath = new Uri(absoluteUri.AbsolutePath, UriKind.Relative);
-            //if (constraint.RoutePrefix != null)
-            //{
-            //    var routePrefixRemoved = absoluteUri.AbsolutePath.Remove(0, constraint.RoutePrefix.Length+1);
-            //    absPath = new Uri(routePrefixRemoved, UriKind.Relative);
-            //}
 
             absPath = RemoveTrailingSlashes(absPath);
 

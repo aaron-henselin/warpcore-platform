@@ -40,15 +40,41 @@ namespace WarpCore.Cms
             return true;
         }
 
+        private bool FindClientSideRouteHostForVirtualPath(Uri virtualPath, out SiteRoute route)
+        {
+            if (_routesByPath.Contains(virtualPath))
+            {
+                route = _routesByPath[virtualPath].Where(x => x.HostsClientSideRoutes).OrderBy(x => x.Priority).FirstOrDefault();
+                if (route != null)
+                    return true;
+            }
+
+
+            var pathAsText = virtualPath.ToString();
+            if (pathAsText.LastIndexOf("/") > 0)
+            {
+                
+                var lastSlash = pathAsText.LastIndexOf("/");
+                var newUrl = pathAsText.Substring(0, lastSlash);
+                var found = FindClientSideRouteHostForVirtualPath(new Uri(newUrl, UriKind.Relative), out route);
+                if (found)
+                    return true;
+            }
+
+            route = null;
+            return false;
+        }
+
         public bool TryGetRoute(Uri virtualPath, out SiteRoute route)
         {
-            route = null;
 
-            if (!_routesByPath.Contains(virtualPath))
-                return false;
+            if (_routesByPath.Contains(virtualPath))
+            {
+                route = _routesByPath[virtualPath].OrderBy(x => x.Priority).First();
+                return true;
+            }
 
-            route = _routesByPath[virtualPath].OrderBy(x => x.Priority).First();
-            return true;
+            return FindClientSideRouteHostForVirtualPath(virtualPath, out route);
         }
     }
 }

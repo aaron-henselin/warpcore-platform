@@ -29,6 +29,7 @@ namespace WarpCore.Web
                     return;
                 }
 
+                //todo: figure out what the hell to do with this.. can we make this logic dependent on the requesting app?
                 var currentUri = HttpContext.Current.Request.RawUrl;
                 if (currentUri.Contains("/_framework/"))
                 {
@@ -39,7 +40,6 @@ namespace WarpCore.Web
                     HttpContext.Current.RewritePath(vPath);
                     return;
                 }
-                // "/App_Data/WarpCore/Temp/BlazorModules/"
 
 
                 var routingContext = HttpContext.Current.ToCmsRouteContext();

@@ -36,7 +36,7 @@ namespace WarpCore.Cms
         public int Priority { get; set; }
         public Guid SiteId { get; set; }
         public Guid? PageId { get; set; }
-       
+        public bool HostsClientSideRoutes { get; set; }
     }
 
     //public class RouteBuilderContext
@@ -64,6 +64,7 @@ namespace WarpCore.Cms
             {
                 var toolboxManager = new ToolboxManager();
                 var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
+                
 
                 var toolboxItemType = default(Type);//todo: add content routing.
                 continue;
@@ -149,6 +150,21 @@ namespace WarpCore.Cms
                 //    pageRoutes.Add(alternatePageRoute);
                 //}
 
+                foreach (var content in node.Page.PageContent)
+                {
+                    var toolboxManager = new ToolboxManager();
+                    var toolboxItem = toolboxManager.GetToolboxItemByCode(content.WidgetTypeCode);
+
+                    //todo: fix this, we need a separate toolbox item activator outside of the page composer.
+                    //      add cache too.
+                    var typeName = toolboxItem?.AssemblyQualifiedTypeName;
+                    if (typeName != null)
+                    {
+                        var type = Type.GetType(typeName);
+                        var hasInterface = type.GetInterface(nameof(IHostsClientSideRoutes)) != null;
+                        primaryRoute.HostsClientSideRoutes = hasInterface;
+                    }
+                }
             }
 
             if (primaryRoute == null)
@@ -159,7 +175,9 @@ namespace WarpCore.Cms
             primaryRoute.SiteId = site.ContentId;
             primaryRoute.PageId = node.Page.ContentId;
             primaryRoute.VirtualPath = MakeRelativeUri(site, node.VirtualPath.ToString());
-            
+
+
+
             pageRoutes.Add(primaryRoute);
 
             var localRoutes = new List<SiteRoute>();

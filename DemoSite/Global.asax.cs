@@ -455,7 +455,13 @@ namespace DemoSite
                 DisplayInNavigation = false
             };
             redirectPageSettings.PageContent.AddDynamicForm(redirectPageSettingsForm);
-            
+
+            var dashboardPage = new CmsPage
+            {
+                Name = "Dashboard",
+                SiteId = backendSite.ContentId,
+                LayoutId = backendLayout.ContentId
+            };
 
 
             var entityBuilderPage = new CmsPage
@@ -573,18 +579,18 @@ namespace DemoSite
 
 
             var pageRepo = new CmsPageRepository();
+            pageRepo.Save(dashboardPage);
             pageRepo.Save(pageTree);
             pageRepo.Save(formDesigner);
             pageRepo.Save(contentPageSettings);
             pageRepo.Save(groupingPageSettings);
             pageRepo.Save(redirectPageSettings);
             pageRepo.Save(addPageWizard);
-
             pageRepo.Save(entityBuilderPage);
             pageRepo.Save(entityListPage);
             pageRepo.Save(dynamicListTest);
             pageRepo.Save(formsList);
-            backendSite.HomepageId = pageTree.ContentId;
+            backendSite.HomepageId = dashboardPage.ContentId;
             siteRepo.Save(backendSite);
 
             var editBackendPageTreeLink = new CmsPage

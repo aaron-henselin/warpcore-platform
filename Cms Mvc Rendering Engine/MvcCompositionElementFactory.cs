@@ -9,6 +9,8 @@ using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 
 namespace WarpCore.Web.RenderingEngines.Mvc
 {
+
+
     public class MvcCompositionElementFactory : IPageCompositionElementFactory
     {
 
