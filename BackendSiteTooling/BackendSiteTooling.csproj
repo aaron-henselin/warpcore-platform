@@ -46,10 +46,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Blazor\BlazorComponents.Client\dist\css\bootstrap\bootstrap.min.css" />
-    <Content Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
-    <Content Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.svg" />
-    <Content Include="Blazor\BlazorComponents.Client\dist\css\site.css" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\css\loader.css" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\css\pagedesigner.css" />
+    <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\css\pagetree.css" />
     <Content Include="Blazor\BlazorComponents.Client\dist\index.html" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\WarpCore.Platform.DataAnnotations.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\Mono.Security.dll" />
@@ -81,14 +80,6 @@
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Net.Http.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Blazor\BlazorComponents.Client\dist\css\bootstrap\bootstrap.min.css.map" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\FONT-LICENSE" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.eot" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.otf" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.ttf" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\font\fonts\open-iconic.woff" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\ICON-LICENSE" />
-    <None Include="Blazor\BlazorComponents.Client\dist\css\open-iconic\README.md" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\blazor.boot.json" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\wasm\mono.wasm" />
     <None Include="Blazor\web.config" />

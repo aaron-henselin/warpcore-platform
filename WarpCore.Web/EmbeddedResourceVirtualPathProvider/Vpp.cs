@@ -71,6 +71,19 @@ namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 
             foreach (var libraryName in libraries)
             {
+                string cssMerged = string.Empty;
+                var cssSearch = libraryName + ".dist.css.";
+                var cssResources = allResources.Where(r => r.Contains(cssSearch));
+                foreach(var resource in cssResources)
+                {
+                    cssMerged += Environment.NewLine;
+                    cssMerged += $"/* {resource} */";
+                    cssMerged += Environment.NewLine;
+                    cssMerged += AssemblyResourceReader.ReadString(asm, resource);
+                    
+                }
+                var appCss = libraryName + "/dist/_framework/app.css";
+                generatedVpp.Add(appCss,Encoding.UTF8.GetBytes(cssMerged));
 
                 var binSearch = libraryName + ".dist._framework._bin.";
                 var heuristicallyFoundResources = allResources.Where(r => r.Contains(binSearch));

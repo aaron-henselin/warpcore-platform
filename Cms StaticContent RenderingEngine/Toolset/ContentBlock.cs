@@ -42,8 +42,11 @@ namespace Cms_StaticContent_RenderingEngine
             if (!absPath.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                 absPath += "/";
 
+            var baseTag = $"<base href='{WebUtility.HtmlEncode(absPath)}'/>";
+            var stylesheetTag = $"<link rel='stylesheet' type='text/css' href='./_framework/app.css'/>";
+
             var globalContent = new Dictionary<string,string>();
-            globalContent.Add(GlobalLayoutPlaceHolderIds.Head, $"<base href='{WebUtility.HtmlEncode(absPath)}'/>");
+            globalContent.Add(GlobalLayoutPlaceHolderIds.Head, baseTag+stylesheetTag);
             globalContent.Add(GlobalLayoutPlaceHolderIds.Scripts, @"<script src = './_framework/blazor.webassembly.js' ></script>");
 
             return new StaticContent

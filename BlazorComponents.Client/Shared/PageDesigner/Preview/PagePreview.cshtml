@@ -126,7 +126,7 @@
         try
         {
 
-            CurrentPreview = await Http.PostJsonAsync<PreviewNode>("api/design/page/" + previewPageId + "/preview", newPageStructure);
+            CurrentPreview = await Http.PostJsonAsync<PreviewNode>("/api/design/page/" + previewPageId + "/preview", newPageStructure);
             this.StateHasChanged();
         }
         catch (Exception e)

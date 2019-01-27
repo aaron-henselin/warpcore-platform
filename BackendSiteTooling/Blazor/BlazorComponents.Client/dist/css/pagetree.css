@@ -1,0 +1,62 @@
+﻿   
+        .unpublished.badge {
+         font-size: 10px;
+         right: 0;
+         margin-left: 5px;
+     }
+
+    .homepage-icon {
+        background-color: #009688;
+        border-radius: 20px;
+        color: white;
+        font-size: 10px;
+        padding: 5px;
+        top: 0px;
+        margin-left: 5px;
+    }
+
+    .pagetree-item-actions {
+        visibility: hidden;
+        opacity: .25;
+        transition: visibility 0s, opacity 0.5s linear;
+    }
+
+    .pagetree-item:hover
+        .pagetree-item-actions {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .pagetree-item-title {
+        padding-left: 10px; /* To remove default left padding */
+        font-size: 18px;
+        font-family: sans-serif;
+    }
+
+    .pagetree-item.depth-0 {
+        padding-left: 30px;
+    }
+
+    .pagetree-item.depth-1 {
+        padding-left: 60px;
+    }
+
+    .pagetree-item.depth-2 {
+        padding-left: 90px;
+    }
+
+    .pagetree-item.depth-3 {
+        padding-left: 120px;
+    }
+
+    .pagetree-item.depth-4 {
+        padding-left: 150px;
+    }
+
+    .pagetree-item.depth-5 {
+        padding-left: 180px;
+    }
+
+    .pagetree-item {
+        border-bottom: 1px solid #efefef;
+    }

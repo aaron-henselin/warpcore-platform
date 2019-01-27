@@ -88,7 +88,7 @@ else
     {
         try
         {
-            var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("api/design/toolbox?pageId=" + Guid.Empty);
+            var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("/api/design/toolbox?pageId=" + Guid.Empty);
             Categories = toolboxViewModel.ToolboxCategories.ToList();
         }
         catch (Exception e)

@@ -7,7 +7,7 @@ namespace DemoSite
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            PageHeader.DataBind();
+            //PageHeader.DataBind();
         }
 
 

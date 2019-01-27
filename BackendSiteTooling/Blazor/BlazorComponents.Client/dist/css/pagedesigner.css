@@ -1,0 +1,212 @@
+﻿
+.tbx select {
+    background-color: #2E2E2E;
+    border: 0;
+    width: 100%;
+    font-size: 18px;
+}
+
+.tbx .toolbox-item {
+    border-top: 1px dotted #3c3c3c;
+    cursor: move;
+    padding: 5px;
+}
+
+.wc-configurator {
+    background-color: #fff;
+}
+
+.wc-configurator-surface {
+    padding: 10px;
+}
+
+.wc-configurator .surface {
+    color: #000;
+    background-color: #fff;
+}
+
+.wc-configurator .form-label {
+    color: #000000;
+    font-weight: bold;
+}
+
+.configurator-embed {
+    width: 100%;
+    height: 100%;
+}
+
+.tbx {
+    color: #fff;
+}
+
+    .tbx .handle {
+        background-color: #2E2E2E;
+        right: -40px;
+        padding: 10px;
+        position: absolute;
+        top: 0px;
+        width: 40px;
+        cursor: pointer;
+    }
+
+    /*.tbx {
+            box-shadow: 10px 0px 15px 10px #585858;
+        }*/
+
+    .tbx h3 .button-group {
+        top: 0;
+        position: absolute;
+    }
+
+        .tbx h3 .button-group.right {
+            right: 0;
+        }
+
+.edit-with-rte {
+    display: none;
+}
+
+.wc-configurator h3 {
+    color: #fff;
+}
+
+.tbx h3, .wc-configurator h3 {
+    background-color: #2E2E2E;
+    font-size: 1.9em;
+    padding: 5px;
+    margin: 0;
+    font-weight: 300;
+}
+
+    .tbx h3.save-header {
+        height: 40px;
+        border-bottom: 1px solid #fff;
+        filter: drop-shadow(0px 0px 10px rgba(0,0,0,.8));
+    }
+
+        .tbx h3.save-header .button a {
+            color: white;
+        }
+
+        .tbx h3.save-header .button.last {
+            border-left: 1px solid white;
+        }
+
+        .tbx h3.save-header .button {
+            font-size: 10px;
+            color: white;
+            padding: 5px;
+            margin-left: 2px;
+        }
+
+.wc-layout-handle h4 {
+    font-family: Consolas,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
+
+.wc-layout-handle span.configure {
+    margin-left: 5px;
+}
+
+.wc-layout-handle span.delete {
+    margin-right: 2px;
+}
+
+.wc-layout-handle {
+    display: block;
+    width: 100%;
+    background: #2E2E2E;
+    border: #2E2E2E 1px solid;
+    font-family: monospace;
+    color: white;
+    font-weight: bold;
+}
+
+.wc-droptarget-highlight div {
+    border: 1px solid transparent;
+    height: 50%;
+}
+
+wc-sidebar {
+    box-shadow: 12px 0 15px -4px rgba(0, 0, 0, 0.8), -12px 0 8px -4px rgba(0, 0, 0, 0.22)
+}
+
+.toolbox-select {
+    color: white !important;
+    background-color: #2E2E2E !important;
+    font-size: 14px !important;
+}
+
+.wc-configurator-surface {
+    padding: 5px;
+}
+
+.wc-droptarget-highlight.wc-droptarget-hover {
+    height: 32px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    transition-property: height;
+    transition-duration: .5s;
+    transition-property: margin-top;
+    transition-duration: .5s;
+    transition-property: margin-bottom;
+    transition-duration: .5s;
+}
+
+    .wc-droptarget-highlight.wc-droptarget-hover div {
+        border: 1px dashed grey;
+        transition-property: border;
+        transition-duration: 1s;
+    }
+
+wc-droptarget {
+    display: block;
+}
+
+div .wc-droptarget-highlight:last-child {
+    margin-top: 10px;
+}
+
+.wc-droptarget-highlight {
+    height: 32px;
+    transition-property: height;
+    transition-duration: 1s;
+    margin-top: -8px;
+    margin-bottom: -32px;
+    z-index: 10000;
+    position: relative;
+}
+
+
+wc-substitution {
+    display: block;
+    border: 1px dotted #f1f1f1;
+}
+
+    wc-substitution.hover wc-droptarget {
+        min-height: 20px;
+    }
+
+wc-sidebar-handle {
+    position: absolute;
+    right: 0;
+    background-color: #000000c9;
+    padding: 5px;
+    width: 40px;
+    color: white;
+    font-size: 20px;
+}
+
+wc-sidebar.col-md-3 {
+    padding-left: 0;
+}
+
+wc-chrome {
+    width: 100%;
+}
+
+.inset-shadow {
+    -moz-box-shadow: inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow: inset 0 0 10px #000000;
+}

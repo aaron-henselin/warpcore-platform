@@ -72,7 +72,7 @@
     protected override async Task OnInitAsync()
     {
         using (this.TrackBusyState())
-            CurrentStructure = await Http.GetJsonAsync<PageStructure>("api/design/page/" + pageId + "/structure");
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>("/api/design/page/" + pageId + "/structure");
 
         await Preview.RefreshPagePreviewAsync(pageId,CurrentStructure);
     }
@@ -114,7 +114,7 @@
     {
         using (this.TrackBusyState())
         {
-            await Http.PostJsonAsync<ToolboxViewModel>($"api/design/page/{pageId}/draft",CurrentStructure);
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/page/{pageId}/draft",CurrentStructure);
             CloseSideBar();
         }
     }
@@ -124,7 +124,7 @@
         using (this.TrackBusyState())
         {
           
-            await Http.PostJsonAsync<ToolboxViewModel>($"api/design/page/{pageId}/live", CurrentStructure);
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/page/{pageId}/live", CurrentStructure);
             CloseSideBar();
         }
     }

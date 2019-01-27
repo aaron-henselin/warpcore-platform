@@ -61,7 +61,7 @@
     private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
     {
         Console.WriteLine($"[Design Page] Retrieving new form description");
-        var formApiPath = "api/design/configurator-form/" + widgetTypeCode;
+        var formApiPath = "/api/design/configurator-form/" + widgetTypeCode;
         var formDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
         return formDescription;
 

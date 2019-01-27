@@ -22,7 +22,7 @@
 <body class="wc-backend">
     <form id="form1" runat="server">
         <a:AscxPlaceHolder runat="server" VirtualPath="/App_Data/AdminSite/NavBar.ascx"/>
-        <div class="container">
+<%--        <div class="container">
             <h1 runat="server" ID="PageHeader">
                 <asp:PlaceHolder runat="server" ID="ActionItemsPlaceHolder">
                     
@@ -31,7 +31,9 @@
             </h1>
             <asp:ContentPlaceHolder ID="Body" runat="server">
             </asp:ContentPlaceHolder>
-        </div>
+        </div>--%>
+        <asp:ContentPlaceHolder ID="Body" runat="server">
+        </asp:ContentPlaceHolder>
     </form>
 </body>
 </html>
