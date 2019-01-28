@@ -50,6 +50,7 @@ namespace BackendSiteApi
             var model = new SitemapModel();
             model.SiteId = site.ContentId;
             model.SiteName = site.Name;
+            model.IsFrontendSite = site.IsFrontendSite;
             var draftSitemap = SitemapBuilder.BuildSitemap(site, ContentEnvironment.Draft, SitemapBuilderFilters.All);
 
             foreach (var childNode in draftSitemap.ChildNodes)

@@ -1,5 +1,7 @@
-﻿@using BlazorComponents.Client
+﻿@using System.Net
+@using BlazorComponents.Client
 @using BlazorComponents.Client.Pages
+@using BlazorComponents.Client.Pages.PagesApp
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Client.Shared.PageDesigner.Preview
 @using BlazorComponents.Shared
@@ -33,7 +35,7 @@
     {
         await Http.PostAsync($"/api/pagetreeapi/publish?id={node.PageId}",null);
         await siteBrowser.RefreshSitemaps();
-        this.StateHasChanged();
+
     }
 }
 

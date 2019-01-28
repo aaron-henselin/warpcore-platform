@@ -34,17 +34,21 @@ else
     SitemapModel currentSite;
     SitemapModel[] sites;
 
-    private string CurrentExpandPath = "/";
 
     protected override async Task OnInitAsync()
     {
         await RefreshSitemaps();
+        if (currentSite == null)
+            currentSite = sites.FirstOrDefault(x => x.IsFrontendSite);
     }
 
     public async Task RefreshSitemaps()
     {
-        sites = await Http.GetJsonAsync<SitemapModel[]>
-            ("/api/pagetreeapi/sites");
+        sites = await Http.GetJsonAsync<SitemapModel[]>("/api/pagetreeapi/sites");
+        if (currentSite != null)
+            currentSite = sites.Single(x => x.SiteId == currentSite.SiteId);
+
+        this.StateHasChanged();
     }
 
 

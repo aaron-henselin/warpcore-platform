@@ -9,6 +9,7 @@ namespace BlazorComponents.Shared
         public List<SitemapModelNode> ChildNodes { get; set; } = new List<SitemapModelNode>();
         public string SiteName { get; set; }
         public Guid SiteId { get; set; }
+        public bool IsFrontendSite { get; set; }
     }
 
     public class SitemapModelNode : ITreeNode<SitemapModelNode>
