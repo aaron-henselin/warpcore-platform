@@ -1,4 +1,5 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Shared
 @implements IConfiguratorComponent
 
@@ -15,11 +16,8 @@
     [Parameter]
     public ConfiguratorSetup Setup { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
-    public FormEventDispatcher Dispatcher { get; set; }
-
-    [Parameter]
-    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
 
     private string TextBoxValue { get; set; }
 
@@ -46,9 +44,6 @@
         if (Setup == null)
             throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
 
-        if (Dispatcher == null)
-            throw new Exception("No dispatcher is available, cannot register FormTextBox.");
-
-        ConfiguratorRegistry.RegisterComponent(Setup.PropertyName,this);
+        FormBody.Configurators.RegisterComponent(Setup.PropertyName,this);
     }
  }

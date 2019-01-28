@@ -120,6 +120,7 @@
     font-family: monospace;
     color: white;
     font-weight: bold;
+    cursor: move;
 }
 
 .wc-droptarget-highlight div {

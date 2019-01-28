@@ -1,4 +1,5 @@
 ﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Shared
 @using Microsoft.JSInterop
 
@@ -6,12 +7,12 @@
 <wc-form-element data-element-type="@DesignNode.WidgetTypeCode">
     @if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
     {
-        <FormRow DesignNode=@DesignNode Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
+        <FormRow DesignNode=@DesignNode />
     }
 
     @if (DesignNode.WidgetTypeCode == "ConfiguratorElement")
     {
-        <ConfiguratorActivator DesignNode=@DesignNode Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
+        <ConfiguratorActivator DesignNode=@DesignNode />
     }
 </wc-form-element>
 
@@ -19,9 +20,6 @@
     [Parameter]
     public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
-    public FormEventDispatcher Dispatcher { get; set; }
-
-    [Parameter]
-    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
 }

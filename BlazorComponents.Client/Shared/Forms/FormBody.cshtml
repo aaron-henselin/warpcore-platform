@@ -1,0 +1,63 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+
+@if (FormDescription != null)
+{
+<div runat="server" ID="surface" CssClass="wc-configurator-surface">
+    @{
+            var toRender = FormDescription.Layout.ChildNodes;
+            foreach (var item in toRender)
+            {
+                <CascadingValue Value=@this>
+                    <FormNode DesignNode=@item  />
+                </CascadingValue>
+            }
+    }
+</div>
+}
+
+
+@functions {
+    [Parameter]
+    public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [Parameter]
+    ConfiguratorFormDescription FormDescription { get; set; }
+
+    StructureNode _structureNode;
+
+    ConfiguratorRegistry _registry = new ConfiguratorRegistry();
+
+    public ConfiguratorRegistry Configurators => _registry;
+
+    public void SetFormLayout(ConfiguratorFormDescription formDescription)
+    {
+        FormDescription = formDescription;
+        this.StateHasChanged();
+    }
+
+
+    public void StartNewSession(IDictionary<string,string> values )
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetValues(values);
+    }
+
+    public bool Validate()
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        return readWriter.IsFormValid();
+    }
+
+    public IDictionary<string, string> GetValues()
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        return readWriter.GetValues();
+
+    }
+
+
+
+
+}

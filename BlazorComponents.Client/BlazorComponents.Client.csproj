@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Shared\Forms\FormBody.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\Forms\FormNode.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -10,6 +10,7 @@
     border-top: 1px dotted #3c3c3c;
     cursor: move;
     padding: 5px;
+    background-color: #2E2E2E;
 }
 
 .wc-configurator {
@@ -99,20 +100,22 @@
             margin-left: 2px;
         }
 
-.wc-layout-handle h4 {
+wc-layout-handle {
     font-family: Consolas,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
+    padding-bottom: 2px;
+    padding-top: 2px;
 }
 
-.wc-layout-handle span.configure {
+wc-layout-handle span.configure {
     margin-left: 5px;
 }
 
-.wc-layout-handle span.delete {
+wc-layout-handle span.delete {
     margin-right: 2px;
 }
 
-.wc-layout-handle {
+wc-layout-handle {
     display: block;
     width: 100%;
     background: #2E2E2E;
@@ -120,15 +123,34 @@
     font-family: monospace;
     color: white;
     font-weight: bold;
+    cursor: move;
 }
 
-.wc-droptarget-highlight div {
-    border: 1px solid transparent;
-    height: 50%;
+wc-layout-handle a {
+    cursor: pointer;
 }
+
+    wc-layout-handle .wc-layout-handle-text {
+        text-align: center;
+    }
+
+    wc-layout-handle .wc-layout-handle-command-cell.right {
+        text-align: right;
+    }
+
+    wc-layout-handle .wc-layout-handle-command-cell a{
+        margin: 5px;
+    }
+
+    .wc-droptarget-highlight div {
+        border: 1px solid transparent;
+        height: 50%;
+    }
 
 wc-sidebar {
-    box-shadow: 12px 0 15px -4px rgba(0, 0, 0, 0.8), -12px 0 8px -4px rgba(0, 0, 0, 0.22)
+    box-shadow: 12px 0 15px -4px rgba(0, 0, 0, 0.8), -12px 0 8px -4px rgba(0, 0, 0, 0.22);
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .toolbox-select {

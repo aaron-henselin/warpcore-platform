@@ -1,59 +1,47 @@
 ﻿@using System.Net
 @using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
 @inject HttpClient Http
 
 <div class="designer wc-configurator">
-
-    <div runat="server" Id="ConfiguratorSideBarBody">
-        @if (FormDescription != null)
-        {
-            <h3 style="min-height: 50px;">
-                <small class="float-right">
-                    <button type="button" class="configurator-cancel btn" onclick=@CancelOnClick>
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick=@SaveOnClick>
-                        Save
-                    </button>
-                </small>
-                Settings<br/>
-            </h3>
-
-            <div runat="server" ID="surface" CssClass="wc-configurator-surface">
-                @{
-                    var toRender = FormDescription.Layout.ChildNodes;
-                    foreach (var item in toRender)
-                    {
-
-                        <FormNode DesignNode=@item Dispatcher=@Dispatcher ConfiguratorRegistry=@_registry/>
-                    }
-                }
-            </div>
-
-        }
-        else
-        {
-            <p>loading..</p>
-        }
+    <div id="ConfiguratorSideBarBody">       
+        <CascadingValue Value=@this>
+            <PageDesignerConfiguratorHeader/>
+            <FormBody ref="FormBody" />
+        </CascadingValue>
     </div>
 </div>
 
 @functions
 {
-    [Parameter]
-    ConfiguratorFormDescription FormDescription { get; set; }
 
-    [Parameter]
-    FormEventDispatcher Dispatcher { get; set; }
+    StructureNode _structureNode;
 
     [CascadingParameter]
     PageDesignerChrome Chrome { get; set; }
 
-    StructureNode _structureNode;
+    ConfiguratorFormDescription FormDescription { get; set; }
 
-    ConfiguratorRegistry _registry = new ConfiguratorRegistry();
+    FormBody FormBody { get; set; }
+
+    public async Task BeginEditingPageNode(StructureNode relatedPageContent)
+    {
+
+        _structureNode = relatedPageContent;
+
+        //(1) Set up form layout
+        /////////////////////////////////
+        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
+        FormDescription = null;
+        Console.WriteLine($"[Design Page] Applying new form layout.");
+        FormDescription = await RetrieveConfiguratorSidebarLayoutAsync(_structureNode.WidgetTypeCode);
+        
+
+        FormBody.SetFormLayout(FormDescription);
+        FormBody.StartNewSession(_structureNode.Parameters);
+    }
 
 
 
@@ -66,40 +54,25 @@
 
     }
 
-    public async Task StartNewSession(StructureNode relatedPageContent)
-    {
 
-        _structureNode = relatedPageContent;
 
-        //(1) Set up form layout
-        /////////////////////////////////
-        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
-        FormDescription = null;
-        Console.WriteLine($"[Design Page] Applying new form layout.");
-        FormDescription = await RetrieveConfiguratorSidebarLayoutAsync(_structureNode.WidgetTypeCode);
-        this.StateHasChanged();
-
-        var readWriter = new CmsFormReadWriter(_registry);
-        readWriter.SetValues(_structureNode.Parameters);
-    }
-
-    public void CancelOnClick(UIMouseEventArgs args)
+    public void Cancel()
     {
         Chrome.CloseSideBar();
     }
 
-    public async Task SaveOnClick(UIMouseEventArgs args)
+    public async Task Save()
     {
         if (_structureNode == null)
             throw new Exception("_structureNode is null.");
 
-        var readWriter = new CmsFormReadWriter(_registry);
-        if (!readWriter.IsFormValid())
+        var isFormValid = FormBody.Validate();
+        if (!isFormValid)
             return;
 
         Console.WriteLine($"[Design Page] Applying configuration changes to node {_structureNode.Id}");
 
-        var newValues = readWriter.GetValues();
+        var newValues = FormBody.GetValues();
         foreach (var kvp in newValues)
             _structureNode.Parameters[kvp.Key] = kvp.Value;
 

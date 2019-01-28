@@ -24,12 +24,6 @@ namespace BlazorComponents.Client
         [Parameter]
         ConfiguratorSetup Setup { get; set; } // Demonstrates how a parent component can supply parameters
 
-        [Parameter]
-        FormEventDispatcher Dispatcher { get; set; }
-
-        [Parameter]
-        ConfiguratorRegistry ConfiguratorRegistry { get; set; }
-
         string Value { get; set; }
 
         bool IsValid { get; }
@@ -76,11 +70,11 @@ namespace BlazorComponents.Client
         [Parameter]
         StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-        [Parameter]
-        FormEventDispatcher Dispatcher { get; set; }
+        //[Parameter]
+        //FormEventDispatcher Dispatcher { get; set; }
 
-        [Parameter]
-        ConfiguratorRegistry ConfiguratorRegistry { get; set; }
+        //[Parameter]
+        //ConfiguratorRegistry ConfiguratorRegistry { get; set; }
 
         private Type TypeLookup(ConfiguratorSetup setup)
         {
@@ -105,8 +99,8 @@ namespace BlazorComponents.Client
             var localSeq = 0;
             builder.OpenComponent(localSeq++,t);
             builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Setup), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Shared.ConfiguratorSetup>(configuration));
-            builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.FormEventDispatcher>(Dispatcher));
-            builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.ConfiguratorRegistry), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<ConfiguratorRegistry>(ConfiguratorRegistry));
+            //builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.FormEventDispatcher>(Dispatcher));
+            //builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.ConfiguratorRegistry), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<ConfiguratorRegistry>(ConfiguratorRegistry));
             builder.CloseComponent();
         }
     }

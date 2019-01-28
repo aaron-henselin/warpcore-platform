@@ -14,7 +14,7 @@
                     var toRender = DesignNode.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i.ToString());
                     foreach (var item in toRender)
                     {
-                        <FormNode DesignNode=@item Dispatcher=@Dispatcher ConfiguratorRegistry=@ConfiguratorRegistry/>
+                        <FormNode DesignNode=@item />
                     }
                 }
             </div>
@@ -27,9 +27,5 @@
     [Parameter]
     public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
-    [Parameter]
-    public FormEventDispatcher Dispatcher { get; set; }
-
-    [Parameter]
-    public ConfiguratorRegistry ConfiguratorRegistry { get; set; }
+    
 }

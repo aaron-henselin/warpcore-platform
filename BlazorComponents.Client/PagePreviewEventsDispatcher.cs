@@ -96,19 +96,7 @@ namespace BlazorComponents.Client
     }
 
 
-    public class FormEventDispatcher
-    {
-        public event EventHandler EditingCancelled;
 
-
-        public void RaiseEditingSessionCancelled()
-        {
-            EditingCancelled?.Invoke(this,new EventArgs());
-        }
-
-
-
-    }
 
     public class ContentLocation
     {

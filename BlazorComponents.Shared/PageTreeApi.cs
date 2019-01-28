@@ -26,7 +26,7 @@ namespace BlazorComponents.Shared
         public bool IsHomePage { get; set; }
         public string DesignUrl { get; set; }
         public string SettingsUrl { get; set; }
-        public bool IsExpanded { get; set; }
+
     }
     
 }

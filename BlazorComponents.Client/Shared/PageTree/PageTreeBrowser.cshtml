@@ -31,11 +31,44 @@
     [CascadingParameter]
     PageTrees siteBrowser { get; set; }
 
+    private Dictionary<Guid,bool> _expanded { get; set; } = new Dictionary<Guid, bool>();
+
     public async Task SendToPublish(SitemapModelNode node)
     {
         await Http.PostAsync($"/api/pagetreeapi/publish?id={node.PageId}",null);
         await siteBrowser.RefreshSitemaps();
 
+    }
+
+    public bool IsExpanded(SitemapModelNode item)
+    {
+        if (!_expanded.ContainsKey(item.Id))
+            _expanded.Add(item.Id,false);
+
+        return _expanded[item.Id];
+    }
+
+    public void Expand(SitemapModelNode item)
+    {
+        _expanded[item.Id] = true;
+    }
+
+    public void Collapse(SitemapModelNode item)
+    {
+        _expanded[item.Id] = false;
+    }
+
+    public void ToggleExpand(SitemapModelNode item)
+    {
+        if (!IsExpanded(item))
+        {
+            Expand(item);
+        }
+        else
+        {
+            foreach (var dsc in item.GetAllDescendentsAndSelf())
+                Collapse(dsc);
+        }
     }
 }
 

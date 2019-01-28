@@ -31,7 +31,7 @@
 
     <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col col-md-3" : "collapse")">
         <CascadingValue Value=@this>
-            <PageDesignerConfigurator ref="ConfiguratorWidget" Dispatcher=@formEventDispatcher />
+            <PageDesignerConfigurator ref="ConfiguratorWidget"/>
         </CascadingValue>
     </wc-sidebar>
     <wc-sidebar class="@(SideBarMode == SideBarMode.Toolbox ? "col col-md-3" : "collapse")">
@@ -55,7 +55,6 @@
     PageDesignerToolBox ToolBoxWidget { get; set; }
     PageDesignerConfigurator ConfiguratorWidget { get; set; }
 
-    FormEventDispatcher formEventDispatcher = new FormEventDispatcher();
 
     private bool _isBusy = false;
     public bool IsBusy {
@@ -91,7 +90,7 @@
         SideBarMode = SideBarMode.Configurator;
         this.StateHasChanged();
 
-        await ConfiguratorWidget.StartNewSession(relatedPageContent);
+        await ConfiguratorWidget.BeginEditingPageNode(relatedPageContent);
     }
 
     public async Task RefreshPagePreviewAsync()
