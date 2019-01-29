@@ -1,6 +1,8 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Shared
 @using System.Linq
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Client.Shared.PageDesigner.Preview
 
 <wc-widget-render data-wc-layout='@DesignNode.ChildNodes.Any(x => x.PlaceHolderId != null)' data-wc-page-content-id='@DesignNode.ContentId'>
@@ -8,9 +10,19 @@
     {
         <WidgetHandle DesignNode=@DesignNode/>
     }
-    <wc-widget-preview>
-        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
-    </wc-widget-preview>
+        <wc-widget-preview>
+            @if (!DesignNode.UseClientRenderer)
+            {
+                <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
+            }
+            else
+            {
+                <CascadingValue Value=@_formBody>
+                    <FormNode DesignNode=@GetNodeForClientSidePreview()/>
+                </CascadingValue>
+            }
+
+        </wc-widget-preview>
 </wc-widget-render>
 
 
@@ -19,11 +31,14 @@
     PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
-    protected PagePreview Dispatcher { get; set; }
+    PageDesignerChrome Chrome { get; set; }
 
-    void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
+    FormBody _formBody { get; set; } = new FormBody();
+
+    private StructureNode GetNodeForClientSidePreview()
     {
-        DragDropContext.Dragging = dragItem;
+        return Chrome.CurrentStructure.GetStructureNodeById(DesignNode.ContentId);
+
     }
 
 }

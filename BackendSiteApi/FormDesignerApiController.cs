@@ -41,6 +41,7 @@ namespace BackendSiteApi
 
         private PreviewNode Write(StructureNode pageStructure)
         {
+            
             var friendlyName = string.Empty;
             if (pageStructure.WidgetTypeCode != null)
             {
@@ -60,7 +61,7 @@ namespace BackendSiteApi
             var isRow = "ConfiguratorRow" == pageStructure.WidgetTypeCode;
             if (isRow)
             {
-                previewNode.ChildNodes.Add(new PreviewNode{Type = NodeType.Html,Html="<div class='row'>"});
+                previewNode.ChildNodes.Add(new PreviewNode {Type = NodeType.Html, Html = "<div class='row'>"});
 
                 var numColumnsRaw = pageStructure.Parameters["NumColumns"];
                 int columnCount;
@@ -72,16 +73,41 @@ namespace BackendSiteApi
                 {
                     var i1 = i;
 
-                    previewNode.ChildNodes.Add(new PreviewNode { Type = NodeType.Html, Html = "<div class='col'>", PreviewNodeId = ToGuid(_seq++) });
-                    var newSubstitution = new PreviewNode {Type = NodeType.LayoutSubtitution,PlaceHolderId = i1.ToString(), PreviewNodeId = ToGuid(_seq++) };
+                    previewNode.ChildNodes.Add(new PreviewNode
+                    {
+                        Type = NodeType.Html,
+                        Html = "<div class='col'>",
+                        PreviewNodeId = ToGuid(_seq++)
+                    });
+                    var newSubstitution = new PreviewNode
+                    {
+                        Type = NodeType.LayoutSubtitution,
+                        PlaceHolderId = i1.ToString(),
+                        PreviewNodeId = ToGuid(_seq++)
+                    };
                     previewNode.ChildNodes.Add(newSubstitution);
 
-                    var nodesToPreview = pageStructure.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i1.ToString());
+                    var nodesToPreview =
+                        pageStructure.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i1.ToString());
                     newSubstitution.ChildNodes = nodesToPreview.Select(Write).ToList();
-                    previewNode.ChildNodes.Add(new PreviewNode { Type = NodeType.Html, Html = "</div>", PreviewNodeId = ToGuid(_seq++) });
+                    previewNode.ChildNodes.Add(new PreviewNode
+                    {
+                        Type = NodeType.Html,
+                        Html = "</div>",
+                        PreviewNodeId = ToGuid(_seq++)
+                    });
                 }
 
-                previewNode.ChildNodes.Add(new PreviewNode { Type = NodeType.Html, Html = "</div>",PreviewNodeId = ToGuid(_seq++) });
+                previewNode.ChildNodes.Add(new PreviewNode
+                {
+                    Type = NodeType.Html,
+                    Html = "</div>",
+                    PreviewNodeId = ToGuid(_seq++)
+                });
+            }
+            else
+            {
+                previewNode.UseClientRenderer = true;
             }
 
             return previewNode;

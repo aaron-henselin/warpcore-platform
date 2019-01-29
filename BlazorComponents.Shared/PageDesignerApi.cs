@@ -209,6 +209,7 @@ namespace BlazorComponents.Shared
         public List<StructureNode> ChildNodes { get; set; } = new List<StructureNode>();
     }
 
+
     public enum NodeType
     {
         Element,
@@ -231,6 +232,7 @@ namespace BlazorComponents.Shared
 
         public Dictionary<string,string> Parameters { get; set; } = new Dictionary<string, string>();
         public string PlaceHolderId { get; set; }
+        public bool UseClientRenderer { get; set; }
     }
 
     public class LayoutPosition
