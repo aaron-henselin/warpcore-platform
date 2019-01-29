@@ -1,0 +1,49 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Shared
+@page "/Forms"
+@inject HttpClient Http
+
+@if (_forms == null)
+{
+    <em>loading..</em>
+
+}
+else
+{
+    foreach (var form in _forms)
+    {
+        <div class="row">
+            <div class="col">@form.Name</div>
+            <div class="col">
+                <NavLink href=@($"./{form.ContentId}/Design")>Design</NavLink>
+            </div>
+        </div>
+    }
+}
+
+@functions {
+
+    IReadOnlyCollection<FormModel> _forms;
+
+    protected override async Task OnInitAsync()
+    {
+        await RefreshSitemaps();
+    }
+
+    public async Task RefreshSitemaps()
+    {
+        _forms = await Http.GetJsonAsync<FormModel[]>("/api/forms");
+        
+        this.StateHasChanged();
+    }
+
+ }
+
+

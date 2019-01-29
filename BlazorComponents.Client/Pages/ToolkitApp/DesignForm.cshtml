@@ -7,14 +7,14 @@
 @using BlazorComponents.Client.Shared
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
-@page "/Pages/{pageId}/Design"
+@page "/Forms/{formId}/Design"
 @inject HttpClient Http
 
-<PageDesignerChrome DesignType="page" DesignContentId=@(new Guid(pageId))/>
+<PageDesignerChrome DesignType="form" DesignContentId=@(new Guid(formId))/>
 
 @functions {
     [Parameter]
-    string pageId{get;set;}
+    string formId{get;set;}
 
  }
 

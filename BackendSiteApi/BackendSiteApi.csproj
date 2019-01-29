@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormBrowserApi.cs" />
+    <Compile Include="FormDesignerApiController.cs" />
     <Compile Include="PageDesignerApi.cs" />
     <Compile Include="PageTreeApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

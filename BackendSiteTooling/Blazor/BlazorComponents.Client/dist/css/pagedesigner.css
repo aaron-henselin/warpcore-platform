@@ -221,6 +221,8 @@ wc-sidebar-handle {
 }
 
 wc-sidebar.col-md-3 {
+    margin-right: -15px;
+    padding-right: 0;
     padding-left: 0;
 }
 

@@ -40,12 +40,6 @@ namespace WarpCore.Cms
             }
 
             var pageSpecificContent = cmsPage.PageContent;
-            if (pageRenderMode == PageRenderMode.PageDesigner)
-            {
-                var editing = new EditingContextManager();
-                var context = editing.GetOrCreateEditingContext(cmsPage);
-                pageSpecificContent = context.AllContent;
-            }
 
             var d = page.GetPartialPageRenderingByLayoutBuilderId();
 

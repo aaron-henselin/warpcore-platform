@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\ToolkitApp\FormList.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Pages\ToolkitApp\DesignForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\Forms\FormBody.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

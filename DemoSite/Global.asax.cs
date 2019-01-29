@@ -269,73 +269,75 @@ namespace DemoSite
 
         private CmsForm SetupPageSettingsForm()
         {
+            var form = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(typeof(CmsPage));
 
-            var form = new CmsForm
-            {
-                ContentId = KnownFormIds.ContentPageSettingsForm,
-                Name = "Content Page Settings",
-                RepositoryUid = new Guid(CmsPageRepository.ApiId),
-            };
+            
+                form.ContentId = KnownFormIds.ContentPageSettingsForm;
+                form.Name = "Content Page Settings";
+                form.RepositoryUid = new Guid(CmsPageRepository.ApiId);
+            
 
-
-
-//            CmsPageContentBuilder builder = new CmsPageContentBuilder();
-
-//            var twoColumn =
-//            builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
-//            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-//            form.FormContent.Add(twoColumn);
+            
 
 
-//            var textboxPageContent =
-//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-//                {
-//                    PropertyName = nameof(CmsPage.Name),
-//                    DisplayName = "Page Name",
 
-//                });
+            //            CmsPageContentBuilder builder = new CmsPageContentBuilder();
 
-//            textboxPageContent.PlacementContentPlaceHolderId = "0";
-//            twoColumn.AllContent.Add(textboxPageContent);
+            //            var twoColumn =
+            //            builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 2 });
+            //            twoColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            //            form.FormContent.Add(twoColumn);
 
 
-//            var layoutDropDown =
-//            builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorDropDownList
-//            {
-//                PropertyName = nameof(CmsPage.LayoutId),
-//                DisplayName = "Layout",
-//            });
-//            layoutDropDown.PlacementContentPlaceHolderId = "1";
-//            twoColumn.AllContent.Add(layoutDropDown);
+            //            var textboxPageContent =
+            //                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+            //                {
+            //                    PropertyName = nameof(CmsPage.Name),
+            //                    DisplayName = "Page Name",
 
-//            var oneColumn =
-//builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
-//            oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
-//            form.FormContent.Add(oneColumn);
+            //                });
 
-//            var keywords =
-//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-//                {
-//                    PropertyName = nameof(CmsPage.Keywords),
-//                    DisplayName = "Keywords",
-//                });
-//            keywords.PlacementContentPlaceHolderId = "0";
-//            oneColumn.AllContent.Add(keywords);
+            //            textboxPageContent.PlacementContentPlaceHolderId = "0";
+            //            twoColumn.AllContent.Add(textboxPageContent);
 
-//            var description =
-//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
-//                {
-//                    PropertyName = nameof(CmsPage.Description),
-//                    DisplayName = "Description",
-//                });
-//            oneColumn.AllContent.Add(description);
 
-//            var siteIdDropdown =
-//                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
-//                {
-//                    PropertyName = nameof(CmsPage.SiteId)
-//                });
-//            oneColumn.AllContent.Add(siteIdDropdown);
+            //            var layoutDropDown =
+            //            builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorDropDownList
+            //            {
+            //                PropertyName = nameof(CmsPage.LayoutId),
+            //                DisplayName = "Layout",
+            //            });
+            //            layoutDropDown.PlacementContentPlaceHolderId = "1";
+            //            twoColumn.AllContent.Add(layoutDropDown);
+
+            //            var oneColumn =
+            //builder.BuildCmsPageContentFromWebFormsControl(new RowLayout { NumColumns = 1 });
+            //            oneColumn.PlacementContentPlaceHolderId = ConfiguratorFormBuilder.RuntimePlaceHolderId;
+            //            form.FormContent.Add(oneColumn);
+
+            //            var keywords =
+            //                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+            //                {
+            //                    PropertyName = nameof(CmsPage.Keywords),
+            //                    DisplayName = "Keywords",
+            //                });
+            //            keywords.PlacementContentPlaceHolderId = "0";
+            //            oneColumn.AllContent.Add(keywords);
+
+            //            var description =
+            //                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorTextBox
+            //                {
+            //                    PropertyName = nameof(CmsPage.Description),
+            //                    DisplayName = "Description",
+            //                });
+            //            oneColumn.AllContent.Add(description);
+
+            //            var siteIdDropdown =
+            //                builder.BuildCmsPageContentFromWebFormsControl(new ConfiguratorHiddenField()
+            //                {
+            //                    PropertyName = nameof(CmsPage.SiteId)
+            //                });
+            //            oneColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
             formRepository.Save(form);
@@ -536,7 +538,7 @@ namespace DemoSite
             ////////////////
             var formsList = new CmsPage
             {
-                Name = "Forms",
+                Name = "FormsLegacy",
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId,
                 DisplayInNavigation = true

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace BlazorComponents.Shared
 {
+    public class FormModel
+    {
+        public string Name { get; set; }
+        public Guid ContentId { get; set; }
+    }
     public class SitemapModel : IUnrootedTree<SitemapModelNode>
     {
         public static Guid RootId { get; } = new Guid("00000000-0000-0000-0000-000000000001");

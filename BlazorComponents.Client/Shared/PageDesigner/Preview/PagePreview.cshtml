@@ -28,14 +28,7 @@
 
     PreviewNode CurrentPreview { get; set; }
 
-
-    //protected override async Task OnInitAsync()
-    //{
-    //    Console.WriteLine("[Design Page] Initializing..");
-    //    await RefreshPagePreviewAsync(Chrome.pageId);
-    //}
-
-
+    
     public async Task Edit(PreviewNode contentToEdit)
     {
         var node = Chrome.CurrentStructure.GetStructureNodeById(contentToEdit.ContentId);
@@ -45,7 +38,7 @@
     public async Task Delete(PreviewNode contentToDelete)
     {
         Chrome.CurrentStructure.RemoveDescendentNode(contentToDelete.ContentId);
-        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
 
     }
 
@@ -98,7 +91,7 @@
         
 
 
-        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
     }
 
     public async Task AddContent(ToolboxItemViewModel toolboxItem, PagePreviewPosition addLocation)
@@ -117,16 +110,16 @@
 
 
 
-        await RefreshPagePreviewAsync(Chrome.pageId, Chrome.CurrentStructure);
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
     }
 
-    public async Task RefreshPagePreviewAsync(Guid previewPageId, PageStructure newPageStructure)
+    public async Task RefreshPagePreviewAsync( PageStructure newPageStructure)
     {
         CurrentPreview = null;
         try
         {
 
-            CurrentPreview = await Http.PostJsonAsync<PreviewNode>("/api/design/page/" + previewPageId + "/preview", newPageStructure);
+            CurrentPreview = await Http.PostJsonAsync<PreviewNode>($"/api/design/{Chrome.DesignType}/{Chrome.DesignContentId}/preview", newPageStructure);
             this.StateHasChanged();
         }
         catch (Exception e)

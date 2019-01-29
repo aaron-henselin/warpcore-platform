@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using BlazorComponents.Shared;
-using Cms.Forms;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Page.Elements;
@@ -20,6 +19,7 @@ namespace BackendSiteApi
 {
     public class PageDesignerApiController : ApiController
     {
+
         [HttpGet]
         [Route("api/design/page/{pageId}/preview")]
         public PreviewNode Page(Guid pageId)
@@ -60,9 +60,7 @@ namespace BackendSiteApi
         {
             var pageRepository = new CmsPageRepository();
             var draft = pageRepository.FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
-
             new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
-
             pageRepository.Save(draft);
         }
 
@@ -72,9 +70,7 @@ namespace BackendSiteApi
         {
             var pageRepository = new CmsPageRepository();
             var draft = pageRepository.FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
-
             new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
-
             pageRepository.Save(draft);
             pageRepository.Publish(By.ContentId(draft.ContentId));
         }
@@ -107,8 +103,6 @@ namespace BackendSiteApi
             return description;
         }
 
-
-
         [HttpGet]
         [Route("api/design/toolbox")]
         public ToolboxViewModel Toolbox()
@@ -137,9 +131,12 @@ namespace BackendSiteApi
 
     public class StructureNodeConverter
     {
-        public void ApplyNewStructureToCmsPage(CmsPage draft, PageStructure pageStructure)
+        public void ApplyNewStructureToCmsPage(IHasDesignedContent draft, PageStructure pageStructure)
         {
-            draft.PageContent = pageStructure.ChildNodes.Select(ApplyNewStructure).ToList();
+            var newContent = pageStructure.ChildNodes.Select(ApplyNewStructure);
+            draft.DesignedContent.Clear();
+            draft.DesignedContent.AddRange(newContent);
+            
         }
 
         public CmsPageContent ApplyNewStructure(StructureNode node)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web;
 using System.Web.Routing;
-using WarpCore.Web.ServiceModel;
 
 namespace WarpCore.Cms
 {
@@ -13,8 +12,6 @@ namespace WarpCore.Cms
         {
             RouteTable.Routes.RouteExistingFiles = false;
             RouteTable.Routes.Ignore("{file}.js");
-            RouteTable.Routes.Add("PageDesignerApi",new Route("wc-api/pagedesigner/{*pathInfo}",new PageDesignerApiRouteHandler()));
-            RouteTable.Routes.Add("Configurator", new Route("wc-api/configurator", new ConfiguratorRouteHandler()));
 
             //RouteTable.Routes.Add("BlazorModules", new Route("{*pathInfo}", new RouteValueDictionary(), new RouteValueDictionary(), new BlazorHostRouteHandler()));
             //var constraints = new RouteValueDictionary();

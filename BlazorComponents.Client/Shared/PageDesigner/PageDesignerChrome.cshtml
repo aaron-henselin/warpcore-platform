@@ -45,7 +45,10 @@
 @functions
 {
     [Parameter]
-    public Guid pageId { get; set; }
+    public Guid DesignContentId { get; set; }
+
+    [Parameter]
+    public string DesignType { get; set; }
 
     private SideBarMode SideBarMode { get; set; }
 
@@ -71,9 +74,9 @@
     protected override async Task OnInitAsync()
     {
         using (this.TrackBusyState())
-            CurrentStructure = await Http.GetJsonAsync<PageStructure>("/api/design/page/" + pageId + "/structure");
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>($"/api/design/{DesignType}/{DesignContentId}/structure");
 
-        await Preview.RefreshPagePreviewAsync(pageId,CurrentStructure);
+        await Preview.RefreshPagePreviewAsync(CurrentStructure);
     }
 
 
@@ -98,7 +101,7 @@
         using (this.TrackBusyState())
         {
             this.StateHasChanged();
-            await Preview.RefreshPagePreviewAsync(pageId, CurrentStructure);
+            await Preview.RefreshPagePreviewAsync(CurrentStructure);
         }
     }
 
@@ -113,7 +116,7 @@
     {
         using (this.TrackBusyState())
         {
-            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/page/{pageId}/draft",CurrentStructure);
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/{DesignType}/{DesignContentId}/draft",CurrentStructure);
             CloseSideBar();
         }
     }
@@ -122,8 +125,8 @@
     {
         using (this.TrackBusyState())
         {
-          
-            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/page/{pageId}/live", CurrentStructure);
+
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/{DesignType}/{DesignContentId}/live", CurrentStructure);
             CloseSideBar();
         }
     }
