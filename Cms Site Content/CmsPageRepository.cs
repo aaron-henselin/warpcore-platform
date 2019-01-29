@@ -17,7 +17,7 @@ namespace WarpCore.Cms
     {
     }
 
-    public interface IHasDesignedContent
+    public interface IHasDesignedContent 
     {
         Guid DesignForContentId { get; }
         Guid ContentTypeId { get; }

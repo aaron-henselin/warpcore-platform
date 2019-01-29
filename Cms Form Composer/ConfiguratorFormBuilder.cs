@@ -130,6 +130,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             }
 
             var cmsPageContent = new CmsPageContent();
+            cmsPageContent.Id = Guid.NewGuid();
             cmsPageContent.WidgetTypeCode = "ConfiguratorElement";
             cmsPageContent.Parameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
 
@@ -142,6 +143,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             {
                 WidgetTypeCode = "ConfiguratorRow",
             };
+            row.Id = Guid.NewGuid();
             row.Parameters["NumColumns"] = numColumns.ToString();
             return row;
         }
@@ -162,6 +164,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             {
                 var content = builder.CreateCmsPageContent(property);
                 content.PlacementContentPlaceHolderId = 0.ToString();
+                content.Id = Guid.NewGuid();
                 row.AllContent.Add(content);
             }
 

@@ -340,6 +340,7 @@ namespace DemoSite
             //            oneColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
+            
             formRepository.Save(form);
             formRepository.Publish(By.ContentId(form.ContentId));
 

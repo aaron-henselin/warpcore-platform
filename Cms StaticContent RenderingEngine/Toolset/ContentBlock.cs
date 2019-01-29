@@ -15,6 +15,11 @@ namespace Cms_StaticContent_RenderingEngine
     public class ConfiguratorRow : StaticContentControl, ISupportsCache<ByParameters>
     {
         public const string ApiId = "ConfiguratorRow";
+
+        [UserInterfaceHint]
+        [DisplayName("Number of Columns")]
+        public int NumColumns { get; set; }
+
         public override StaticContent GetStaticContent()
         {
             return new StaticContent { Html = string.Empty };
