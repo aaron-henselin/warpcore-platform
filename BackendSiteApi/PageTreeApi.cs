@@ -10,6 +10,7 @@ using Cms_PageDesigner_Context;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;

@@ -28,7 +28,7 @@ namespace WarpCore.Cms.Toolbox
     {
         public string WidgetUid { get; set; }
         public string Description { get; set; }
-        public string PresentationEngine { get; set; }
+        public bool UseClientSidePresentationEngine { get; set; }
         public string AssemblyQualifiedTypeName { get; set; }
         public string AscxPath { get; set; }
         public string Category { get; set; }
@@ -40,6 +40,7 @@ namespace WarpCore.Cms.Toolbox
         public static void RegisterToolboxItemsWithApi(AppDomain appDomain)
         {
             var assemblies = appDomain.GetAssemblies();
+
             var allTypes = assemblies.SelectMany(x => x.GetTypes()).ToList();
 
             var toIncludeInToolbox = allTypes
@@ -63,6 +64,9 @@ namespace WarpCore.Cms.Toolbox
                 widget.AssemblyQualifiedTypeName = discoveredToolboxItem.AssemblyQualifiedTypeName;
                 widget.Category = discoveredToolboxItem.Category;
                 widget.AscxPath = discoveredToolboxItem.AscxPath;
+                widget.UseClientSidePresentationEngine = discoveredToolboxItem.UseClientSidePresentationEngine;
+
+
                 mgr.Save(widget);
 
                 alreadyInToolbox = mgr.Find().ToDictionary(x => x.WidgetUid);

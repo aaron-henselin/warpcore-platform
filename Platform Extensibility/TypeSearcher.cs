@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MoreLinq;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
@@ -50,9 +51,7 @@ namespace WarpCore.Platform.Extensibility
         public Guid Uid { get; set; }
         public Type RepositoryType { get; set; }
     }
-    public class IsWarpCorePluginAssemblyAttribute : Attribute
-    {
-    }
+
 
 
     public class ExtensibilityBootstrapper

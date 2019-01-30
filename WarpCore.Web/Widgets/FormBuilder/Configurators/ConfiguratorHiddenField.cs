@@ -9,7 +9,7 @@ using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 {
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
+    [Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
     public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl
     {
         public const string ApiId = "warpcore-formcontrol-hiddenfield";

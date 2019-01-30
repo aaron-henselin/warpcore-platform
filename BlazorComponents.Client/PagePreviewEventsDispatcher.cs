@@ -22,7 +22,7 @@ namespace BlazorComponents.Client
 
         public void RegisterComponent(string propertyName, IConfiguratorComponent blazorComponent)
         {
-            Console.WriteLine($@"[Forms] Registering blazor form control {blazorComponent.Setup.EditorCode} for {propertyName}");
+            Console.WriteLine($@"[Forms] Registering blazor form control for {propertyName}");
 
             if (!RegisteredComponents.ContainsKey(propertyName))
                 RegisteredComponents.Add(propertyName, blazorComponent);

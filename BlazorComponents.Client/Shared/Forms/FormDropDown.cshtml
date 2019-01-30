@@ -1,20 +1,20 @@
 ﻿@using BlazorComponents.Client
 @using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Shared
-@implements IConfiguratorComponent<TextboxToolboxItem>
+@implements IConfiguratorComponent<DropdownToolboxItem>
 
 
 
 <div class="form-group">
     <label>@Config.DisplayName</label>
-    <input type="text" bind="@TextBoxValue" class="form-control" />
+    <select type="text" bind="@TextBoxValue" class="form-control"></select>
 </div>
 
 
 
 @functions {
     [Parameter]
-    public TextboxToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+    public DropdownToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
 
     [CascadingParameter]
     public FormBody FormBody { get; set; }
@@ -46,4 +46,4 @@
 
         FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
     }
- }
+}

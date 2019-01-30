@@ -124,27 +124,36 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             }
             else
             {
-
                 var editor = GetEditorForSettingProperty(property);
                 setup.EditorCode = editor.ToString();
+
             }
 
             var cmsPageContent = new CmsPageContent();
             cmsPageContent.Id = Guid.NewGuid();
-            cmsPageContent.WidgetTypeCode = "ConfiguratorElement";
+            cmsPageContent.WidgetTypeCode = setup.EditorCode;
             cmsPageContent.Parameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
 
             return cmsPageContent;
         }
 
+        private class ConfiguratorSetup
+        {
+            public string PropertyName { get; set; }
+            public string DisplayName { get; set; }
+            public string PropertyType { get; set; }
+            public string EditorCode { get; set; }
+        }
+
         public CmsPageContent CreateRow(int numColumns)
         {
+           
             var row = new CmsPageContent
             {
                 WidgetTypeCode = "ConfiguratorRow",
             };
             row.Id = Guid.NewGuid();
-            row.Parameters["NumColumns"] = numColumns.ToString();
+            row.Parameters[nameof(ConfiguratorRow.NumColumns)] = numColumns.ToString();
             return row;
         }
 

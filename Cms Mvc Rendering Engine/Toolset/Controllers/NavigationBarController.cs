@@ -9,13 +9,14 @@ using Modules.Cms.Features.Context;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Extensions;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
-    [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Navigation Bar", Category = "Backend")]
+    [ToolboxItem(WidgetUid = ApiId, FriendlyName = "Navigation Bar", Category = "Backend")]
     public class NavigationBarController : Controller
     {
         

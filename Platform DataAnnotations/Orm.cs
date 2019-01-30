@@ -2,6 +2,7 @@
 
 namespace WarpCore.Platform.DataAnnotations
 {
+
     public class TableAttribute : Attribute
     {
         public string TableName { get; }
@@ -47,14 +48,5 @@ namespace WarpCore.Platform.DataAnnotations
 
     }
 
-    public enum Editor
-    {
-        Text, RichText, OptionList, CheckBox,
-        SubForm, Hidden,
-        Url
-    }
 
-    public class IgnorePropertyAttribute : Attribute
-    {
-    }
 }

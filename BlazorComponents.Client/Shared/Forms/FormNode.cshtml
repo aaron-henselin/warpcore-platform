@@ -9,8 +9,7 @@
     {
         <FormRow DesignNode=@DesignNode />
     }
-
-    @if (DesignNode.WidgetTypeCode == "ConfiguratorElement")
+    else
     {
         <ConfiguratorActivator DesignNode=@DesignNode />
     }

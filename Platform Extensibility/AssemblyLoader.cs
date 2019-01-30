@@ -10,18 +10,24 @@ namespace WarpCore.Platform.Kernel
         public static void LoadAssemblies(AppDomain appDomain, Func<Assembly, bool> loadCondition)
         {
             //todo: add private search relative path.
-            var binariesToCheck = Directory.GetFiles(appDomain.BaseDirectory, "*.dll").ToList();
+            
+            var binariesToCheck = Directory.GetFiles(appDomain.RelativeSearchPath, "*.dll").ToList();
 
             var alreadyLoaded = appDomain
                 .GetAssemblies()
-                .Where(x => !x.IsDynamic)
-                .Select(x => x.Location);
-
-            binariesToCheck = binariesToCheck.Except(alreadyLoaded).ToList();
+                .ToDictionary(x => x.FullName);
+         
 
             foreach (var file in binariesToCheck)
             {
-                Assembly.LoadFile(file);
+                var asmName = AssemblyName.GetAssemblyName(file);
+                var fullName = asmName.FullName;
+
+                if (alreadyLoaded.ContainsKey(fullName))
+                    continue;
+
+                var bytes = File.ReadAllBytes(file);
+                Assembly.Load(bytes);
             }
         }
     }

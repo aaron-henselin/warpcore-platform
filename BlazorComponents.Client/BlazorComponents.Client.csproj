@@ -29,6 +29,9 @@
     <Content Update="Shared\Forms\FormNode.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Shared\Forms\FormDropDown.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\Forms\FormTextBox.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

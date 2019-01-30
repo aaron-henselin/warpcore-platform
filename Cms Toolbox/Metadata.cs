@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel.Extensions;
+using ToolboxItemAttribute = WarpCore.Platform.DataAnnotations.ToolboxItemAttribute;
 
 namespace WarpCore.Cms.Toolbox
 {
@@ -24,13 +25,7 @@ namespace WarpCore.Cms.Toolbox
         public List<Type> Behaviors { get; set; }
     }
 
-    public class ToolboxItemAttribute : Attribute
-    {
-        public string WidgetUid { get; set; }
-        public string FriendlyName { get; set; }
-        public string Category { get; set; }
-        public string AscxPath { get; set; }
-    }
+
     public class ToolboxMetadata
     {
         public string WidgetUid { get; set; }
@@ -38,6 +33,7 @@ namespace WarpCore.Cms.Toolbox
         public string AssemblyQualifiedTypeName { get; set; }
         public string Category { get; set; }
         public string AscxPath { get; set; }
+        public bool UseClientSidePresentationEngine { get; set; }
     }
 
     internal class AttributeBasedToolboxMetadataReader : IToolboxMetadataReader

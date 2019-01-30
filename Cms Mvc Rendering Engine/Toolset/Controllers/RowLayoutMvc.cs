@@ -7,7 +7,7 @@ using WarpCore.Platform.DataAnnotations;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
-    [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout : Controller, IHasInternalLayout, ISupportsCache<ByParameters>
     {
         public const string ApiId = "wc-row-layout";

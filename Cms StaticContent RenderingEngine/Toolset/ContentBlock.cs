@@ -11,7 +11,7 @@ using WarpCore.Platform.Kernel;
 
 namespace Cms_StaticContent_RenderingEngine
 {
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Configurator Row", Category = "Form")]
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Configurator Row", Category = "Form")]
     public class ConfiguratorRow : StaticContentControl, ISupportsCache<ByParameters>
     {
         public const string ApiId = "ConfiguratorRow";
@@ -26,35 +26,35 @@ namespace Cms_StaticContent_RenderingEngine
         }
     }
 
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Configurator Element", Category = "Form")]
-    public class ConfiguratorElement : StaticContentControl, ISupportsCache<ByParameters>
-    {
-        public const string ApiId = "ConfiguratorElement";
+    //[global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Configurator Element", Category = "Form")]
+    //public class ConfiguratorElement : StaticContentControl, ISupportsCache<ByParameters>
+    //{
+    //    public const string ApiId = "ConfiguratorElement";
 
-        [UserInterfaceHint]
-        [DisplayName("Property Name")]
-        public string PropertyName { get; set; }
+    //    [UserInterfaceHint]
+    //    [DisplayName("Property Name")]
+    //    public string PropertyName { get; set; }
 
-        [UserInterfaceHint]
-        [DisplayName("Display Name")]
-        public string DisplayName { get; set; }
+    //    [UserInterfaceHint]
+    //    [DisplayName("Display Name")]
+    //    public string DisplayName { get; set; }
 
-        [UserInterfaceHint]
-        [DisplayName("Property Type")]
-        public string PropertyType { get; set; }
+    //    [UserInterfaceHint]
+    //    [DisplayName("Property Type")]
+    //    public string PropertyType { get; set; }
 
-        [UserInterfaceHint]
-        [DisplayName("Editor Code")]
-        public string EditorCode { get; set; }
+    //    [UserInterfaceHint]
+    //    [DisplayName("Editor Code")]
+    //    public string EditorCode { get; set; }
 
-        public override StaticContent GetStaticContent()
-        {
-            return new StaticContent { Html = string.Empty };
-        }
-    }
+    //    public override StaticContent GetStaticContent()
+    //    {
+    //        return new StaticContent { Html = string.Empty };
+    //    }
+    //}
 
 
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class ContentBlock : StaticContentControl,ISupportsCache<ByParameters>
     {
         public const string ApiId = "warpcore-content-html";
@@ -71,7 +71,7 @@ namespace Cms_StaticContent_RenderingEngine
     }
 
 
-    [global::WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class BlazorApp : StaticContentControl, ISupportsCache<ByInstance>, IHostsClientSideRoutes
     {
         public const string ApiId = "warpcore-blazor-app";

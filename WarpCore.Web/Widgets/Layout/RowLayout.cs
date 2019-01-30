@@ -10,7 +10,7 @@ namespace WarpCore.Web.Widgets
 
 
 
-    [WarpCore.Cms.Toolbox.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
+    [Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Row (Bootstrap)", Category = "Layout")]
     public class RowLayout2 : Control, INamingContainer, IHasInternalLayout
     {
         public const string ApiId = "WC/RowLayout_WebForms";

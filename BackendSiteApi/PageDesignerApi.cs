@@ -114,6 +114,7 @@ namespace BackendSiteApi
             foreach (var category in allCategories)
                 vm.ToolboxCategories.Add(new ToolboxCategory
                 {
+                    IsClientSide = false,
                     CategoryName = category,
                     Items = allItems.Where(x => x.Category == category)
                     .Select(x => new ToolboxItemViewModel
@@ -123,6 +124,7 @@ namespace BackendSiteApi
                         WidgetTypeCode = x.WidgetUid
                     }).ToList()
                 });
+
 
             return vm;
         }

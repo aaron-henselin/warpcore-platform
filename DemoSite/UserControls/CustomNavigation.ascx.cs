@@ -1,5 +1,6 @@
 ﻿using System;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 
 namespace DemoSite.UserControls
 {

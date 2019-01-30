@@ -101,6 +101,10 @@
       <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
       <Name>Platform Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Platform Extensibility\Platform Extensibility.csproj">
       <Project>{02599E26-647E-4142-9A35-1523AB08717F}</Project>
       <Name>Platform Extensibility</Name>
