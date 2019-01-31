@@ -27,7 +27,7 @@ namespace Cms_PageDesigner_Context
                 DesignType = hasDesignedLayout.GetType().AssemblyQualifiedName,
                 DesignedContentId = hasDesignedLayout.DesignForContentId,
                 DesignContentTypeId = hasDesignedLayout.ContentTypeId,
-                AllContent = hasDesignedLayout.DesignedContent,
+                AllContent = hasDesignedLayout.ChildNodes,
             };
             var raw = JsonConvert.SerializeObject(ec);
             return JsonConvert.DeserializeObject<EditingContext>(raw);

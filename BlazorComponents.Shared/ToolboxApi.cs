@@ -55,7 +55,24 @@ namespace BlazorComponents.Shared
         public const string ApiId = "warpcore-blazor-dropdown";
     }
 
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Checkbox", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class CheckboxToolboxItem : BlazorToolboxItem
+    {
+        public const string ApiId = "warpcore-blazor-checkbox";
+    }
 
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Rich Text Editor", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class RichTextEditorToolboxItem : BlazorToolboxItem
+    {
+        public const string ApiId = "warpcore-blazor-richtexteditor";
+    }
+
+
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Uri Selector", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class UriSelectorToolboxItem : BlazorToolboxItem
+    {
+        public const string ApiId = "warpcore-blazor-uriselector";
+    }
 
 
 }

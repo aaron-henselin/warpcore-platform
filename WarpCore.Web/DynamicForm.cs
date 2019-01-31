@@ -40,10 +40,10 @@ namespace WarpCore.Web
             var formRepository = new FormRepository();
             _cmsForm = formRepository.FindContentVersions(By.ContentId(FormId), ContentEnvironment.Live).Result.Single();
 
-            foreach (var item in _cmsForm.DesignedContent)              //todo: better way.
+            foreach (var item in _cmsForm.ChildNodes)              //todo: better way.
                 item.PlacementContentPlaceHolderId = nameof(surface);
 
-            layout.DefaultContent.AddRange(_cmsForm.DesignedContent.Select(x => x.ToPresentationElement()));
+            layout.DefaultContent.AddRange(_cmsForm.ChildNodes.Select(x => x.ToPresentationElement()));
             return layout;
         }
 

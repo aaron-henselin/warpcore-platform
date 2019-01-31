@@ -136,8 +136,8 @@ namespace BackendSiteApi
         public void ApplyNewStructureToCmsPage(IHasDesignedContent draft, PageStructure pageStructure)
         {
             var newContent = pageStructure.ChildNodes.Select(ApplyNewStructure);
-            draft.DesignedContent.Clear();
-            draft.DesignedContent.AddRange(newContent);
+            draft.ChildNodes.Clear();
+            draft.ChildNodes.AddRange(newContent);
             
         }
 
@@ -160,7 +160,7 @@ namespace BackendSiteApi
         {
             return new PageStructure
             {
-                ChildNodes = draft.DesignedContent.Select(GetPageStructure).ToList()
+                ChildNodes = draft.ChildNodes.Select(GetPageStructure).ToList()
             };
         }
 

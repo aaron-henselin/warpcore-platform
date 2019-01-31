@@ -91,8 +91,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                 var isUri = property.PropertyInfo.PropertyType == typeof(Uri);
                 if (isUri)
                     bestGuess = Editor.Url;
-
-
+                
                 var hasDataRelation = property.PropertyInfo.GetCustomAttributes<DataRelationAttribute>().Any();
                 if (hasDataRelation)
                     bestGuess = Editor.OptionList;
@@ -108,6 +107,26 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             return bestGuess ?? Editor.SubForm;
         }
 
+        private string AutoSelectWidgetForEditorCode(Editor editor)
+        {
+            if (editor == Editor.OptionList)
+                return DropdownToolboxItem.ApiId;
+
+            if (editor == Editor.CheckBox)
+                return CheckboxToolboxItem.ApiId;
+
+            if (editor == Editor.Url)
+                return UriSelectorToolboxItem.ApiId;
+
+            if (editor == Editor.RichText)
+                return RichTextEditorToolboxItem.ApiId;
+
+            if (editor == Editor.Text)
+                return TextboxToolboxItem.ApiId;
+
+            return TextboxToolboxItem.ApiId;
+        }
+
         public CmsPageContent CreateCmsPageContent(SettingProperty property)
         {
             var setup = new ConfiguratorSetup
@@ -118,20 +137,20 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             };
             
             
-            if (property.ConfiguratorType != null)
+            if (property.WidgetTypeCode != null)
             {
-                setup.EditorCode = property.ConfiguratorType;
+                setup.WidgetTypeCode = property.WidgetTypeCode;
             }
             else
             {
                 var editor = GetEditorForSettingProperty(property);
-                setup.EditorCode = editor.ToString();
+                setup.WidgetTypeCode = AutoSelectWidgetForEditorCode(editor);
 
             }
 
             var cmsPageContent = new CmsPageContent();
             cmsPageContent.Id = Guid.NewGuid();
-            cmsPageContent.WidgetTypeCode = setup.EditorCode;
+            cmsPageContent.WidgetTypeCode = setup.WidgetTypeCode;
             cmsPageContent.Parameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
 
             return cmsPageContent;
@@ -142,7 +161,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             public string PropertyName { get; set; }
             public string DisplayName { get; set; }
             public string PropertyType { get; set; }
-            public string EditorCode { get; set; }
+            public string WidgetTypeCode { get; set; }
         }
 
         public CmsPageContent CreateRow(int numColumns)
@@ -164,7 +183,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
             var cmsForm = new CmsForm();
             var row = builder.CreateRow(1);
-            cmsForm.FormContent.Add(row);
+            cmsForm.ChildNodes.Add(row);
 
             var configuratorSettingProperties =
                 ToolboxMetadataReader.ReadProperties(clrType, ToolboxPropertyFilter.SupportsDesigner);

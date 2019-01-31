@@ -17,9 +17,8 @@ namespace Cms.Forms
         public string Name { get; set; }
 
         [SerializedComplexObject]
-        public List<CmsPageContent> FormContent { get; set; } = new List<CmsPageContent>();
+        public List<CmsPageContent> ChildNodes { get; set; } = new List<CmsPageContent>();
 
-        public List<CmsPageContent> DesignedContent => FormContent;
         public Guid DesignForContentId => ContentId;
 
         public Guid RepositoryUid { get; set; }

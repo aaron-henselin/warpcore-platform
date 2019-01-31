@@ -10,12 +10,6 @@ namespace BlazorComponents.Client
 
 
 
-    public class ValueChangedEventArgs
-    {
-        public string PropertyName { get; set; }
-        public string NewValue { get; set; }
-    }
-
     public class ConfiguratorRegistry
     {
         public Dictionary<string, IConfiguratorComponent> RegisteredComponents { get; set; } = new Dictionary<string, IConfiguratorComponent>();
@@ -95,32 +89,6 @@ namespace BlazorComponents.Client
         }
     }
 
-
-
-
-    public class ContentLocation
-    {
-        public PreviewNode ParentPlaceHolder { get; set; }
-        public PreviewNode ParentWidget { get; set; }
-    }
-
-    public class PagePreviewPosition 
-    {
-        public Guid ToChildOf { get; set; }
-        public Guid? PlaceAfter { get; set; }
-    }
-
-    //public class PageDesignerPagePreview
-    //{
-    //    public Action<Guid> Edit { get; set; }
-
-    //    public Action<Guid> Delete { get; set; }
-
-    //    public Action<ContentMovedArgs> MoveContent { get; set; }
-    //}
-
-
-    public enum SideBarMode { Collapsed, Toolbox, Configurator}
 
 
 }

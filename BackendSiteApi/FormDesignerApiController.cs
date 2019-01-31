@@ -63,6 +63,9 @@ namespace BackendSiteApi
             {
                 previewNode.ChildNodes.Add(new PreviewNode {Type = NodeType.Html, Html = "<div class='row'>"});
 
+                if (!pageStructure.Parameters.ContainsKey("NumColumns"))
+                    return previewNode;
+
                 var numColumnsRaw = pageStructure.Parameters["NumColumns"];
                 int columnCount;
                 var isNum = Int32.TryParse(numColumnsRaw, out columnCount);

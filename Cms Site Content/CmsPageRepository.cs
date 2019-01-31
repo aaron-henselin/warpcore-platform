@@ -17,11 +17,10 @@ namespace WarpCore.Cms
     {
     }
 
-    public interface IHasDesignedContent 
+    public interface IHasDesignedContent: IUnrootedTree<CmsPageContent>
     {
         Guid DesignForContentId { get; }
         Guid ContentTypeId { get; }
-        List<CmsPageContent> DesignedContent { get; }
     }
 
 
@@ -72,7 +71,7 @@ namespace WarpCore.Cms
 
         //[ComplexData]
         //public List<HistoricalRoute> AlternateRoutes { get; set; } = new List<HistoricalRoute>();
-
+        
         [DisplayName("Physical File")]
         public string PhysicalFile { get; set; }
 
@@ -85,7 +84,7 @@ namespace WarpCore.Cms
 
         public Guid ContentTypeId => new Guid(CmsPageRepository.ApiId);
 
-        public List<CmsPageContent> DesignedContent => PageContent;
+        public List<CmsPageContent> ChildNodes => PageContent;
         public Guid DesignForContentId => ContentId;
 
         [Column][DisplayName("Enable ViewState")]
@@ -206,7 +205,7 @@ namespace WarpCore.Cms
     }
 
 
-    public class CmsPageContent : IPageContent
+    public class CmsPageContent : IPageContent, ITreeNode<CmsPageContent>
     {
         public CmsPageContent()
         {
@@ -234,7 +233,11 @@ namespace WarpCore.Cms
         [SerializedComplexObject]
         public List<CmsPageContent> AllContent { get; set; } = new List<CmsPageContent>();
 
+        [IgnoreProperty]
+        Guid ITreeNode<CmsPageContent>.Id => Id;
 
+        [IgnoreProperty]
+        List<CmsPageContent> ITreeNode<CmsPageContent>.ChildNodes => AllContent;
     }
 
     public class DuplicateSlugException:Exception
@@ -467,7 +470,7 @@ namespace WarpCore.Cms
         private void AssertSlugIsNotTaken(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
             ISiteStructureNode parentNode;
-            if (Guid.Empty == newSitemapRelativePosition.ParentSitemapNodeId)
+            if (Guid.Empty == newSitemapRelativePosition.ParentSitemapNodeId || cmsPage.SiteId == newSitemapRelativePosition.ParentSitemapNodeId)
                 parentNode = new SiteStructure(cmsPage.SiteId);
             else
             {
@@ -614,7 +617,7 @@ namespace WarpCore.Cms
 
         public void Save(CmsPage cmsPage, SitemapRelativePosition newSitemapRelativePosition)
         {
-            foreach (var content in cmsPage.DesignedContent)
+            foreach (var content in cmsPage.ChildNodes)
                 EnsureIdsAssigned(content);
 
             if (cmsPage.SiteId == default(Guid))

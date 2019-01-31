@@ -21,7 +21,7 @@ namespace WarpCore.Cms.Toolbox
         public PropertyInfo PropertyInfo { get; set; }
         public string DisplayName { get; set; }
         public Editor? Editor { get; set; }
-        public string ConfiguratorType { get; set; }
+        public string WidgetTypeCode { get; set; }
         public List<Type> Behaviors { get; set; }
     }
 
@@ -45,13 +45,15 @@ namespace WarpCore.Cms.Toolbox
             if (includeInToolboxAtr == null)
                 return null;
 
+
             return new ToolboxMetadata
             {
                 WidgetUid = includeInToolboxAtr.WidgetUid,
                 FriendlyName = includeInToolboxAtr.FriendlyName,
                 AssemblyQualifiedTypeName = type.AssemblyQualifiedName,
                 Category = includeInToolboxAtr.Category,
-                AscxPath = includeInToolboxAtr.AscxPath
+                AscxPath = includeInToolboxAtr.AscxPath,
+                UseClientSidePresentationEngine = includeInToolboxAtr.UseClientSidePresentationEngine
             };
         }
     }
@@ -124,7 +126,7 @@ namespace WarpCore.Cms.Toolbox
             {
                 PropertyInfo = property,
                 DisplayName = displayNameDefinition?.DisplayName ?? property.Name,
-                ConfiguratorType = settingInfo?.CustomEditorType,
+                WidgetTypeCode = settingInfo?.CustomEditorType,
                 Editor = settingInfo?.Editor,
                 Behaviors = behaviors.Select(x=> x.BehaviorType).ToList()
             };

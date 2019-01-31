@@ -272,11 +272,11 @@ namespace DemoSite
             var form = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(typeof(CmsPage));
 
             
-                form.ContentId = KnownFormIds.ContentPageSettingsForm;
-                form.Name = "Content Page Settings";
-                form.RepositoryUid = new Guid(CmsPageRepository.ApiId);
+            form.ContentId = KnownFormIds.ContentPageSettingsForm;
+            form.Name = "Content Page Settings";
+            form.RepositoryUid = new Guid(CmsPageRepository.ApiId);
             
-
+            
             
 
 

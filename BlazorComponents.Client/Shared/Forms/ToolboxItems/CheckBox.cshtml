@@ -1,0 +1,49 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Shared
+@implements IConfiguratorComponent<CheckboxToolboxItem>
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    <input type="checkbox" bind="@TextBoxValue" class="form-control" />
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public CheckboxToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private string TextBoxValue { get; set; }
+
+    public string Value {
+        get
+        {
+            return TextBoxValue;
+        }
+        set
+        {
+            TextBoxValue = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid { get { return true; } }
+
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+    }
+ }
