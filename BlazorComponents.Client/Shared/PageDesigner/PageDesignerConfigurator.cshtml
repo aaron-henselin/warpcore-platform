@@ -37,12 +37,18 @@
         FormDescription = null;
         Console.WriteLine($"[Design Page] Applying new form layout.");
         FormDescription = await RetrieveConfiguratorSidebarLayoutAsync(_structureNode.WidgetTypeCode);
-        
+
 
         FormBody.SetFormLayout(FormDescription);
-        FormBody.StartNewSession(_structureNode.Parameters);
+
+        var session = await InitializeEditingSession(_structureNode);
+        FormBody.StartNewSession(session);
     }
 
+    private async Task<EditingSession> InitializeEditingSession(StructureNode structureNode)
+    {
+        return await Http.PostJsonAsync<EditingSession>($"/api/design/configurator-form/{_structureNode.WidgetTypeCode}/session", _structureNode);
+    }
 
 
     private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)

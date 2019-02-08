@@ -14,6 +14,26 @@ namespace BlazorComponents.Shared
         public Guid? ContentId { get; set; }
     }
 
+    public class EditingSession
+    {
+        public IDictionary<string,string> InitialValues { get; set; }
+        public Dictionary<string, LocalDataSource> LocalDataSources { get; set; } = new Dictionary<string, LocalDataSource>();
+    }
+
+
+
+
+    public class LocalDataSource
+    {
+        public List<DataSourceItem> Items { get; set; } = new List<DataSourceItem>();
+    }
+
+    public class DataSourceItem
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
     public class ConfiguratorFormDescription
     {
         public PageStructure Layout { get; set; }

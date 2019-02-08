@@ -38,10 +38,11 @@
     }
 
 
-    public void StartNewSession(IDictionary<string,string> values )
+    public void StartNewSession(EditingSession editingSession )
     {
         var readWriter = new CmsFormReadWriter(_registry);
-        readWriter.SetValues(values);
+        readWriter.SetDataSources(editingSession.LocalDataSources);
+        readWriter.SetValues(editingSession.InitialValues);
     }
 
     public bool Validate()

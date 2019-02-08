@@ -44,6 +44,20 @@ namespace BlazorComponents.Client
             _registry = registry;
         }
 
+        public void SetDataSources(IDictionary<string, LocalDataSource> localDataSources)
+        {
+            var propertyNames = _registry.GetManagedPropertyNames();
+            foreach (var propertyName in propertyNames)
+            {
+                if (localDataSources.ContainsKey(propertyName))
+                {
+                    var hasLocalDataSource = (_registry.GetConfiguratorByPropertyName(propertyName) as IHasLocalDataSource);
+                    if (hasLocalDataSource != null)
+                        hasLocalDataSource.LocalDataSource = localDataSources[propertyName];
+                }
+            }
+        }
+
         public void SetValues(IDictionary<string,string> newValues)
         {
             var propertyNames = _registry.GetManagedPropertyNames();

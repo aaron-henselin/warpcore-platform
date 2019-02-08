@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WarpCore.Platform.Orm
 {
@@ -11,6 +12,7 @@ namespace WarpCore.Platform.Orm
         void Save(WarpCoreEntity item);
         WarpCoreEntity GetById(Guid id);
     }
+
 
     //public static class IContentRepositoryExtensions
     //{

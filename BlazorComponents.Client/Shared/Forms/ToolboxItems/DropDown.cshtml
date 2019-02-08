@@ -2,12 +2,26 @@
 @using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Shared
 @implements IConfiguratorComponent<DropdownToolboxItem>
+@implements IHasLocalDataSource
 
 
 
 <div class="form-group">
     <label>@Config.DisplayName</label>
-    <select type="text" bind="@TextBoxValue" class="form-control"></select>
+    <select type="text" bind="@TextBoxValue" class="form-control">
+        @if (LocalDataSource != null)
+        {
+            <option>Select</option>
+            @foreach (var option in LocalDataSource.Items)
+            {
+            <option value=@option.Value>@option.Name</option>
+            }
+        }
+        else{
+            <option>loading..</option>
+        }
+
+    </select>
 </div>
 
 
@@ -18,6 +32,10 @@
 
     [CascadingParameter]
     public FormBody FormBody { get; set; }
+
+    private LocalDataSource _dropDownItems{get;set;}
+
+    public LocalDataSource LocalDataSource { get{return _dropDownItems;} set{_dropDownItems=value; this.StateHasChanged();} }
 
     private string TextBoxValue { get; set; }
 

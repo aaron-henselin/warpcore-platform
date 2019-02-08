@@ -36,7 +36,7 @@ namespace WarpCore.Cms
 
 
     [Table("cms_page")]
-    [WarpCoreEntity(ApiId,TitleProperty =nameof(Name),ContentNameSingular = "Page")]
+    [WarpCoreEntityAttribute(ApiId,TitleProperty =nameof(Name),ContentNameSingular = "Page")]
     [GroupUnderParentRepository(CmsPageRepository.ApiId)]
     public class CmsPage : VersionedContentEntity, IHasDesignedContent
     {
@@ -289,17 +289,7 @@ namespace WarpCore.Cms
 
 
 
-    public class DataRelationAttribute : Attribute
-    {
-        public string ApiId { get; set; }
 
-        public DataRelationAttribute(string apiId)
-        {
-            ApiId = apiId;
-        }
-
-
-    }
 
 
 

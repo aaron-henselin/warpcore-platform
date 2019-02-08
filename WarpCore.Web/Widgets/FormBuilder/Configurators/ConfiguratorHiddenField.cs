@@ -3,57 +3,57 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using WarpCore.Cms.Toolbox;
+//using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Configurators
 {
-    [Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
-    public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl
-    {
-        public const string ApiId = "warpcore-formcontrol-hiddenfield";
+    //[Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Hidden", Category = "Form Controls")]
+    //public class ConfiguratorHiddenField : PlaceHolder, INamingContainer, IConfiguratorControl
+    //{
+    //    public const string ApiId = "warpcore-formcontrol-hiddenfield";
 
-        private HiddenField _hiddenField = new HiddenField {  };
+    //    private HiddenField _hiddenField = new HiddenField {  };
 
-        [PropertiesAsOptionListSource]
-        [UserInterfaceHint(Editor = Editor.OptionList)]
-        [DisplayName("Property")]
-        public string PropertyName { get; set; }
+    //    [PropertiesAsOptionListSource]
+    //    [UserInterfaceHint(Editor = Editor.OptionList)]
+    //    [DisplayName("Property")]
+    //    public string PropertyName { get; set; }
 
-        public void SetValue(string newValue)
-        {
-            _hiddenField.Value = newValue;
-        }
+    //    public void SetValue(string newValue)
+    //    {
+    //        _hiddenField.Value = newValue;
+    //    }
 
-        public string GetValue()
-        {
-            return _hiddenField.Value;
-        }
+    //    public string GetValue()
+    //    {
+    //        return _hiddenField.Value;
+    //    }
 
-        public void SetConfiguration(SettingProperty settingProperty)
-        {
-            PropertyName = settingProperty.PropertyInfo.Name;
-            Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
+    //    public void SetConfiguration(SettingProperty settingProperty)
+    //    {
+    //        PropertyName = settingProperty.PropertyInfo.Name;
+    //        Behaviors.AddRange(settingProperty.Behaviors.Select(x => x.AssemblyQualifiedName).ToList());
 
-        }
+    //    }
 
 
-        public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
-        {
+    //    public void InitializeEditingContext(ConfiguratorBuildArguments buildArguments)
+    //    {
            
-        }
+    //    }
 
-        [UserInterfaceHint(Editor = Editor.Hidden)]
-        public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
-        protected override void OnInit(EventArgs e)
-        {
-            base.OnInit(e);
+    //    [UserInterfaceHint(Editor = Editor.Hidden)]
+    //    public ConfiguratorBehaviorCollection Behaviors { get; set; } = new ConfiguratorBehaviorCollection();
+    //    protected override void OnInit(EventArgs e)
+    //    {
+    //        base.OnInit(e);
 
-            ID = PropertyName;
+    //        ID = PropertyName;
 
-            _hiddenField.ID = PropertyName + "_HiddenField";
-            this.Controls.Add(_hiddenField);
-        }
-    }
+    //        _hiddenField.ID = PropertyName + "_HiddenField";
+    //        this.Controls.Add(_hiddenField);
+    //    }
+    //}
 }

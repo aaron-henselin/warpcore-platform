@@ -9,7 +9,6 @@ using Cms.Forms;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
-using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
@@ -129,7 +128,7 @@ namespace WarpCore.Web
                 FormTitleEditName.InnerText = draft.Title;
             }
 
-            var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
+            //var d = draft.GetPropertyValues(ToolboxPropertyFilter.SupportsOrm);
 
             //var configuratorEditingContext = new ConfiguratorBuildArguments
             //{

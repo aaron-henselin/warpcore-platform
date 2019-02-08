@@ -18,9 +18,13 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponents.Client
 {
+    public interface IHasLocalDataSource
+    {
+        LocalDataSource LocalDataSource { get; set; }
+    }
+
     public interface IConfiguratorComponent
     {
-
         string Value { get; set; }
 
         bool IsValid { get; }

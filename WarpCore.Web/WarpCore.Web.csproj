@@ -199,7 +199,7 @@
       <Name>Cms Site Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
-      <Project>{60BB28EB-2853-47BF-A9F6-A385031B3C3A}</Project>
+      <Project>{60bb28eb-2853-47bf-a9f6-a385031b3c3a}</Project>
       <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platform Core\Platform Core.csproj">

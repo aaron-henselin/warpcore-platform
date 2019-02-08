@@ -9,8 +9,8 @@ using System.Threading;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
-using Modules.Cms.Toolbox;
 using Newtonsoft.Json.Linq;
+using WarpCore.Cms.Toolbox;
 
 namespace WarpCore.Web.EmbeddedResourceVirtualPathProvider
 {

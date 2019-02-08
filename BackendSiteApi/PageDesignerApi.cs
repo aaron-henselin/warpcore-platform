@@ -12,6 +12,7 @@ using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Sites;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
@@ -81,6 +82,20 @@ namespace BackendSiteApi
         {
             var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
             return new StructureNodeConverter().GetPageStructure(draft);
+        }
+
+
+        [HttpPost]
+        [Route("api/design/configurator-form/{widgetTypeCode}/session")]
+        public EditingSession InitializeEditingSession(StructureNode structureNode)
+        {
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(structureNode.WidgetTypeCode);
+            var toolboxItemNativeType = new CmsPageContentActivator().GetToolboxItemNativeType(toolboxItem);
+            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
+
+            var runtime = new FormsRuntime();
+            var scope = runtime.BuildObjectEditingScope(defaultForm);
+            return runtime.EditingSession(structureNode.Parameters, scope, toolboxItemNativeType);
         }
 
         [HttpGet]

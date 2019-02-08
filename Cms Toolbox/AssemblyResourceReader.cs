@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace Modules.Cms.Toolbox
+namespace WarpCore.Cms.Toolbox
 {
     public class AssemblyResourceReader
     {

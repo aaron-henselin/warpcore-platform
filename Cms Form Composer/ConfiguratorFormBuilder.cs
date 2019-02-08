@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BlazorComponents.Shared;
@@ -25,7 +24,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     //{
     //    public string GetWidgetTypeCode(Editor editor)
     //    {
-        
+
     //        switch (editor)
     //        {
     //            case Editor.SubForm:
