@@ -43,6 +43,11 @@ namespace BlazorComponents.Shared
         public string PropertyType { get; set; }
     }
 
+    public interface IRequiresDataSource
+    {
+    }
+
+
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Textbox", Category = "Data Entry", UseClientSidePresentationEngine=true)]
     public class TextboxToolboxItem : BlazorToolboxItem
     {
@@ -50,7 +55,7 @@ namespace BlazorComponents.Shared
     }
 
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Dropdown", Category = "Data Entry", UseClientSidePresentationEngine = true)]
-    public class DropdownToolboxItem : BlazorToolboxItem
+    public class DropdownToolboxItem : BlazorToolboxItem, IRequiresDataSource
     {
         public const string ApiId = "warpcore-blazor-dropdown";
     }

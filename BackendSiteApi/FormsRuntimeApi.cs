@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility.DynamicContent;
@@ -48,11 +49,7 @@ namespace BackendSiteApi
 
 
             var runtime = new FormsRuntime();
-            var editingScope = runtime.BuildObjectEditingScope(form);
-            var entityType = entity.GetType();
-            var initialValues = entity.GetPropertyValues(x => editingScope.Contains(x.Name));
-
-            return runtime.EditingSession(initialValues,editingScope,entityType);
+            return runtime.EditingSession(form, entity);
 
             
 
@@ -61,7 +58,7 @@ namespace BackendSiteApi
 
     public class FormsRuntime
     {
-        public IReadOnlyCollection<string> BuildObjectEditingScope(CmsForm form)
+        public IReadOnlyCollection<CmsPageContent> GetClientSideWidets(CmsForm form)
         {
             //todo: better options??
             var toolboxManager = new ToolboxManager();
@@ -69,34 +66,59 @@ namespace BackendSiteApi
                 .GetAllDescendents()
                 .Where(x => x.WidgetTypeCode != null);
 
-            var justClientSideWidgets =
-                widgetsOnPage.Where(x => toolboxManager.GetToolboxItemByCode(x.WidgetTypeCode).UseClientSidePresentationEngine);
+          return
+                widgetsOnPage.Where(x => toolboxManager.GetToolboxItemByCode(x.WidgetTypeCode).UseClientSidePresentationEngine).ToList();
 
-            var linkedProperties = justClientSideWidgets
+        }
+
+        public ILookup<string, CmsPageContent> GetClientSideWidgetLookup(CmsForm form)
+        {
+            var clientSide = GetClientSideWidets(form);
+            return clientSide
                 .Where(x => x.Parameters.ContainsKey(nameof(BlazorToolboxItem.PropertyName)))
-                .Select(x => x.Parameters[nameof(BlazorToolboxItem.PropertyName)])
-                .Distinct()
-                .ToList();
+                .ToLookup(x => x.Parameters[nameof(BlazorToolboxItem.PropertyName)]);
 
-            return linkedProperties;
+        }
+
+        public IReadOnlyCollection<string> BuildObjectEditingScope(CmsForm form)
+        {
+            return GetClientSideWidgetLookup(form).Select(x => x.Key).Distinct().ToList();
         }
 
 
-
-        public EditingSession EditingSession(IDictionary<string, string> initialValues, IReadOnlyCollection<string> editingScope, Type entityType)
+        public EditingSession EditingSession(CmsForm form, WarpCoreEntity entity)
         {
-            var session = new EditingSession();
-            session.InitialValues = initialValues;
+            var editingScope = BuildObjectEditingScope(form);
+            var initialValues = entity.GetPropertyValues(x => editingScope.Contains(x.Name));
+            return EditingSession(form, entity.GetType(), initialValues);
+        }
 
-            var properties = ToolboxMetadataReader.ReadProperties(entityType, x => editingScope.Contains(x.Name));
-            var needsDataSource = properties.Where(x => x.Editor == Editor.OptionList);
-            foreach (var property in needsDataSource)
+        public EditingSession EditingSession(CmsForm form, Type entityType, IDictionary<string, string> initialValues)
+        {
+            var session = new EditingSession {InitialValues = initialValues};
+
+            var widgetsGroupedByProperty = GetClientSideWidgetLookup(form);
+            var editingScope = BuildObjectEditingScope(form);
+
+            var properties = ToolboxMetadataReader.ReadProperties(entityType, x => editingScope.Contains(x.Name)).ToDictionary(x => x.PropertyInfo.Name);
+
+            
+            foreach (var widgetGroup in widgetsGroupedByProperty)
             {
-                var entities = GetDataRelationshipEntities(property);
-                var asDataSourceItems =
-                    entities.Select(x => new DataSourceItem {Name = x.Title, Value = x.ContentId.ToString()}).ToList();
-                var ds = new LocalDataSource {Items = asDataSourceItems};
-                session.LocalDataSources.Add(property.PropertyInfo.Name, ds);
+                var propertyName = widgetGroup.Key;
+                var widgetsNeedingDataSource = widgetGroup.ToList();
+
+                foreach (var widget in widgetsNeedingDataSource)
+                {
+                  
+                    var entities = GetDataRelationshipEntities(properties[propertyName]);
+                    var asDataSourceItems = entities.Select(x => new DataSourceItem { Name = x.Title, Value = x.ContentId.ToString() }).ToList();
+                    var ds = new LocalDataSource { Items = asDataSourceItems };
+                    session.LocalDataSources.Add(propertyName, ds);
+                }
+
+
+
             }
 
             return session;

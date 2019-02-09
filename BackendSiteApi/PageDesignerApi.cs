@@ -94,8 +94,7 @@ namespace BackendSiteApi
             var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
 
             var runtime = new FormsRuntime();
-            var scope = runtime.BuildObjectEditingScope(defaultForm);
-            return runtime.EditingSession(structureNode.Parameters, scope, toolboxItemNativeType);
+            return runtime.EditingSession(defaultForm, toolboxItemNativeType, structureNode.Parameters);
         }
 
         [HttpGet]
