@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Cms_PageDesigner_Context;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
@@ -199,28 +200,29 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
     //}
 
 
-    public class FixedOptionListDataSourceAttribute : Attribute, IListControlSource
-    {
-        private readonly string[] _options;
+    //public class FixedOptionListDataSourceAttribute : Attribute, IListControlSource
+    //{
+    //    private readonly string[] _options;
 
-        public FixedOptionListDataSourceAttribute(params string[] options)
-        {
-            _options = options;
-        }
+    //    public FixedOptionListDataSourceAttribute(params string[] options)
+    //    {
+    //        _options = options;
+    //    }
 
-        public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
-        {
-            foreach (var option in _options)
-            {
+    //    public IEnumerable<ListOption> GetOptions(ConfiguratorBuildArguments buildArguments, IDictionary<string,string> model)
+    //    {
+    //        foreach (var option in _options)
+    //        {
 
-                yield return new ListOption
-                {
-                    Text = option,
-                    Value = option
-                };
-            }
-        }
-    }
+    //            yield return new ListOption
+    //            {
+    //                Text = option,
+    //                Value = option
+    //            };
+    //        }
+    //    }
+    //}
+
     [Serializable]
     public class ListOption
     {

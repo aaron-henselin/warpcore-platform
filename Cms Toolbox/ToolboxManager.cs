@@ -33,6 +33,7 @@ namespace WarpCore.Cms.Toolbox
         public string AscxPath { get; set; }
         public string Category { get; set; }
         public string FriendlyName { get; set; }
+        public bool RequiresDataSource { get; set; }
     }
 
     public static class ToolboxBootstrapper
@@ -65,7 +66,7 @@ namespace WarpCore.Cms.Toolbox
                 widget.Category = discoveredToolboxItem.Category;
                 widget.AscxPath = discoveredToolboxItem.AscxPath;
                 widget.UseClientSidePresentationEngine = discoveredToolboxItem.UseClientSidePresentationEngine;
-
+                widget.RequiresDataSource = discoveredToolboxItem.RequiresDataSource;
 
                 mgr.Save(widget);
 

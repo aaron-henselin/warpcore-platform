@@ -43,9 +43,6 @@ namespace BlazorComponents.Shared
         public string PropertyType { get; set; }
     }
 
-    public interface IRequiresDataSource
-    {
-    }
 
 
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Textbox", Category = "Data Entry", UseClientSidePresentationEngine=true)]
@@ -58,6 +55,20 @@ namespace BlazorComponents.Shared
     public class DropdownToolboxItem : BlazorToolboxItem, IRequiresDataSource
     {
         public const string ApiId = "warpcore-blazor-dropdown";
+        //todo: what to do with this??
+        public const string RepositoryMetadataApiId = "3a9a6f79-9564-4b51-af1c-9d926fddbc35";
+        [DataRelation(RepositoryMetadataApiId)]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [DisplayName("DataSource Repository")]
+        public Guid RepositoryApiId { get; set; }
+
+        [UserInterfaceHint(CustomEditorType = KeyValuePairsToolboxItem.ApiId)]
+        [DisplayName("DataSource Items")]
+        public DataSourceItemCollection Items { get; set; } = new DataSourceItemCollection();
+
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [FixedOptionsDataSource(DataSourceTypes.Repository,DataSourceTypes.FixedItems)]
+        public string DataSourceType { get; set; }
     }
 
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Checkbox", Category = "Data Entry", UseClientSidePresentationEngine = true)]
@@ -79,5 +90,9 @@ namespace BlazorComponents.Shared
         public const string ApiId = "warpcore-blazor-uriselector";
     }
 
-
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Key Value Pairs", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class KeyValuePairsToolboxItem : BlazorToolboxItem
+    {
+        public const string ApiId = "warpcore-blazor-keyvaluepairs";
+    }
 }

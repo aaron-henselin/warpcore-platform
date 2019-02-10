@@ -61,10 +61,12 @@ namespace WarpCore.Cms
         public Guid SiteId { get; set; }
 
         [Column]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [FixedOptionsDataSource(Cms.PageType.ContentPage, Cms.PageType.GroupingPage,Cms.PageType.RedirectPage)]
         [DisplayName("Page Type")]
         public string PageType { get; set; } = WarpCore.Cms.PageType.ContentPage;
 
-        [SerializedComplexObject]
+        [UserInterfaceIgnore][SerializedComplexObject]
         public List<CmsPageContent> PageContent { get; set; } = new List<CmsPageContent>();
 
         public bool DisplayInNavigation { get; set; } = true;

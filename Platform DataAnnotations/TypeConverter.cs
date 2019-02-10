@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml.Linq;
+using Polenter.Serialization;
+using WarpCore.Platform.DataAnnotations;
 
 namespace WarpCore.Platform.Kernel
 {
@@ -9,10 +14,6 @@ namespace WarpCore.Platform.Kernel
         void InitializeModule();
     }
 
-    public interface ISupportsJavaScriptSerializer
-    {
-
-    }
 
     public interface ITypeConverterExtension
     { 
@@ -38,6 +39,40 @@ namespace WarpCore.Platform.Kernel
         }
     }
 
+    //public class JavascriptSerializerTypeConverter : ITypeConverterExtension
+    //{
+
+    //    public bool TryChangeType(object value, Type toType, out object newValue)
+    //    {
+    //        newValue = null;
+    //        if (value is string && typeof(ISupportsJavaScriptSerializer).IsAssignableFrom(toType))
+    //        {
+    //            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes((string)value)))
+    //            {
+    //                // Deserialization from JSON  
+    //                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(toType);
+    //                newValue = deserializer.ReadObject(ms);
+    //            }
+
+    //            return true;
+    //        }
+
+    //        if (value is ISupportsJavaScriptSerializer && toType == typeof(string))
+    //        {
+
+    //            using (MemoryStream ms = new MemoryStream())
+    //            {
+    //                DataContractJsonSerializer serializer = new DataContractJsonSerializer(toType);
+    //                serializer.WriteObject(ms, value);
+    //                newValue = Encoding.Default.GetString(ms.ToArray());
+    //            }
+    //            return true;
+    //        }
+
+    //        return false;
+    //    }
+    //}
+
     public class JavascriptSerializerTypeConverter : ITypeConverterExtension
     {
 
@@ -46,13 +81,25 @@ namespace WarpCore.Platform.Kernel
             newValue = null;
             if (value is string && typeof(ISupportsJavaScriptSerializer).IsAssignableFrom(toType))
             {
-                newValue = JsonConvert.DeserializeObject((string) value, toType);
+                using (var ms = new MemoryStream(Encoding.Unicode.GetBytes((string)value)))
+                {
+                    // Deserialization from JSON  
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(toType);
+                    newValue = deserializer.ReadObject(ms);
+                }
+
                 return true;
             }
 
             if (value is ISupportsJavaScriptSerializer && toType == typeof(string))
             {
-                newValue = JsonConvert.SerializeObject(value);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(value.GetType());
+                    serializer.WriteObject(ms, value);
+                    newValue = Encoding.Default.GetString(ms.ToArray());
+                }
                 return true;
             }
 

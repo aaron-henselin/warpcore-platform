@@ -64,6 +64,10 @@
       <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
       <Name>Platform Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
       <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
       <Name>Platform Orm</Name>

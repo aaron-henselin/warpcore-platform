@@ -5,6 +5,7 @@ using Modules.Cms.Features.Presentation.Page.Elements;
 using Modules.Cms.Features.Presentation.RenderingEngines.CachedContent;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Features.Presentation.PageComposition
@@ -94,6 +95,14 @@ namespace Modules.Cms.Features.Presentation.PageComposition
 
             return pp;
         }
+
+        //public bool NeedsADataSource(PageContent pageContent)
+        //{
+        //    var toolboxItem = new ToolboxManager().GetToolboxItemByCode(pageContent.WidgetTypeCode);
+        //    var toolboxItemType = Type.GetType(toolboxItem.AssemblyQualifiedTypeName);
+        //    var needsADataSource = typeof(IRequiresDataSource).IsAssignableFrom(toolboxItemType);
+        //    return needsADataSource;
+        //}
 
         public PageCompositionElement ActivateCmsPageContent(PageContent pageContent)
         {

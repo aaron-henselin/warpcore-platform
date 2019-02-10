@@ -34,6 +34,7 @@ namespace WarpCore.Cms.Toolbox
         public string Category { get; set; }
         public string AscxPath { get; set; }
         public bool UseClientSidePresentationEngine { get; set; }
+        public bool RequiresDataSource { get; set; }
     }
 
     internal class AttributeBasedToolboxMetadataReader : IToolboxMetadataReader
@@ -53,7 +54,8 @@ namespace WarpCore.Cms.Toolbox
                 AssemblyQualifiedTypeName = type.AssemblyQualifiedName,
                 Category = includeInToolboxAtr.Category,
                 AscxPath = includeInToolboxAtr.AscxPath,
-                UseClientSidePresentationEngine = includeInToolboxAtr.UseClientSidePresentationEngine
+                UseClientSidePresentationEngine = includeInToolboxAtr.UseClientSidePresentationEngine,
+                RequiresDataSource = typeof(IRequiresDataSource).IsAssignableFrom(type)
             };
         }
     }

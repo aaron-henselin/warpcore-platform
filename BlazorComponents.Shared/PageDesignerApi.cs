@@ -28,11 +28,11 @@ namespace BlazorComponents.Shared
         public List<DataSourceItem> Items { get; set; } = new List<DataSourceItem>();
     }
 
-    public class DataSourceItem
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
+    //public class DataSourceItem
+    //{
+    //    public string Name { get; set; }
+    //    public string Value { get; set; }
+    //}
 
     public class ConfiguratorFormDescription
     {

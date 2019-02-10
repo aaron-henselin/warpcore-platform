@@ -1,5 +1,6 @@
 ﻿using BlazorComponents.Shared;
 using Cms.Forms;
+using Modules.Cms.Features.Presentation.PageComposition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Script.Serialization;
+using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
@@ -110,11 +113,30 @@ namespace BackendSiteApi
 
                 foreach (var widget in widgetsNeedingDataSource)
                 {
-                  
-                    var entities = GetDataRelationshipEntities(properties[propertyName]);
-                    var asDataSourceItems = entities.Select(x => new DataSourceItem { Name = x.Title, Value = x.ContentId.ToString() }).ToList();
-                    var ds = new LocalDataSource { Items = asDataSourceItems };
-                    session.LocalDataSources.Add(propertyName, ds);
+                   
+                    var dataSource = new RequiresDataSource();
+                    dataSource.SetPropertyValues(widget.Parameters,x => true);
+
+                    
+                    var isLinkedToRepository = dataSource.DataSourceType == DataSourceTypes.Repository
+                                                    && dataSource.RepositoryApiId != default(Guid);
+                    if (isLinkedToRepository)
+                    {
+                        var entities = GetDataRelationshipEntities(dataSource, properties[propertyName]);
+                        var asDataSourceItems = entities.Select(x => new DataSourceItem {Name = x.Title, Value = x.ContentId.ToString()}).ToList();
+                        var ds = new LocalDataSource {Items = asDataSourceItems};
+                        session.LocalDataSources.Add(propertyName, ds);
+                    }
+
+                    var isLinkedToFixedSet = dataSource.DataSourceType == DataSourceTypes.FixedItems;
+                    if (isLinkedToFixedSet)
+                    {
+                        var ds = new LocalDataSource { Items = dataSource.Items.Items };
+                        session.LocalDataSources.Add(propertyName, ds);
+                    }
+               
+
+
                 }
 
 
@@ -124,15 +146,20 @@ namespace BackendSiteApi
             return session;
         }
 
-        public IReadOnlyCollection<WarpCoreEntity> GetDataRelationshipEntities(SettingProperty settingProperty)
+        private class RequiresDataSource : IRequiresDataSource
+        {
+            public Guid RepositoryApiId { get; set; }
+            [SerializedComplexObject]
+            public DataSourceItemCollection Items { get; set; }
+            public string DataSourceType { get; set; }
+        }
+
+        public IReadOnlyCollection<WarpCoreEntity> GetDataRelationshipEntities(IRequiresDataSource requiresDataSource, SettingProperty settingProperty)
         {
             var info = settingProperty.PropertyInfo;
+        
 
-            var dataRelation = info.GetCustomAttribute<DataRelationAttribute>();
-            if (dataRelation == null)
-                return new List<WarpCoreEntity>(); ;
-
-            var repo = RepositoryActivator.ActivateRepository(new Guid(dataRelation.ApiId));
+            var repo = RepositoryActivator.ActivateRepository(requiresDataSource.RepositoryApiId);
             List<WarpCoreEntity> allItems = null;
 
             if (repo is IUnversionedContentRepository unversionedRepo)
@@ -155,5 +182,7 @@ namespace BackendSiteApi
 
             return allItems;
         }
+
+        
     }
 }

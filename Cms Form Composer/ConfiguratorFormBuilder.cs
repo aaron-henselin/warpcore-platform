@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BlazorComponents.Shared;
 using Cms.Forms;
+using Modules.Cms.Features.Presentation.Page.Elements;
+using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.Kernel;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Widgets.FormBuilder.Support
 {
@@ -134,33 +138,90 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                 DisplayName = property.DisplayName,
                 PropertyName = property.PropertyInfo.Name
             };
-            
-            
+
+            string widgetTypeCode;
             if (property.WidgetTypeCode != null)
             {
-                setup.WidgetTypeCode = property.WidgetTypeCode;
+                widgetTypeCode = property.WidgetTypeCode;
             }
             else
             {
                 var editor = GetEditorForSettingProperty(property);
-                setup.WidgetTypeCode = AutoSelectWidgetForEditorCode(editor);
-
+                widgetTypeCode = AutoSelectWidgetForEditorCode(editor);
             }
 
-            var cmsPageContent = new CmsPageContent();
-            cmsPageContent.Id = Guid.NewGuid();
-            cmsPageContent.WidgetTypeCode = setup.WidgetTypeCode;
-            cmsPageContent.Parameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
+            var cmsPageContent = new CmsPageContent
+            {
+                Id = Guid.NewGuid(),
+                WidgetTypeCode = widgetTypeCode
+            };
+
+            var standardParameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
+            var datasourceParameters = new Dictionary<string,string>();
+
+            
+            var needsADataSource = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode).RequiresDataSource;
+            if (needsADataSource)
+            {
+                var dataRelationDs = InferDataSourceFromDataRelation(property);
+                if (dataRelationDs != null)
+                    datasourceParameters = dataRelationDs.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
+
+
+            }
+ 
+
+            var mergedParameters = new Dictionary<string,string>();
+            foreach (var parameter in standardParameters)
+                mergedParameters.Add(parameter.Key,parameter.Value);
+            foreach (var parameter in datasourceParameters)
+                mergedParameters.Add(parameter.Key, parameter.Value);
+            cmsPageContent.Parameters = mergedParameters;
 
             return cmsPageContent;
         }
 
-        private class ConfiguratorSetup
+
+
+        private static RequiresDataSource InferDataSourceFromDataRelation(SettingProperty property)
         {
-            public string PropertyName { get; set; }
-            public string DisplayName { get; set; }
-            public string PropertyType { get; set; }
-            public string WidgetTypeCode { get; set; }
+            var fixedOptions = property.PropertyInfo.GetCustomAttribute<FixedOptionsDataSourceAttribute>();
+            if (fixedOptions != null)
+            {
+                var collection = new DataSourceItemCollection();
+                var allItems = fixedOptions.Options.Select(x => new DataSourceItem(x)).ToList();
+                collection.Items.AddRange(allItems);
+                return new RequiresDataSource
+                {
+                    DataSourceType = DataSourceTypes.FixedItems,
+                    Items = collection
+                };
+            }
+
+            var dataRelation = property.PropertyInfo.GetCustomAttribute<DataRelationAttribute>();
+            if (dataRelation != null)
+                return new RequiresDataSource
+                {
+                    DataSourceType = DataSourceTypes.Repository,
+                    RepositoryApiId = new Guid(dataRelation.ApiId)
+                };
+
+            return null;
+        }
+
+        private class RequiresDataSource : IRequiresDataSource
+        {
+            public Guid RepositoryApiId { get; set; }
+            public DataSourceItemCollection Items { get; set; }
+            public string DataSourceType { get; set; }
+        }
+
+        private class ConfiguratorSetup : BlazorToolboxItem
+        {
+            //public string PropertyName { get; set; }
+            //public string DisplayName { get; set; }
+            //public string PropertyType { get; set; }
+            //public string WidgetTypeCode { get; set; }
         }
 
         public CmsPageContent CreateRow(int numColumns)

@@ -1,0 +1,94 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@using WarpCore.Platform.DataAnnotations
+@implements IConfiguratorComponent<KeyValuePairsToolboxItem>
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    @if (Collection?.Items != null)
+    {
+        for (int i = 0; i < Collection.Items.Count; i++)
+        {
+    <div class="row">
+        <div class="col">
+            <input bind="@Collection.Items[i].Name" />
+        </div>
+        <div class="col">
+            <input bind="@Collection.Items[i].Value" />
+        </div>
+    </div>
+        }
+    <div class="row">
+        <button type="button" class="btn" onclick="@(e => AddDataSourceItem() )">
+            Add
+        </button>
+    </div>
+    }
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public KeyValuePairsToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private DataSourceItemCollection Collection { get; set; }
+
+    public string Value {
+        get
+        {
+            if (Collection == null)
+                return null;
+
+            return Json.Serialize(Collection);
+        }
+        set
+        {
+            DeserializeDataSourceJson(value);
+
+            this.StateHasChanged();
+        }
+    }
+
+    private void DeserializeDataSourceJson(string value)
+    {
+        Console.WriteLine("[Forms] Deserializing KVP datasource: "+value);
+
+     
+            if (string.IsNullOrWhiteSpace(value))
+                Collection = new DataSourceItemCollection();
+            else
+                Collection = Json.Deserialize<DataSourceItemCollection>(value);
+       
+
+    }
+
+    public bool IsValid { get { return true; } }
+
+    private void AddDataSourceItem()
+    {
+        Collection.Items.Add(new DataSourceItem());
+        this.StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+    }
+
+
+
+}

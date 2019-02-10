@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorComponents.Shared\BlazorComponents.Shared.csproj" />
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj" />
     <ProjectReference Include="..\Cms PageDesigner Context\Cms PageDesigner Context.csproj" />
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj" />
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj" />

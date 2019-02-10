@@ -74,6 +74,10 @@
       <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
       <Name>Platform Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj">
+      <Project>{EF917AEE-6A91-47F9-A45E-E45650F9436A}</Project>
+      <Name>Platform DataAnnotations</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

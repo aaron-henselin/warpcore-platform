@@ -7,9 +7,6 @@ namespace WarpCore.Platform.Orm
 {
 
 
-    public class SerializedComplexObjectAttribute : Attribute
-    {
-    }
 
     public abstract class UnversionedContentRepository<T> : IUnversionedContentRepository, ISupportsCmsForms where T : UnversionedContentEntity, new()
     {
