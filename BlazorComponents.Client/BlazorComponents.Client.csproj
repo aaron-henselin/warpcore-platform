@@ -32,7 +32,13 @@
     <Content Update="Shared\Forms\FormNode.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Shared\Forms\ToolboxItems\KeyValuePairItem.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\Forms\ToolboxItems\KeyValuePairs.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Shared\Forms\ToolboxItems\DataSourceBuilder.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Shared\Forms\ToolboxItems\UriSelector.cshtml">

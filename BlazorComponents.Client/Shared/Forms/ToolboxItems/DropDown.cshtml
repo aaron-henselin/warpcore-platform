@@ -9,7 +9,7 @@
 <div class="form-group">
     <label>@Config.DisplayName</label>
     <select type="text" bind="@TextBoxValue" class="form-control">
-        @if (LocalDataSource != null)
+        @if (LocalDataSource?.Items != null)
         {
             <option>Select</option>
             @foreach (var option in LocalDataSource.Items)

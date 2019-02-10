@@ -5,6 +5,7 @@ using JsonSubTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm

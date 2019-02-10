@@ -1,0 +1,68 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Client.Shared.Forms.ToolboxItems
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@using WarpCore.Platform.DataAnnotations
+@implements IConfiguratorComponent<DataSourceBuilderToolboxItem>
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    <KeyValuePairs ref="Builder"></KeyValuePairs>
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public DataSourceBuilderToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private KeyValuePairs Builder { get;set; }
+
+    public bool IsValid => true; 
+
+    public string Value {
+        get
+        {
+            var items = Builder.GetAll();
+            var ds = DataSourceItemCollection.FromKeyValuePairs(items);
+            return Json.Serialize(ds);
+        }
+        set
+        {
+            var ds = DeserializeDataSourceJson(value);
+            var kvps = ds.ToKeyValuePairs();
+            Builder.Set(kvps);
+
+        }
+    }
+
+    private DataSourceItemCollection DeserializeDataSourceJson(string value)
+    {
+        Console.WriteLine("[Forms] Deserializing KVP datasource: "+value);
+
+
+        if (string.IsNullOrWhiteSpace(value))
+            return new DataSourceItemCollection();
+
+            return Json.Deserialize<DataSourceItemCollection>(value);
+
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize ds builder.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+    }
+}

@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
@@ -12,7 +13,8 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Control
     {
         public const string ApiId = "wc-row-layout";
 
-        [UserInterfaceHint]
+        [UserInterfaceHint(Editor = Editor.OptionList)]
+        [FixedOptionsDataSource(1,2,3,4,6,12)]
         [DisplayName("Number of Columns")]
         public int NumColumns { get; set; } = 1;
 

@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 
 namespace WarpCore.Web.Widgets
 {

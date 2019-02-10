@@ -3,92 +3,92 @@
 @using BlazorComponents.Shared
 @using Microsoft.JSInterop
 @using WarpCore.Platform.DataAnnotations
-@implements IConfiguratorComponent<KeyValuePairsToolboxItem>
 
 
 
 <div class="form-group">
-    <label>@Config.DisplayName</label>
-    @if (Collection?.Items != null)
+    <label>@Title</label>
+    @if (Collection != null)
     {
-        for (int i = 0; i < Collection.Items.Count; i++)
+        <div class="row">
+            <div class="col">
+                <label>Name</label>
+            </div>
+            <div class="col">
+                <label>Value</label>
+            </div>
+        </div>
+        foreach (var item in Collection)
         {
-    <div class="row">
-        <div class="col">
-            <input bind="@Collection.Items[i].Name" />
-        </div>
-        <div class="col">
-            <input bind="@Collection.Items[i].Value" />
-        </div>
-    </div>
+            <CascadingValue value=@this>
+                <KeyValuePairItem KeyValuePair=@item />
+            </CascadingValue>
         }
-    <div class="row">
-        <button type="button" class="btn" onclick="@(e => AddDataSourceItem() )">
-            Add
-        </button>
-    </div>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn" onclick="@(e => AddEmptyItem())">
+                    Add
+                </button>
+            </div>
+        </div>
     }
 </div>
 
 
 
 @functions {
+
     [Parameter]
-    public KeyValuePairsToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+    string Title { get; set; }
 
-    [CascadingParameter]
-    public FormBody FormBody { get; set; }
+    private List<MutableKeyValuePair> Collection { get; set; } = new List<MutableKeyValuePair>();
 
-    private DataSourceItemCollection Collection { get; set; }
 
-    public string Value {
-        get
-        {
-            if (Collection == null)
-                return null;
 
-            return Json.Serialize(Collection);
-        }
-        set
-        {
-            DeserializeDataSourceJson(value);
-
-            this.StateHasChanged();
-        }
-    }
-
-    private void DeserializeDataSourceJson(string value)
+    public void Set(IEnumerable<KeyValuePair<string, string>> items)
     {
-        Console.WriteLine("[Forms] Deserializing KVP datasource: "+value);
-
-     
-            if (string.IsNullOrWhiteSpace(value))
-                Collection = new DataSourceItemCollection();
-            else
-                Collection = Json.Deserialize<DataSourceItemCollection>(value);
-       
-
-    }
-
-    public bool IsValid { get { return true; } }
-
-    private void AddDataSourceItem()
-    {
-        Collection.Items.Add(new DataSourceItem());
+        Collection = items.Select(x => new MutableKeyValuePair{Key=x.Key,Value=x.Value}).ToList();
         this.StateHasChanged();
     }
 
-    protected override void OnParametersSet()
+
+    public IEnumerable<KeyValuePair<string, string>> GetAll()
     {
-        //base.OnParametersSet();
-        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
-
-        if (Config == null)
-            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
-
-        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+        return Collection
+            .Select(x => new KeyValuePair<string, string>(x.Key,x.Value))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key));
     }
 
+    private void AddEmptyItem()
+    {
+        Collection.Add(new MutableKeyValuePair());
+        this.StateHasChanged();
+    }
 
+    public void Removed(MutableKeyValuePair edited)
+    {
+        Collection.Remove(edited);
+        this.StateHasChanged();
+    }
 
+    public void Changed(MutableKeyValuePair edited)
+    {
+        var shouldRemove=
+            string.IsNullOrWhiteSpace(edited.Key) &&
+            string.IsNullOrWhiteSpace(edited.Value) && 
+            edited != Collection.Last();
+
+        if (shouldRemove)
+            Collection.Remove(edited);
+
+        //var count = Collection.Count;
+
+        //var removeAll = Collection.Where((x,i) => (i != count-1) && string.IsNullOrWhiteSpace(x.Key) && string.IsNullOrWhiteSpace(x.Value));
+        //foreach (var keyValuePair in removeAll)
+        //    Collection.Remove(keyValuePair);
+
+        this.StateHasChanged();
+    }
+
+  
 }

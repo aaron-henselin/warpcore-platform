@@ -22,27 +22,6 @@ namespace WarpCore.Platform.DataAnnotations
         List<T> ChildNodes { get; }
     }
 
-    public static class StackExtensions
-    {
-        public static T PopUntil<T>(this Stack<T> stack, Func<T, bool> untilCondition)
-        {
-            if (stack.Count == 0)
-                return default(T);
-
-            var peek = stack.Peek();
-            var untilConditionIsMet = untilCondition.Invoke(peek);
-            if (!untilConditionIsMet)
-            {
-                stack.Pop();
-                PopUntil<T>(stack, untilCondition);
-            }
-            else
-                return peek;
-
-            return default(T);
-        }
-    }
-
     public static class TreeExtensions
     {
         public static IReadOnlyCollection<T> GetAllDescendents<T>(this IUnrootedTree<T> tree) where T : ITreeNode<T>

@@ -1,6 +1,7 @@
 ﻿using System;
 
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 

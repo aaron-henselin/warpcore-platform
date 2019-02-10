@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Platform.Extensibility.DynamicContent

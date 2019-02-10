@@ -4,7 +4,7 @@
 
 @if (FormDescription != null)
 {
-<div runat="server" ID="surface" CssClass="wc-configurator-surface">
+<div runat="server" ID="surface" class="wc-configurator-surface p-2">
     @{
             var toRender = FormDescription.Layout.ChildNodes;
             foreach (var item in toRender)

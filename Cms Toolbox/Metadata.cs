@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Kernel.Extensions;
 using ToolboxItemAttribute = WarpCore.Platform.DataAnnotations.ToolboxItemAttribute;
 

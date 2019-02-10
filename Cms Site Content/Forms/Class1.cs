@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WarpCore.Cms;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Orm;
 

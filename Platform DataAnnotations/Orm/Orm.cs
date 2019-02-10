@@ -1,64 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace WarpCore.Platform.DataAnnotations
 {
-    public class DataRelationAttribute : Attribute
-    {
-        public string ApiId { get; set; }
-
-        public DataRelationAttribute(string apiId)
-        {
-            ApiId = apiId;
-        }
 
 
-    }
-    public class TableAttribute : Attribute
-    {
-        public string TableName { get; }
-
-        public TableAttribute(string tableName)
-        {
-            TableName = tableName;
-        }
-    }
-
-    public class ColumnAttribute : Attribute { }
-    
-
-    public class UserInterfaceIgnoreAttribute : Attribute
-    {
-    }
-
-    public class DependsOnPropertyAttribute : Attribute
-    {
-        public string PropertyName { get; }
-
-        public DependsOnPropertyAttribute(string propertyName)
-        {
-            PropertyName = propertyName;
-        }
-    }
-
-    public class UserInterfaceBehaviorAttribute : Attribute
-    {
-        public Type BehaviorType { get; }
-
-        public UserInterfaceBehaviorAttribute(Type behaviorType)
-        {
-            BehaviorType = behaviorType;
-        }
-    }
-
-    public class UserInterfaceHintAttribute : Attribute
-    {
-        public Editor Editor { get; set; }
-
-        public string CustomEditorType { get; set; }
-
-    }
+   
     public interface IRequiresDataSource
     {
         Guid RepositoryApiId { get; set; }
@@ -74,9 +24,23 @@ namespace WarpCore.Platform.DataAnnotations
 
     }
 
-   [DataContract]
+    [DebuggerDisplay("Item Count={Items.Count}")]
     public class DataSourceItemCollection : ISupportsJavaScriptSerializer
     {
+        public static DataSourceItemCollection FromKeyValuePairs(IEnumerable<KeyValuePair<string,string>> items)
+        {
+            var list = new List<DataSourceItem>();
+            foreach (var item in items)
+                list.Add(new DataSourceItem{Name=item.Key,Value=item.Value});
+
+            return new DataSourceItemCollection{Items = list};
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> ToKeyValuePairs()
+        {
+            return Items.Select(x => new KeyValuePair<string, string>(x.Name, x.Value));
+        }
+
         public List<DataSourceItem> Items { get; set; } = new List<DataSourceItem>();
     }
 
@@ -89,6 +53,11 @@ namespace WarpCore.Platform.DataAnnotations
         {
             Options = options;
         }
+
+        public FixedOptionsDataSourceAttribute(params int[] options)
+        {
+            Options = options.Select(x => x.ToString()).ToArray();
+        }
     }
 
     public static class DataSourceTypes
@@ -97,7 +66,8 @@ namespace WarpCore.Platform.DataAnnotations
         public const string FixedItems = nameof(FixedItems);
 
     }
-    [DataContract]
+
+    [DebuggerDisplay("Name = {" + nameof(DataSourceItem.Name) + "}, Value = {" + nameof(DataSourceItem.Value) + "}")]
     public class DataSourceItem
     {
         public DataSourceItem()

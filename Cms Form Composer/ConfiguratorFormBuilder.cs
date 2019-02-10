@@ -9,6 +9,7 @@ using Modules.Cms.Features.Presentation.PageComposition;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 

@@ -17,16 +17,5 @@ namespace WarpCore.Platform.DataAnnotations
         public bool UseClientSidePresentationEngine { get; set; }
     }
 
-    public enum Editor
-    {
-        Text, RichText, OptionList, CheckBox,
-        SubForm, Hidden,
-        Url
-    }
-
-    public class IgnorePropertyAttribute : Attribute
-    {
-    }
-
 
 }

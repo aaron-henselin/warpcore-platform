@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm

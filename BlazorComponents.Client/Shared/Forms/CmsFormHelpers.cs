@@ -103,6 +103,11 @@ namespace BlazorComponents.Client
         }
     }
 
+    public class MutableKeyValuePair
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
 
 
 }

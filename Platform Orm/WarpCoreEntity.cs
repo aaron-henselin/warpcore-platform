@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Kernel.Extensions;
 

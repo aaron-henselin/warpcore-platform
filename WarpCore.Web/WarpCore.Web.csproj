@@ -128,12 +128,6 @@
     <Compile Include="EmbeddedResourceVirtualPathProvider\VppDirectory.cs" />
     <Compile Include="Routing\PageCompositionBuilder.cs" />
     <Compile Include="SiteManagementContext.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorUrlSelector.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\CompositeConfigurator.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorCheckBox.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorDropDownList.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorHiddenField.cs" />
-    <Compile Include="Widgets\FormBuilder\Configurators\ConfiguratorTextBox.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

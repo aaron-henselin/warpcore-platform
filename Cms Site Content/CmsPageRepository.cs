@@ -7,6 +7,8 @@ using Cms.Layout;
 using Platform_Security;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Orm;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;

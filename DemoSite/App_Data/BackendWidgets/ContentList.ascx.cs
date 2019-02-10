@@ -10,6 +10,7 @@ using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;

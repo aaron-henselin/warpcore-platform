@@ -182,6 +182,7 @@ wc-sidebar {
     box-shadow: 12px 0 15px -4px rgba(0, 0, 0, 0.8), -12px 0 8px -4px rgba(0, 0, 0, 0.22);
     padding-left: 0;
     padding-right: 0;
+    min-width: 450px;
 }
 
 .toolbox-select {

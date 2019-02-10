@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.UserInteraceHints;
+
 [assembly: IsWarpCorePluginAssembly]
 namespace BlazorComponents.Shared
 {
@@ -62,7 +64,7 @@ namespace BlazorComponents.Shared
         [DisplayName("DataSource Repository")]
         public Guid RepositoryApiId { get; set; }
 
-        [UserInterfaceHint(CustomEditorType = KeyValuePairsToolboxItem.ApiId)]
+        [UserInterfaceHint(CustomEditorType = DataSourceBuilderToolboxItem.ApiId)]
         [DisplayName("DataSource Items")]
         public DataSourceItemCollection Items { get; set; } = new DataSourceItemCollection();
 
@@ -90,9 +92,15 @@ namespace BlazorComponents.Shared
         public const string ApiId = "warpcore-blazor-uriselector";
     }
 
-    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Key Value Pairs", Category = "Data Entry", UseClientSidePresentationEngine = true)]
-    public class KeyValuePairsToolboxItem : BlazorToolboxItem
+    //[WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Key Value Pairs", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    //public class KeyValuePairsToolboxItem : BlazorToolboxItem
+    //{
+    //    public const string ApiId = "warpcore-blazor-keyvaluepairs";
+    //}
+
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = " Data Source Builder", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class DataSourceBuilderToolboxItem : BlazorToolboxItem
     {
-        public const string ApiId = "warpcore-blazor-keyvaluepairs";
+        public const string ApiId = "warpcore-blazor-datasourcebuilder";
     }
 }
