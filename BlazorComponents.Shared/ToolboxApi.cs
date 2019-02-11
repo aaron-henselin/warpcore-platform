@@ -47,6 +47,13 @@ namespace BlazorComponents.Shared
 
 
 
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Subform", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class SubFormToolboxItem : BlazorToolboxItem, ISupportsSubContent
+    {
+        public const string ApiId = "warpcore-blazor-subform";
+    }
+
+
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Textbox", Category = "Data Entry", UseClientSidePresentationEngine=true)]
     public class TextboxToolboxItem : BlazorToolboxItem
     {

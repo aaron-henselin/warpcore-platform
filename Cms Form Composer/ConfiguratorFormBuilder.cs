@@ -128,6 +128,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (editor == Editor.Text)
                 return TextboxToolboxItem.ApiId;
 
+            if (editor == Editor.SubForm)
+                return SubFormToolboxItem.ApiId;
+
             return TextboxToolboxItem.ApiId;
         }
 
@@ -160,17 +163,23 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             var standardParameters = setup.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
             var datasourceParameters = new Dictionary<string,string>();
 
-            
-            var needsADataSource = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode).RequiresDataSource;
-            if (needsADataSource)
+            var toolboxItem = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode);
+
+            if (toolboxItem.RequiresDataSource)
             {
                 var dataRelationDs = InferDataSourceFromDataRelation(property);
                 if (dataRelationDs != null)
                     datasourceParameters = dataRelationDs.GetPropertyValues(x => true).ToDictionary(x => x.Key, x => x.Value);
 
-
             }
- 
+
+            if (toolboxItem.SupportsSubContent)
+            {
+                var propType = property.PropertyInfo.PropertyType;
+                var defaultForm = GenerateDefaultForm(propType);
+                cmsPageContent.AllContent = defaultForm.ChildNodes;
+            }
+            
 
             var mergedParameters = new Dictionary<string,string>();
             foreach (var parameter in standardParameters)

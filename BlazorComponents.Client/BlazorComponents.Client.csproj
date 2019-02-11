@@ -32,6 +32,9 @@
     <Content Update="Shared\Forms\FormNode.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Shared\Forms\ToolboxItems\SubForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\Forms\ToolboxItems\KeyValuePairItem.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

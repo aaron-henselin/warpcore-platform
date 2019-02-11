@@ -53,13 +53,14 @@ namespace BlazorComponents.Client
             var useComponentType = componentLookupByInterface[linkedConfigType];
             Console.WriteLine("[Forms] Activating "+ useComponentType.FullName);
 
-           
 
             var localSeq = 0;
             builder.OpenComponent(localSeq++, useComponentType);
             builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent<TextboxToolboxItem>.Config), activated);
-            //builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.Dispatcher), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<BlazorComponents.Client.FormEventDispatcher>(Dispatcher));
-            //builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent.ConfiguratorRegistry), Microsoft.AspNetCore.Blazor.Components.RuntimeHelpers.TypeCheck<ConfiguratorRegistry>(ConfiguratorRegistry));
+
+            if (activated is ISupportsSubContent)
+                builder.AddAttribute(localSeq++, nameof(IRendersSubLayout.DesignNode), DesignNode);
+
             builder.CloseComponent();
         }
 

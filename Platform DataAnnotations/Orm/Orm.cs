@@ -18,7 +18,9 @@ namespace WarpCore.Platform.DataAnnotations
 
      
     }
-
+    public interface ISupportsSubContent
+    {
+    }
     public interface ISupportsJavaScriptSerializer
     {
 

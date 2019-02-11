@@ -31,6 +31,11 @@ namespace BlazorComponents.Client
 
     }
 
+    public interface IRendersSubLayout
+    {
+        StructureNode DesignNode { get; set; }
+    }
+
     public interface IRendersBlazorToolboxItem<T> where T : BlazorToolboxItem
     {
         T Config { get; set; }
