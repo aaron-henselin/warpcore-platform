@@ -6,13 +6,13 @@
 {
 <div runat="server" ID="surface" class="wc-configurator-surface p-2">
     @{
-            var toRender = FormDescription.Layout.ChildNodes;
-            foreach (var item in toRender)
-            {
+        var toRender = FormDescription.Layout.ChildNodes;
+        foreach (var item in toRender)
+        {
                 <CascadingValue Value=@this>
                     <FormNode DesignNode=@item  />
                 </CascadingValue>
-            }
+        }
     }
 </div>
 }
@@ -37,6 +37,18 @@
         this.StateHasChanged();
     }
 
+    public void SetValues(IDictionary<string,string> values)
+    {
+                var readWriter = new CmsFormReadWriter(_registry);
+
+        readWriter.SetValues(values);
+    }
+
+    public void SetDataSources(IDictionary<string,LocalDataSource> dataSources)
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetDataSources(dataSources);
+    }
 
     public void StartNewSession(EditingSession editingSession )
     {

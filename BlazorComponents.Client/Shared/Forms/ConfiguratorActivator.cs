@@ -59,7 +59,16 @@ namespace BlazorComponents.Client
             builder.AddAttribute(localSeq++, nameof(IConfiguratorComponent<TextboxToolboxItem>.Config), activated);
 
             if (activated is ISupportsSubContent)
-                builder.AddAttribute(localSeq++, nameof(IRendersSubLayout.DesignNode), DesignNode);
+            {
+                var pageStructure = new PageStructure();
+                pageStructure.ChildNodes = DesignNode.ChildNodes;
+
+                var formDescription = new ConfiguratorFormDescription
+                {
+                    Layout = pageStructure
+                };
+                builder.AddAttribute(localSeq++, nameof(IRendersSubLayout.DesignNode), formDescription);
+            }
 
             builder.CloseComponent();
         }
@@ -105,7 +114,10 @@ namespace BlazorComponents.Client
                 var generic = componentInterfaceBlank.MakeGenericType(type);
                 var canFulfull = allComponents.FirstOrDefault(x => generic.IsAssignableFrom(x));
                 if (canFulfull == null)
-                    throw new Exception("Could not find blazor component matching "+generic.FullName);
+                {
+                    var loaded = string.Join(",", allComponents.Select(x => x.FullName));
+                    throw new Exception("Could not find blazor component matching " + generic.FullName + ". Available components are: "+loaded);
+                }
                 componentLookupByInterface.Add(type, canFulfull);
             }
         }

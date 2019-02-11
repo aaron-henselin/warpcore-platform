@@ -101,17 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamicPage.aspx" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -144,14 +133,12 @@
     <Compile Include="WebBootrstrapper.cs" />
     <Compile Include="Widgets\AscxPlaceHolder.cs" />
     <Compile Include="Widgets\Layout\Column.cs" />
-    <Compile Include="Widgets\Content\ContentBlock.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
     <Compile Include="Widgets\Layout\RowLayout.cs" />
     <Compile Include="Widgets\Layout\RuntimeContentPlaceHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

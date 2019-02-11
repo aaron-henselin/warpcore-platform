@@ -9,7 +9,7 @@
 <div class="form-group">
     <label>@Config.DisplayName</label>
 
-    <FormBody FormDescription="@FormDescription" ref="InnerFormBody"></FormBody>
+    <FormBody FormDescription="@DesignNode" ref="InnerFormBody"></FormBody>
 </div>
 
 
@@ -22,18 +22,21 @@
     public FormBody FormBody { get; set; }
 
     [Parameter]
-    public ConfiguratorFormDescription FormDescription { get;set;}
+    public ConfiguratorFormDescription DesignNode { get;set;}
 
     private FormBody InnerFormBody { get; set; }
 
     public string Value {
         get
         {
-            return TextBoxValue;
+            var values =InnerFormBody.GetValues();
+            return Json.Serialize(values);
         }
         set
         {
-            TextBoxValue = value;
+            //TextBoxValue = value;
+            var newValue = Json.Deserialize<Dictionary<string,string>>(value);
+            FormBody.SetValues(newValue);
             this.StateHasChanged();
         }
     }
