@@ -2,9 +2,9 @@
 using System.Linq;
 using Cms.Layout;
 using Cms_PageDesigner_Context;
-using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using Modules.Cms.Features.Presentation.PageComposition;
+using Platform_WebPipeline;
 using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Cms
@@ -75,5 +75,24 @@ namespace WarpCore.Cms
             };
         }
 
+
+
+    }
+
+    public static class PresentationElementHelpers
+    {
+        public static PageContent ToPresentationElement(this CmsPageContent content)
+        {
+            return new PageContent
+            {
+                Id = content.Id,
+                AllContent = content.AllContent.Select(ToPresentationElement).ToList(),
+                Order = content.Order,
+                Parameters = content.Parameters,
+                PlacementContentPlaceHolderId = content.PlacementContentPlaceHolderId,
+                PlacementLayoutBuilderId = content.PlacementLayoutBuilderId,
+                WidgetTypeCode = content.WidgetTypeCode,
+            };
+        }
     }
 }

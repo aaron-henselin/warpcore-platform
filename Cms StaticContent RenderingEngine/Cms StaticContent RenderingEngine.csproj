@@ -10,8 +10,8 @@
     <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj" />
     <ProjectReference Include="..\Cms Page OutputCache\Cms Page OutputCache.csproj" />
     <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj" />
-    <ProjectReference Include="..\Cms Request Context\Cms Request Context.csproj" />
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj" />
+    <ProjectReference Include="..\Platform WebPipeline\Platform WebPipeline.csproj" />
   </ItemGroup>
 
 </Project>

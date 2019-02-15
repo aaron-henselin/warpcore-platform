@@ -104,7 +104,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CmsPageContentActivation\CmsPageBuilderHttpModule.cs" />
     <Compile Include="DynamicForm.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResource.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceCacheControl.cs" />
@@ -112,10 +111,8 @@
     <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualDirectory.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualFile.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\EmbeddedResourceVirtualPathProviderStart.cs" />
-    <Compile Include="EmbeddedResourceVirtualPathProvider\Logger.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\Vpp.cs" />
     <Compile Include="EmbeddedResourceVirtualPathProvider\VppDirectory.cs" />
-    <Compile Include="Routing\PageCompositionBuilder.cs" />
     <Compile Include="SiteManagementContext.cs" />
     <Compile Include="DynamicPage.aspx.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
@@ -124,13 +121,10 @@
     <Compile Include="DynamicPage.aspx.designer.cs">
       <DependentUpon>DynamicPage.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\HttpContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteContextResolver.cs" />
     <Compile Include="Routing\CmsRouteRegistrar.cs" />
-    <Compile Include="Routing\WarpCoreRequestProcessor.cs" />
     <Compile Include="Scripting\ScriptManagerExtensions.cs" />
-    <Compile Include="WebBootrstrapper.cs" />
     <Compile Include="Widgets\AscxPlaceHolder.cs" />
     <Compile Include="Widgets\Layout\Column.cs" />
     <Compile Include="Scripting\ProxiedScriptManager.cs" />
@@ -171,10 +165,6 @@
       <Project>{D1C31107-82D7-4530-A0AA-D750A3DD8386}</Project>
       <Name>Cms PageDesigner Context</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Request Context\Cms Request Context.csproj">
-      <Project>{F0C718DD-DA88-4DA8-B713-FA0D1B24BE7B}</Project>
-      <Name>Cms Request Context</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
       <Name>Cms Site Content</Name>
@@ -203,6 +193,10 @@
       <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
       <Name>Platform Orm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform WebPipeline\Platform WebPipeline.csproj">
+      <Project>{a0823b96-4eca-4ec9-a315-46cfc43bf1f3}</Project>
+      <Name>Platform WebPipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
       <Name>Cms Routing</Name>
@@ -210,6 +204,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="CmsPageContentActivation\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="WebSite\" />
     <Folder Include="Widgets\FormBuilder\Support\" />
     <Folder Include="_EmbeddedResources\" />
   </ItemGroup>

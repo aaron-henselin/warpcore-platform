@@ -53,8 +53,8 @@ namespace DemoSite
                 cmsForm = formRepository.FindContentVersions(By.ContentId(new Guid(formIdRaw)), ContentEnvironment.Draft).Result.Single();
             }
 
-            var mgr = new EditingContextManager();
-            var ec = mgr.GetOrCreateEditingContext(cmsForm);
+            //var mgr = new EditingContextManager();
+            //var ec = mgr.GetOrCreateEditingContext(cmsForm);
             
             //CmsPageLayoutEngine.ActivateAndPlaceContent(RuntimePlaceHolder, ec.AllContent,PageRenderMode.PageDesigner);
 

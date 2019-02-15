@@ -15,4 +15,8 @@ namespace Modules.Cms.Features.Configuration
 
        public static CmsConfiguration Current { get; set; } = new CmsConfiguration();
     }
+
+
+
+
 }

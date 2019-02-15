@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
-using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.Page.Elements;
+using Platform_WebPipeline;
 using WarpCore.Cms.Toolbox;
-using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.UserInteraceHints;
-using WarpCore.Platform.Kernel;
 
 namespace Cms_StaticContent_RenderingEngine
 {
@@ -84,7 +82,7 @@ namespace Cms_StaticContent_RenderingEngine
         public override StaticContent GetStaticContent()
         {
             //route here is the _app host_
-            var applicationBaseUri = CmsPageRequestContext.Current.Route.VirtualPath;
+            var applicationBaseUri = WebPipeline.CurrentRequest.Route.VirtualPath;
             var absPath = applicationBaseUri.ToString();
             if (!absPath.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                 absPath += "/";

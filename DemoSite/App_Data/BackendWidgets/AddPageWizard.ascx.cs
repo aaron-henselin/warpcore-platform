@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
-using Modules.Cms.Features.Context;
 using Modules.Cms.Features.Presentation.Page.Elements;
+using Platform_WebPipeline;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Platform.Kernel.Extensions;
@@ -49,7 +49,7 @@ namespace DemoSite
             parameters[PageTypeParameter] = PageTypeSelector.SelectedValue;
 
             
-            var newUrl = new CmsUriBuilder().CreateUri(CmsPageRequestContext.Current.CmsPage, UriSettings.Default,parameters);
+            var newUrl = new CmsUriBuilder().CreateUri(WebPipeline.CurrentRequest.CmsPage, UriSettings.Default,parameters);
 
             Response.Redirect(newUrl.ToString());
         }

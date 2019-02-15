@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Web;
 using Cms_PageDesigner_Context;
-using Modules.Cms.Features.Context;
+using Platform_WebPipeline;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 
 namespace WarpCore.Web.Extensions
@@ -15,43 +16,33 @@ namespace WarpCore.Web.Extensions
 
 
 
-    public static class HttpContextExtensions
+    //public static class HttpContextExtensions
+    //{
+    //    public static DynamicFormRequestContext ToDynamicFormRequestContext(this HttpContext context)
+    //    {
+    //        Guid? guid = null;
+    //        var contentIdRaw = context.Request.QueryString[nameof(DynamicFormRequestContext.ContentId)];
+    //        if (!string.IsNullOrEmpty(contentIdRaw))
+    //            guid = new Guid(contentIdRaw);
+
+    //        return new DynamicFormRequestContext
+    //        {
+    //            ContentId = guid,
+    //            DefaultValues = DefaultValueCollection.FromString(context.Request.QueryString[nameof(DynamicFormRequestContext.DefaultValues)])
+    //        };
+    //    }
+    //}
+
+
+    public class CmsPageRequestContextBuilder
     {
-        public static DynamicFormRequestContext ToDynamicFormRequestContext(this HttpContext context)
+        public CmsPageRequestContext Build(IHttpRequest httpRequest)
         {
-            Guid? guid = null;
-            var contentIdRaw = context.Request.QueryString[nameof(DynamicFormRequestContext.ContentId)];
-            if (!string.IsNullOrEmpty(contentIdRaw))
-                guid = new Guid(contentIdRaw);
-
-            return new DynamicFormRequestContext
-            {
-                ContentId = guid,
-                DefaultValues = DefaultValueCollection.FromString(context.Request.QueryString[nameof(DynamicFormRequestContext.DefaultValues)])
-            };
-        }
-
-
-        public static UriBuilderContext ToUriBuilderContext(this HttpContext context)
-        {
-            var url = context.Request.Url;
-            return new UriBuilderContext()
-            {
-                Authority = url.Authority,
-                AbsolutePath = new Uri(url.AbsolutePath,UriKind.Relative),
-                IsSsl = url.Scheme == "https"
-            };
-        }
-
-        
-
-        internal static CmsPageRequestContext ToCmsRouteContext(this HttpContext context)
-        {
-            var routeRaw = context.Request[PageDesignerUriComponents.PageId];
-            var environmentRaw = context.Request[PageDesignerUriComponents.ContentEnvironment];
-            var contentVersionRaw = context.Request[PageDesignerUriComponents.ContentVersion];
-            var viewModeRaw = context.Request[PageDesignerUriComponents.ViewMode];
-            var siteRaw = context.Request[PageDesignerUriComponents.SiteId];
+            var routeRaw = httpRequest.QueryString[PageDesignerUriComponents.PageId];
+            var environmentRaw = httpRequest.QueryString[PageDesignerUriComponents.ContentEnvironment];
+            var contentVersionRaw = httpRequest.QueryString[PageDesignerUriComponents.ContentVersion];
+            var viewModeRaw = httpRequest.QueryString[PageDesignerUriComponents.ViewMode];
+            var siteRaw = httpRequest.QueryString[PageDesignerUriComponents.SiteId];
 
             PageRenderMode pageRenderMode = PageRenderMode.Readonly;
             if (!string.IsNullOrWhiteSpace(viewModeRaw))
@@ -61,7 +52,7 @@ namespace WarpCore.Web.Extensions
             ContentEnvironment env = ContentEnvironment.Live;
             if (!string.IsNullOrWhiteSpace(environmentRaw))
             {
-                env = (ContentEnvironment)Enum.Parse(typeof(ContentEnvironment),environmentRaw,true);
+                env = (ContentEnvironment)Enum.Parse(typeof(ContentEnvironment), environmentRaw, true);
             }
             else
             {
@@ -90,10 +81,10 @@ namespace WarpCore.Web.Extensions
             }
             else
             {
-                var success = CmsRoutes.Current.TryResolveRoute(HttpContext.Current.Request.Url, out route);
+                var success = CmsRoutes.Current.TryResolveRoute(httpRequest.Uri, out route);
             }
             routeContext.Route = route;
-            
+
 
             if (route?.PageId == null)
                 return routeContext;

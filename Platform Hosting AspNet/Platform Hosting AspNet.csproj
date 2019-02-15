@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -42,14 +45,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="AspNet\AspNetHostHttpModule.cs" />
+    <Compile Include="AspNet\WebStackComponents\AspNetHttpRequest.cs" />
+    <Compile Include="AspNet\WebStackComponents\AspNetItems.cs" />
+    <Compile Include="AspNet\WebStackComponents\AspNetResultProcessor.cs" />
+    <Compile Include="AspNet\WebStackComponents\AspNetRouteData.cs" />
+    <Compile Include="AspNet\WebStackComponents\AspNetWebServer.cs" />
+    <Compile Include="AspNet\AspNetWebStack.cs" />
+    <Compile Include="AspNet\ContentPageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
+      <Project>{7afdb16f-6b42-494b-baf4-42db78a3fabc}</Project>
+      <Name>Cms Page Composer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj">
+      <Project>{11cc6161-c3d9-486d-8e0b-206bb9479d3b}</Project>
+      <Name>Cms Page Elements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page OutputCache\Cms Page OutputCache.csproj">
+      <Project>{2f3fbe89-0182-4026-b6a5-86198ef431f4}</Project>
+      <Name>Cms Page OutputCache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
+      <Project>{ba17eab5-6520-4435-a104-ede47eb4ccc3}</Project>
+      <Name>Cms Page Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
+      <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
+      <Name>Cms Site Content</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Platform Core\Platform Core.csproj">
       <Project>{83E69543-EC92-4480-A0B6-A3FD0EAD1BE4}</Project>
       <Name>Platform Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
+      <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
+      <Name>Platform Orm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform WebPipeline\Platform WebPipeline.csproj">
+      <Project>{a0823b96-4eca-4ec9-a315-46cfc43bf1f3}</Project>
+      <Name>Platform WebPipeline</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

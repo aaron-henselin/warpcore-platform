@@ -10,10 +10,10 @@
 
 <div class="row">
     <div class="col">
-        <input bind="@KeyValuePair.Key" onchange=@(evt => Changed()) />
+        <input class="form-control" bind="@KeyValuePair.Key" onchange=@(evt => Changed()) />
     </div>
     <div class="col">
-        <input bind="@KeyValuePair.Value" onchange=@(evt => Changed()) />
+        <input class="form-control" bind="@KeyValuePair.Value" onchange=@(evt => Changed()) />
     </div>
     <div class="col-1">
         <a onclick=@(evt => Removed())>X</a>

@@ -114,10 +114,6 @@
       <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
       <Name>Cms Page Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Request Context\Cms Request Context.csproj">
-      <Project>{f0c718dd-da88-4da8-b713-fa0d1b24be7b}</Project>
-      <Name>Cms Request Context</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4bbdc8fe-0dde-4dd4-bb5b-c31896d5156b}</Project>
       <Name>Cms Site Content</Name>
@@ -141,6 +137,10 @@
     <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
       <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
       <Name>Platform Orm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform WebPipeline\Platform WebPipeline.csproj">
+      <Project>{a0823b96-4eca-4ec9-a315-46cfc43bf1f3}</Project>
+      <Name>Platform WebPipeline</Name>
     </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{B9D4AFC3-AE7D-4F42-8BB3-9B2A1394BB96}</Project>

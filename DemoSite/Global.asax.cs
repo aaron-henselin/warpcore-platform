@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using Cms;
 using Cms.Forms;
 using Cms.Layout;
 using Cms_StaticContent_RenderingEngine;
+using DemoSite;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
 using Modules.Cms.Features.Configuration;
 using Modules.Cms.Features.Presentation.Page.Elements;
@@ -14,6 +17,9 @@ using Modules.Cms.Features.Presentation.PageComposition;
 using Modules.Cms.Features.Presentation.RenderingEngines.Mvc;
 using Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers;
 using Modules.Cms.Features.Presentation.RenderingEngines.WebForms;
+using Platform_Hosting_AspNet;
+using Platform_Hosting_AspNet.AspNet;
+using Platform_WebPipeline;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
@@ -27,13 +33,18 @@ using WarpCore.Web;
 using WarpCore.Web.EmbeddedResourceVirtualPathProvider;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
+[assembly: PreApplicationStartMethod(typeof(ActualBootstrapper), nameof(ActualBootstrapper.PreInitialize))]
+
 namespace DemoSite
 {
-    public class Global : System.Web.HttpApplication
+    public static class ActualBootstrapper
     {
-        protected void Application_Start(object sender, EventArgs e)
+        public static void PreInitialize()
         {
             
+            var webStack = new AspNetWebStack();
+            WebBootstrapper.PreInitializeWebStack(webStack);
+
             CmsConfiguration.Current.AddMvcSupport();
             CmsConfiguration.Current.AddWebFormsSupport();
             CmsConfiguration.Current.AddStaticContentSupport();
@@ -48,29 +59,30 @@ namespace DemoSite
 
 
 
-            var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
 
-            var blazor = new BlazorToolkit();
-            blazor.HostBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
+
 
             Dependency.Register<ICosmosOrm>(typeof(InMemoryDb));
-            
+
             DomainEvents.Subscribe<SiteBootCompleted>(_ =>
             {
-                SetupDynamicTypes();
-                SetupCustomFields();
-                SetupToolbox();
-                SetupBackendSite();
-                
+                var demoInstaller = new DemoInstaller();
+                demoInstaller.SetupDynamicTypes();
+                demoInstaller.SetupCustomFields();
+                demoInstaller.SetupToolbox();
+                demoInstaller.SetupBackendSite();
+
 
                 PublishingShortcuts.PublishSites();
-                SetupTestSite();
+                demoInstaller.SetupTestSite();
             });
 
-
         }
+    }
 
-        private void SetupDynamicTypes()
+    public class DemoInstaller
+    {
+        public void SetupDynamicTypes()
         {
             var fullDynamicTypeId = Guid.NewGuid();
 
@@ -106,14 +118,14 @@ namespace DemoSite
             mgr.Save(extension);
 
             var repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(fullDynamicTypeId);
-            
+
             repo.Save(new DynamicVersionedContent(fullDynamicTypeId));
             //var drafts = repo.FindContentVersions("", ContentEnvironment.Draft);
             //if (!drafts.Any())
             //    throw new Exception();
         }
 
-        private void SetupCustomFields()
+        public void SetupCustomFields()
         {
 
             var mgr = new ContentInterfaceRepository();
@@ -127,7 +139,7 @@ namespace DemoSite
             mgr.Save(extension);
         }
 
-        private void SetupToolbox()
+        public void SetupToolbox()
         {
             var tbx = new ToolboxManager();
             tbx.Save(new ToolboxItem
@@ -268,13 +280,13 @@ namespace DemoSite
         {
             var form = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(typeof(CmsPage));
 
-            
+
             form.ContentId = KnownFormIds.ContentPageSettingsForm;
             form.Name = "Content Page Settings";
             form.RepositoryUid = new Guid(CmsPageRepository.ApiId);
-            
-            
-            
+
+
+
 
 
 
@@ -337,28 +349,28 @@ namespace DemoSite
             //            oneColumn.AllContent.Add(siteIdDropdown);
 
             var formRepository = new FormRepository();
-            
+
             formRepository.Save(form);
             formRepository.Publish(By.ContentId(form.ContentId));
 
             return form;
         }
 
-        private void SetupBackendSite()
+        public void SetupBackendSite()
         {
-  
+
 
             var backendLayout = new Layout
             {
                 Name = "Backend Layout",
                 MasterPagePath = "/App_Data/BackendPage.Master",
-                PageContent = new List<CmsPageContent> { new CmsPageContent { Id = Guid.NewGuid(),PlacementContentPlaceHolderId = "Body", WidgetTypeCode = "wc-navigation-bar" } }
+                PageContent = new List<CmsPageContent> { new CmsPageContent { Id = Guid.NewGuid(), PlacementContentPlaceHolderId = "Body", WidgetTypeCode = "wc-navigation-bar" } }
             };
 
 
             var layoutRepository = new LayoutRepository();
             layoutRepository.Save(backendLayout);
-            
+
 
             var siteRepo = new SiteRepository();
             var backendSite = new Site
@@ -492,7 +504,7 @@ namespace DemoSite
                 Parameters = new Dictionary<string, string> { }
             });
 
-            
+
 
             ////////////////
             var dynamicListTest = new CmsPage
@@ -503,7 +515,7 @@ namespace DemoSite
                 DisplayInNavigation = true
             };
 
-            var contentListControl= new ContentList()
+            var contentListControl = new ContentList()
             {
                 RepositoryId = new Guid(CmsPageRepository.ApiId),
                 Config = new ContentListConfiguration
@@ -519,9 +531,9 @@ namespace DemoSite
                     }
 
                 },
-                
+
             };
-            var parameters= (Dictionary<string,string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+            var parameters = (Dictionary<string, string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
 
             dynamicListTest.PageContent.Add(new CmsPageContent
@@ -542,8 +554,8 @@ namespace DemoSite
                 DisplayInNavigation = true
             };
 
-                
-                
+
+
             var formList = new ContentList()
             {
                 RepositoryId = new Guid(FormRepository.ApiId),
@@ -600,14 +612,14 @@ namespace DemoSite
                 LayoutId = backendLayout.ContentId,
                 PageType = PageType.RedirectPage,
                 RedirectUri = new WarpCorePageUri(pageTree),
-                InternalRedirectParameters = new Dictionary<string, string> { ["SiteId"]= backendSite.ContentId.ToString()}
+                InternalRedirectParameters = new Dictionary<string, string> { ["SiteId"] = backendSite.ContentId.ToString() }
             };
 
             pageRepo.Save(editBackendPageTreeLink);
 
         }
 
-        private Site SetupTestSite()
+        public Site SetupTestSite()
         {
             var tbx = new ToolboxManager();
 
@@ -641,7 +653,7 @@ namespace DemoSite
                 SiteId = newSite.ContentId,
                 LayoutId = myLayout.ContentId,
                 Keywords = "WarpCore,CMS,Demo",
-               Description = "WarpCore CMS Demo"
+                Description = "WarpCore CMS Demo"
 
             };
 
@@ -664,7 +676,7 @@ namespace DemoSite
                 PlacementContentPlaceHolderId = "0",
                 PlacementLayoutBuilderId = lbId,
                 WidgetTypeCode = ContentBlock.ApiId,
-                Parameters = new Dictionary<string, string> {["AdHocHtml"] = "Hello World (0)"}
+                Parameters = new Dictionary<string, string> { ["AdHocHtml"] = "Hello World (0)" }
             };
 
             var helloWorld1 = new CmsPageContent
@@ -681,7 +693,7 @@ namespace DemoSite
 
             homePage.PageContent.Add(row);
 
-            
+
 
 
 
@@ -721,6 +733,19 @@ namespace DemoSite
             pageRepository.Save(subPage0, new PageRelativePosition { ParentPageId = homePage.ContentId, BeforePageId = subPage1.ContentId });
 
             return newSite;
+        }
+
+    }
+
+    public class Global : System.Web.HttpApplication
+    {
+        protected void Application_Start(object sender, EventArgs e)
+        {
+
+
+            var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
+            var blazor = new BlazorToolkit();
+            blazor.HostBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
         }
 
     }

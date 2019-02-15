@@ -429,10 +429,6 @@
       <Project>{D1C31107-82D7-4530-A0AA-D750A3DD8386}</Project>
       <Name>Cms PageDesigner Context</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Request Context\Cms Request Context.csproj">
-      <Project>{F0C718DD-DA88-4DA8-B713-FA0D1B24BE7B}</Project>
-      <Name>Cms Request Context</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
       <Name>Cms Site Content</Name>
@@ -465,9 +461,17 @@
       <Project>{02599E26-647E-4142-9A35-1523AB08717F}</Project>
       <Name>Platform Extensibility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Platform Hosting AspNet\Platform Hosting AspNet.csproj">
+      <Project>{98C00B81-2A3E-4450-88BE-87E684B39F31}</Project>
+      <Name>Platform Hosting AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Platform Orm\Platform Orm.csproj">
       <Project>{47861BA0-3E49-4908-BD58-76C4F0015394}</Project>
       <Name>Platform Orm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Platform WebPipeline\Platform WebPipeline.csproj">
+      <Project>{a0823b96-4eca-4ec9-a315-46cfc43bf1f3}</Project>
+      <Name>Platform WebPipeline</Name>
     </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
       <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>

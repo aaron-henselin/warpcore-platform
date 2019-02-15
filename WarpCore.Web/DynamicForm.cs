@@ -112,7 +112,7 @@ namespace WarpCore.Web
 
             _activatedConfigurators = GetDescendantControls(surface, typeof(IConfiguratorControl)).Cast<IConfiguratorControl>().ToList();
 
-            _dynamicFormRequest = Context.ToDynamicFormRequestContext();
+            //_dynamicFormRequest = Context.ToDynamicFormRequestContext();
             _repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(_cmsForm.RepositoryUid);
 
             var draft = GetDraft();

@@ -15,7 +15,6 @@ using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
-using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace DemoSite
@@ -302,8 +301,8 @@ namespace DemoSite
             if (defaultFrontendSite != null)
                 defaultSiteId = defaultFrontendSite.ContentId;
 
-            var uriBuilderContext = HttpContext.Current.ToUriBuilderContext();
-            var uriBuilder = new CmsUriBuilder(uriBuilderContext);
+         
+            var uriBuilder = new CmsUriBuilder();
             var editPage = new CmsPageRepository()
                 .FindContentVersions(By.ContentId(Config.AddPage), ContentEnvironment.Live)
                 .Result

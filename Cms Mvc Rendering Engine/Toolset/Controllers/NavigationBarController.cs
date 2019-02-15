@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
-using DemoSite;
-using Modules.Cms.Features.Context;
+using Platform_WebPipeline;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
 using WarpCore.Platform.DataAnnotations;
-using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
-using WarpCore.Web.Extensions;
 
 namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Controllers
 {
@@ -25,7 +19,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Control
 
         private IReadOnlyCollection<NavBarItem> CreateNavBarItems()
         {
-            var rt = CmsPageRequestContext.Current;
+            var rt = WebPipeline.CurrentRequest;
             var siteId = rt.Route.SiteId;
             var adminSite = _siteRepository.GetById(siteId);
             var sitemap = SitemapBuilder.BuildSitemap(adminSite, ContentEnvironment.Live, SitemapBuilderFilters.DisplayInNavigation);
@@ -55,7 +49,7 @@ namespace Modules.Cms.Features.Presentation.RenderingEngines.Mvc.Toolset.Control
         {
             var frontendSites = _siteRepository.GetFrontendSites();
 
-            var rt = CmsPageRequestContext.Current;
+            var rt = WebPipeline.CurrentRequest;
             var siteId = rt.Route.SiteId;
             var site =_siteRepository.GetById(siteId);
             var livePage = new CmsPageRepository()

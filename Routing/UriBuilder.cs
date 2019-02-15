@@ -33,6 +33,8 @@ namespace WarpCore.Cms.Routing
 
     public class UriBuilderContext
     {
+
+
         public bool IsSsl { get; set; }
         public string Authority { get; set; }
         public Uri AbsolutePath { get; set; }
