@@ -1,9 +1,8 @@
 ﻿using WarpCore.Cms;
-using WarpCore.Platform.Kernel;
 
-namespace Platform_WebPipeline
+namespace Platform_WebPipeline.Requests
 {
-    public class CmsPageRequestContext
+    public class CmsPageRequest
     {
         public SiteRoute Route { get; set; }
         public CmsPage CmsPage { get; set; }

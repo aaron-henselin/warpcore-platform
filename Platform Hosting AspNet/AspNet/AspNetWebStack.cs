@@ -9,7 +9,7 @@ namespace Platform_Hosting_AspNet.AspNet
         public AspNetWebStack()
         {
             this.HttpRequest<AspNetHttpRequest>();
-            this.RouteData<AspNetRouteData>();
+            this.RouteData<AspNetPerRequestRouteData>();
             this.PerRequestItems<AspNetItems>();
             this.WebServer<AspNetWebServer>();
         }

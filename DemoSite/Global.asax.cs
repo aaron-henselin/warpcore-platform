@@ -44,7 +44,7 @@ namespace DemoSite
             
             var webStack = new AspNetWebStack();
             WebBootstrapper.PreInitializeWebStack(webStack);
-
+            
             CmsConfiguration.Current.AddMvcSupport();
             CmsConfiguration.Current.AddWebFormsSupport();
             CmsConfiguration.Current.AddStaticContentSupport();

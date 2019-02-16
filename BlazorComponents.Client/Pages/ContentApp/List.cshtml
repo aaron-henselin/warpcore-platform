@@ -1,0 +1,21 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Shared
+@page "/List/{listId}"
+@inject HttpClient Http
+
+<ContentList ListId=@listId/>
+
+@functions {
+    [Parameter]
+    string listId{get;set;}
+
+ }
+
+

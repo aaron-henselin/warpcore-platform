@@ -9,6 +9,7 @@ using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using Modules.Cms.Features.Presentation.PageComposition;
 using Platform_WebPipeline;
+using Platform_WebPipeline.Requests;
 using WarpCore.Cms;
 using WarpCore.Platform.Kernel;
 
@@ -27,7 +28,7 @@ namespace Platform_Hosting_AspNet.AspNet
         }
 
 
-        private static void RenderContentPage(CmsPageRequestContext rt)
+        private static void RenderContentPage(CmsPageRequest rt)
         {
             var builder = new PageCompositionBuilder();
             var pageComposition = builder.CreatePageComposition(rt.CmsPage, rt.PageRenderMode);

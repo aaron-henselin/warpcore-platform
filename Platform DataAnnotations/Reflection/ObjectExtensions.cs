@@ -54,7 +54,7 @@ namespace WarpCore.Platform.Kernel
                 if (propertyInfo.CanWrite)
                     propertyInfo.SetValue(obj, newType);
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }

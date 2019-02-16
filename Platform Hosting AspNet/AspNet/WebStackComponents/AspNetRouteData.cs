@@ -9,7 +9,7 @@ using WarpCore.Platform.Kernel;
 
 namespace Platform_Hosting_AspNet.AspNet
 {
-    public class AspNetRouteData : IRouteData
+    public class AspNetPerRequestRouteData : IPerRequestRouteData
     {
         public IDictionary<string, object> DataTokens =>
             HttpContext.Current.Request.RequestContext.RouteData.DataTokens;

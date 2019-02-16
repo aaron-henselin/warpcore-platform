@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentBrowserApi.cs" />
     <Compile Include="FormBrowserApi.cs" />
     <Compile Include="FormDesignerApiController.cs" />
     <Compile Include="FormsRuntimeApi.cs" />
@@ -83,10 +84,6 @@
     <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
       <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
       <Name>Cms Page Rendering</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cms PageDesigner Context\Cms PageDesigner Context.csproj">
-      <Project>{D1C31107-82D7-4530-A0AA-D750A3DD8386}</Project>
-      <Name>Cms PageDesigner Context</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>

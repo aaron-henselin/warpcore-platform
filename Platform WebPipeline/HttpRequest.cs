@@ -6,7 +6,7 @@ using WarpCore.Platform.Kernel;
 
 namespace Platform_WebPipeline
 {
-    public interface IRouteData
+    public interface IPerRequestRouteData
     {
         IDictionary<string,object> DataTokens { get; }
     }
@@ -49,9 +49,9 @@ namespace Platform_WebPipeline
     public static class WebDependencies
     {
         public static IHttpRequest Request => Dependency.Resolve<IHttpRequest>();
-        public static IWebServer WebServer => Dependency.Resolve<IWebServer>();
-        public static IPerRequestItems Items => Dependency.Resolve<IPerRequestItems>();
-        public static IRouteData RouteData => Dependency.Resolve<IRouteData>();
+        //public static IWebServer WebServer => Dependency.Resolve<IWebServer>();
+        //public static IPerRequestItems Items => Dependency.Resolve<IPerRequestItems>();
+        public static IPerRequestRouteData PerRequestRouteData => Dependency.Resolve<IPerRequestRouteData>();
         
     }
 

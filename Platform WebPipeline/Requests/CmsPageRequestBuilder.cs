@@ -1,42 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Web;
-using Cms_PageDesigner_Context;
-using Platform_WebPipeline;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
-using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 
-namespace WarpCore.Web.Extensions
+namespace Platform_WebPipeline.Requests
 {
 
-
-
-
-
-    //public static class HttpContextExtensions
-    //{
-    //    public static DynamicFormRequestContext ToDynamicFormRequestContext(this HttpContext context)
-    //    {
-    //        Guid? guid = null;
-    //        var contentIdRaw = context.Request.QueryString[nameof(DynamicFormRequestContext.ContentId)];
-    //        if (!string.IsNullOrEmpty(contentIdRaw))
-    //            guid = new Guid(contentIdRaw);
-
-    //        return new DynamicFormRequestContext
-    //        {
-    //            ContentId = guid,
-    //            DefaultValues = DefaultValueCollection.FromString(context.Request.QueryString[nameof(DynamicFormRequestContext.DefaultValues)])
-    //        };
-    //    }
-    //}
-
-
-    public class CmsPageRequestContextBuilder
+    public class CmsPageRequestBuilder
     {
-        public CmsPageRequestContext Build(IHttpRequest httpRequest)
+        public Requests.CmsPageRequest Build(IHttpRequest httpRequest)
         {
             var routeRaw = httpRequest.QueryString[PageDesignerUriComponents.PageId];
             var environmentRaw = httpRequest.QueryString[PageDesignerUriComponents.ContentEnvironment];
@@ -65,7 +39,7 @@ namespace WarpCore.Web.Extensions
                 contentVersion = Convert.ToDecimal(contentVersionRaw);
 
 
-            var routeContext = new CmsPageRequestContext();
+            var routeContext = new Requests.CmsPageRequest();
             routeContext.PageRenderMode = pageRenderMode;
 
             SiteRoute route;

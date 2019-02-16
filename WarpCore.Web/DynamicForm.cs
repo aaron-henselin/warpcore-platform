@@ -14,7 +14,6 @@ using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
-using WarpCore.Web.Extensions;
 using WarpCore.Web.Widgets.FormBuilder.Support;
 
 namespace WarpCore.Web

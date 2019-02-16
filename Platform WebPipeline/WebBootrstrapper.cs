@@ -4,6 +4,7 @@ using System.Web;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 using Platform_WebPipeline;
+using Platform_WebPipeline.Requests;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
@@ -12,8 +13,6 @@ using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web;
-using WarpCore.Web.Extensions;
-
 
 
 namespace WarpCore.Web
@@ -96,11 +95,11 @@ namespace WarpCore.Web
             Dependency.Register<IHttpRequest>(webStackConfiguration.HttpRequestType);
             Dependency.Register<IWebServer>(webStackConfiguration.WebServerType);
             Dependency.Register<IPerRequestItems>(webStackConfiguration.PerRequestItemsType);
-            Dependency.Register<IRouteData>(webStackConfiguration.RouteDataType);
+            Dependency.Register<IPerRequestRouteData>(webStackConfiguration.RouteDataType);
 
             webStackConfiguration.RegisterHttpModules();
            
-            Dependency.Register<CmsPageRequestContext>(() => WebPipeline.CurrentRequest);
+            Dependency.Register<CmsPageRequest>(() => WebPipeline.CurrentRequest);
             Dependency.Register<UriBuilderContext>(() => WebDependencies.Request.ToUriBuilderContext());
         }
 
@@ -133,7 +132,7 @@ namespace WarpCore.Web
         }
 
 
-        public void RouteData<TRouteData>() where TRouteData : IRouteData
+        public void RouteData<TRouteData>() where TRouteData : IPerRequestRouteData
         {
             RouteDataType = typeof(TRouteData);
         }

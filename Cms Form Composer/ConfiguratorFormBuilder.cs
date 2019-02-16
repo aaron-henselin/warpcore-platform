@@ -246,6 +246,30 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             return row;
         }
 
+        public CmsContentListDefinition GenerateDefaultContentListDefinition(Type clrType)
+        {
+            var configuratorSettingProperties =
+                ToolboxMetadataReader.ReadProperties(clrType, ToolboxPropertyFilter.SupportsDesigner);
+
+            var definition = new CmsContentListDefinition();
+            foreach (var property in configuratorSettingProperties)
+            {
+                var ignore = 
+               property.PropertyInfo.PropertyType == typeof(Guid?)||
+               property.PropertyInfo.PropertyType == typeof(Guid)||
+               property.PropertyInfo.GetCustomAttribute<SerializedComplexObjectAttribute>() != null;
+
+                if (!ignore)
+                definition.Fields.Add(new CmsListField
+               {
+                   Id = Guid.NewGuid(),
+                   Label = property.DisplayName,
+                   PropertyName = property.PropertyInfo.Name
+               });
+            }
+
+            return definition;
+        }
 
         public  CmsForm GenerateDefaultForm(Type clrType)
         {

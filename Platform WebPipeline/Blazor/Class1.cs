@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using Platform_WebPipeline.Requests;
 using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
@@ -218,12 +219,12 @@ namespace Platform_WebPipeline
 
         }
 
-        public WebPipelineAction ProcessRequest(CmsPageRequestContext pageRequestContext)
+        public WebPipelineAction ProcessRequest(CmsPageRequest pageRequest)
         {
             //var siteRoute = (SiteRoute)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
             //var contentEnvironment = (ContentEnvironment)context.Request.RequestContext.RouteData.DataTokens[CmsRouteDataTokens.ContentEnvironmentToken];
 
-            var siteRoute = pageRequestContext.Route;
+            var siteRoute = pageRequest.Route;
 
             if (siteRoute is RedirectPageRoute)
             {
@@ -245,7 +246,7 @@ namespace Platform_WebPipeline
             }
 
 
-            return ProcessRequestForContentPage(pageRequestContext.CmsPage);
+            return ProcessRequestForContentPage(pageRequest.CmsPage);
 
         }
 

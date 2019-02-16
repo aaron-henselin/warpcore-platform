@@ -1,10 +1,17 @@
-﻿using WarpCore.Platform.Kernel;
+﻿using Platform_WebPipeline.Requests;
+using WarpCore.Platform.Kernel;
 using WarpCore.Web;
-using WarpCore.Web.Extensions;
 
 namespace Platform_WebPipeline
 {
-
+    public static class PageDesignerUriComponents
+    {
+        public const string PageId = "wc-pg";
+        public const string SiteId = "wc-st";
+        public const string ContentEnvironment = "wc-ce";
+        public const string ViewMode = "wc-viewmode";
+        public const string ContentVersion = "wc-cv";
+    }
 
     public class WebPipeline
     {
@@ -24,9 +31,9 @@ namespace Platform_WebPipeline
             var hasResult = webPipelineAction != null;
             if (!hasResult)
             {
-                var builder = new CmsPageRequestContextBuilder();
+                var builder = new CmsPageRequestBuilder();
                 var pageRequest = builder.Build(request);
-                WebDependencies.RouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken, pageRequest);
+                WebDependencies.PerRequestRouteData.DataTokens.Add(CmsRouteDataTokens.RouteDataToken, pageRequest);
 
                 if (pageRequest.Route != null)
                 {
@@ -47,8 +54,8 @@ namespace Platform_WebPipeline
             public const string RouteDataToken = "WC_RTCONTEXT";
         }
 
-        public static CmsPageRequestContext CurrentRequest =>
-            (CmsPageRequestContext)WebDependencies.RouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
+        public static CmsPageRequest CurrentRequest =>
+            (CmsPageRequest)WebDependencies.PerRequestRouteData.DataTokens[CmsRouteDataTokens.RouteDataToken];
 
     }
 

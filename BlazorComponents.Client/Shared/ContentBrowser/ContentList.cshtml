@@ -1,0 +1,71 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@using BlazorComponents.Shared
+@inject HttpClient Http
+@if (ListDescription != null)
+{
+    <div class="table-responsive-md">
+        <table>
+            <thead>
+                <tr>
+                    @foreach (var field in ListDescription.Fields)
+                    {
+                        <th scope="col">
+                            @field.DisplayName
+                        </th>
+                    }
+                    <th class="action-cell"></th>
+                </tr>
+            </thead>
+
+            @if (Data != null)
+            {
+                <tbody>
+                    @foreach (var item in Data.Items)
+                    {
+                        <tr>
+                            @foreach (var field in ListDescription.Fields)
+                            {
+                                <td>
+                                    @item[field.PropertyName]
+                                </td>
+                            }
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
+}
+
+
+
+@functions{
+
+    [Parameter]
+    Guid ListId { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        await BeginBrowsing();
+
+    }
+
+    public async Task BeginBrowsing()
+    {
+
+
+        ListDescription = await Http.GetJsonAsync<ContentListDescription>($"/{ContentBrowserApiRoutes.ListDescription.Replace("{listId}", ListId)}");
+        Data = await Http.PostJsonAsync<ContentListData>($"/{ContentBrowserApiRoutes.ListDataFetch.Replace("{listId}", ListId)}");
+
+
+    }
+
+    ContentListDescription ListDescription { get; set; }
+
+    ContentListData Data { get; set; }
+
+}
