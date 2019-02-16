@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Blazor.Services
+@using Microsoft.JSInterop
 @inject IUriHelper uriHelper
 
 <h1>Hello, world!</h1>
@@ -8,8 +9,9 @@ Welcome to your new app.
 @functions
 {
     //do this programatically based on the application context.
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
-        uriHelper.NavigateTo("./pages");
+        var startPage = await JSRuntime.Current.InvokeAsync<string>("window.__getBlazorAppStartPage");
+        uriHelper.NavigateTo("./"+startPage);
     }
 }

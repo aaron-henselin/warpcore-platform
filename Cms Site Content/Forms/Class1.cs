@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using WarpCore.Cms;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.Orm;
@@ -37,7 +38,7 @@ namespace Cms.Forms
         
         [Column]
         [DataRelation(RepositoryMetadataManager.ApiId)]
-        public Guid RepositoryUid { get; set; }
+        public Guid EntityUid { get; set; }
 
         [Column]
         public string Filter { get; set; }
@@ -65,6 +66,11 @@ namespace Cms.Forms
     public class ContentListDefinitionRepository : VersionedContentRepository<CmsContentListDefinition>
     {
         public const string ApiId = "c27d78ee-1bf8-48d8-962d-891a8934b361";
+
+        public CmsContentListDefinition GetRandomList(Guid repositoryApiId)
+        {
+            return this.FindContentVersions(string.Empty).Result.ToList().First(x => x.EntityUid == repositoryApiId);
+        }
     }
 
 }

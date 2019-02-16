@@ -22,7 +22,7 @@ namespace Modules.Cms.Features.Presentation.PageComposition
             _activator = activator;
         }
 
-        public CmsPageContent BuildCmsPageContentFromWebFormsControl(object activated) 
+        public CmsPageContent BuildCmsPageContentFromTemplate(object activated) 
         {
             var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(activated.GetType());
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);

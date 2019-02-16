@@ -48,20 +48,31 @@
     [Parameter]
     Guid ListId { get; set; }
 
+    [Parameter]
+    Guid RepositoryApiId { get; set; }
+
     protected override async Task OnInitAsync()
     {
         await BeginBrowsing();
 
     }
 
+    private string CreateApiUrl(string template)
+    {
+        var listIdParam = ListId.ToString();
+        var repositoryApiIdParam = RepositoryApiId.ToString();
+        return template.Replace("{listId}", listIdParam).Replace("{repositoryApiId}", repositoryApiIdParam);
+    }
+
     public async Task BeginBrowsing()
     {
+        var listDescriptionApiUrl = CreateApiUrl(ContentBrowserApiRoutes.ListDescription);
+        var listDataApiUrl = CreateApiUrl(ContentBrowserApiRoutes.ListDataFetch);
 
+        ListDescription = await Http.GetJsonAsync<ContentListDescription>($"/{listDescriptionApiUrl}");
+        Data = await Http.GetJsonAsync<ContentListData>($"/{listDataApiUrl}");
 
-        ListDescription = await Http.GetJsonAsync<ContentListDescription>($"/{ContentBrowserApiRoutes.ListDescription.Replace("{listId}", ListId)}");
-        Data = await Http.PostJsonAsync<ContentListData>($"/{ContentBrowserApiRoutes.ListDataFetch.Replace("{listId}", ListId)}");
-
-
+        this.StateHasChanged();
     }
 
     ContentListDescription ListDescription { get; set; }

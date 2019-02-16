@@ -7,15 +7,23 @@
 @using BlazorComponents.Client.Shared
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
-@page "/List/{listId}"
+@page "/content/{RepositoryApiId}/List/{ListId}"
 @inject HttpClient Http
 
-<ContentList ListId=@listId/>
+@if (ListId != null && RepositoryApiId != null)
+{
+    <ContentList ListId=@(new Guid(ListId)) RepositoryApiId=@(new Guid(RepositoryApiId)) />
+}
+
 
 @functions {
-    [Parameter]
-    string listId{get;set;}
 
- }
+    [Parameter]
+    string ListId { get; set; }
+
+    [Parameter]
+    string RepositoryApiId { get; set; }
+
+}
 
 

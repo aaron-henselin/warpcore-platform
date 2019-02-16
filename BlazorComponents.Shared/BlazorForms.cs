@@ -16,7 +16,7 @@ namespace BlazorComponents.Shared
 
     public class ContentListData
     {
-        public List<IDictionary<string,string>> Items { get; set; }
+        public List<IDictionary<string,string>> Items { get; set; } = new List<IDictionary<string, string>>();
 
     }
 
@@ -39,7 +39,9 @@ namespace BlazorComponents.Shared
     public struct ContentBrowserApiRoutes
     {
         public const string ListDescription = "api/content/lists/{listId}/description";
-        public const string ListDataFetch = "api/content/lists/{listId}/fetch";
+        public const string ListDataFetch = "api/content/{repositoryApiId}/lists/{listId}/fetch";
+        public const string ListFetch = "api/content/lists/by-repository/{repositoryApiId}";
+
     }
 
 }

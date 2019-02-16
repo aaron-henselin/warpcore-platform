@@ -6,6 +6,7 @@ using Modules.Cms.Features.Presentation.Cache;
 using Modules.Cms.Features.Presentation.Page.Elements;
 using Platform_WebPipeline;
 using WarpCore.Cms.Toolbox;
+using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 
 namespace Cms_StaticContent_RenderingEngine
@@ -69,6 +70,10 @@ namespace Cms_StaticContent_RenderingEngine
 
     }
 
+    public class RouteDataDictionary : Dictionary<string, string>, ISupportsJavaScriptSerializer
+    {
+
+    }
 
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Content Block", Category = "Content")]
     public class BlazorApp : StaticContentControl, ISupportsCache<ByInstance>, IHostsClientSideRoutes
@@ -77,7 +82,10 @@ namespace Cms_StaticContent_RenderingEngine
 
         [UserInterfaceHint(Editor = Editor.RichText)]
         [DisplayName("App")]
-        public string AppName { get; set; }
+        public string StartingRouteTemplate { get; set; }
+
+        [DisplayName("Parameters")]
+        public RouteDataDictionary StartingRouteParameters { get; set; } = new RouteDataDictionary();
 
         public override StaticContent GetStaticContent()
         {
@@ -90,13 +98,17 @@ namespace Cms_StaticContent_RenderingEngine
             var baseTag = $"<base href='{WebUtility.HtmlEncode(absPath)}'/>";
             var stylesheetTag = $"<link rel='stylesheet' type='text/css' href='./_framework/app.css'/>";
 
+            var startingRoute = StartingRouteTemplate;
+            foreach (var kvp in StartingRouteParameters)
+                startingRoute = startingRoute.Replace("{" + kvp.Key + "}", WebUtility.UrlEncode(kvp.Value));
+
             var globalContent = new Dictionary<string,string>();
             globalContent.Add(GlobalLayoutPlaceHolderIds.Head, baseTag+stylesheetTag);
-            globalContent.Add(GlobalLayoutPlaceHolderIds.Scripts, @"<script src = './_framework/blazor.webassembly.js' ></script>");
+            globalContent.Add(GlobalLayoutPlaceHolderIds.Scripts, @"<script>window.__getBlazorAppStartPage = function(){ return '"+startingRoute+"';};</script>"+ $@"<script src='./_framework/blazor.webassembly.js' ></script>");
 
             return new StaticContent
             {
-                Html = @"<app>Loading...</app>",
+                Html = $@"<app>Loading...</app>",//todo: encode
                 GlobalContent = globalContent
             };
         }

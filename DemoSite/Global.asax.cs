@@ -359,6 +359,14 @@ namespace DemoSite
         public void SetupBackendSite()
         {
 
+            var listRepo = new ContentListDefinitionRepository();
+            var defaultFormList = new ConfiguratorCmsPageContentBuilder().GenerateDefaultContentListDefinition(typeof(CmsForm));
+            defaultFormList.EntityUid = new Guid(CmsForm.ApiId);
+            listRepo.Save(defaultFormList);
+            listRepo.Publish(By.ContentId(defaultFormList.ContentId));
+
+
+
 
             var backendLayout = new Layout
             {
@@ -410,7 +418,7 @@ namespace DemoSite
                 Id = Guid.NewGuid(),
                 PlacementContentPlaceHolderId = "Body",
                 WidgetTypeCode = BlazorApp.ApiId,
-
+                Parameters = new Dictionary<string, string>() {[nameof(BlazorApp.StartingRouteTemplate)]="pages" }
             });
 
 
@@ -506,7 +514,7 @@ namespace DemoSite
 
 
 
-            ////////////////
+            //////////////////
             var dynamicListTest = new CmsPage
             {
                 Name = "Dynamic List Test",
@@ -515,34 +523,49 @@ namespace DemoSite
                 DisplayInNavigation = true
             };
 
-            var contentListControl = new ContentList()
+            //var contentListControl = new ContentList()
+            //{
+            //    RepositoryId = new Guid(CmsPageRepository.ApiId),
+            //    Config = new ContentListConfiguration
+            //    {
+            //        Fields = new List<ContentListField>
+            //        {
+            //            new ContentListField
+            //            {
+            //                Header = "Name",
+            //                Template = "{" + nameof(CmsPage.Name) + "}"
+            //            }
+
+            //        }
+
+            //    },
+
+            //};
+            //var parameters = (Dictionary<string, string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+
+
+
+            var list= new ContentListDefinitionRepository().GetRandomList(new Guid(CmsForm.ApiId));
+            var bApp = new BlazorApp
             {
-                RepositoryId = new Guid(CmsPageRepository.ApiId),
-                Config = new ContentListConfiguration
+                StartingRouteTemplate = "content/{RepositoryApiId}/List/{ListId}",
+                StartingRouteParameters = new RouteDataDictionary()
                 {
-                    Fields = new List<ContentListField>
-                    {
-                        new ContentListField
-                        {
-                            Header = "Name",
-                            Template = "{" + nameof(CmsPage.Name) + "}"
-                        }
-
-                    }
-
-                },
-
+                    ["RepositoryApiId"] = FormRepository.ApiId,
+                    ["ListId"] = list.ContentId.ToString()
+                }
             };
-            var parameters = (Dictionary<string, string>)contentListControl.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
+            var listContent =new CmsPageContentBuilder().BuildCmsPageContentFromTemplate(bApp);
+            listContent.PlacementContentPlaceHolderId = "Body";
+            dynamicListTest.PageContent.Add(listContent);
 
-
-            dynamicListTest.PageContent.Add(new CmsPageContent
-            {
-                Id = Guid.NewGuid(),
-                PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = ContentList.ApiId,
-                Parameters = parameters
-            });
+            //dynamicListTest.PageContent.Add(new CmsPageContent
+            //{
+            //    Id = Guid.NewGuid(),
+            //    PlacementContentPlaceHolderId = "Body",
+            //    WidgetTypeCode = ContentList.ApiId,
+            //    Parameters = 
+            //});
 
 
             ////////////////
@@ -616,6 +639,9 @@ namespace DemoSite
             };
 
             pageRepo.Save(editBackendPageTreeLink);
+
+
+
 
         }
 

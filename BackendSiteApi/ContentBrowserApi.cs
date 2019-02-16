@@ -12,7 +12,7 @@ using WarpCore.Platform.Orm;
 
 namespace BackendSiteApi
 {
-    public class ContentBrowserApi : ApiController
+    public class ContentBrowserApiController : ApiController
     {
         [HttpGet]
         [Route(ContentBrowserApiRoutes.ListDescription)]
@@ -33,26 +33,28 @@ namespace BackendSiteApi
             };
         }
 
+
+
         [HttpGet]
         [Route(ContentBrowserApiRoutes.ListDataFetch)]
-        public ContentListData GetContentListData(Guid listId, string filter)
+        public ContentListData GetContentListData(Guid repositoryApiId, Guid listId)
         {
             var definition = new ContentListDefinitionRepository().FindContentVersions(By.ContentId(listId)).Result
                 .Single();
 
-            var repo = RepositoryActivator.ActivateRepository(definition.RepositoryUid);
+            var repo = RepositoryActivator.ActivateRepository(repositoryApiId);
             List<WarpCoreEntity> allItems = null;
 
             if (repo is IUnversionedContentRepository unversionedRepo)
             {
-                allItems = unversionedRepo.FindContent(filter)
+                allItems = unversionedRepo.FindContent(string.Empty)
                     .Cast<WarpCoreEntity>()
                     .ToList();
             }
 
             if (repo is IVersionedContentRepository versionedRepo)
             {
-                allItems = versionedRepo.FindContentVersions(filter)
+                allItems = versionedRepo.FindContentVersions(string.Empty,ContentEnvironment.Draft)
                     .Cast<WarpCoreEntity>()
                     .ToList();
             }
