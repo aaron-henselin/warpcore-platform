@@ -9,30 +9,25 @@ using WarpCore.Platform.Kernel;
 namespace Modules.Cms.Features.Presentation.PageComposition
 {
     //todo: is this just a test feature?
-    public class CmsPageContentBuilder
+    public class InstallationHelpers
     {
         private readonly CmsPageContentActivator _activator;
 
-        public CmsPageContentBuilder():this(Dependency.Resolve<CmsPageContentActivator>())
+        public InstallationHelpers():this(Dependency.Resolve<CmsPageContentActivator>())
         {
         }
 
-        public CmsPageContentBuilder(CmsPageContentActivator activator) 
+        public InstallationHelpers(CmsPageContentActivator activator) 
         {
             _activator = activator;
         }
 
-        public CmsPageContent BuildCmsPageContentFromTemplate(object activated) 
+        public CmsPageContent BuildCmsPageContentFromToolboxItemTemplate(object activated) 
         {
             var toolboxMetadata = ToolboxMetadataReader.ReadMetadata(activated.GetType());
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(toolboxMetadata.WidgetUid);
 
-            IDictionary<string, string> settings;
-
-            if (activated != null)
-                settings = activated.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
-            else
-                settings = _activator.GetDefaultContentParameterValues(toolboxItem);
+            IDictionary<string, string> settings = activated.GetPropertyValues(ToolboxPropertyFilter.SupportsDesigner);
 
             return new CmsPageContent
             {

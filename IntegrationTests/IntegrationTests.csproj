@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessLayer\Cms\Helpers.csproj" />
+    <ProjectReference Include="..\ClassLibrary1\Cms Migration.csproj" />
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj" />
     <ProjectReference Include="..\Infrastructure\AzureStorage\InMemoryDb.csproj" />
   </ItemGroup>

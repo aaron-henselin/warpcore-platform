@@ -31,7 +31,7 @@ namespace Platform_Hosting_AspNet.AspNet
         private static void RenderContentPage(CmsPageRequest rt)
         {
             var builder = new PageCompositionBuilder();
-            var pageComposition = builder.CreatePageComposition(rt.CmsPage, rt.PageRenderMode);
+            var pageComposition = builder.CreatePageComposition(rt.CmsPage);
 
             var fragmentMode = rt.PageRenderMode == PageRenderMode.PageDesigner
                 ? FragmentRenderMode.PageDesigner

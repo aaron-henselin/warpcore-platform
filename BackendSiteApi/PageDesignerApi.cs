@@ -22,7 +22,7 @@ namespace BackendSiteApi
         public PreviewNode Page(Guid pageId)
         {
             var draft = new CmsPageRepository().FindContentVersions(By.ContentId(pageId), ContentEnvironment.Draft).Result.Single();
-            var page = new PageCompositionBuilder().CreatePageComposition(draft, PageRenderMode.PageDesigner);
+            var page = new PageCompositionBuilder().CreatePageComposition(draft);
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page, FragmentRenderMode.PageDesigner);
             var compositor = new RenderFragmentCompositor(page, batch);
@@ -40,7 +40,7 @@ namespace BackendSiteApi
 
             new StructureNodeConverter().ApplyNewStructureToCmsPage(draft, pageStructure);
 
-            var page = new PageCompositionBuilder().CreatePageComposition(draft, PageRenderMode.PageDesigner);
+            var page = new PageCompositionBuilder().CreatePageComposition(draft);
 
             var cre = new BatchingFragmentRenderer();
             var batch = cre.Execute(page, FragmentRenderMode.PageDesigner);

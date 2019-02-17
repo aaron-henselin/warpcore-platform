@@ -11,7 +11,9 @@ Welcome to your new app.
     //do this programatically based on the application context.
     protected override async Task OnInitAsync()
     {
-        var startPage = await JSRuntime.Current.InvokeAsync<string>("window.__getBlazorAppStartPage");
-        uriHelper.NavigateTo("./"+startPage);
+
+        var homeUrl = await Config.GetAppHomeUrl();
+
+        uriHelper.NavigateTo("./"+homeUrl);
     }
 }

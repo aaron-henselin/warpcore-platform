@@ -25,7 +25,7 @@ namespace Platform_WebPipeline
 
             WebPipelineAction webPipelineAction = null;
 
-            var preRequestProcessor = new WarpCoreBlazorActionBuilder(request);
+            var preRequestProcessor = new BlazorWebPipeline(request);
             webPipelineAction = preRequestProcessor.TryProcessAsBlazorRequest();
 
             var hasResult = webPipelineAction != null;

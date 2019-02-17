@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using BlazorComponents.Shared;
 using Cms;
 using Cms.Forms;
 using Cms.Layout;
@@ -413,13 +414,8 @@ namespace DemoSite
                 SiteId = backendSite.ContentId,
                 LayoutId = backendLayout.ContentId
             };
-            pageTree.PageContent.Add(new CmsPageContent
-            {
-                Id = Guid.NewGuid(),
-                PlacementContentPlaceHolderId = "Body",
-                WidgetTypeCode = BlazorApp.ApiId,
-                Parameters = new Dictionary<string, string>() {[nameof(BlazorApp.StartingRouteTemplate)]="pages" }
-            });
+            
+            pageTree.PageContent.AddBlazorApp(new PageTreeApp());
 
 
             var redirectPageSettingsForm = SetupRedirectPageSettingsForm();
@@ -545,19 +541,22 @@ namespace DemoSite
 
 
 
-            var list= new ContentListDefinitionRepository().GetRandomList(new Guid(CmsForm.ApiId));
-            var bApp = new BlazorApp
-            {
-                StartingRouteTemplate = "content/{RepositoryApiId}/List/{ListId}",
-                StartingRouteParameters = new RouteDataDictionary()
-                {
-                    ["RepositoryApiId"] = FormRepository.ApiId,
-                    ["ListId"] = list.ContentId.ToString()
-                }
-            };
-            var listContent =new CmsPageContentBuilder().BuildCmsPageContentFromTemplate(bApp);
-            listContent.PlacementContentPlaceHolderId = "Body";
-            dynamicListTest.PageContent.Add(listContent);
+            //var list= new ContentListDefinitionRepository().GetRandomList(new Guid(CmsForm.ApiId));
+            //var bApp = new BlazorApp
+            //{
+            //    StartingRouteTemplate = "",
+            //    StartingRouteParameters = new RouteDataDictionary()
+            //    {
+            //        ["RepositoryApiId"] = FormRepository.ApiId,
+            //        ["ListId"] = list.ContentId.ToString()
+            //    }
+            //};
+            //var listContent =new InstallationHelpers().BuildCmsPageContentFromToolboxItemTemplate();
+            //listContent.PlacementContentPlaceHolderId = "Body";
+
+            var contentBrowserConfig = new ContentBrowserConfiguration();
+            contentBrowserConfig.RepositoryApiId = new Guid(FormRepository.ApiId);
+            dynamicListTest.PageContent.AddBlazorApp(new ContentBrowserApp{Configuration  = contentBrowserConfig});
 
             //dynamicListTest.PageContent.Add(new CmsPageContent
             //{
@@ -770,7 +769,7 @@ namespace DemoSite
 
 
             var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
-            var blazor = new BlazorToolkit();
+            var blazor = new BlazorModuleBuilder();
             blazor.HostBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
         }
 

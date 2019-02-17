@@ -29,6 +29,8 @@ namespace BlazorComponents.Shared
         public string Format { get; set; }
     }
 
+
+
     public class ContentListDescription
     {
         public List<ListField> Fields { get; set; } = new List<ListField>();

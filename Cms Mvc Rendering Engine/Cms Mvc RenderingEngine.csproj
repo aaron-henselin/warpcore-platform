@@ -152,7 +152,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Toolset\Controllers\NewFolder1\" />
     <Folder Include="Toolset\Views\Default\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

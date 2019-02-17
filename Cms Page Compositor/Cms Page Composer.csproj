@@ -40,8 +40,7 @@
   <ItemGroup>
     <Compile Include="BatchingFragmentRenderer.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
-    <Compile Include="CmsPageContentBuilder.cs" />
-    <Compile Include="PageComposer.cs" />
+    <Compile Include="PageCompositionBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

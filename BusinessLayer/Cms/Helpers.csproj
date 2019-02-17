@@ -35,12 +35,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ListExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Publishing.cs" />
     <Compile Include="Templating.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Cms Page Compositor\Cms Page Composer.csproj">
+      <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
+      <Name>Cms Page Composer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
       <Name>Cms Site Content</Name>

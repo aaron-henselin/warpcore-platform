@@ -1,0 +1,28 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared
+@using BlazorComponents.Client.Shared.PageDesigner
+@using BlazorComponents.Shared
+@page "/content/{RepositoryApiId}"
+@inject HttpClient Http
+
+@if (Config != null)
+{
+    
+}
+
+@functions {
+    ContentBrowserConfiguration Config {get;set;
+         
+    protected override async Task OnInitAsync()
+    {
+         var config = await Config.GetAppConfig<ContentBrowserConfiguration>();
+
+    }
+}
+
+

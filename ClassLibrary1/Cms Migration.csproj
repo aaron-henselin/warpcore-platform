@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj" />
+    <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj" />
+    <ProjectReference Include="..\Cms StaticContent RenderingEngine\Cms StaticContent RenderingEngine.csproj" />
+    <ProjectReference Include="..\Platform Core\Platform Core.csproj" />
+    <ProjectReference Include="..\Routing\Cms Routing.csproj" />
+  </ItemGroup>
+
+</Project>

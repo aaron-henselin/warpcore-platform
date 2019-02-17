@@ -401,6 +401,10 @@
       <Project>{60a3ec3c-ba12-405c-bae8-543987f3f9af}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ClassLibrary1\Cms Migration.csproj">
+      <Project>{55316451-EBA9-4757-9871-8EAF3E91F6FD}</Project>
+      <Name>Cms Migration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cms Configuration\Cms Configuration.csproj">
       <Project>{B4524714-8D8D-428B-B4E8-D2869745182D}</Project>
       <Name>Cms Configuration</Name>
