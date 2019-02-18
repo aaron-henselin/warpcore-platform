@@ -87,7 +87,7 @@ namespace BackendSiteApi
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(structureNode.WidgetTypeCode);
             var toolboxItemNativeType = new CmsPageContentActivator().GetToolboxItemNativeType(toolboxItem);
-            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
+            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType,FormStyle.Edit);
 
             var runtime = new FormsRuntime();
             return runtime.EditingSession(defaultForm, toolboxItemNativeType, structureNode.Parameters);
@@ -99,7 +99,7 @@ namespace BackendSiteApi
         {
             var toolboxItem = new ToolboxManager().GetToolboxItemByCode(widgetTypeCode);
             var toolboxItemNativeType = new CmsPageContentActivator().GetToolboxItemNativeType(toolboxItem);
-            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType);
+            var defaultForm = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(toolboxItemNativeType, FormStyle.Edit);
 
             // new CmsPageContentActivator().GetDefaultContentParameterValues(toolboxItem)
             //.ToDictionary(x => x.Key, x => x.Value)

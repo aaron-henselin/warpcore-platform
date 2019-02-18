@@ -26,6 +26,11 @@ namespace BlazorComponents.Shared
     public class LocalDataSource
     {
         public List<DataSourceItem> Items { get; set; } = new List<DataSourceItem>();
+
+        public DataSourceItem GetItemByValue(string @value)
+        {
+            return Items.SingleOrDefault(x => x.Value == @value);
+        }
     }
 
     //public class DataSourceItem

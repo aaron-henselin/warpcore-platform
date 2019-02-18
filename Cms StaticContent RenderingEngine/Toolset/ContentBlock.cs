@@ -101,6 +101,11 @@ namespace Cms_StaticContent_RenderingEngine
         {
             return new RouteDataDictionary {{"RepositoryApiId", Configuration.RepositoryApiId.ToString()}};
         }
+
+        protected override object GetApplicationConfiguration()
+        {
+            return Configuration;
+        }
     }
 
 
@@ -116,7 +121,11 @@ namespace Cms_StaticContent_RenderingEngine
         protected override RouteDataDictionary GetStartingRouteParameters()
         {
             return RouteDataDictionary.Empty;
-            
+        }
+
+        protected override object GetApplicationConfiguration()
+        {
+            return RouteDataDictionary.Empty;
         }
     }
 

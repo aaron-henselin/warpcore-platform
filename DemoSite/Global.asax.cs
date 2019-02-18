@@ -279,7 +279,7 @@ namespace DemoSite
 
         private CmsForm SetupPageSettingsForm()
         {
-            var form = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(typeof(CmsPage));
+            var form = new ConfiguratorCmsPageContentBuilder().GenerateDefaultForm(typeof(CmsPage),FormStyle.Edit);
 
 
             form.ContentId = KnownFormIds.ContentPageSettingsForm;

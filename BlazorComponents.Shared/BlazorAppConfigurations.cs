@@ -16,5 +16,15 @@ namespace BlazorComponents.Shared
         public Guid? ListId { get; set; }
         public Guid? EditFormId { get; set; }
         public Guid? AddFormId { get; set; }
+
+        public List<ContentBrowserLink> Links { get; set; } = new List<ContentBrowserLink>();
     }
+
+    public class ContentBrowserLink
+    {
+        public string LinkTemplate { get; set; }
+
+    }
+
+    
 }

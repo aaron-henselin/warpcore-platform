@@ -103,7 +103,8 @@ namespace BackendSiteApi
             var widgetsGroupedByProperty = GetClientSideWidgetLookup(form);
             var editingScope = BuildObjectEditingScope(form);
 
-            var properties = ToolboxMetadataReader.ReadProperties(entityType, x => editingScope.Contains(x.Name)).ToDictionary(x => x.PropertyInfo.Name);
+            var properties = ToolboxMetadataReader.ReadProperties(entityType, x => editingScope.Contains(x.Name))
+                .ToDictionary(x => x.PropertyInfo.Name);
 
             
             foreach (var widgetGroup in widgetsGroupedByProperty)
@@ -126,6 +127,7 @@ namespace BackendSiteApi
                         var asDataSourceItems = entities.Select(x => new DataSourceItem {Name = x.Title, Value = x.ContentId.ToString()}).ToList();
                         var ds = new LocalDataSource {Items = asDataSourceItems};
                         session.LocalDataSources.Add(propertyName, ds);
+                        continue;
                     }
 
                     var isLinkedToFixedSet = dataSource.DataSourceType == DataSourceTypes.FixedItems;
@@ -133,9 +135,10 @@ namespace BackendSiteApi
                     {
                         var ds = new LocalDataSource { Items = dataSource.Items.Items };
                         session.LocalDataSources.Add(propertyName, ds);
+                        continue;
                     }
-               
 
+                    return null;
 
                 }
 

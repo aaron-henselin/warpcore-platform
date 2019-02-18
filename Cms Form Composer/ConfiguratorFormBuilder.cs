@@ -129,10 +129,13 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (editor == Editor.SubForm)
                 return SubFormToolboxItem.ApiId;
 
+            if (editor == Editor.Static)
+                return StaticContentToolboxItem.ApiId;
+
             return TextboxToolboxItem.ApiId;
         }
 
-        public CmsPageContent CreateCmsPageContent(SettingProperty property)
+        public CmsPageContent CreateCmsPageContent(SettingProperty property,string widgetTypeCode, FormStyle parentFormStyle)
         {
             var setup = new ConfiguratorSetup
             {
@@ -140,17 +143,6 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                 DisplayName = property.DisplayName,
                 PropertyName = property.PropertyInfo.Name
             };
-
-            string widgetTypeCode;
-            if (property.WidgetTypeCode != null)
-            {
-                widgetTypeCode = property.WidgetTypeCode;
-            }
-            else
-            {
-                var editor = GetEditorForSettingProperty(property);
-                widgetTypeCode = AutoSelectWidgetForEditorCode(editor);
-            }
 
             var cmsPageContent = new CmsPageContent
             {
@@ -174,7 +166,7 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (toolboxItem.SupportsSubContent)
             {
                 var propType = property.PropertyInfo.PropertyType;
-                var defaultForm = GenerateDefaultForm(propType);
+                var defaultForm = GenerateDefaultForm(propType,parentFormStyle);
                 cmsPageContent.AllContent = defaultForm.ChildNodes;
             }
             
@@ -269,8 +261,12 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             return definition;
         }
 
-        public  CmsForm GenerateDefaultForm(Type clrType)
+        public  CmsForm GenerateDefaultForm(Type clrType, FormStyle formStyle)
         {
+            if (formStyle == FormStyle.Undefined)
+                throw new ArgumentException(nameof(formStyle));
+
+
             var builder = new ConfiguratorCmsPageContentBuilder();
 
             var cmsForm = new CmsForm();
@@ -282,7 +278,27 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
             foreach (var property in configuratorSettingProperties)
             {
-                var content = builder.CreateCmsPageContent(property);
+                string widgetTypeCode = null;
+
+                if (formStyle == FormStyle.Edit)
+                {
+                    if (property.WidgetTypeCode != null)
+                    {
+                        widgetTypeCode = property.WidgetTypeCode;
+                    }
+                    else
+                    {
+                        var editor = GetEditorForSettingProperty(property);
+                        widgetTypeCode = AutoSelectWidgetForEditorCode(editor);
+                    }
+                }
+
+                if (formStyle == FormStyle.Readonly)
+                {
+                    widgetTypeCode = AutoSelectWidgetForEditorCode(Editor.Static);
+                }
+
+                var content = builder.CreateCmsPageContent(property, widgetTypeCode,formStyle);
                 content.PlacementContentPlaceHolderId = 0.ToString();
                 content.Id = Guid.NewGuid();
                 row.AllContent.Add(content);
@@ -294,7 +310,10 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
     }
 
-    
+    public enum FormStyle
+    {
+        Undefined,Edit, Readonly
+    }
 
     //public class ConfiguratorFormBuilder
     //{
