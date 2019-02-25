@@ -20,7 +20,7 @@
 
     protected override async Task OnInitAsync()
     {
-         var config = await Config.GetAppConfig<ContentBrowserConfiguration>();
+         Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
 
     }
 }

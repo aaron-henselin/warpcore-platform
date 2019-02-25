@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponents.Client
 {
-    public static class Config
+    public static class ConfigurationManager
     {
         public static async Task<T> GetAppConfig<T>()
         {

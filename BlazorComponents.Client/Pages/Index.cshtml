@@ -12,7 +12,7 @@ Welcome to your new app.
     protected override async Task OnInitAsync()
     {
 
-        var homeUrl = await Config.GetAppHomeUrl();
+        var homeUrl = await ConfigurationManager.GetAppHomeUrl();
 
         uriHelper.NavigateTo("./"+homeUrl);
     }
