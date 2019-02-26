@@ -361,10 +361,10 @@ namespace DemoSite
         {
 
             var listRepo = new ContentListDefinitionRepository();
-            var defaultFormList = new ConfiguratorCmsPageContentBuilder().GenerateDefaultContentListDefinition(typeof(CmsForm));
-            defaultFormList.EntityUid = new Guid(CmsForm.ApiId);
-            listRepo.Save(defaultFormList);
-            listRepo.Publish(By.ContentId(defaultFormList.ContentId));
+            var customPageList = new ConfiguratorCmsPageContentBuilder().GenerateDefaultContentListDefinition(typeof(CmsPage));
+            customPageList.EntityUid = new Guid(CmsForm.ApiId);
+            listRepo.Save(customPageList);
+            listRepo.Publish(By.ContentId(customPageList.ContentId));
 
 
 
@@ -555,8 +555,8 @@ namespace DemoSite
             //listContent.PlacementContentPlaceHolderId = "Body";
 
             var contentBrowserConfig = new ContentBrowserConfiguration();
-            contentBrowserConfig.RepositoryApiId = new Guid(FormRepository.ApiId);
-            contentBrowserConfig.ListId = defaultFormList.ContentId;
+            contentBrowserConfig.RepositoryApiId = new Guid(CmsPageRepository.ApiId);
+            contentBrowserConfig.ListId = customPageList.ContentId;
             contentBrowserConfig.EditFormId = KnownFormIds.ContentPageSettingsForm;
             contentBrowserConfig.AddFormId = KnownFormIds.ContentPageSettingsForm;
 

@@ -42,7 +42,7 @@ namespace BackendSiteApi
         [Route("api/forms-runtime/session")]
         public EditingSession InitializeEditingSession(Guid formId, Guid? contentId)
         {
-            var form = new FormRepository().FindContentVersions(By.ContentId(formId), WarpCore.Platform.Orm.ContentEnvironment.Live).Result.Single();
+            var form = new FormRepository().FindContentVersions(By.ContentId(formId), WarpCore.Platform.Orm.ContentEnvironment.Draft).Result.Single();
             var repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(form.RepositoryUid);
             WarpCoreEntity entity;
             if (contentId != null)
@@ -138,7 +138,7 @@ namespace BackendSiteApi
                         continue;
                     }
 
-                    return null;
+                    
 
                 }
 

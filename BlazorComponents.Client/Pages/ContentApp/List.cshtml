@@ -12,7 +12,7 @@
 
 @if (ListId != null && RepositoryApiId != null)
 {
-    <ContentList ListId=@(new Guid(ListId)) RepositoryApiId=@RepositoryApiId.Value />
+    <ContentList ListId=@(new Guid(ListId)) RepositoryApiId=@RepositoryApiId.Value GotoUrlTemplate="./content-app/edit/{ContentId}" />
 }
 
 
