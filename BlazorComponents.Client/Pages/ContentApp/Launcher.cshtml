@@ -4,15 +4,14 @@
 @using System.Linq
 @using System.Net
 @using BlazorComponents.Client
-@using BlazorComponents.Client.Shared
-@using BlazorComponents.Client.Shared.PageDesigner
-@using BlazorComponents.Shared
-@page "/content/{RepositoryApiId}"
+@page "/content-app"
 @inject HttpClient Http
 
 @if (Config != null)
 {
-    
+    <h2>{Content Type Name}</h2>
+    <NavLink href=@("/content-app/list/"+Config.ListId.GetValueOrDefault())>List</NavLink>
+    <a>Add</a>
 }
 
 @functions {

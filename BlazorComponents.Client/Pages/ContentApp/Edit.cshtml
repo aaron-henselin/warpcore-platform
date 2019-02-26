@@ -8,43 +8,31 @@
 @using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
-@page "/Pages/{pageId}/{pageType}/settings"
+@page "/content-app/edit/{contentId}"
 @inject HttpClient Http
 
 <FormBody ref="FormBody" />
 
 @functions {
     [Parameter]
-    string pageId{get;set;}
-
-    [Parameter]
-    string pageType{get;set;}
+    string contentId{get;set;}
 
     FormBody FormBody{get;set;}
 
+    ContentBrowserConfiguration Config { get; set; }
+
     protected override async Task OnInitAsync()
     {
+        Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
+
         await BeginEditing();
 
     }
 
     public async Task BeginEditing()
     {
-        Guid formId;
-        if ("contentpage" == pageType)
-            formId = KnownFormIds.ContentPageSettingsForm;
-        else
-        {
-            throw new Exception();
-        }
 
-        //var description = await Http.GetJsonAsync<ConfiguratorFormDescription>($"/api/forms-runtime/forms/{formId}/description");
-        //var initialValues = await Http.PostJsonAsync<EditingSession>($"/api/forms-runtime/session?formId={formId}&contentId={pageId}",null);
-
-        //FormBody.SetFormLayout(description);
-        //FormBody.StartNewSession(initialValues);
-
-        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,formId, new Guid(pageId), FormBody);
+        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,Config.EditFormId.Value, new Guid(contentId), FormBody);
 
     }
 

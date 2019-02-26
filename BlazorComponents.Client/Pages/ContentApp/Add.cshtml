@@ -5,31 +5,24 @@
 @using System.Net
 @using BlazorComponents.Client
 @using BlazorComponents.Client.Shared
+@using BlazorComponents.Client.Shared.Forms
 @using BlazorComponents.Client.Shared.PageDesigner
 @using BlazorComponents.Shared
-@page "/content-app/list/{ListId}"
+@page "/content-app/add"
 @inject HttpClient Http
 
-@if (ListId != null && RepositoryApiId != null)
-{
-    <ContentList ListId=@(new Guid(ListId)) RepositoryApiId=@RepositoryApiId.Value />
-}
-
+<FormBody ref="FormBody" />
 
 @functions {
-
-    [Parameter]
-    string ListId { get; set; }
-
-    Guid? RepositoryApiId { get; set; }
+    FormBody FormBody{get;set;}
 
     ContentBrowserConfiguration Config { get; set; }
 
     protected override async Task OnInitAsync()
     {
         Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
-        RepositoryApiId = Config.RepositoryApiId;
+        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,Config.AddFormId.Value, null, FormBody);
     }
-}
+ }
 
 

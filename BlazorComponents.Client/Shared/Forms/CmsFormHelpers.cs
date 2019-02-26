@@ -1,13 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using BlazorComponents.Client.Shared.Forms;
 using BlazorComponents.Shared;
+using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BlazorComponents.Client
 {
+    public static class FormsRuntimeApiHelper
+    {
+        public static async Task InitializeFormBodyDynamically(HttpClient http, Guid formId, Guid? contentId, FormBody formBody)
+        {
+         
+            var description = await http.GetJsonAsync<ConfiguratorFormDescription>($"/api/forms-runtime/forms/{formId}/description");
+            var initialValues = await http.PostJsonAsync<EditingSession>($"/api/forms-runtime/session?formId={formId}&contentId={contentId}", null);
 
+            formBody.SetFormLayout(description);
+            formBody.StartNewSession(initialValues);
+
+        }
+
+
+    }
 
 
     public class ConfiguratorRegistry

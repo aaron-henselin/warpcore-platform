@@ -6,7 +6,7 @@ using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 namespace BlazorComponents.Shared
 {
-    public class ContentBrowserConfiguration
+    public class ContentBrowserConfiguration : ISupportsJavaScriptSerializer
     {
         [UserInterfaceHint(Editor = Editor.OptionList)]
         [DataRelation("3a9a6f79-9564-4b51-af1c-9d926fddbc35")]

@@ -93,13 +93,13 @@ namespace Cms_StaticContent_RenderingEngine
         public ContentBrowserConfiguration Configuration { get; set; } = new ContentBrowserConfiguration();
 
 
-        public ContentBrowserApp() : base("content/{RepositoryApiId}")
+        public ContentBrowserApp() : base("content-app")
         {
         }
 
         protected override RouteDataDictionary GetStartingRouteParameters()
         {
-            return new RouteDataDictionary {{"RepositoryApiId", Configuration.RepositoryApiId.ToString()}};
+            return RouteDataDictionary.Empty;
         }
 
         protected override object GetApplicationConfiguration()
@@ -135,6 +135,7 @@ namespace Cms_StaticContent_RenderingEngine
     {
         public BlazorApp(string appRouteTemplate)
         {
+            StartingRouteTemplate = appRouteTemplate;
         }
         
         protected string StartingRouteTemplate { get; set; }

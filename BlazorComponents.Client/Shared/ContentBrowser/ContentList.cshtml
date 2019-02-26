@@ -16,7 +16,9 @@
                             @field.DisplayName
                         </th>
                     }
-                    <th class="action-cell"></th>
+                    <th class="action-cell">
+                        
+                    </th>
                 </tr>
             </thead>
 
@@ -32,7 +34,10 @@
                                     @item[field.PropertyName]
                                 </td>
                             }
-                            <td></td>
+                            <td>
+                                <NavLink href="@(GotoUrlTemplate.Replace("{ContentId}",item["ContentId"]))">--></NavLink>
+
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -50,6 +55,9 @@
 
     [Parameter]
     Guid RepositoryApiId { get; set; }
+
+    [Parameter]
+    string GotoUrlTemplate { get; set; }
 
     protected override async Task OnInitAsync()
     {

@@ -71,6 +71,7 @@ namespace BackendSiteApi
             foreach (var item in allItems)
             {
                 var dict = item.GetPropertyValues(x => propertyNameLookup.Contains(x.Name));
+                dict[nameof(item.ContentId)] = item.ContentId.ToString();
                 wrapper.Items.Add(dict);
             }
 

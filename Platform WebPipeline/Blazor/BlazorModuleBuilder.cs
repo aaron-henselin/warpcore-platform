@@ -236,7 +236,7 @@ namespace Platform_WebPipeline
             CmsRoutes.Current.TryResolveRoute(redirectRoute.InternalRedirectPageId.Value, out redirectToRoute);
 
             var redirectUrl = CreateUrl(redirectToRoute, redirectRoute.InternalRedirectParameters);
-            return new Redirect(redirectRoute.RedirectExternalUrl);
+            return new Redirect(redirectUrl);
 
         }
     }

@@ -556,6 +556,10 @@ namespace DemoSite
 
             var contentBrowserConfig = new ContentBrowserConfiguration();
             contentBrowserConfig.RepositoryApiId = new Guid(FormRepository.ApiId);
+            contentBrowserConfig.ListId = defaultFormList.ContentId;
+            contentBrowserConfig.EditFormId = KnownFormIds.ContentPageSettingsForm;
+            contentBrowserConfig.AddFormId = KnownFormIds.ContentPageSettingsForm;
+
             dynamicListTest.PageContent.AddBlazorApp(new ContentBrowserApp{Configuration  = contentBrowserConfig});
 
             //dynamicListTest.PageContent.Add(new CmsPageContent

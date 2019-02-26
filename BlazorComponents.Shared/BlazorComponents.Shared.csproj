@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Platform DataAnnotations\Platform DataAnnotations.csproj" />
-    <ProjectReference Include="..\Platform Extensibility\Platform Extensibility.csproj" />
   </ItemGroup>
 
 </Project>

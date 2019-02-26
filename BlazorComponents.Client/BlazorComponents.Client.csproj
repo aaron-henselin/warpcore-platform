@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\ContentApp\Add.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Pages\ContentApp\Edit.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Pages\PagesApp\Settings.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
