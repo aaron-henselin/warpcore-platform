@@ -72,6 +72,44 @@ namespace WarpCore.Platform.Kernel
     //    }
     //}
 
+    public class PrimitiveBackedTypeConverter : ITypeConverterExtension
+    {
+
+        public bool TryChangeType(object value, Type toType, out object newValue)
+        {
+            newValue = null;
+            if (value is string && typeof(IPrimitiveBacked).IsAssignableFrom(toType))
+            {
+                var isEmpty = string.IsNullOrWhiteSpace((string) value);
+                if (isEmpty)
+                {
+                    newValue = null;
+                    return true;
+                }
+                else
+                {
+                    newValue = Activator.CreateInstance(toType);
+                    ((IPrimitiveBacked)newValue).BackingPrimitive = (string)value;
+                    return true;
+                }
+
+            }
+
+            if (value is IPrimitiveBacked && toType == typeof(string))
+            {
+                var backingPrimitive = ((IPrimitiveBacked) value).BackingPrimitive;
+                var isEmpty = string.IsNullOrWhiteSpace(backingPrimitive);
+                if (isEmpty)
+                    newValue = null;
+                else
+                    newValue = backingPrimitive;
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public class JavascriptSerializerTypeConverter : ITypeConverterExtension
     {
 

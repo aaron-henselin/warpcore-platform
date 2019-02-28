@@ -12,7 +12,8 @@ namespace WarpCore.Platform.DataAnnotations.UserInteraceHints
         Text, RichText, OptionList, CheckBox,
         SubForm, Hidden,
         Url,
-        Static
+        Static,
+        Slug
     }
 
     public class IgnorePropertyAttribute : Attribute

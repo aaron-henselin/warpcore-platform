@@ -23,6 +23,9 @@
     <Content Update="Pages\ContentApp\Edit.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Pages\PagesApp\Add.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Pages\PagesApp\Settings.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

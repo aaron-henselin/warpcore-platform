@@ -3,12 +3,43 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace WarpCore.Platform.DataAnnotations
 {
 
+    public class Slug : IPrimitiveBacked
+    {
+        public Slug()
+        {
+        }
 
-   
+        public Slug(string slug)
+        {
+            _rawSlug = slug;
+        }
+
+        public static Slug FromPageName(string text)
+        {
+            Regex regex = new Regex(@"[\s,:.;\/\\&$+@# <>\[\]{}^%]+");
+            var cleaned = regex.Replace(text, "-").ToLower();
+            return new Slug(cleaned);
+        }
+
+        string IPrimitiveBacked.BackingPrimitive {
+            get => _rawSlug;
+            set => _rawSlug = value;
+        }
+
+        private string _rawSlug;
+
+        public override string ToString()
+        {
+            return _rawSlug;
+        }
+    }
+
+
     public interface IRequiresDataSource
     {
         Guid RepositoryApiId { get; set; }
@@ -24,6 +55,11 @@ namespace WarpCore.Platform.DataAnnotations
     public interface ISupportsJavaScriptSerializer
     {
 
+    }
+
+    public interface IPrimitiveBacked
+    {
+        string BackingPrimitive { get; set; }
     }
 
     [DebuggerDisplay("Item Count={Items.Count}")]

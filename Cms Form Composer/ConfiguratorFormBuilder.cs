@@ -102,7 +102,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
                 if (hasListControlSource)
                     bestGuess = Editor.OptionList;
 
-
+                var isSlug = property.PropertyInfo.PropertyType == typeof(Slug);
+                if (isSlug)
+                    bestGuess = Editor.Slug;
 
             }
 

@@ -48,7 +48,7 @@ namespace WarpCore.Cms
         public string Name { get; set; }
 
         [Column]
-        public string Slug { get; set; }
+        public Slug Slug { get; set; }
 
         [Column][DisplayName("Layout")]
         [DataRelation(LayoutRepository.ApiId)]
@@ -623,7 +623,7 @@ namespace WarpCore.Cms
                 throw new Exception("Must specify site.");
             }
 
-            if (string.IsNullOrWhiteSpace(cmsPage.Slug))
+            if (cmsPage.Slug == null)
             {
                 GenerateUniqueSlugForPage(cmsPage, newSitemapRelativePosition);
             }
@@ -681,7 +681,7 @@ namespace WarpCore.Cms
                 throw new Exception("Page name is required.");
 
             bool foundUniqueSlug = false;
-            cmsPage.Slug = SlugGenerator.Generate(cmsPage.Name);
+            cmsPage.Slug = Slug.FromPageName(cmsPage.Name);
 
             int counter = 2;
             while (!foundUniqueSlug)
@@ -701,35 +701,5 @@ namespace WarpCore.Cms
         }
     }
 
-    public static class SlugGenerator
-    {
-        public static string Generate(string text)
-        {
-            Regex regex = new Regex(@"[\s,:.;\/\\&$+@# <>\[\]{}^%]+");
-            return regex.Replace(text, "-").ToLower();
 
-
-            //ampersand("&")
-            //dollar("$")
-            //plus sign("+")
-            //comma(",")
-            //forward slash("/")
-            //colon(":")
-            //semi - colon(";")
-            //equals("=")
-            //question mark("?")
-            //'At' symbol("@")
-            //pound("#").
-            //    The characters generally considered unsafe are:
-
-            //space(" ")
-            //less than and greater than("<>")
-            //open and close brackets("[]")
-            //open and close braces("{}")
-            //pipe("|")
-            //backslash("\")
-            //caret("^")
-            //percent("%")
-        }
-    }
 }

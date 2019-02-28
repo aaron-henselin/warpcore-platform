@@ -35,9 +35,6 @@ namespace BackendSiteApi
             return description;
         }
 
-       
-
-
         [HttpPost]
         [Route("api/forms-runtime/session")]
         public EditingSession InitializeEditingSession(Guid formId, Guid? contentId)
@@ -57,6 +54,8 @@ namespace BackendSiteApi
             
 
         }
+        
+
     }
 
     public class FormsRuntime

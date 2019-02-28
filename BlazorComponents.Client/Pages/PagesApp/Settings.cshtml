@@ -38,12 +38,6 @@
             throw new Exception();
         }
 
-        //var description = await Http.GetJsonAsync<ConfiguratorFormDescription>($"/api/forms-runtime/forms/{formId}/description");
-        //var initialValues = await Http.PostJsonAsync<EditingSession>($"/api/forms-runtime/session?formId={formId}&contentId={pageId}",null);
-
-        //FormBody.SetFormLayout(description);
-        //FormBody.StartNewSession(initialValues);
-
         await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,formId, new Guid(pageId), FormBody);
 
     }

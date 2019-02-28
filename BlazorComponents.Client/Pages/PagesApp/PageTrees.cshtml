@@ -15,17 +15,29 @@
 }
 else
 {
-    <select class="form-control" onchange="@SiteChanged">
-        <option value="">Site</option>
-        @foreach (var site in sites)
-        {
-            <option value="@site.SiteId">@site.SiteName</option>
-        }
-    </select>
+    <div class="row">
+        <div class="col">
+            <select class="form-control" onchange="@SiteChanged">
+                <option value="">Site</option>
+                @foreach (var site in sites)
+                {
+                    <option value="@site.SiteId">@site.SiteName</option>
+                }
+            </select>
+        </div>
+        <div class="col">
+            <NavLink href="./Pages/Add"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <CascadingValue Value=@this>
+                <PageTreeBrowser currentSite=@currentSite />
+            </CascadingValue>
+        </div>
+    </div>
 
-    <CascadingValue Value=@this>
-    <PageTreeBrowser currentSite=@currentSite/>
-    </CascadingValue>
+
 
 }
 
@@ -59,6 +71,8 @@ else
         currentSite =sites.Single(x => x.SiteId == new Guid(selectedPageTreeId));
         this.StateHasChanged();
     }
+
+
 
 
 

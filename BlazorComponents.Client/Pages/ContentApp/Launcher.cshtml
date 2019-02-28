@@ -10,7 +10,7 @@
 @if (Config != null)
 {
     <h2>{Content Type Name}</h2>
-    <NavLink href=@("/content-app/list/"+Config.ListId.GetValueOrDefault())>List</NavLink>
+    <NavLink href=@("./content-app/list/"+Config.ListId.GetValueOrDefault())>List</NavLink>
     <a>Add</a>
 }
 
