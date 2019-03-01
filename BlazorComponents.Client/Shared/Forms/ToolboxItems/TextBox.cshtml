@@ -7,7 +7,7 @@
 
 <div class="form-group">
     <label>@Config.DisplayName</label>
-    <input type="text" bind="@TextBoxValue" class="form-control" />
+    <input type="text" bind="@TextBoxValueTwoWayBinding" class="form-control" />
 </div>
 
 
@@ -19,16 +19,23 @@
     [CascadingParameter]
     public FormBody FormBody { get; set; }
 
-    private string TextBoxValue { get; set; }
+    private string CurrentTextboxValue { get; set; }
 
-    public string Value {
-        get
-        {
-            return TextBoxValue;
-        }
+    private string TextBoxValueTwoWayBinding {
+        get => CurrentTextboxValue;
         set
         {
-            TextBoxValue = value;
+            CurrentTextboxValue = value;
+            FormBody.FormEvents.RaiseValueChanged(new ValueChangedEventArgs{PropertyName = Config.PropertyName,NewValue=CurrentTextboxValue});
+            this.StateHasChanged();
+        }
+    }
+
+    public string Value {
+        get => CurrentTextboxValue;
+        set
+        {
+            CurrentTextboxValue = value;
             this.StateHasChanged();
         }
     }
@@ -44,6 +51,8 @@
         if (Config == null)
             throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
 
+
         FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+
     }
  }

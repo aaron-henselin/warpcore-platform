@@ -18,9 +18,15 @@ namespace BlazorComponents.Shared
     {
         public IDictionary<string,string> InitialValues { get; set; }
         public Dictionary<string, LocalDataSource> LocalDataSources { get; set; } = new Dictionary<string, LocalDataSource>();
+        
     }
 
 
+
+    public class EntityMetadata
+    {
+        public string TitleProperty { get; set; }
+    }
 
 
     public class LocalDataSource
@@ -43,6 +49,7 @@ namespace BlazorComponents.Shared
     {
         public PageStructure Layout { get; set; }
         public Dictionary<string,string> DefaultValues { get; set; }
+        public EntityMetadata Metadata { get; set; }
     }
 
     public class PageStructure : IUnrootedTree<StructureNode>

@@ -1,0 +1,104 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Client.Shared.Forms
+@using BlazorComponents.Shared
+@using WarpCore.Platform.DataAnnotations
+@implements IConfiguratorComponent<SlugToolboxItem>
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    @if (ManualEntry)
+    {
+        <input type="text" bind="@TextBoxValue" class="form-control" />
+        <a href="javascript:void(0);" onclick="@(e => { SwitchToAutoGenerate(); })">autogenerate</a>
+    }
+    else
+    {
+        <span class="form-control-plaintext">@TextBoxValue</span>
+        <a href="javascript:void(0);" onclick="@(e => { SwitchToManualEntry(); })">edit</a>
+    }
+
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public SlugToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private string TitleProperty { get; set; }
+
+    private string TextBoxValue { get; set; }
+
+    private bool ManualEntry { get; set; }
+
+    private string _pageName;
+
+    public string Value {
+        get
+        {
+            return TextBoxValue;
+        }
+        set
+        {
+            TextBoxValue = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid { get { return true; } }
+
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+        TitleProperty = FormBody.FormDescription.Metadata?.TitleProperty;
+        FormBody.FormEvents.SubscribeToValueChanged(valueChanged =>
+        {
+            var isTitleProperty = valueChanged.PropertyName == TitleProperty;
+            if (isTitleProperty)
+            {
+                if (string.IsNullOrWhiteSpace(valueChanged.NewValue))
+                {
+                    _pageName = string.Empty;
+                    
+                }
+                else
+                {
+                    _pageName = valueChanged.NewValue;
+                    
+                }
+            }
+
+            if (!ManualEntry)
+            {
+                Value = Slug.FromPageName(_pageName).ToString();
+            }
+
+        });
+    }
+
+    private void SwitchToManualEntry()
+    {
+        ManualEntry = true;
+        this.StateHasChanged();
+    }
+
+    private void SwitchToAutoGenerate()
+    {
+        ManualEntry = false;
+        Value = Slug.FromPageName(_pageName).ToString();
+        this.StateHasChanged();
+    }
+
+}

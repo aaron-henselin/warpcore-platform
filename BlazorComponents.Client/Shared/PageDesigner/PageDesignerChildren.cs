@@ -41,11 +41,13 @@ namespace BlazorComponents.Client
         T Config { get; set; }
     }
 
-    public interface IConfiguratorComponent<TConfigType> : IConfiguratorComponent, IRendersBlazorToolboxItem<TConfigType> where TConfigType : BlazorToolboxItem
+    public interface IConfiguratorComponent<TConfigType> : IConfiguratorComponent,
+        IRendersBlazorToolboxItem<TConfigType> where TConfigType : BlazorToolboxItem
     {
 
 
     }
+
 
     public interface IHasBusyState
     {

@@ -134,6 +134,9 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
             if (editor == Editor.Static)
                 return StaticContentToolboxItem.ApiId;
 
+            if (editor == Editor.Slug)
+                return SlugToolboxItem.ApiId;
+
             return TextboxToolboxItem.ApiId;
         }
 

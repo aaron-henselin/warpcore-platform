@@ -73,6 +73,11 @@ namespace BlazorComponents.Shared
         public const string ApiId = "warpcore-blazor-subform";
     }
 
+    [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Slug", Category = "Data Entry", UseClientSidePresentationEngine = true)]
+    public class SlugToolboxItem : BlazorToolboxItem
+    {
+        public const string ApiId = "warpcore-blazor-slug";
+    }
 
     [WarpCore.Platform.DataAnnotations.ToolboxItem(WidgetUid = ApiId, FriendlyName = "Textbox", Category = "Data Entry", UseClientSidePresentationEngine=true)]
     public class TextboxToolboxItem : BlazorToolboxItem

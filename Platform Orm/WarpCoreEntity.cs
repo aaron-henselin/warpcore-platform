@@ -124,8 +124,6 @@ namespace WarpCore.Platform.Orm
             }
         }
 
-        [IgnoreProperty]
-        public string TitleProperty => _titleProperty;
 
         [IgnoreProperty]
         public virtual string Title

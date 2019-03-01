@@ -20,26 +20,31 @@
 
 @functions {
     [Parameter]
-    public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+    public StructureNode DesignNode { get; set; }
 
     [Parameter]
-    ConfiguratorFormDescription FormDescription { get; set; }
+    public ConfiguratorFormDescription FormDescription { get; set; }
 
     StructureNode _structureNode;
 
     ConfiguratorRegistry _registry = new ConfiguratorRegistry();
+    FormEvents _formEvents = new FormEvents();
 
     public ConfiguratorRegistry Configurators => _registry;
+    public FormEvents FormEvents => _formEvents;
 
     public void SetFormLayout(ConfiguratorFormDescription formDescription)
     {
+        _registry = new ConfiguratorRegistry();
+        _formEvents = new FormEvents();
+
         FormDescription = formDescription;
         this.StateHasChanged();
     }
 
     public void SetValues(IDictionary<string,string> values)
     {
-                var readWriter = new CmsFormReadWriter(_registry);
+        var readWriter = new CmsFormReadWriter(_registry);
 
         readWriter.SetValues(values);
     }

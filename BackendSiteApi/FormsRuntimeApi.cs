@@ -26,12 +26,24 @@ namespace BackendSiteApi
         public ConfiguratorFormDescription GetConfiguratorForm(Guid formId)
         {
             var form = new FormRepository().FindContentVersions(By.ContentId(formId),WarpCore.Platform.Orm.ContentEnvironment.Live).Result.Single();
+
             var description =
                 new ConfiguratorFormDescription
                 {
                     Layout = new StructureNodeConverter().GetPageStructure(form),
                     DefaultValues = new Dictionary<string, string>()
                 };
+
+
+            var repo = RepositoryActivator.ActivateRepository<ISupportsCmsForms>(form.RepositoryUid);
+            var entityType = repo.New().GetType();
+            var dtd = Dependency.Resolve<IDynamicTypeDefinitionResolver>().Resolve(entityType);
+            description.Metadata = new EntityMetadata
+            {
+                TitleProperty = dtd?.TitleProperty
+            };
+
+
             return description;
         }
 
@@ -105,6 +117,8 @@ namespace BackendSiteApi
             var properties = ToolboxMetadataReader.ReadProperties(entityType, x => editingScope.Contains(x.Name))
                 .ToDictionary(x => x.PropertyInfo.Name);
 
+
+            
             
             foreach (var widgetGroup in widgetsGroupedByProperty)
             {

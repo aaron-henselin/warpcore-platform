@@ -14,11 +14,19 @@ namespace BlazorComponents.Client
     {
         public static async Task InitializeFormBodyDynamically(HttpClient http, Guid formId, Guid? contentId, FormBody formBody)
         {
-         
+            if (formBody == null)
+                throw new ArgumentNullException(nameof(formBody));
+
+            Console.WriteLine("[Forms] Downloading form description");
             var description = await http.GetJsonAsync<ConfiguratorFormDescription>($"/api/forms-runtime/forms/{formId}/description");
+
+            Console.WriteLine("[Forms] Downloading editing session initial values");
             var initialValues = await http.PostJsonAsync<EditingSession>($"/api/forms-runtime/session?formId={formId}&contentId={contentId}", null);
 
+            Console.WriteLine("[Forms] Setting form layout");
             formBody.SetFormLayout(description);
+
+            Console.WriteLine("[Forms] Initializing session");
             formBody.StartNewSession(initialValues);
 
         }
@@ -26,6 +34,29 @@ namespace BlazorComponents.Client
 
     }
 
+    public class ValueChangedEventArgs
+    {
+        public string PropertyName { get; set; }
+        public string NewValue { get; set; }
+    }
+
+    public class FormEvents
+    {
+        readonly List<Action<ValueChangedEventArgs>> _valueChangedEvents = new List<Action<ValueChangedEventArgs>>();
+
+        public void RaiseValueChanged(ValueChangedEventArgs eventArgs)
+        {
+            Console.WriteLine($@"[Forms] Raising ValueChangedEventArgs {eventArgs.PropertyName},{eventArgs.NewValue} ({_valueChangedEvents.Count} subscribers)");
+            _valueChangedEvents.ForEach(x => x(eventArgs));
+        }
+
+        public void SubscribeToValueChanged(Action<ValueChangedEventArgs> action)
+        {
+            Console.WriteLine($@"[Forms] Subscribing to ValueChanged");
+            _valueChangedEvents.Add(action);
+        }
+
+    }
 
     public class ConfiguratorRegistry
     {

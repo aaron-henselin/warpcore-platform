@@ -21,9 +21,12 @@ namespace WarpCore.Platform.DataAnnotations
 
         public static Slug FromPageName(string text)
         {
-            Regex regex = new Regex(@"[\s,:.;\/\\&$+@# <>\[\]{}^%]+");
-            var cleaned = regex.Replace(text, "-").ToLower();
-            return new Slug(cleaned);
+            var cleaned = text;
+            string regex = " ~`!@#$%^&*()_+{}[]:;?/\\|,.<>'\"";
+            foreach (var c in regex)
+                cleaned = cleaned.Replace(c, '-');
+
+            return new Slug(cleaned.ToLower());
         }
 
         string IPrimitiveBacked.BackingPrimitive {
