@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj" />
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj" />
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj" />
+    <ProjectReference Include="..\Platform Orm\Platform Orm.csproj" />
   </ItemGroup>
 
 </Project>

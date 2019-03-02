@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="DataStructures\StackExtensions.cs" />
     <Compile Include="DataStructures\Trees.cs" />
+    <Compile Include="Expressions\Builder.cs" />
+    <Compile Include="Expressions\Reader.cs" />
     <Compile Include="ExtensibilityFramework\Extensibility.cs" />
     <Compile Include="Orm\DataRelationships.cs" />
     <Compile Include="Orm\DataSchema.cs" />
