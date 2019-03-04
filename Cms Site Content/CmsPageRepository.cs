@@ -468,16 +468,19 @@ namespace WarpCore.Cms
                 parentNode = new SiteStructure(cmsPage.SiteId);
             else
             {
-                var findParentCondition = $@"{nameof(CmsPageLocationNode.ContentId)} eq '{newSitemapRelativePosition.ParentSitemapNodeId}'";
-                var parentNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(findParentCondition).Result;
+                var findParentCondition = By.Condition($@"{nameof(CmsPageLocationNode.ContentId)} = '{newSitemapRelativePosition.ParentSitemapNodeId}'");
+                var sqlCondition = SqlTranslator.Build(findParentCondition, typeof(CmsPage));
+
+                var parentNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlCondition).Result;
                 if (!parentNodes.Any())
                     throw new Exception("Could not find a structual node for: '" + findParentCondition + "'");
 
                 parentNode = parentNodes.Single();
             }
 
-            var siblingsCondition = $@"{nameof(CmsPageLocationNode.PageId)} neq '{cmsPage.ContentEnvironment}' and {nameof(CmsPageLocationNode.ParentNodeId)} eq '{parentNode.NodeId}'";
-            var siblings = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingsCondition).Result.ToList();
+            var siblingsCondition = $@"{nameof(CmsPageLocationNode.PageId)} = '{cmsPage.ContentEnvironment}' && {nameof(CmsPageLocationNode.ParentNodeId)} = '{parentNode.NodeId}'";
+            var sqlFilter =SqlFilter.FromEntityFilter(siblingsCondition, typeof(CmsPageLocationNode));
+            var siblings = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlFilter).Result.ToList();
 
 
             //foreach (var sibling in siblings)
@@ -499,8 +502,10 @@ namespace WarpCore.Cms
         public void Move(CmsPage page, SitemapRelativePosition newSitemapRelativePosition)
         {
 
-            var condition = $@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'";
-            var newPageLocation = Orm.FindUnversionedContent<CmsPageLocationNode>(condition).Result.SingleOrDefault();
+
+            var sqlFilter = SqlFilter.FromEntityFilter($@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'", typeof(CmsPageLocationNode));
+
+            var newPageLocation = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlFilter).Result.SingleOrDefault();
             if (newPageLocation == null)
                 newPageLocation = new CmsPageLocationNode();
             else
@@ -518,11 +523,12 @@ namespace WarpCore.Cms
 
             newPageLocation.ParentNodeId = newSitemapRelativePosition.ParentSitemapNodeId.Value;
 
-            
-            //newPageLocation.BeforeNodeId = newSitemapRelativePosition.BeforeSitemapNodeId;
 
+            var expressionText = $"SiteId = '{page.SiteId}' and ParentNodeId = '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'";
+            var booleanExpression = By.Condition(expressionText);
+            var cmsPageSql = SqlTranslator.Build(booleanExpression,typeof(CmsPage));
 
-            var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>($"SiteId eq '{page.SiteId}' and ParentNodeId eq '{newSitemapRelativePosition.ParentSitemapNodeId.Value}'").Result;
+            var sitemapNodesToUpdate = Orm.FindUnversionedContent<CmsPageLocationNode>(cmsPageSql).Result;
             var collection = sitemapNodesToUpdate.ToList();
 
             var insertAt = 0;
@@ -547,7 +553,8 @@ namespace WarpCore.Cms
 
         public IEnumerable<HistoricalRoute> GetHistoricalPageLocations(Site site)
         {
-            return Orm.FindUnversionedContent<HistoricalRoute>("SiteId eq '" + site.ContentId + "'").Result;
+            var sqlFilter = SqlFilter.FromEntityFilter("SiteId eq '" + site.ContentId + "'", typeof(Site));
+            return Orm.FindUnversionedContent<HistoricalRoute>(sqlFilter).Result;
         }
 
 
@@ -578,8 +585,9 @@ namespace WarpCore.Cms
 
             if (pageRelativePosition.ParentPageId != null)
             {
-                var parentNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{pageRelativePosition.ParentPageId}'";
-                var parentNode = Orm.FindUnversionedContent<CmsPageLocationNode>(parentNodeSearch).Result
+                var parentNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} = '{pageRelativePosition.ParentPageId}'";
+
+                var parentNode = Orm.FindUnversionedContent<CmsPageLocationNode>(SqlFilter.FromEntityFilter(parentNodeSearch,cmsPage.GetType())).Result
                     .SingleOrDefault();
 
                 position.ParentSitemapNodeId = parentNode?.NodeId;
@@ -588,8 +596,8 @@ namespace WarpCore.Cms
 
             if (pageRelativePosition.BeforePageId != null)
             {
-                var beforeNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{pageRelativePosition.BeforePageId}'";
-                var beforeNode = Orm.FindUnversionedContent<CmsPageLocationNode>(beforeNodeSearch).Result
+                var beforeNodeSearch = $@"{nameof(CmsPageLocationNode.PageId)} = '{pageRelativePosition.BeforePageId}'";
+                var beforeNode = Orm.FindUnversionedContent<CmsPageLocationNode>(SqlFilter.FromEntityFilter(beforeNodeSearch, cmsPage.GetType())).Result
                     .SingleOrDefault();
 
                 position.BeforeSitemapNodeId = beforeNode?.NodeId;
@@ -645,12 +653,14 @@ namespace WarpCore.Cms
                 sitemapRelativePosition = SitemapRelativePosition.Root;
             else
             {
-                var existingLocationSearch = $@"{nameof(CmsPageLocationNode.PageId)} eq '{cmsPage.ContentId}'";
-                var node = Orm.FindUnversionedContent<CmsPageLocationNode>(existingLocationSearch).Result.Single();
+                var existingLocationSearch = $@"{nameof(CmsPageLocationNode.PageId)} = '{cmsPage.ContentId}'";
+                var sqlFilter = SqlTranslator.Build(By.Condition(existingLocationSearch),typeof(CmsPage));
 
+                var node = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlFilter).Result.Single();
+                var siblingSearch = $@"{nameof(CmsPageLocationNode.SiteId)} = '{cmsPage.SiteId}' && {nameof(CmsPageLocationNode.ParentNodeId)} = '{node.ParentNodeId}'";
+                var siblingSqlFilter = SqlTranslator.Build(By.Condition(siblingSearch), typeof(CmsPage));
 
-                var siblingSearch = $@"{nameof(CmsPageLocationNode.SiteId)} eq '{cmsPage.SiteId}' and {nameof(CmsPageLocationNode.ParentNodeId)} eq '{node.ParentNodeId}'";
-                var siblingNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingSearch).Result;
+                var siblingNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingSqlFilter).Result;
                 var newBeforeNode = siblingNodes.Where(x => x.Order > node.Order).OrderBy(x => x.Order).FirstOrDefault();
 
 

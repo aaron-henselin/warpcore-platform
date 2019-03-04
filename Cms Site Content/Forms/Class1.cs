@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WarpCore.Cms;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Expressions;
 using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Orm;
@@ -69,7 +70,7 @@ namespace Cms.Forms
 
         public CmsContentListDefinition GetRandomList(Guid repositoryApiId)
         {
-            return this.FindContentVersions(string.Empty).Result.ToList().First(x => x.EntityUid == repositoryApiId);
+            return this.FindContentVersions(BooleanExpression.None).Result.ToList().First(x => x.EntityUid == repositoryApiId);
         }
     }
 

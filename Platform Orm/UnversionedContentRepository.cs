@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WarpCore.Platform.DataAnnotations.Expressions;
 using WarpCore.Platform.Kernel;
 
 namespace WarpCore.Platform.Orm
@@ -28,12 +29,15 @@ namespace WarpCore.Platform.Orm
 
         public T GetById(Guid contentId)
         {
-            return Orm.FindUnversionedContent<T>(By.ContentId(contentId)).Result.Single();
+            var conditionText = By.ContentId(contentId);
+            var filter = SqlTranslator.Build(conditionText, typeof(T));
+            return Orm.FindUnversionedContent<T>(filter).Result.Single();
         }
 
-        public IReadOnlyCollection<T> Find(string condition=null)
+        public IReadOnlyCollection<T> Find(BooleanExpression condition=null)
         {
-            return Orm.FindUnversionedContent<T>(condition).Result.ToList();
+            var filter = SqlTranslator.Build(condition,typeof(T));
+            return Orm.FindUnversionedContent<T>(filter).Result.ToList();
         }
 
         WarpCoreEntity ISupportsCmsForms.New()
@@ -51,7 +55,7 @@ namespace WarpCore.Platform.Orm
             return this.GetById(id);
         }
 
-        IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepository.FindContent(string condition)
+        IReadOnlyCollection<UnversionedContentEntity> IUnversionedContentRepository.FindContent(BooleanExpression condition)
         {
             return Find(condition);
         }

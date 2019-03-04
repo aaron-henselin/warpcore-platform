@@ -296,7 +296,7 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
 
     public abstract class BooleanExpression
     {
-
+        public static BooleanExpression None => null;
     }
 
     public class BooleanBinaryExpression : BooleanExpression

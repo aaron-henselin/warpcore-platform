@@ -83,7 +83,9 @@ namespace WarpCore.Cms.Toolbox
     {
         public ToolboxItem GetToolboxItemByCode(string code)
         {
-            var toolboxResult = Orm.FindUnversionedContent<ToolboxItem>("WidgetUid eq '" + code + "'").Result;
+            var toolboxResult = this.Find(By.Condition("WidgetUid eq '" + code + "'"));
+
+            //var toolboxResult = Orm.FindUnversionedContent<ToolboxItem>("WidgetUid eq '" + code + "'").Result;
             if (!toolboxResult.Any())
                 throw new Exception($"Toolbox does not contain item '{code}'");
 

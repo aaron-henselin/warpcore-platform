@@ -13,6 +13,7 @@ using Modules.Cms.Features.Presentation.Page.Elements;
 using WarpCore.Cms;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Expressions;
 using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
@@ -180,14 +181,14 @@ namespace BackendSiteApi
 
             if (repo is IUnversionedContentRepository unversionedRepo)
             {
-                allItems = unversionedRepo.FindContent(string.Empty)
+                allItems = unversionedRepo.FindContent(BooleanExpression.None)
                     .Cast<WarpCoreEntity>()
                     .ToList();
             }
 
             if (repo is IVersionedContentRepository versionedRepo)
             {
-                allItems = versionedRepo.FindContentVersions(string.Empty)
+                allItems = versionedRepo.FindContentVersions(BooleanExpression.None)
                     .Cast<WarpCoreEntity>()
                     .ToList();
             }

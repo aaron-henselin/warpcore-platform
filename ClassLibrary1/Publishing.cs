@@ -1,5 +1,6 @@
 ﻿using WarpCore.Cms.Routing;
 using WarpCore.Cms.Sites;
+using WarpCore.Platform.Orm;
 
 namespace WarpCore.Cms
 {
@@ -9,7 +10,8 @@ namespace WarpCore.Cms
     {
         public static void PublishSite(Site site)
         {
-            new CmsPageRepository().Publish("SiteId eq '"+site.ContentId+"'");
+            var textFilter = "SiteId != '" + site.ContentId + "'";
+            new CmsPageRepository().Publish(By.Condition(textFilter));
             //todo: move to domain event.
             CmsRoutes.RegenerateAllRoutes();
 

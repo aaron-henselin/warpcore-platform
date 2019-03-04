@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Expressions;
 using WarpCore.Platform.DataAnnotations.Orm;
 using WarpCore.Platform.Kernel;
 
@@ -24,13 +25,13 @@ namespace WarpCore.Platform.Orm
 
     public interface IUnversionedContentRepository : IContentRepository
     {
-        IReadOnlyCollection<UnversionedContentEntity> FindContent(string condition);
+        IReadOnlyCollection<UnversionedContentEntity> FindContent(BooleanExpression condition);
     }
 
 
     public interface IVersionedContentRepository  : IContentRepository
     {
-        IReadOnlyCollection<VersionedContentEntity> FindContentVersions(string condition,
+        IReadOnlyCollection<VersionedContentEntity> FindContentVersions(BooleanExpression condition,
             ContentEnvironment version = ContentEnvironment.Live);
     }
 
@@ -82,7 +83,10 @@ namespace WarpCore.Platform.Orm
         {
             var contentType = item.GetType().GetCustomAttribute<TableAttribute>().TableName;
 
-            var currentPublishingData = Orm.FindUnversionedContent<ContentChecksum>("ContentId eq '" + item.ContentId + "'")
+            var booleanExpression = By.ContentId(item.ContentId);
+            var filter = SqlTranslator.Build(booleanExpression, item.GetType());
+
+            var currentPublishingData = Orm.FindUnversionedContent<ContentChecksum>(filter)
                 .Result.SingleOrDefault();
             if (currentPublishingData == null)
             {
@@ -97,17 +101,18 @@ namespace WarpCore.Platform.Orm
         }
 
 
-        IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepository.FindContentVersions(string condition, ContentEnvironment version)
+        IReadOnlyCollection<VersionedContentEntity> IVersionedContentRepository.FindContentVersions(BooleanExpression condition, ContentEnvironment version)
         {
             return this.FindContentVersions(condition, version).Result.Cast<VersionedContentEntity>().ToList();
             
         }
 
-        public async Task<IReadOnlyCollection<TVersionedContentEntity>> FindContentVersions(string condition,
+        public async Task<IReadOnlyCollection<TVersionedContentEntity>> FindContentVersions(BooleanExpression condition,
             ContentEnvironment version = ContentEnvironment.Live)
         {
             //todo: resolve <T> from metadata.
-            var contentItems = await Orm.FindContentVersions<TVersionedContentEntity>(condition, version);
+            var filter = SqlTranslator.Build(condition, typeof(TVersionedContentEntity));
+            var contentItems = await Orm.FindContentVersions<TVersionedContentEntity>(filter, version);
 
             //if (SecurityModel != null)
             //    foreach (var contentItem in contentItems)
@@ -124,10 +129,10 @@ namespace WarpCore.Platform.Orm
 
 
 
-        public IReadOnlyCollection<PublishResult> Publish(string condition)
+        public IReadOnlyCollection<PublishResult> Publish(BooleanExpression booleanExpression)
         {
             var results = new List<PublishResult>();
-            var allContentToPublish = FindContentVersions(condition, ContentEnvironment.Any).Result.ToList().ToLookup(x => x.ContentId);
+            var allContentToPublish = FindContentVersions(booleanExpression, ContentEnvironment.Any).Result.ToList().ToLookup(x => x.ContentId);
             foreach (var lookupGroup in allContentToPublish)
             {
                 var publishResult = Publish(lookupGroup.ToList());

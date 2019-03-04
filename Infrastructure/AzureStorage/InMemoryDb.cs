@@ -55,14 +55,27 @@ namespace WarpCore.DbEngines.AzureStorage
                 tableRef.Rows.Add(dr);
         }
 
-        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(string condition, ContentEnvironment version) where T : VersionedContentEntity, new()
+
+        public async Task<IReadOnlyCollection<T>> FindContentVersions<T>(SqlFilter condition, ContentEnvironment version) where T : VersionedContentEntity, new()
         {
             string partitionCondition=null;
             if (version != ContentEnvironment.Any)
                 partitionCondition= $"PartitionKey eq '{version}'";
 
-            var allConditions = new[] {condition, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
+            var allConditions = new[] {condition.Filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
             var joinedCondition = string.Join(" and ", allConditions);
+
+            //todo : not secure
+            foreach (var kvp in condition.Parameters)
+            {
+                var objValue = kvp.Value;
+                var objString = kvp.Value.ToString();
+                if (objValue is string)
+                    objString = "'" + objString.Replace("'","''") + "'";
+
+                joinedCondition = joinedCondition.Replace($"@{kvp.Key}", objString);
+            }
+                
 
             return await Task.FromResult(FindContentImpl<T>(joinedCondition));
         }
@@ -71,6 +84,7 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             var tableRef = GetOrCreateTable(typeof(T));
             condition = ConvertToSql(condition);
+
             var rows = tableRef.Select(condition);
 
             List<T> activatedEntities = new List<T>();
@@ -100,10 +114,22 @@ namespace WarpCore.DbEngines.AzureStorage
         }
 
 
-        public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(string condition) where T : UnversionedContentEntity, new()
+        public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(SqlFilter condition) where T : UnversionedContentEntity, new()
         {
+            var joinedCondition = condition.Filter;
 
-            return await Task.FromResult(FindContentImpl<T>(condition));
+            //todo : not secure
+            foreach (var kvp in condition.Parameters)
+            {
+                var objValue = kvp.Value;
+                var objString = kvp.Value.ToString();
+                if (objValue is string)
+                    objString = "'" + objString.Replace("'", "''") + "'";
+
+                joinedCondition = joinedCondition.Replace($"@{kvp.Key}", objString);
+            }
+
+            return await Task.FromResult(FindContentImpl<T>(joinedCondition));
         }
 
         public void Delete(WarpCoreEntity copy) 

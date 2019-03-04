@@ -79,8 +79,14 @@ namespace WarpCore.Cms.Sites
     {
         public static SiteStructure BuildStructureMap(Site site)
         {
+
             var sitemapLookup = $"{nameof(CmsPageLocationNode.SiteId)} eq '{site.ContentId}'";
-            var allpages = Dependency.Resolve<ICosmosOrm>().FindUnversionedContent<CmsPageLocationNode>(sitemapLookup).Result.ToList();
+            var booleanExpression = By.Condition(sitemapLookup);
+            var cmsPageSql = SqlTranslator.Build(booleanExpression, typeof(CmsPage));
+
+            var allpages = Dependency.Resolve<ICosmosOrm>()
+                .FindUnversionedContent<CmsPageLocationNode>(cmsPageSql)
+                .Result.ToList();
 
             var sitemap = new SiteStructure(site);
             var parentNodeLookup = allpages.ToLookup(x => x.ParentNodeId);
