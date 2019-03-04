@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WarpCore.Cms;
@@ -121,8 +122,90 @@ namespace IntegrationTests
     //    }
     //}
 
-
+    [TestClass]
+    public class BooleanExpressionEvaluatorTests
+    {
         [TestClass]
+        public class Evaluate
+        {
+            private BooleanExpressionParser _parser = new BooleanExpressionParser();
+            private BooleanExpressionTokenReader _tokenReader = new BooleanExpressionTokenReader();
+         
+
+
+            private class Scope : Dictionary<string, object>, IVariableScope
+            {
+                public object GetValue(string key)
+                {
+                    return this[key];
+                }
+            }
+
+            private bool Run(string expression)
+            {
+                var scope = new Scope {{"one", 1}, {"two", 2}};
+                Evaluator evaluator = new Evaluator(scope);
+                var tokens = _parser.ReadBooleanExpressionTokens(expression);
+                var compiled = _tokenReader.CreateBooleanExpressionFromTokens(tokens);
+                return evaluator.Evaluate(compiled);
+            }
+
+
+            [TestMethod]
+            public void EvaluatesEquals()
+            {
+                var result = Run("one == 1");
+                Assert.IsTrue(result);
+            }
+
+            [TestMethod]
+            public void EvaluatesNotEquals()
+            {
+
+                var result = Run("one != two");
+                Assert.IsTrue(result);
+            }
+
+            [TestMethod]
+            public void EvaluatesGreaterThan()
+            {
+                var result = Run("two > one");
+                Assert.IsTrue(result);
+            }
+
+            [TestMethod]
+            public void EvaluatesLessThan()
+            {
+                var result = Run("one < two");
+                Assert.IsTrue(result);
+            }
+
+
+            [TestMethod]
+            public void EvaluatesLogicalOrBooleanBinaryExpressions()
+            {
+                var result = Run("one < two || two < one");
+                Assert.IsTrue(result);
+            }
+
+            [TestMethod]
+            public void EvaluatesLogicalAndBooleanBinaryExpressions()
+            {
+                var result = Run("one > two && 1 < 2");
+                Assert.IsTrue(result);
+            }
+
+            [TestMethod]
+            public void EvaluatesParenExpressions()
+            {
+                var result = Run("1 < 2 && (1 > 2 || 1 < 2)");
+                Assert.IsTrue(result);
+            }
+
+        }
+    }
+
+    [TestClass]
     public class BooleanExpressionParserTests
     {
         

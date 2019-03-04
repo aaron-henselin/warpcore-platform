@@ -138,7 +138,7 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
                 }
                 else
                 {
-                    outChar = default;
+                    outChar = default(char);
                     return false;
                 }
             }
