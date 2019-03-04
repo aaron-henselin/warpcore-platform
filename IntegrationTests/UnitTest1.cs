@@ -191,7 +191,7 @@ namespace IntegrationTests
             [TestMethod]
             public void EvaluatesLogicalAndBooleanBinaryExpressions()
             {
-                var result = Run("one > two && 1 < 2");
+                var result = Run("two > one && 1 < 2");
                 Assert.IsTrue(result);
             }
 
