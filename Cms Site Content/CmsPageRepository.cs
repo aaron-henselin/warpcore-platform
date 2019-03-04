@@ -503,7 +503,7 @@ namespace WarpCore.Cms
         {
 
 
-            var sqlFilter = SqlFilter.FromEntityFilter($@"{nameof(CmsPageLocationNode.PageId)} eq '{page.ContentId}'", typeof(CmsPageLocationNode));
+            var sqlFilter = SqlFilter.FromEntityFilter($@"{nameof(CmsPageLocationNode.PageId)} == '{page.ContentId}'", typeof(CmsPageLocationNode));
 
             var newPageLocation = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlFilter).Result.SingleOrDefault();
             if (newPageLocation == null)
@@ -553,7 +553,7 @@ namespace WarpCore.Cms
 
         public IEnumerable<HistoricalRoute> GetHistoricalPageLocations(Site site)
         {
-            var sqlFilter = SqlFilter.FromEntityFilter("SiteId eq '" + site.ContentId + "'", typeof(Site));
+            var sqlFilter = SqlFilter.FromEntityFilter("SiteId == '" + site.ContentId + "'", typeof(Site));
             return Orm.FindUnversionedContent<HistoricalRoute>(sqlFilter).Result;
         }
 

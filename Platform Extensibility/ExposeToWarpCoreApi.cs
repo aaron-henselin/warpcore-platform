@@ -44,7 +44,7 @@ namespace WarpCore.Platform.Extensibility
         public const string ApiId = "3a9a6f79-9564-4b51-af1c-9d926fddbc35";
         public RepositoryMetdata GetRepositoryMetdataByTypeResolverUid(Guid formInteropUid)
         {
-            var text = nameof(RepositoryMetdata.ApiId) + " eq '" + formInteropUid + "'";
+            var text = nameof(RepositoryMetdata.ApiId) + " == '" + formInteropUid + "'";
 
             return Find(By.Condition(text)).First();
         }

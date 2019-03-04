@@ -60,7 +60,7 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             string partitionCondition=null;
             if (version != ContentEnvironment.Any)
-                partitionCondition= $"PartitionKey eq '{version}'";
+                partitionCondition= $"PartitionKey == '{version}'";
 
             var allConditions = new[] {condition.Filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
             var joinedCondition = string.Join(" and ", allConditions);

@@ -220,7 +220,7 @@ namespace WarpCore.Platform.Orm
     {
         public static BooleanExpression ContentId(Guid contentId)
         {
-            var text = $"{nameof(WarpCoreEntity.ContentId)} eq '{contentId}'";
+            var text = $"{nameof(WarpCoreEntity.ContentId)} == '{contentId}'";
             return By.Condition(text);
         }
 
@@ -448,7 +448,7 @@ namespace WarpCore.Platform.Orm
 
     //        string partitionCondition = null;
     //        if (version != ContentEnvironment.Any)
-    //            partitionCondition = $"PartitionKey eq '{version}'";
+    //            partitionCondition = $"PartitionKey == '{version}'";
 
     //        var allConditions = new[] {filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
     //        var joinedCondition = string.Join(" and ", allConditions);

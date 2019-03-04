@@ -135,7 +135,7 @@ namespace WarpCore.Platform.Extensibility
 
         private static void BuildUpRepositoryMetadata(ExtensibleRepositoryDescription repositoryDescription)
         {
-            var metadataCondition = By.Condition($"{nameof(RepositoryMetdata.ApiId)} eq '{repositoryDescription.Uid}'");
+            var metadataCondition = By.Condition($"{nameof(RepositoryMetdata.ApiId)} == '{repositoryDescription.Uid}'");
             var respositoryManager = new RepositoryMetadataManager();
             var preexistingMetadata = respositoryManager.Find(metadataCondition).SingleOrDefault();
 

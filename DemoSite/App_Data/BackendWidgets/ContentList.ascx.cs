@@ -10,6 +10,7 @@ using WarpCore.Cms;
 using WarpCore.Cms.Routing;
 using WarpCore.Cms.Toolbox;
 using WarpCore.Platform.DataAnnotations;
+using WarpCore.Platform.DataAnnotations.Expressions;
 using WarpCore.Platform.DataAnnotations.UserInteraceHints;
 using WarpCore.Platform.Extensibility;
 using WarpCore.Platform.Extensibility.DynamicContent;
@@ -227,9 +228,8 @@ namespace DemoSite
         {
             var repoType = RepositoryTypeResolver.ResolveTypeByApiId(RepositoryId);
             var repo = (IVersionedContentRepository) Activator.CreateInstance(repoType);
-            var allDrafts = repo.FindContentVersions(string.Empty, ContentEnvironment.Draft).ToList();
-
-
+            var allDrafts = repo.FindContentVersions(BooleanExpression.None, ContentEnvironment.Draft).ToList();
+           
             List<object> ds = new List<object>();
             var fields = Config.Fields;
 
