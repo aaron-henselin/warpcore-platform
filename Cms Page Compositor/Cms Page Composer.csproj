@@ -41,6 +41,7 @@
     <Compile Include="BatchingFragmentRenderer.cs" />
     <Compile Include="CmsPageContentActivator.cs" />
     <Compile Include="PageCompositionBuilder.cs" />
+    <Compile Include="PresentationElementHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

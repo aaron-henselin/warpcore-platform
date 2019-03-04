@@ -16,6 +16,8 @@ using WarpCore.Platform.Extensibility.DynamicContent;
 using WarpCore.Platform.Kernel;
 using WarpCore.Platform.Orm;
 using WarpCore.Web.Widgets.FormBuilder.Support;
+using DataRelationAttribute = WarpCore.Platform.DataAnnotations.DataRelationAttribute;
+using ToolboxItemAttribute = WarpCore.Platform.DataAnnotations.ToolboxItemAttribute;
 
 namespace DemoSite
 {

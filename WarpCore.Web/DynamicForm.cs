@@ -178,12 +178,12 @@ namespace WarpCore.Web
 
         protected void SaveButton_OnClick(object sender, EventArgs e)
         {
-            var draft = GetDraft();
+            //var draft = GetDraft();
 
-            var newValues = CmsFormReadWriter.ReadValuesFromControls(_activatedConfigurators);
-            draft.SetPropertyValues(newValues, x => true);
+            //var newValues = CmsFormReadWriter.ReadValuesFromControls(_activatedConfigurators);
+            //draft.SetPropertyValues(newValues, x => true);
 
-            _repo.Save(draft);
+            //_repo.Save(draft);
 
             HttpContext.Current.Response.Redirect("/admin");
         }

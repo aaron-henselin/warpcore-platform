@@ -23,21 +23,5 @@ namespace WarpCore.Web.Widgets.FormBuilder.Support
 
 
 
-    public class ConfiguratorEvents
-    {
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public void RaiseValueChanged(ValueChangedEventArgs valueChangedEvent)
-        {
-            ValueChanged?.Invoke(this,valueChangedEvent);
-        }
-    }
-
-    public class ValueChangedEventArgs : EventArgs
-    {
-        public string PropertyName { get; set; }
-        public string NewValue { get; set; }
-        public string OldValue { get; set; }
-        public IDictionary<string, string> Model { get; set; }
-    }
 }

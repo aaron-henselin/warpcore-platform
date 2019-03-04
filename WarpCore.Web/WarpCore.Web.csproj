@@ -142,31 +142,23 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cms Form Composer\Cms Form Composer.csproj">
-      <Project>{17aff9bf-0959-4022-b745-d154cdaf892d}</Project>
+      <Project>{17AFF9BF-0959-4022-B745-D154CDAF892D}</Project>
       <Name>Cms Form Composer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page Compositor\Cms Page Composer.csproj">
-      <Project>{7afdb16f-6b42-494b-baf4-42db78a3fabc}</Project>
+      <Project>{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}</Project>
       <Name>Cms Page Composer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Page Elements\Cms Page Elements.csproj">
       <Project>{11CC6161-C3D9-486D-8E0B-206BB9479D3B}</Project>
       <Name>Cms Page Elements</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cms Page OutputCache\Cms Page OutputCache.csproj">
-      <Project>{2F3FBE89-0182-4026-B6A5-86198EF431F4}</Project>
-      <Name>Cms Page OutputCache</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cms Page Rendering\Cms Page Rendering.csproj">
-      <Project>{BA17EAB5-6520-4435-A104-EDE47EB4CCC3}</Project>
-      <Name>Cms Page Rendering</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cms Site Content\Cms Site Content.csproj">
       <Project>{4BBDC8FE-0DDE-4DD4-BB5B-C31896D5156B}</Project>
       <Name>Cms Site Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cms Toolbox\Cms Toolbox.csproj">
-      <Project>{60bb28eb-2853-47bf-a9f6-a385031b3c3a}</Project>
+      <Project>{60BB28EB-2853-47BF-A9F6-A385031B3C3A}</Project>
       <Name>Cms Toolbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platform Core\Platform Core.csproj">
@@ -194,7 +186,7 @@
       <Name>Platform WebPipeline</Name>
     </ProjectReference>
     <ProjectReference Include="..\Routing\Cms Routing.csproj">
-      <Project>{b9d4afc3-ae7d-4f42-8bb3-9b2a1394bb96}</Project>
+      <Project>{B9D4AFC3-AE7D-4F42-8BB3-9B2A1394BB96}</Project>
       <Name>Cms Routing</Name>
     </ProjectReference>
   </ItemGroup>
