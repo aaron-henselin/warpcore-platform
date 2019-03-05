@@ -80,7 +80,7 @@ namespace WarpCore.Cms.Sites
         public static SiteStructure BuildStructureMap(Site site)
         {
 
-            var sitemapLookup = $"{nameof(CmsPageLocationNode.SiteId)} = '{site.ContentId}'";
+            var sitemapLookup = $"{nameof(CmsPageLocationNode.SiteId)} == {{{site.ContentId}}}";
             var booleanExpression = By.Condition(sitemapLookup);
             var cmsPageSql = SqlTranslator.Build(booleanExpression, typeof(CmsPage));
 

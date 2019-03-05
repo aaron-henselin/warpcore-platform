@@ -34,6 +34,7 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
             static Dictionary<char, char> _comparisonSymbology = "=<>!".ToArray().ToDictionary(x => x);
             static Dictionary<char, char> _booleanBinarySymbology = "|&".ToArray().ToDictionary(x => x);
             static Dictionary<char, char> _parenSymbology = "()".ToArray().ToDictionary(x => x);
+            static Dictionary<char, char> _guidSymbology = "{}-abcdefABCDEF0123456789".ToArray().ToDictionary(x => x);
 
             internal bool IsParenCharacter(char character)
             {
@@ -67,6 +68,13 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
 
                 throw new ArgumentException("Invalid boolean binary operator " + entireWord);
             }
+
+            internal BooleanExpressionToken ReadGuidLiteral()
+            {
+                var entireWord = ReadWord(_guidSymbology);
+                return new GuidLiteral {Value= Guid.Parse(entireWord) };
+            }
+
 
             internal BooleanExpressionToken ReadNumericLiteral()
             {
@@ -217,6 +225,16 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
                     continue;
                 }
 
+                var isGuid = '{' == nextCharacter;
+                if (isGuid)
+                {
+                    var numeric = reader.ReadGuidLiteral();
+                    tokens.Add(numeric);
+                    reader.MoveToNext();
+                    continue;
+                }
+
+
                 var isNumeric = Char.IsDigit(nextCharacter);
                 if (isNumeric)
                 {
@@ -305,6 +323,12 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
     {
         public string Name { get; set; }
     }
+
+    public class GuidLiteral : BooleanExpressionToken
+    {
+        public Guid Value { get; set; }
+    }
+
 
     public class IntegerLiteral : BooleanExpressionToken
     {

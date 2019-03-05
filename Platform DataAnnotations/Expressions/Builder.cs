@@ -107,7 +107,7 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
 
                     throw new ArgumentException("Unsupported use of unary not");
                 }
-                else if (token is VariableReference || token is DecimalLiteral || token is StringLiteral || token is IntegerLiteral)
+                else if (token is VariableReference || token is DecimalLiteral || token is StringLiteral || token is IntegerLiteral || token is GuidLiteral)
                 {
                     allTokens.Add(new ReducedScalarToken { ReducedExpression = new BooleanExpressionTokenReader().ReadScalar(token) });
                 }
@@ -200,8 +200,16 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
             tokens = ReduceScalarTokens(tokens);
             tokens = ReduceComparisonTokens(tokens);
 
-            while (!tokens.All(x => x is ReducedToken))
+
+            while (tokens.Count() > 1)
+            {
+                var beforeReduction = tokens.Count();
                 tokens = ReduceBooleanBinaryTokens(tokens);
+                var afterReduction = tokens.Count();
+
+                if (beforeReduction == afterReduction)
+                    throw new Exception();
+            }
 
             return ((ReducedToken)tokens.Single()).ReducedExpression;
         }
@@ -219,6 +227,9 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
 
             if (token is IntegerLiteral @int)
                 return new LiteralIntExpression { Value = @int.Value };
+
+            if (token is GuidLiteral @guid)
+                return new LiteralGuidExpression { Value = @guid.Value };
 
             throw new ArgumentException("Invalid scalar expression.");
         }
@@ -245,7 +256,15 @@ namespace WarpCore.Platform.DataAnnotations.Expressions
             return innerTokens;
         }
     }
+    public class LiteralGuidExpression : ScalarValueExpression
+    {
+        public Guid Value { get; set; }
 
+        public override string ToString()
+        {
+            return "{"+Value+"}";
+        }
+    }
     public class LiteralIntExpression : ScalarValueExpression
     {
         public int Value { get; set; }

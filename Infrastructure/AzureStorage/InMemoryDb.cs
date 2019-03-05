@@ -60,22 +60,14 @@ namespace WarpCore.DbEngines.AzureStorage
         {
             string partitionCondition=null;
             if (version != ContentEnvironment.Any)
-                partitionCondition= $"PartitionKey == '{version}'";
+                partitionCondition= $"PartitionKey = '{version}'";
 
             var allConditions = new[] {condition.Filter, partitionCondition}.Where(x => !string.IsNullOrWhiteSpace(x));
             var joinedCondition = string.Join(" and ", allConditions);
 
             //todo : not secure
-            foreach (var kvp in condition.Parameters)
-            {
-                var objValue = kvp.Value;
-                var objString = kvp.Value.ToString();
-                if (objValue is string)
-                    objString = "'" + objString.Replace("'","''") + "'";
+            joinedCondition = NoParameterizationTerribleHack(condition, joinedCondition);
 
-                joinedCondition = joinedCondition.Replace($"@{kvp.Key}", objString);
-            }
-                
 
             return await Task.FromResult(FindContentImpl<T>(joinedCondition));
         }
@@ -113,12 +105,21 @@ namespace WarpCore.DbEngines.AzureStorage
             return activatedEntities;
         }
 
+      
 
         public async Task<IReadOnlyCollection<T>> FindUnversionedContent<T>(SqlFilter condition) where T : UnversionedContentEntity, new()
         {
             var joinedCondition = condition.Filter;
 
             //todo : not secure
+            joinedCondition = NoParameterizationTerribleHack(condition, joinedCondition);
+
+            return await Task.FromResult(FindContentImpl<T>(joinedCondition));
+        }
+
+        private static string NoParameterizationTerribleHack(SqlFilter condition, string joinedCondition)
+
+        {
             foreach (var kvp in condition.Parameters)
             {
                 var objValue = kvp.Value;
@@ -126,10 +127,13 @@ namespace WarpCore.DbEngines.AzureStorage
                 if (objValue is string)
                     objString = "'" + objString.Replace("'", "''") + "'";
 
+                if (objValue is Guid)
+                    objString = "'" + objValue + "'";
+
                 joinedCondition = joinedCondition.Replace($"@{kvp.Key}", objString);
             }
 
-            return await Task.FromResult(FindContentImpl<T>(joinedCondition));
+            return joinedCondition;
         }
 
         public void Delete(WarpCoreEntity copy) 
