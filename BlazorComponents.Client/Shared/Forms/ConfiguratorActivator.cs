@@ -71,6 +71,9 @@ namespace BlazorComponents.Client
             }
 
             builder.CloseComponent();
+
+            Console.WriteLine("[Forms] Activated " + useComponentType.FullName);
+
         }
 
         private static void EnsureTypeCacheBuilt()

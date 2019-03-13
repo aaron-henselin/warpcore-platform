@@ -88,6 +88,7 @@ namespace WarpCore.Cms
 
         public Guid ContentTypeId => new Guid(CmsPageRepository.ApiId);
 
+        [UserInterfaceIgnore]
         public List<CmsPageContent> ChildNodes => PageContent;
         public Guid DesignForContentId => ContentId;
 
@@ -97,6 +98,7 @@ namespace WarpCore.Cms
         [Column]
         public string Description { get; set; }
 
+        [UserInterfaceIgnore]
         [SerializedComplexObject]
         public Dictionary<string, string> InternalRedirectParameters { get; set; }
 

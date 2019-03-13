@@ -62,30 +62,30 @@
             throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
 
         FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
-        TitleProperty = FormBody.FormDescription.Metadata?.TitleProperty;
-        FormBody.FormEvents.SubscribeToValueChanged(valueChanged =>
-        {
-            var isTitleProperty = valueChanged.PropertyName == TitleProperty;
-            if (isTitleProperty)
-            {
-                if (string.IsNullOrWhiteSpace(valueChanged.NewValue))
-                {
-                    _pageName = string.Empty;
-                    
-                }
-                else
-                {
-                    _pageName = valueChanged.NewValue;
-                    
-                }
-            }
+        //TitleProperty = FormBody.FormDescription.Metadata?.TitleProperty;
+        //FormBody.FormEvents.SubscribeToValueChanged(valueChanged =>
+        //{
+        //    var isTitleProperty = valueChanged.PropertyName == TitleProperty;
+        //    if (isTitleProperty)
+        //    {
+        //        if (string.IsNullOrWhiteSpace(valueChanged.NewValue))
+        //        {
+        //            _pageName = string.Empty;
 
-            if (!ManualEntry)
-            {
-                Value = Slug.FromPageName(_pageName).ToString();
-            }
+        //        }
+        //        else
+        //        {
+        //            _pageName = valueChanged.NewValue;
 
-        });
+        //        }
+        //    }
+
+        //    if (!ManualEntry)
+        //    {
+        //        Value = Slug.FromPageName(_pageName).ToString();
+        //    }
+
+        //});
     }
 
     private void SwitchToManualEntry()

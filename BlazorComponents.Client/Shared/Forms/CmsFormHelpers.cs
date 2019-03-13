@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -108,13 +109,22 @@ namespace BlazorComponents.Client
 
         public void SetValues(IDictionary<string,string> newValues)
         {
+            if (newValues == null)
+                throw new ArgumentException(nameof(newValues));
+
+            if (_registry == null)
+                throw new ArgumentException(nameof(_registry));
+
             var propertyNames = _registry.GetManagedPropertyNames();
             foreach (var propertyName in propertyNames)
             {
+                if (propertyName == null)
+                    throw new NoNullAllowedException("Property name cannot be null");
+
                 if (newValues.ContainsKey(propertyName))
                 {
                     var originalValue = newValues[propertyName];
-                    Console.WriteLine($"[Forms] Setting {propertyName} to original value '{originalValue}'");
+                    Console.WriteLine($"[Forms] Setting {propertyName} to original value '{originalValue ?? string.Empty}'");
                     _registry.GetConfiguratorByPropertyName(propertyName).Value = originalValue;
                 }
                 else
