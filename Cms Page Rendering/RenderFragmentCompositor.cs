@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Modules.Cms.Featues.Presentation.PageFragmentRendering;
@@ -40,8 +41,8 @@ namespace Modules.Cms.Featues.Presentation.PageFragmentRendering
         //}
     }
 
-    
 
+    [DebuggerDisplay("RenderMode = {" + nameof(Mode) + "}")]
     public class RenderAttributes
     {
         public FragmentRenderMode Mode { get; set; }

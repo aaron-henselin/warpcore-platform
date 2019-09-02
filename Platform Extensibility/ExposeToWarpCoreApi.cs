@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.Orm;
@@ -9,6 +10,7 @@ namespace WarpCore.Platform.Extensibility
     /// <summary>
     /// Exposes the repository to the WarpCore Api. This allows users to create forms, workflows, and custom fields for this type from the frontend.
     /// </summary>
+    [DebuggerDisplay("Uid = {TypeUid}")]
     public class ExposeToWarpCoreApi : Attribute
     {
         public ExposeToWarpCoreApi(string uid) : this(new Guid(uid))
@@ -24,7 +26,7 @@ namespace WarpCore.Platform.Extensibility
     }
 
 
-
+    [DebuggerDisplay("ApiId = {ApiId},TypeName = {GetTypeNameDebuggerDisplay()}")]
     [Table("cms_repository_metadata")]
     [WarpCoreEntity("204b8498-b8b7-489e-87ed-ddb1fcfb6608",SupportsCustomFields = false)]
     public class RepositoryMetdata : UnversionedContentEntity
@@ -34,6 +36,11 @@ namespace WarpCore.Platform.Extensibility
         public string AssemblyQualifiedTypeName { get; set; }
         public string CustomAssemblyQualifiedTypeName { get; set; }
         public string CustomRepositoryName { get; set; }
+
+        private string GetTypeNameDebuggerDisplay()
+        {
+            return CustomAssemblyQualifiedTypeName ?? AssemblyQualifiedTypeName;
+        }
     }
 
 

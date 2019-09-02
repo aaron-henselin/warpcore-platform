@@ -656,11 +656,11 @@ namespace WarpCore.Cms
             else
             {
                 var existingLocationSearch = $@"{nameof(CmsPageLocationNode.PageId)} == {{{cmsPage.ContentId}}}";
-                var sqlFilter = SqlTranslator.Build(By.Condition(existingLocationSearch),typeof(CmsPage));
+                var sqlFilter = SqlTranslator.Build(By.Condition(existingLocationSearch),typeof(CmsPageLocationNode));
 
                 var node = Orm.FindUnversionedContent<CmsPageLocationNode>(sqlFilter).Result.Single();
                 var siblingSearch = $@"{nameof(CmsPageLocationNode.SiteId)} == {{{cmsPage.SiteId}}} && {nameof(CmsPageLocationNode.ParentNodeId)} == {{{node.ParentNodeId}}}";
-                var siblingSqlFilter = SqlTranslator.Build(By.Condition(siblingSearch), typeof(CmsPage));
+                var siblingSqlFilter = SqlTranslator.Build(By.Condition(siblingSearch), typeof(CmsPageLocationNode));
 
                 var siblingNodes = Orm.FindUnversionedContent<CmsPageLocationNode>(siblingSqlFilter).Result;
                 var newBeforeNode = siblingNodes.Where(x => x.Order > node.Order).OrderBy(x => x.Order).FirstOrDefault();

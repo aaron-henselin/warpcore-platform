@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace Modules.Cms.Features.Presentation.Page.Elements
 {
+    [DebuggerDisplay("Name = {Name}")]
     public class PageLayout
     {
         public string Name { get; set; }
@@ -12,6 +13,7 @@ namespace Modules.Cms.Features.Presentation.Page.Elements
         public PageLayout ParentLayout { get; set; }
     }
 
+    [DebuggerDisplay("Id = {Id},WidgetTypeCode = {WidgetTypeCode},Order = {Order}")]
     public class PageContent
     {
         public Guid Id { get; set; }

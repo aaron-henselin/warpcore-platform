@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using WarpCore.Platform.DataAnnotations;
 using WarpCore.Platform.DataAnnotations.Orm;
@@ -24,6 +25,7 @@ namespace WarpCore.Cms.Toolbox
     }
 
 
+    [DebuggerDisplay("WidgetUid = {WidgetUid},FriendlyName = {FriendlyName}")]
     [Table("cms_toolbox_item")]
     public class ToolboxItem : UnversionedContentEntity
     {
