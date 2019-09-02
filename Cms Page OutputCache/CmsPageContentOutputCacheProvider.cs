@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Web;
-using System.Web.Caching;
 using WarpCore.Platform.Kernel;
 
 namespace Modules.Cms.Features.Presentation.Cache
@@ -10,12 +9,19 @@ namespace Modules.Cms.Features.Presentation.Cache
 
     public class CmsPageContentOutputCacheProvider
     {
+        private readonly ICache _cache;
+
+        public CmsPageContentOutputCacheProvider(ICache cache)
+        {
+            _cache = cache;
+        }
+
         private static ConcurrentDictionary<Type,bool> IsCacheableLookup { get; } = new ConcurrentDictionary<Type, bool>();
       
         public void AddToCache(string cacheKey, CachedPageContentOutput incomingCache)
         {
-            HttpRuntime.Cache.Add(cacheKey, incomingCache, new CacheDependency(new string[0]), DateTime.Now.AddMinutes(5),
-                System.Web.Caching.Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+
+            _cache.Add(cacheKey, incomingCache, DateTime.Now.AddMinutes(5));
         }
 
         public bool IsCacheable(Type type)
@@ -49,9 +55,8 @@ namespace Modules.Cms.Features.Presentation.Cache
         public bool TryResolveFromCache(string cachekey, out CachedPageContentOutput element)
         {
             element = null;
-            
-            
-            var cacheObject = HttpRuntime.Cache.Get(cachekey);
+
+            var cacheObject = _cache.Get<CachedPageContentOutput>(cachekey);
             if (cacheObject == null)
                 return false;
 

@@ -1,4 +1,4 @@
-﻿using System.Web.Script.Serialization;
+﻿using System.Linq;
 
 namespace Modules.Cms.Features.Presentation.Cache
 {
@@ -6,9 +6,10 @@ namespace Modules.Cms.Features.Presentation.Cache
     {
         public string GetCacheKey(CacheKeyParts content)
         {
-            var parametersKey = new JavaScriptSerializer().Serialize(content.Parameters);
+            //todo now: serialize this instead.
+            var param = string.Join(",", content.Parameters.Keys) + "|"+string.Join(",", content.Parameters.Values);
+            var parametersKey = param;
             var widgetTypeCode = content.WidgetType.AssemblyQualifiedName;
-
             return "by-parameters-"+widgetTypeCode + "-" + parametersKey;
         }
     }

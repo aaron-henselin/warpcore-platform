@@ -5,6 +5,12 @@ using System.Security;
 
 namespace WarpCore.Platform.Kernel
 {
+    public interface ICache
+    {
+        void Add<T>(string cacheKey, T incomingCache, DateTime addMinutes);
+        object Get<T>(string cachekey);
+    }
+
     public enum PermissionType
     {
         Grant,
