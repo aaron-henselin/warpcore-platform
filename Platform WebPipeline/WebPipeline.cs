@@ -20,7 +20,7 @@ namespace Platform_WebPipeline
             if (!WebBootstrapper.IsBooted)
             {
                 WebBootstrapper.EnsureSiteBootHasBeenStarted();
-                return new RewriteUrl("/App_Data/Booting.aspx");
+                return new BootPage();
             }
 
             WebPipelineAction webPipelineAction = null;

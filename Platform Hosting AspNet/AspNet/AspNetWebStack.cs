@@ -8,6 +8,7 @@ namespace Platform_Hosting_AspNet.AspNet
     {
         public AspNetWebStack()
         {
+            this.CacheProvider<AspNetHttpRuntimeCache>();
             this.HttpRequest<AspNetHttpRequest>();
             this.RouteData<AspNetPerRequestRouteData>();
             this.PerRequestItems<AspNetItems>();

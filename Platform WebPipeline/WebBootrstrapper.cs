@@ -91,7 +91,7 @@ namespace WarpCore.Web
 
         public static void PreInitializeWebStack(WebStackConfiguration webStackConfiguration)
         {
-
+            Dependency.Register<ICache>(webStackConfiguration.CacheProviderType);
             Dependency.Register<IHttpRequest>(webStackConfiguration.HttpRequestType);
             Dependency.Register<IWebServer>(webStackConfiguration.WebServerType);
             Dependency.Register<IPerRequestItems>(webStackConfiguration.PerRequestItemsType);
@@ -109,12 +109,18 @@ namespace WarpCore.Web
 
     public abstract class WebStackConfiguration
     {
+        public Type CacheProviderType { get; set; }
         public Type HttpRequestType { get; set; }
         public Type WebServerType { get; set; }
         public Type PerRequestItemsType { get; set; }
         public Type RouteDataType { get; set; }
 
         public abstract void RegisterHttpModules();
+
+        public void CacheProvider<TCache>() where TCache : ICache
+        {
+            CacheProviderType = typeof(TCache);
+        }
 
         public void HttpRequest<THttpRequest>() where THttpRequest : IHttpRequest
         {

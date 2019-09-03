@@ -18,6 +18,17 @@ namespace Platform_WebPipeline
     {
     }
 
+    public class BootPage : WebPipelineAction
+    {
+        private static string _loadingHtml;
+
+        public static void RegisterHtml(string loadingHtml)
+        {
+            _loadingHtml = loadingHtml;
+        }
+
+        public string LoadingHtml => _loadingHtml ?? "booting..";
+    }
 
     public class RewriteUrl : WebPipelineAction
     {

@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="Boot\loading.html" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Data.Common.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Data.dll" />
     <EmbeddedResource Include="Blazor\BlazorComponents.Client\dist\_framework\_bin\System.Runtime.Serialization.dll" />

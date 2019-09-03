@@ -7,8 +7,8 @@ namespace WarpCore.Platform.Kernel
 {
     public interface ICache
     {
-        void Add<T>(string cacheKey, T incomingCache, DateTime addMinutes);
-        object Get<T>(string cachekey);
+        void Add<T>(string cacheKey, T incomingCache, DateTime addMinutes) where T : class;
+        object Get<T>(string cachekey) where T : class;
     }
 
     public enum PermissionType

@@ -774,7 +774,13 @@ namespace DemoSite
 
             var vpp = EmbeddedResourceVirtualPathProviderStart.Start();
             var blazor = new BlazorModuleBuilder();
-            blazor.HostBlazorModule((typeof(BackendSiteTooling.Class1)).Assembly);
+
+            var tooling = (typeof(BackendSiteTooling.Class1)).Assembly;
+            blazor.HostBlazorModule(tooling);
+
+
+            var loadingHtml = AssemblyResourceReader.ReadString(tooling, "BackendSiteTooling.Boot.loading.html");
+            BootPage.RegisterHtml(loadingHtml);
         }
 
     }
