@@ -1,0 +1,31 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+
+@{
+
+    var numColumns = Convert.ToInt32(DesignNode.Parameters["NumColumns"]);
+    var cssSuffix = 12 / numColumns;
+    <div class="row">
+        @for (int i = 0; i < numColumns; i++)
+        {
+            <div class="col-md-@cssSuffix">
+                @{
+                    Console.WriteLine($@"[Forms] Rendering column {i}");
+                    var toRender = DesignNode.ChildNodes.Where(x => x.PlacementContentPlaceHolderId == i.ToString());
+                    foreach (var item in toRender)
+                    {
+                        <FormNode DesignNode=@item />
+                    }
+                }
+            </div>
+        }
+    </div>
+}
+
+
+@functions {
+    [Parameter]
+    public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    
+}

@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarpCore.Web", "WarpCore.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSite", "DemoSite\DemoSite.csproj", "{178D9121-361F-43B6-9341-C4A435174022}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "BusinessLayer\Cms\Helpers.csproj", "{60A3EC3C-BA12-405C-BAE8-543987F3F9AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "BusinessLayer\Cms\Helpers.csproj", "{60A3EC3C-BA12-405C-BAE8-543987F3F9AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Features", "Features", "{9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}"
 EndProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crm", "Crm", "{4B381B36-4A8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemoryDb", "Infrastructure\AzureStorage\InMemoryDb.csproj", "{029CFA15-E004-4022-A5C6-01575A2E0AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform DataAnnotations", "Platform DataAnnotations\Platform DataAnnotations.csproj", "{EF917AEE-6A91-47F9-A45E-E45650F9436A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform DataAnnotations", "Platform DataAnnotations\Platform DataAnnotations.csproj", "{EF917AEE-6A91-47F9-A45E-E45650F9436A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Security Model", "Cms Security Model\Cms Security Model.csproj", "{479132F0-854E-49C4-9079-DC548EC039E3}"
 EndProject
@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms WebForms RenderingEngin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Mvc RenderingEngine", "Cms Mvc Rendering Engine\Cms Mvc RenderingEngine.csproj", "{894FD5B8-EC87-4E29-A744-09D3513C212C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page Composer", "Cms Page Compositor\Cms Page Composer.csproj", "{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Page Composer", "Cms Page Compositor\Cms Page Composer.csproj", "{7AFDB16F-6B42-494B-BAF4-42DB78A3FABC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{7EC7380D-21CF-4BCD-91BE-CAB0F33F3A97}"
 EndProject
@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMvc", "TestMvc\TestMvc.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{70E277A8-DFED-4415-97A2-B70EAD27B81D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Page OutputCache", "Cms Page OutputCache\Cms Page OutputCache.csproj", "{2F3FBE89-0182-4026-B6A5-86198EF431F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Page OutputCache", "Cms Page OutputCache\Cms Page OutputCache.csproj", "{2F3FBE89-0182-4026-B6A5-86198EF431F4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponents.Server", "BlazorComponents.Server\BlazorComponents.Server.csproj", "{B6C421E2-9A1D-467D-A59E-9105E7F1D8A5}"
 EndProject
@@ -91,7 +91,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms StaticContent Rendering
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platform WebPipeline", "Platform WebPipeline\Platform WebPipeline.csproj", "{A0823B96-4ECA-4EC9-A315-46CFC43BF1F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms Migration", "ClassLibrary1\Cms Migration.csproj", "{55316451-EBA9-4757-9871-8EAF3E91F6FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms Migration", "ClassLibrary1\Cms Migration.csproj", "{55316451-EBA9-4757-9871-8EAF3E91F6FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorApp", "BlazorApp", "{AF030724-EE7B-4721-BEDD-22148427E93B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFrontend", "BlazorFrontend\BlazorFrontend.csproj", "{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFrontend.Shared", "BlazorFrontend.Shared\BlazorFrontend.Shared.csproj", "{82A6DFB0-AF75-41F4-95B5-4528726D05A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -227,6 +233,14 @@ Global
 		{55316451-EBA9-4757-9871-8EAF3E91F6FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55316451-EBA9-4757-9871-8EAF3E91F6FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55316451-EBA9-4757-9871-8EAF3E91F6FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82A6DFB0-AF75-41F4-95B5-4528726D05A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82A6DFB0-AF75-41F4-95B5-4528726D05A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82A6DFB0-AF75-41F4-95B5-4528726D05A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82A6DFB0-AF75-41F4-95B5-4528726D05A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -270,6 +284,8 @@ Global
 		{C684346F-972B-4DDB-A5A5-66C0B1408B4C} = {DB73B8DB-4249-49B9-90B5-38767617987C}
 		{A0823B96-4ECA-4EC9-A315-46CFC43BF1F3} = {B71D8DF2-A32F-459B-B167-5F406180C548}
 		{55316451-EBA9-4757-9871-8EAF3E91F6FD} = {9B5B17EF-9DE2-49FA-B44E-9461611C4D4B}
+		{4ED4A5CD-66E3-472F-BA1B-13A61DD42E35} = {AF030724-EE7B-4721-BEDD-22148427E93B}
+		{82A6DFB0-AF75-41F4-95B5-4528726D05A4} = {AF030724-EE7B-4721-BEDD-22148427E93B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF7B26DB-ECC6-49E0-B2C9-CB53A94E08E9}

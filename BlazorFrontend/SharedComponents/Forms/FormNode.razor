@@ -1,0 +1,25 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+
+
+<wc-form-element data-element-type="@DesignNode.WidgetTypeCode">
+    @if (DesignNode.WidgetTypeCode == "ConfiguratorRow")
+    {
+        <FormRow DesignNode=@DesignNode />
+    }
+    else
+    {
+        <ConfiguratorActivator DesignNode=@DesignNode />
+    }
+</wc-form-element>
+
+@functions {
+
+    [Parameter]
+    public StructureNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+}

@@ -1,0 +1,29 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorFrontend.SharedComponents.PageDesigner.Preview
+@using BlazorComponents.Shared
+
+<wc-substitution>
+    
+    <CascadingValue Value=@DesignNode Name="SubstitutionNode">
+        <DropTarget />
+
+        <PageDesignerChildren DesignNodeCollection=@DesignNode.ChildNodes />
+
+        @if (DesignNode.ChildNodes.Any())
+        {
+            <DropTarget AfterDesignNode=@DesignNode.ChildNodes.Last()/>
+        }
+    </CascadingValue>
+</wc-substitution>
+
+@functions {
+    [Parameter]
+    public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    protected PagePreview Dispatcher { get; set; }
+
+
+
+}

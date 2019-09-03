@@ -1,0 +1,89 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@inject HttpClient Http
+@if (ListDescription != null)
+{
+    <div class="table-responsive-md">
+        <table>
+            <thead>
+                <tr>
+                    @foreach (var field in ListDescription.Fields)
+                    {
+                        <th scope="col">
+                            @field.DisplayName
+                        </th>
+                    }
+                    <th class="action-cell">
+                        
+                    </th>
+                </tr>
+            </thead>
+
+            @if (Data != null)
+            {
+                <tbody>
+                    @foreach (var item in Data.Items)
+                    {
+                        <tr>
+                            @foreach (var field in ListDescription.Fields)
+                            {
+                                <td>
+                                    @item[field.PropertyName]
+                                </td>
+                            }
+                            <td>
+                                <NavLink href="@(GotoUrlTemplate.Replace("{ContentId}",item["ContentId"]))">--></NavLink>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
+}
+
+
+
+@functions{
+
+    [Parameter]
+    public Guid ListId { get; set; }
+
+    [Parameter]
+    public Guid RepositoryApiId { get; set; }
+
+    [Parameter]
+    public string GotoUrlTemplate { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BeginBrowsing();
+
+    }
+
+    private string CreateApiUrl(string template)
+    {
+        var listIdParam = ListId.ToString();
+        var repositoryApiIdParam = RepositoryApiId.ToString();
+        return template.Replace("{listId}", listIdParam).Replace("{repositoryApiId}", repositoryApiIdParam);
+    }
+
+    public async Task BeginBrowsing()
+    {
+        var listDescriptionApiUrl = CreateApiUrl(ContentBrowserApiRoutes.ListDescription);
+        var listDataApiUrl = CreateApiUrl(ContentBrowserApiRoutes.ListDataFetch);
+
+        ListDescription = await Http.GetJsonAsync<ContentListDescription>($"/{listDescriptionApiUrl}");
+        Data = await Http.GetJsonAsync<ContentListData>($"/{listDataApiUrl}");
+
+        this.StateHasChanged();
+    }
+
+    ContentListDescription ListDescription { get; set; }
+
+    ContentListData Data { get; set; }
+
+}

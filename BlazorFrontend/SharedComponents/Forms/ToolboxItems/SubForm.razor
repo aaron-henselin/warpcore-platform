@@ -1,0 +1,58 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@using System.Text.Json
+@implements BlazorFrontend.SharedComponents.PageDesigner.IConfiguratorComponent<SubFormToolboxItem>
+@implements BlazorFrontend.SharedComponents.PageDesigner.IRendersSubLayout
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+
+    <FormBody FormDescription="@DesignNode" ref="InnerFormBody"></FormBody>
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public SubFormToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    [Parameter]
+    public ConfiguratorFormDescription DesignNode { get;set;}
+
+    private FormBody InnerFormBody { get; set; }
+
+    public string Value {
+        get
+        {
+            var values =InnerFormBody.GetValues();
+            return JsonSerializer.Serialize(values);
+        }
+        set
+        {
+            //TextBoxValue = value;
+            var newValue = JsonSerializer.Deserialize<Dictionary<string,string>>(value);
+            FormBody.SetValues(newValue);
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid { get { return true; } }
+
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+    }
+ }

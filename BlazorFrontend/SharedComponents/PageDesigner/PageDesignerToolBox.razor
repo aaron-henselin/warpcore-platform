@@ -1,0 +1,117 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorComponents.Shared
+@inject HttpClient Http
+
+
+
+@if (Categories != null)
+{
+    <div class="tbx">
+        <div class="handle">
+            <span class="glyphicon glyphicon-wrench"></span>
+        </div>
+        <h3 class="save-header">
+            <span class="button-group">
+                <span class="button">
+                    <span class="fas fa-backspace">
+                        <a runat="server" Text="Back" ID="BackToPageTreeLinkButton"></a>
+                    </span>
+                </span>
+            </span>
+            <span class="button-group right">
+                <span class="button" @onclick=@_chrome.Save>
+                    <span class="fas fa-save">
+                        <a runat="server" Text="Save" ID="SaveDraftButton"></a>
+                    </span>
+                </span>
+                <span class="button last" @onclick=@_chrome.SaveAndPublish>
+                    <span class="fas fa-paper-plane">
+                        <a runat="server" Text="Publish" ID="SaveAndPublishButton"></a>
+                    </span>
+                </span>
+            </span>
+        </h3>
+        <h3>
+            Toolbox<br />
+            <select class="form-control toolbox-select" @onchange="@CategoryChanged">
+                <option value="">Site</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.CategoryName">@category.CategoryName</option>
+                }
+            </select>
+
+        </h3>
+        <div id="toolboxUl" runat="server" class="toolbox-item-list">
+
+            @if (SelectedCategory != null)
+            {
+                foreach (var item in SelectedCategory.Items)
+                {
+                    <div draggable="true" class="toolbox-item wc-layout-handle" 
+                         data-wc-toolbox-item-name="@item.WidgetTypeCode"
+                         @ondragstart="@(e => OnItemDragStart(e, item))"
+                         >
+                        <span class="fas fa-grip-vertical">
+                        </span>
+                        @item.Name
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+}
+else
+{
+    <p>Loading toolbox..</p>
+}
+
+@functions
+{
+    [CascadingParameter]
+    private PageDesignerChrome _chrome { get; set; }
+    private List<ToolboxCategory> _categories;
+
+    public List<ToolboxCategory> Categories
+    {
+        get { return _categories; }
+        set
+        {
+            _categories = value;
+            this.StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var toolboxViewModel = await Http.GetJsonAsync<ToolboxViewModel>("/api/design/toolbox?pageId=" + Guid.Empty);
+            Categories = toolboxViewModel.ToolboxCategories.ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Categories = new List<ToolboxCategory>();
+        }
+    }
+
+
+
+    public ToolboxCategory SelectedCategory { get; set; }
+
+    void CategoryChanged(UIChangeEventArgs dropdownEvent)
+    {
+        SelectedCategory = Categories.Single(x => x.CategoryName == dropdownEvent.Value.ToString());
+    }
+    void OnItemDragStart(UIDragEventArgs e, ToolboxItemViewModel dragItem)
+    {
+        DragDropContext.Dragging = dragItem;
+    }
+
+
+
+
+}

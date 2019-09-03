@@ -1,0 +1,28 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorFrontend.SharedComponents.PageDesigner
+@page "/content-app/add"
+@inject HttpClient Http
+
+@inject ConfigurationManager ConfigurationManager
+<FormBody ref="FormBody" />
+
+@functions {
+    FormBody FormBody { get; set; }
+
+    ContentBrowserConfiguration Config { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
+        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http, Config.AddFormId.Value, null, FormBody);
+    }
+}
+
+

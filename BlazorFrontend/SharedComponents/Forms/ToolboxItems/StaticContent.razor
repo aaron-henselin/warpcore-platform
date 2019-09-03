@@ -1,0 +1,52 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@implements BlazorFrontend.SharedComponents.PageDesigner.IConfiguratorComponent<StaticContentToolboxItem>
+@implements BlazorFrontend.SharedComponents.PageDesigner.IHasLocalDataSource
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    <p class="form-control-static">@DisplayValue</p>
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public StaticContentToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private LocalDataSource _dropDownItems{get;set;}
+
+    public LocalDataSource LocalDataSource { get{return _dropDownItems;} set{_dropDownItems=value; this.StateHasChanged();} }
+
+    private string DisplayValue => LocalDataSource != null ? LocalDataSource.GetItemByValue(InputValue)?.Name : InputValue;
+    private string InputValue { get; set; }
+    public string Value {
+        get
+        {
+            return InputValue;
+        }
+        set
+        {
+            InputValue = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid => true;
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (StaticContent)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName, this);
+    }
+}

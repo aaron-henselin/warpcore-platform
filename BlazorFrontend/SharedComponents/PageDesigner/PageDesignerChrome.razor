@@ -1,0 +1,135 @@
+﻿@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorFrontend.SharedComponents.PageDesigner.Preview
+@using BlazorComponents.Shared
+@inject HttpClient Http
+@implements IHasBusyState
+<wc-chrome class="row">
+
+
+    <wc-design class="col">
+        @if (SideBarMode == SideBarMode.Collapsed || SideBarMode == SideBarMode.Toolbox)
+        {
+            <wc-sidebar-handle>
+                @if (IsBusy)
+                {
+                    <div class="loader-sm"></div>
+                }
+                else
+                {
+                    <a class="handle" @onclick=@ToggleSideBar>
+                        <span class="fas fa-tools"></span>
+                    </a>
+                }
+            </wc-sidebar-handle>
+        }
+        <CascadingValue Value=@this>
+            <PagePreview ref="Preview" />
+        </CascadingValue>
+    </wc-design>
+
+    <wc-sidebar class="@(SideBarMode == SideBarMode.Configurator ? "col col-md-3" : "collapse")">
+        <CascadingValue Value=@this>
+            <PageDesignerConfigurator ref="ConfiguratorWidget"/>
+        </CascadingValue>
+    </wc-sidebar>
+    <wc-sidebar class="@(SideBarMode == SideBarMode.Toolbox ? "col col-md-3" : "collapse")">
+        <CascadingValue Value=@this>
+            <PageDesignerToolBox ref="ToolBoxWidget" />
+        </CascadingValue>
+    </wc-sidebar>
+
+</wc-chrome>
+
+@functions
+{
+    [Parameter]
+    public Guid DesignContentId { get; set; }
+
+    [Parameter]
+    public string DesignType { get; set; }
+
+    private SideBarMode SideBarMode { get; set; }
+
+    public PageStructure CurrentStructure { get; set; }
+
+    PagePreview Preview { get; set; }
+    PageDesignerToolBox ToolBoxWidget { get; set; }
+    PageDesignerConfigurator ConfiguratorWidget { get; set; }
+
+
+    private bool _isBusy = false;
+    public bool IsBusy {
+        get { return _isBusy; }
+        set
+        {
+            _isBusy =value;
+            this.StateHasChanged();
+        }
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        using (this.TrackBusyState())
+            CurrentStructure = await Http.GetJsonAsync<PageStructure>($"/api/design/{DesignType}/{DesignContentId}/structure");
+
+        await Preview.RefreshPagePreviewAsync(CurrentStructure);
+    }
+
+
+
+    public void CloseSideBar()
+    {
+        SideBarMode = SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+    public async Task BeginExpandSideBarAndStartEditing(StructureNode relatedPageContent)
+    {
+        Console.WriteLine($"[Design Page] Expanding Configurator Sidebar");
+        SideBarMode = SideBarMode.Configurator;
+        this.StateHasChanged();
+
+        await ConfiguratorWidget.BeginEditingPageNode(relatedPageContent);
+    }
+
+    public async Task RefreshPagePreviewAsync()
+    {
+        using (this.TrackBusyState())
+        {
+            this.StateHasChanged();
+            await Preview.RefreshPagePreviewAsync(CurrentStructure);
+        }
+    }
+
+
+    void ToggleSideBar(UIMouseEventArgs toExpand)
+    {
+        SideBarMode = SideBarMode == SideBarMode.Collapsed ? SideBarMode.Toolbox : SideBarMode.Collapsed;
+        this.StateHasChanged();
+    }
+
+    public async Task Save(UIMouseEventArgs eventArgs)
+    {
+        using (this.TrackBusyState())
+        {
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/{DesignType}/{DesignContentId}/draft",CurrentStructure);
+            CloseSideBar();
+        }
+    }
+
+    public async Task SaveAndPublish(UIMouseEventArgs eventArgs)
+    {
+        using (this.TrackBusyState())
+        {
+
+            await Http.PostJsonAsync<ToolboxViewModel>($"/api/design/{DesignType}/{DesignContentId}/live", CurrentStructure);
+            CloseSideBar();
+        }
+    }
+
+}
+

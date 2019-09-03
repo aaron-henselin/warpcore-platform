@@ -1,0 +1,78 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorFrontend.SharedComponents.PageDesigner.Preview
+@using BlazorFrontend.SharedComponents.PageTree
+@using BlazorComponents.Shared
+
+<div class="pagetree-item depth-@item.Depth"
+     data-path="@item.VirtualPath"
+     data-parent="@item.ParentPath">
+
+    @if (item.HasChildItems)
+    {
+        var icon = "fas fa-caret-down";
+        if (!PageTreeBrowser.IsExpanded(item))
+        {
+            icon = "fas fa-caret-right";
+        }
+
+        <a @onclick="@(e => { PageTreeBrowser.ToggleExpand(item); })">
+            <span runat="server" class="@icon"></span>
+        </a>
+
+    }
+
+    <span class="pagetree-item-title">
+        @item.Name
+
+        @if (item.IsHomePage)
+        {
+            <span class="fas fa-home homepage-icon"></span>
+        }
+
+        @if (!item.IsPublished)
+        {
+            <small class="unpublished badge badge-secondary">Draft</small>
+        }
+
+    </span>
+    <span class="float-right pagetree-item-actions">
+        <NavLink href=@("./Pages/"+item.PageId+"/Design") Match=NavLinkMatch.All>
+            <span class=" fas fa-brush"></span>
+            Design
+        </NavLink>
+        <a href="javascript:void(0);"
+           @onclick="@(async e => { await PageTreeBrowser.SendToPublish(item); })">
+            <span class="fas fa-paper-plane"></span>
+            Publish
+        </a>
+
+        <NavLink href="@($"./Pages/{item.PageId}/contentpage/settings")">
+            <span class="fas fa-sliders-h"></span>
+            Settings
+        </NavLink>
+    </span>
+
+
+</div>
+
+@if (PageTreeBrowser.IsExpanded(item))
+{
+    foreach (var child in item.ChildNodes)
+    {
+        <PageTreeNode item=@child/>
+    }
+}
+
+
+@functions {
+
+    [CascadingParameter]
+    public PageTreeBrowser PageTreeBrowser { get; set; }
+
+    [Parameter]
+    public SitemapModelNode item { get; set; }
+
+
+}
+

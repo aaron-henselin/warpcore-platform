@@ -1,0 +1,81 @@
+﻿@using BlazorComponents.Client
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+
+@if (FormDescription != null)
+{
+<div runat="server" ID="surface" class="wc-configurator-surface p-2">
+    @{
+        var toRender = FormDescription.Layout.ChildNodes;
+        foreach (var item in toRender)
+        {
+                <CascadingValue Value=@this>
+                    <FormNode DesignNode=@item  />
+                </CascadingValue>
+        }
+    }
+</div>
+}
+
+
+@functions {
+    [Parameter]
+    public StructureNode DesignNode { get; set; }
+
+    [Parameter]
+    public ConfiguratorFormDescription FormDescription { get; set; }
+
+    StructureNode _structureNode;
+
+    ConfiguratorRegistry _registry = new ConfiguratorRegistry();
+    FormEvents _formEvents = new FormEvents();
+
+    public ConfiguratorRegistry Configurators => _registry;
+    public FormEvents FormEvents => _formEvents;
+
+    public void SetFormLayout(ConfiguratorFormDescription formDescription)
+    {
+        _registry = new ConfiguratorRegistry();
+        _formEvents = new FormEvents();
+
+        FormDescription = formDescription;
+        this.StateHasChanged();
+    }
+
+    public void SetValues(IDictionary<string,string> values)
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+
+        readWriter.SetValues(values);
+    }
+
+    public void SetDataSources(IDictionary<string,LocalDataSource> dataSources)
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetDataSources(dataSources);
+    }
+
+    public void StartNewSession(EditingSession editingSession )
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        readWriter.SetDataSources(editingSession.LocalDataSources);
+        readWriter.SetValues(editingSession.InitialValues);
+    }
+
+    public bool Validate()
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        return readWriter.IsFormValid();
+    }
+
+    public IDictionary<string, string> GetValues()
+    {
+        var readWriter = new CmsFormReadWriter(_registry);
+        return readWriter.GetValues();
+
+    }
+
+
+
+
+}

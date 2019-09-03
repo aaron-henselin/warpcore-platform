@@ -1,0 +1,94 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@using WarpCore.Platform.DataAnnotations
+
+
+
+<div class="form-group">
+    <label>@Title</label>
+    @if (Collection != null)
+    {
+        <div class="row">
+            <div class="col">
+                <label>Name</label>
+            </div>
+            <div class="col">
+                <label>Value</label>
+            </div>
+        </div>
+        foreach (var item in Collection)
+        {
+            <CascadingValue value=@this T="KeyValuePairs">
+                <KeyValuePairItem KeyValuePair=@item />
+            </CascadingValue>
+        }
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn" @onclick="@(() => AddEmptyItem())">
+                    Add
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@functions {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    private List<MutableKeyValuePair> Collection { get; set; } = new List<MutableKeyValuePair>();
+
+
+
+    public void Set(IEnumerable<KeyValuePair<string, string>> items)
+    {
+        Collection = items.Select(x => new MutableKeyValuePair{Key=x.Key,Value=x.Value}).ToList();
+        this.StateHasChanged();
+    }
+
+
+    public IEnumerable<KeyValuePair<string, string>> GetAll()
+    {
+        return Collection
+            .Select(x => new KeyValuePair<string, string>(x.Key,x.Value))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key));
+    }
+
+    private void AddEmptyItem()
+    {
+        Collection.Add(new MutableKeyValuePair());
+        this.StateHasChanged();
+    }
+
+    public void Removed(MutableKeyValuePair edited)
+    {
+        Collection.Remove(edited);
+        this.StateHasChanged();
+    }
+
+    public void Changed(MutableKeyValuePair edited)
+    {
+        var shouldRemove=
+            string.IsNullOrWhiteSpace(edited.Key) &&
+            string.IsNullOrWhiteSpace(edited.Value) && 
+            edited != Collection.Last();
+
+        if (shouldRemove)
+            Collection.Remove(edited);
+
+        //var count = Collection.Count;
+
+        //var removeAll = Collection.Where((x,i) => (i != count-1) && string.IsNullOrWhiteSpace(x.Key) && string.IsNullOrWhiteSpace(x.Value));
+        //foreach (var keyValuePair in removeAll)
+        //    Collection.Remove(keyValuePair);
+
+        this.StateHasChanged();
+    }
+
+  
+}

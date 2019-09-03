@@ -1,0 +1,58 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@implements BlazorFrontend.SharedComponents.PageDesigner.IConfiguratorComponent<TextboxToolboxItem>
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    <input type="text" bind="@TextBoxValueTwoWayBinding" class="form-control" />
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public TextboxToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private string CurrentTextboxValue { get; set; }
+
+    private string TextBoxValueTwoWayBinding {
+        get => CurrentTextboxValue;
+        set
+        {
+            CurrentTextboxValue = value;
+            FormBody.FormEvents.RaiseValueChanged(new ValueChangedEventArgs{PropertyName = Config.PropertyName,NewValue=CurrentTextboxValue});
+            this.StateHasChanged();
+        }
+    }
+
+    public string Value {
+        get => CurrentTextboxValue;
+        set
+        {
+            CurrentTextboxValue = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid { get { return true; } }
+
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+
+    }
+ }

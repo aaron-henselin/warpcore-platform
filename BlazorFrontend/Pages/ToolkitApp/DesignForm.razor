@@ -1,0 +1,20 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents
+@using BlazorFrontend.SharedComponents.PageDesigner
+@page "/Forms/{formId}/Design"
+@inject HttpClient Http
+
+<PageDesignerChrome DesignType="form" DesignContentId=@(new Guid(formId))/>
+
+@functions {
+    [Parameter]
+    public string formId{get;set;}
+
+ }
+
+

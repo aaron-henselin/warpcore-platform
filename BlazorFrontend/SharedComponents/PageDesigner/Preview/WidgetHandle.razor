@@ -1,0 +1,41 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorFrontend.SharedComponents.PageDesigner.Preview
+@using BlazorComponents.Shared
+
+
+<wc-layout-handle draggable="true" class='wc-layout-handle' @ondragstart="@(e => OnItemDragStart(e, DesignNode))">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+            <div class="wc-layout-handle-command-cell col-3">
+                <a class='fas fa-wrench wc-edit-command configure'
+                   @onclick=@(e => Dispatcher.Edit(DesignNode))>
+                </a>
+            </div>
+            <div class="wc-layout-handle-text col">
+                @DesignNode.FriendlyName
+            </div>
+                <div class="wc-layout-handle-command-cell right col-3">
+                    <a class='fas fa-trash-alt wc-edit-command delete'
+                       @onclick="@(e => Dispatcher.Delete(DesignNode))">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</wc-layout-handle>
+
+@functions {
+    [Parameter]
+    public PreviewNode DesignNode { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    protected PagePreview Dispatcher { get; set; }
+
+    void OnItemDragStart(UIDragEventArgs e, PreviewNode dragItem)
+    {
+        DragDropContext.Dragging = dragItem;
+    }
+
+}

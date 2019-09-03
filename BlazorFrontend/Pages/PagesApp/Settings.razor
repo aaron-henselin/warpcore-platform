@@ -1,0 +1,54 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorFrontend.SharedComponents.PageDesigner
+@page "/Pages/{pageId}/{pageType}/settings"
+@inject HttpClient Http
+
+<FormBody ref="FormBody" />
+
+@functions {
+    [Parameter]
+    public string pageId{get;set;}
+
+    [Parameter]
+    public string pageType{get;set;}
+
+    FormBody FormBody{get;set;}
+
+    protected override async Task OnAfterRenderAsync()
+    {
+        await BeginEditing();
+
+    }
+
+    public async Task BeginEditing()
+    {
+        Guid formId;
+        if ("contentpage" == pageType)
+            formId = KnownFormIds.ContentPageSettingsForm;
+        else
+        {
+            throw new Exception();
+        }
+
+        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,formId, new Guid(pageId), FormBody);
+
+    }
+
+    public static class KnownFormIds
+    {
+        public static Guid ContentPageSettingsForm => new Guid("7f85cee1-9ce8-463d-b0a2-9ca93e09608d");
+        //public static Guid GroupingPageSettingsForm => new Guid("ac9151e9-febf-4787-8291-5c0bfa2f0b0f");
+        //public static Guid RedirectPageSettingsForm => new Guid("922f3485-3b5b-4087-ab4d-29765e638042");
+    }
+
+
+ }
+
+

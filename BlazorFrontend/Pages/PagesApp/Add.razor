@@ -1,0 +1,59 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorFrontend.SharedComponents.PageDesigner
+@page "/Pages/Add"
+@inject HttpClient Http
+
+<div class="row">
+    <div class="col">
+        <select class="form-control" @onchange="@PageTypeChanged">
+            <option value="">Page Type</option>
+            <option value="7f85cee1-9ce8-463d-b0a2-9ca93e09608d">Content Page</option>
+            <option value="RedirectPage">Redirect Page</option>
+            <option value="GroupingPage">Grouping Page</option>
+        </select>
+    </div>
+
+</div>
+
+<FormBody ref="FormBody" />
+
+@functions {
+
+    FormBody FormBody{get;set;}
+
+
+    async Task PageTypeChanged(UIChangeEventArgs dropdownEvent)
+    {
+
+        await BeginEditing(dropdownEvent.Value.ToString());
+        this.StateHasChanged();
+    }
+
+    public async Task BeginEditing(string formIdRaw)
+    {
+        if (string.IsNullOrWhiteSpace(formIdRaw))
+            return;
+
+
+        await FormsRuntimeApiHelper.InitializeFormBodyDynamically(Http,new Guid(formIdRaw), null, FormBody);
+
+    }
+
+    public static class KnownFormIds
+    {
+        public static Guid ContentPageSettingsForm => new Guid("7f85cee1-9ce8-463d-b0a2-9ca93e09608d");
+        //public static Guid GroupingPageSettingsForm => new Guid("ac9151e9-febf-4787-8291-5c0bfa2f0b0f");
+        //public static Guid RedirectPageSettingsForm => new Guid("922f3485-3b5b-4087-ab4d-29765e638042");
+    }
+
+
+}
+
+

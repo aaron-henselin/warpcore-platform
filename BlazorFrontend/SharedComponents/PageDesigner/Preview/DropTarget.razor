@@ -1,0 +1,106 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorFrontend.SharedComponents.PageDesigner.Preview
+@using BlazorComponents.Shared
+
+
+<wc-droptarget 
+               style="@(_highlightDropTargetStyle)"
+               dropzone="move"
+               @ondragenter="@(e => OnContainerDragEnter(e))"
+               @ondrop="@(e => OnContainerDrop(e))"
+               ondragover="event.preventDefault();"
+               @ondragleave="@(e => OnContainerDragLeave(e))"
+               
+
+               >
+
+    &nbsp;@_dropText
+
+</wc-droptarget>
+
+@functions {
+    [Parameter]
+    public PreviewNode AfterDesignNode { get; set; }
+
+    [CascadingParameter(Name= "SubstitutionNode")]
+    protected PreviewNode SubstitutionNode { get; set; }
+
+    [CascadingParameter]
+    protected PagePreview Preview { get; set; }
+
+    [Parameter]
+    public ChildPosition Position { get; set; }
+
+
+    string _highlightDropTargetStyle = string.Empty;
+    string _activateDropTargetStyle = string.Empty;
+    string _dropText = "";
+
+    void OnContainerDragEnter(UIDragEventArgs e)
+    {
+        _activateDropTargetStyle = "inset-shadow";
+        _highlightDropTargetStyle = @"-moz-box-shadow: inset 0 0 10px #000000;
+            -webkit-box-shadow: inset 0 0 10px #000000;
+            box-shadow: inset 0 0 10px #000000;
+            text-align:center;
+            padding 10px;";
+
+        _dropText = "Add Here.";
+    }
+
+    void OnContainerDragLeave(UIDragEventArgs e)
+    {
+        _activateDropTargetStyle = String.Empty;
+        _highlightDropTargetStyle = String.Empty;
+        _dropText = "";
+    }
+
+    async Task OnContainerDrop(UIDragEventArgs e)
+    {
+        _dropText = "";
+        _highlightDropTargetStyle = null;
+
+        Console.WriteLine("[Page Preview] Drag Drop completed");
+
+        if (SubstitutionNode == null)
+        {
+            throw new Exception("Substitution node is null");
+        }
+
+        var dropped = DragDropContext.Dragging;
+        DragDropContext.Dragging = null;
+        if (dropped == null)
+        {
+            throw new Exception("DragDropContext.Dragging is null.");
+        }
+
+        if (Preview == null)
+        {
+            throw new Exception("Dispatcher is null.");
+        }
+
+        if (dropped is PreviewNode droppedPreviewNode)
+        {
+
+            await Preview.MoveContent(droppedPreviewNode,new PagePreviewPosition
+            {
+                ToChildOf = SubstitutionNode.PreviewNodeId,
+                PlaceAfter = AfterDesignNode?.PreviewNodeId
+
+            });
+        }
+
+        if (dropped is ToolboxItemViewModel toolboxItem)
+        {
+            await Preview.AddContent(toolboxItem,new PagePreviewPosition
+            {
+                ToChildOf = SubstitutionNode.PreviewNodeId,
+                PlaceAfter = AfterDesignNode?.PreviewNodeId
+
+            });
+        }
+
+    }
+
+}

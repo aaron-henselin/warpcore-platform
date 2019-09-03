@@ -1,0 +1,27 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@page "/content-app"
+@inject HttpClient Http
+@inject ConfigurationManager ConfigurationManager
+@if (Config != null)
+{
+    <h2>{Content Type Name}</h2>
+    <NavLink href=@("./content-app/list/"+Config.ListId.GetValueOrDefault())>List</NavLink>
+    <a>Add</a>
+}
+
+@functions {
+    ContentBrowserConfiguration Config { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+         Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
+
+    }
+}
+
+

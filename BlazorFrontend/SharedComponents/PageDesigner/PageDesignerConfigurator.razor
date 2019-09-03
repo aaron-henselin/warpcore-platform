@@ -1,0 +1,97 @@
+﻿@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorComponents.Shared
+@using BlazorFrontend.SharedComponents.Forms
+@inject HttpClient Http
+
+<div class="designer wc-configurator">
+    <div id="ConfiguratorSideBarBody">       
+        <CascadingValue Value=@this>
+            <PageDesignerConfiguratorHeader/>
+            <FormBody ref="FormBody" />
+        </CascadingValue>
+    </div>
+</div>
+
+@functions
+{
+
+    StructureNode _structureNode;
+
+    [CascadingParameter]
+    PageDesignerChrome Chrome { get; set; }
+
+    ConfiguratorFormDescription FormDescription { get; set; }
+
+    FormBody FormBody { get; set; }
+
+    public async Task BeginEditingPageNode(StructureNode relatedPageContent)
+    {
+
+        _structureNode = relatedPageContent;
+
+        //(1) Set up form layout
+        /////////////////////////////////
+        Console.WriteLine($"[Design Page] Configurator Sidebar resetting.");
+        FormDescription = null;
+        Console.WriteLine($"[Design Page] Applying new form layout.");
+        FormDescription = await RetrieveConfiguratorSidebarLayoutAsync(_structureNode.WidgetTypeCode);
+
+
+        FormBody.SetFormLayout(FormDescription);
+
+        var session = await InitializeEditingSession(_structureNode);
+        FormBody.StartNewSession(session);
+    }
+
+    private async Task<EditingSession> InitializeEditingSession(StructureNode structureNode)
+    {
+        return await Http.PostJsonAsync<EditingSession>($"/api/design/configurator-form/{_structureNode.WidgetTypeCode}/session", _structureNode);
+    }
+
+
+    private async Task<ConfiguratorFormDescription> RetrieveConfiguratorSidebarLayoutAsync(string widgetTypeCode)
+    {
+        Console.WriteLine($"[Design Page] Retrieving new form description");
+        var formApiPath = "/api/design/configurator-form/" + widgetTypeCode;
+        var formDescription = await Http.GetJsonAsync<ConfiguratorFormDescription>(formApiPath);
+        return formDescription;
+
+    }
+
+
+
+    public void Cancel()
+    {
+        Chrome.CloseSideBar();
+    }
+
+    public async Task Save()
+    {
+        if (_structureNode == null)
+            throw new Exception("_structureNode is null.");
+
+        var isFormValid = FormBody.Validate();
+        if (!isFormValid)
+            return;
+
+        Console.WriteLine($"[Design Page] Applying configuration changes to node {_structureNode.Id}");
+
+        var newValues = FormBody.GetValues();
+        foreach (var kvp in newValues)
+            _structureNode.Parameters[kvp.Key] = kvp.Value;
+
+        Chrome.CloseSideBar();
+        await Chrome.RefreshPagePreviewAsync();
+
+
+    }
+
+
+
+
+}
+
+
+

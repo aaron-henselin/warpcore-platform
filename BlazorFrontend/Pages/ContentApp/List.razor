@@ -1,0 +1,36 @@
+﻿
+@using BlazorComponents.Shared
+@using System.Linq.Expressions
+@using System.Linq
+@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents
+@using BlazorFrontend.SharedComponents.PageDesigner
+
+@page "/content-app/list/{ListId}"
+@inject HttpClient Http
+
+@inject ConfigurationManager ConfigurationManager
+@if (ListId != null && RepositoryApiId != null)
+{
+    <ContentList ListId=@(new Guid(ListId)) RepositoryApiId=@RepositoryApiId.Value GotoUrlTemplate="./content-app/edit/{ContentId}" />
+}
+
+
+@functions {
+
+    [Parameter]
+    public string ListId { get; set; }
+
+    Guid? RepositoryApiId { get; set; }
+
+    ContentBrowserConfiguration Config { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await ConfigurationManager.GetAppConfig<ContentBrowserConfiguration>();
+        RepositoryApiId = Config.RepositoryApiId;
+    }
+}
+
+

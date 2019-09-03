@@ -1,0 +1,147 @@
+﻿@using System.Net
+@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.PageDesigner
+@using BlazorComponents.Shared
+@using WarpCore.Platform.DataAnnotations
+@inject HttpClient Http
+
+<CascadingValue Value=@this>
+    <wc-page-preview>
+        @if (CurrentPreview == null)
+        {
+            <p>
+                <em>Generating preview..</em>
+            </p>
+        }
+        else
+        {
+
+        <WidgetPreview DesignNode=@CurrentPreview />
+
+
+        }
+    </wc-page-preview>
+</CascadingValue>
+
+@functions {
+
+    [CascadingParameter]
+    PageDesignerChrome Chrome { get; set; }
+
+    PreviewNode CurrentPreview { get; set; }
+
+    
+    public async Task Edit(PreviewNode contentToEdit)
+    {
+        var node = Chrome.CurrentStructure.GetStructureNodeById(contentToEdit.ContentId);
+        await Chrome.BeginExpandSideBarAndStartEditing(node);
+    }
+
+    public async Task Delete(PreviewNode contentToDelete)
+    {
+        Chrome.CurrentStructure.RemoveDescendentNode(contentToDelete.ContentId);
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
+
+    }
+
+    private ContentLocation ResolveContentLocation(PagePreviewPosition contentMoved)
+    {
+        var searchPath = new Stack<PreviewNode>();
+        var newParent = CurrentPreview.FindDescendentNode(contentMoved.ToChildOf, searchPath);
+        if (newParent == null)
+            throw new Exception(contentMoved.ToChildOf + " was not found in the current preview");
+
+        int level = 0;
+        var parts = searchPath.ToArray().ToList();
+        foreach (var part in parts)
+        {
+            Console.WriteLine($"{level++}, Pid={part.PreviewNodeId}, ContentId={part.ContentId}, PlaceholderId={part.PlaceHolderId}");
+        }
+
+        var newParentSubstitution = parts[0]; //searchPath.PopUntil(x => !string.IsNullOrWhiteSpace(x.PlaceHolderId));
+        var newParentLayoutElement = parts[1]; //searchPath.PopUntil(x => x.ContentId != default(Guid));
+
+        if (newParentSubstitution == null)
+            throw new Exception("A parent placeholder was not found in the current preview");
+        if (newParentLayoutElement == null)
+            throw new Exception("A parent layout element was not found in the current preview");
+
+        return new ContentLocation
+        {
+            ParentPlaceHolder = newParentSubstitution,
+            ParentWidget = newParentLayoutElement
+        };
+    }
+
+    public async Task MoveContent(PreviewNode previewNode, PagePreviewPosition contentMoved)
+    {
+        Console.WriteLine($"[Design Page] Content move started MovedPid={previewNode.Id} ToSubstitutionPid={contentMoved.ToChildOf}, PlaceAfterPid={contentMoved.PlaceAfter}.");
+
+        var newContentLocation = ResolveContentLocation(contentMoved);
+
+        var oldPath = new Stack<PreviewNode>();
+        var originalPreviewNode = CurrentPreview.FindDescendentNode(previewNode.Id, oldPath);
+
+        var originalStructureNode = Chrome.CurrentStructure.FindDescendentNode(originalPreviewNode.ContentId);
+        if (originalStructureNode == null)
+            throw new Exception("A structure node of " + originalPreviewNode.ContentId + " was not found in the current page structure.");
+
+        Chrome.CurrentStructure.RemoveDescendentNode(originalPreviewNode.ContentId);
+        originalStructureNode.PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId;
+        Chrome.CurrentStructure.Add(originalStructureNode, newContentLocation.ParentWidget.ContentId);
+
+        
+
+
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
+    }
+
+    public async Task AddContent(ToolboxItemViewModel toolboxItem, PagePreviewPosition addLocation)
+    {
+        Console.WriteLine(
+            $"[Design Page] Content add started ToSubstitutionPid={addLocation.ToChildOf}, PlaceAfterPid={addLocation.PlaceAfter}.");
+        var newContentLocation = ResolveContentLocation(addLocation);
+
+        var newStructureNode = new StructureNode
+        {
+            Id = Guid.NewGuid(),
+            WidgetTypeCode = toolboxItem.WidgetTypeCode,
+            PlacementContentPlaceHolderId = newContentLocation.ParentPlaceHolder.PlaceHolderId,
+        };
+        Chrome.CurrentStructure.Add(newStructureNode, newContentLocation.ParentWidget.ContentId);
+
+
+
+        await RefreshPagePreviewAsync(Chrome.CurrentStructure);
+    }
+
+    public async Task RefreshPagePreviewAsync( PageStructure newPageStructure)
+    {
+        CurrentPreview = null;
+        try
+        {
+
+            CurrentPreview = await Http.PostJsonAsync<PreviewNode>($"/api/design/{Chrome.DesignType}/{Chrome.DesignContentId}/preview", newPageStructure);
+            this.StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            var errorPage = new PreviewNode{
+                Type = NodeType.Element,
+                FriendlyName = "Error Message",
+                IsFromLayout =true};
+            errorPage.ChildNodes.Add(
+                new PreviewNode{Type = NodeType.Html,
+                    Html = "There was an error retrieving the page design."
+
+                });
+
+            CurrentPreview = errorPage;
+        }
+    }
+
+
+
+}
+

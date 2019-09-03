@@ -1,0 +1,68 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorComponents.Shared
+@implements BlazorFrontend.SharedComponents.PageDesigner.IConfiguratorComponent<DropdownToolboxItem>
+@implements BlazorFrontend.SharedComponents.PageDesigner.IHasLocalDataSource
+
+
+
+<div class="form-group">
+    <label>@Config.DisplayName</label>
+    <select type="text" bind="@TextBoxValue" class="form-control">
+        @if (LocalDataSource?.Items != null)
+        {
+            <option>Select</option>
+            @foreach (var option in LocalDataSource.Items)
+            {
+            <option value=@option.Value>@option.Name</option>
+            }
+        }
+        else{
+            <option>loading..</option>
+        }
+
+    </select>
+</div>
+
+
+
+@functions {
+    [Parameter]
+    public DropdownToolboxItem Config { get; set; } // Demonstrates how a parent component can supply parameters
+
+    [CascadingParameter]
+    public FormBody FormBody { get; set; }
+
+    private LocalDataSource _dropDownItems{get;set;}
+
+    public LocalDataSource LocalDataSource { get{return _dropDownItems;} set{_dropDownItems=value; this.StateHasChanged();} }
+
+    private string TextBoxValue { get; set; }
+
+    public string Value {
+        get
+        {
+            return TextBoxValue;
+        }
+        set
+        {
+            TextBoxValue = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public bool IsValid { get { return true; } }
+
+
+    protected override void OnParametersSet()
+    {
+        //base.OnParametersSet();
+        Console.WriteLine($@"[Forms] OnParametersSet (FormTextBox)");
+
+        if (Config == null)
+            throw new Exception("No configurator setup is available, cannot initialize FormTextBox.");
+
+        FormBody.Configurators.RegisterComponent(Config.PropertyName,this);
+        
+    }
+}

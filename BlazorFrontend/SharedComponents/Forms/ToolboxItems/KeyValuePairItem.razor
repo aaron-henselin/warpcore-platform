@@ -1,0 +1,45 @@
+﻿@using BlazorComponents.Client
+@using BlazorFrontend.SharedComponents.Forms
+@using BlazorFrontend.SharedComponents.Forms.ToolboxItems
+@using BlazorComponents.Shared
+@using Microsoft.JSInterop
+@using WarpCore.Platform.DataAnnotations
+
+
+
+
+<div class="row">
+    <div class="col">
+        <input class="form-control" bind="@KeyValuePair.Key" @onchange=@(evt => Changed()) />
+    </div>
+    <div class="col">
+        <input class="form-control" bind="@KeyValuePair.Value" @onchange=@(evt => Changed()) />
+    </div>
+    <div class="col-1">
+        <a @onclick=@(evt => Removed())>X</a>
+    </div>
+</div>
+    
+
+
+@functions {
+
+    [CascadingParameter]
+    KeyValuePairs KeyValuePairs { get; set; }
+
+    [Parameter]
+    public MutableKeyValuePair KeyValuePair { get; set; }
+
+
+    private void Changed()
+    {
+        KeyValuePairs.Changed(KeyValuePair);
+
+    }
+
+    private void Removed()
+    {
+        KeyValuePairs.Removed(KeyValuePair);
+    }
+
+}
